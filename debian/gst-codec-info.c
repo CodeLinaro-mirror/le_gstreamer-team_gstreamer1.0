@@ -373,7 +373,7 @@ collect_plugin_info (GstPlugin * plugin)
 
   plugin_name = gst_plugin_get_name (plugin);
 
-  features = gst_registry_get_feature_list (gst_registry_get_default (),
+  features = gst_registry_get_feature_list (gst_registry_get (),
       GST_TYPE_ELEMENT_FACTORY);
 
   for (l = features; l; l = l->next) {

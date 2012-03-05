@@ -1346,7 +1346,7 @@ libgstreamer-0.11.so.31 libgstreamer0.11-0 #MINVER#
  gst_registry_find_plugin@Base 0.11.1
  gst_registry_fork_is_enabled@Base 0.11.1
  gst_registry_fork_set_enabled@Base 0.11.1
- gst_registry_get_default@Base 0.11.1
+ gst_registry_get@Base 0.11.1
  gst_registry_get_feature_list@Base 0.11.1
  gst_registry_get_feature_list_by_plugin@Base 0.11.1
  gst_registry_get_feature_list_cookie@Base 0.11.1
