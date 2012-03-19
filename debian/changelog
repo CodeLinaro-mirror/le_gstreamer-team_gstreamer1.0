@@ -1,3 +1,13 @@
+gstreamer0.11 (0.11.2-1) experimental; urgency=low
+
+  * Imported Upstream version 0.11.2
+  * gst_registry_get_default() was renamed to gst_registry_get() (see ChangeLog)
+  * Updated debian/libgstreamer.symbols based on upstream 0.11.2
+  * debian/gbp.conf: use bzip2 compression
+  * debian/control: regenerated from debian/control.in
+
+ -- Olivier Naudan <o-naudan@ti.com>  Mon, 19 Mar 2012 12:48:59 -0400
+
 gstreamer0.11 (0.11.1-3) UNRELEASED; urgency=low
 
   [ Sebastian Dröge ]
