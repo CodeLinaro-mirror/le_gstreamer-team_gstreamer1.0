@@ -61,7 +61,7 @@ enum
 #define DEFAULT_SYNC FALSE
 
 #define DEFAULT_STATE_ERROR FAKE_SINK_STATE_ERROR_NONE
-#define DEFAULT_SILENT FALSE
+#define DEFAULT_SILENT TRUE
 #define DEFAULT_DUMP FALSE
 #define DEFAULT_SIGNAL_HANDOFFS FALSE
 #define DEFAULT_LAST_MESSAGE NULL
@@ -271,9 +271,6 @@ gst_fake_sink_init (GstFakeSink * fakesink)
   fakesink->state_error = DEFAULT_STATE_ERROR;
   fakesink->signal_handoffs = DEFAULT_SIGNAL_HANDOFFS;
   fakesink->num_buffers = DEFAULT_NUM_BUFFERS;
-#if !GLIB_CHECK_VERSION(2,26,0)
-  g_static_rec_mutex_init (&fakesink->notify_lock);
-#endif
 
   gst_base_sink_set_sync (GST_BASE_SINK (fakesink), DEFAULT_SYNC);
 }
@@ -281,12 +278,6 @@ gst_fake_sink_init (GstFakeSink * fakesink)
 static void
 gst_fake_sink_finalize (GObject * obj)
 {
-#if !GLIB_CHECK_VERSION(2,26,0)
-  GstFakeSink *sink = GST_FAKE_SINK (obj);
-
-  g_static_rec_mutex_free (&sink->notify_lock);
-#endif
-
   G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
@@ -370,19 +361,7 @@ gst_fake_sink_get_property (GObject * object, guint prop_id, GValue * value,
 static void
 gst_fake_sink_notify_last_message (GstFakeSink * sink)
 {
-  /* FIXME: this hacks around a bug in GLib/GObject: doing concurrent
-   * g_object_notify() on the same object might lead to crashes, see
-   * http://bugzilla.gnome.org/show_bug.cgi?id=166020#c60 and follow-ups.
-   * So we really don't want to do a g_object_notify() here for out-of-band
-   * events with the streaming thread possibly also doing a g_object_notify()
-   * for an in-band buffer or event. This is fixed in GLib >= 2.26 */
-#if !GLIB_CHECK_VERSION(2,26,0)
-  g_static_rec_mutex_lock (&sink->notify_lock);
-  g_object_notify ((GObject *) sink, "last-message");
-  g_static_rec_mutex_unlock (&sink->notify_lock);
-#else
   g_object_notify_by_pspec ((GObject *) sink, pspec_last_message);
-#endif
 }
 
 static gboolean
@@ -392,6 +371,7 @@ gst_fake_sink_event (GstBaseSink * bsink, GstEvent * event)
 
   if (!sink->silent) {
     const GstStructure *s;
+    const gchar *tstr;
     gchar *sstr;
 
     GST_OBJECT_LOCK (sink);
@@ -405,10 +385,13 @@ gst_fake_sink_event (GstBaseSink * bsink, GstEvent * event)
       structure = gst_message_get_structure (msg);
       sstr = gst_structure_to_string (structure);
       sink->last_message =
-          g_strdup_printf ("message ******* M (type: %d, %s) %p",
+          g_strdup_printf ("message ******* (%s:%s) M (type: %d, %s) %p",
+          GST_DEBUG_PAD_NAME (GST_BASE_SINK_CAST (sink)->sinkpad),
           GST_MESSAGE_TYPE (msg), sstr, msg);
       gst_message_unref (msg);
     } else {
+      tstr = gst_event_type_get_name (GST_EVENT_TYPE (event));
+
       if ((s = gst_event_get_structure (event))) {
         sstr = gst_structure_to_string (s);
       } else {
@@ -416,8 +399,9 @@ gst_fake_sink_event (GstBaseSink * bsink, GstEvent * event)
       }
 
       sink->last_message =
-          g_strdup_printf ("event   ******* E (type: %d, %s) %p",
-          GST_EVENT_TYPE (event), sstr, event);
+          g_strdup_printf ("event   ******* (%s:%s) E (type: %s (%d), %s) %p",
+          GST_DEBUG_PAD_NAME (GST_BASE_SINK_CAST (sink)->sinkpad),
+          tstr, GST_EVENT_TYPE (event), sstr, event);
     }
     g_free (sstr);
     GST_OBJECT_UNLOCK (sink);
@@ -425,11 +409,7 @@ gst_fake_sink_event (GstBaseSink * bsink, GstEvent * event)
     gst_fake_sink_notify_last_message (sink);
   }
 
-  if (GST_BASE_SINK_CLASS (parent_class)->event) {
-    return GST_BASE_SINK_CLASS (parent_class)->event (bsink, event);
-  } else {
-    return TRUE;
-  }
+  return GST_BASE_SINK_CLASS (parent_class)->event (bsink, event);
 }
 
 static GstFlowReturn
@@ -460,7 +440,7 @@ gst_fake_sink_preroll (GstBaseSink * bsink, GstBuffer * buffer)
 eos:
   {
     GST_DEBUG_OBJECT (sink, "we are EOS");
-    return GST_FLOW_UNEXPECTED;
+    return GST_FLOW_EOS;
   }
 }
 
@@ -497,15 +477,14 @@ gst_fake_sink_render (GstBaseSink * bsink, GstBuffer * buf)
     }
 
     {
-      const char *flag_list[12] = {
-        "ro", "media4", "", "",
-        "preroll", "discont", "incaps", "gap",
-        "delta_unit", "media1", "media2", "media3"
+      const char *flag_list[15] = {
+        "", "", "", "", "live", "decode-only", "discont", "resync", "corrupted",
+        "marker", "header", "gap", "droppable", "delta-unit", "in-caps"
       };
       int i;
       char *end = flag_str;
       end[0] = '\0';
-      for (i = 0; i < 12; i++) {
+      for (i = 0; i < G_N_ELEMENTS (flag_list); i++) {
         if (GST_MINI_OBJECT_CAST (buf)->flags & (1 << i)) {
           strcpy (end, flag_list[i]);
           end += strlen (end);
@@ -517,12 +496,13 @@ gst_fake_sink_render (GstBaseSink * bsink, GstBuffer * buf)
     }
 
     sink->last_message =
-        g_strdup_printf ("chain   ******* < (%5" G_GSIZE_FORMAT
-        " bytes, timestamp: %s" ", duration: %s, offset: %" G_GINT64_FORMAT
-        ", offset_end: %" G_GINT64_FORMAT ", flags: %d %s) %p",
-        gst_buffer_get_size (buf), ts_str, dur_str, GST_BUFFER_OFFSET (buf),
-        GST_BUFFER_OFFSET_END (buf), GST_MINI_OBJECT_CAST (buf)->flags,
-        flag_str, buf);
+        g_strdup_printf ("chain   ******* (%s:%s) (%u bytes, timestamp: %s"
+        ", duration: %s, offset: %" G_GINT64_FORMAT ", offset_end: %"
+        G_GINT64_FORMAT ", flags: %d %s) %p",
+        GST_DEBUG_PAD_NAME (GST_BASE_SINK_CAST (sink)->sinkpad),
+        (guint) gst_buffer_get_size (buf), ts_str,
+        dur_str, GST_BUFFER_OFFSET (buf), GST_BUFFER_OFFSET_END (buf),
+        GST_MINI_OBJECT_CAST (buf)->flags, flag_str, buf);
     GST_OBJECT_UNLOCK (sink);
 
     gst_fake_sink_notify_last_message (sink);
@@ -532,12 +512,11 @@ gst_fake_sink_render (GstBaseSink * bsink, GstBuffer * buf)
         bsink->sinkpad);
 
   if (sink->dump) {
-    guint8 *data;
-    gsize size;
+    GstMapInfo info;
 
-    data = gst_buffer_map (buf, &size, NULL, GST_MAP_READ);
-    gst_util_dump_mem (data, size);
-    gst_buffer_unmap (buf, data, size);
+    gst_buffer_map (buf, &info, GST_MAP_READ);
+    gst_util_dump_mem (info.data, info.size);
+    gst_buffer_unmap (buf, &info);
   }
   if (sink->num_buffers_left == 0)
     goto eos;
@@ -548,7 +527,7 @@ gst_fake_sink_render (GstBaseSink * bsink, GstBuffer * buf)
 eos:
   {
     GST_DEBUG_OBJECT (sink, "we are EOS");
-    return GST_FLOW_UNEXPECTED;
+    return GST_FLOW_EOS;
   }
 }
 

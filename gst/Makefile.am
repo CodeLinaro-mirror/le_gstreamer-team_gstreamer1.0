@@ -56,17 +56,16 @@ libgstreamer_@GST_MAJORMINOR@_la_SOURCES = \
 	gstcaps.c		\
 	gstchildproxy.c		\
 	gstclock.c		\
+	gstcontrolbinding.c \
+	gstcontrolsource.c \
 	gstdatetime.c		\
 	gstdebugutils.c		\
 	gstelement.c		\
 	gstelementfactory.c	\
 	gsterror.c		\
 	gstevent.c		\
-	gstfilter.c		\
 	gstformat.c		\
 	gstghostpad.c		\
-	gstindex.c 		\
-	gstindexfactory.c 	\
 	gstinfo.c		\
 	gstiterator.c		\
 	gstatomicqueue.c	\
@@ -87,6 +86,7 @@ libgstreamer_@GST_MAJORMINOR@_la_SOURCES = \
 	gstquery.c		\
 	gstregistry.c		\
 	gstregistrychunks.c	\
+	gstsample.c		\
 	gstsegment.c		\
 	gststructure.c		\
 	gstsystemclock.c	\
@@ -149,6 +149,8 @@ gst_headers =			\
 	gstchildproxy.h		\
 	gstclock.h		\
 	gstcompat.h		\
+	gstcontrolbinding.h \
+	gstcontrolsource.h \
 	gstdatetime.h		\
 	gstdebugutils.h		\
 	gstelement.h		\
@@ -156,11 +158,8 @@ gst_headers =			\
 	gstelementfactory.h	\
 	gsterror.h		\
 	gstevent.h		\
-	gstfilter.h		\
 	gstformat.h		\
 	gstghostpad.h		\
-	gstindex.h		\
-	gstindexfactory.h	\
 	gstinfo.h		\
 	gstiterator.h		\
 	gstatomicqueue.h	\
@@ -178,6 +177,7 @@ gst_headers =			\
 	gstpoll.h		\
 	gstpreset.h             \
 	gstquery.h		\
+	gstsample.h		\
 	gstsegment.h		\
 	gststructure.h		\
 	gstsystemclock.h	\
@@ -185,7 +185,6 @@ gst_headers =			\
 	gsttagsetter.h		\
 	gsttask.h		\
 	gsttaskpool.h		\
-	gsttrace.h		\
 	gsttypefind.h		\
 	gsttypefindfactory.h	\
 	gsturi.h		\
@@ -209,6 +208,7 @@ noinst_HEADERS = 		\
 	gstquark.h		\
 	gstregistrybinary.h     \
 	gstregistrychunks.h     \
+	gsttrace.h		\
 	gst_private.h
 
 gstmarshal.h: gstmarshal.list
@@ -271,6 +271,7 @@ Gst-@GST_MAJORMINOR@.gir: $(INTROSPECTION_SCANNER) libgstreamer-@GST_MAJORMINOR@
 	$(AM_V_GEN)GST_PLUGIN_SYSTEM_PATH="" GST_PLUGIN_PATH="" GST_REGISTRY_UPDATE=no \
 		$(INTROSPECTION_SCANNER) -v --namespace Gst \
 		--nsversion=@GST_MAJORMINOR@ \
+		--warn-all \
 		-I$(top_srcdir) \
 		-I$(top_builddir) \
 		-DIN_GOBJECT_INTROSPECTION=1 \

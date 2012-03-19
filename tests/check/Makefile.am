@@ -27,6 +27,9 @@ SUPPRESSIONS = $(top_srcdir)/common/gst.supp
 
 clean-local: clean-local-check
 
+# These tests don't even build any longer:
+#   gst/gstindex.c
+
 if GST_DISABLE_PARSE
 PARSE_CHECKS = pipelines/parse-disabled
 else
@@ -62,11 +65,11 @@ REGISTRY_CHECKS =				\
 	gst/gst					\
 	gst/gstbin				\
 	gst/gstchildproxy			\
+	gst/gstcontroller				\
 	gst/gstelement				\
 	gst/gstelementfactory			\
 	gst/gstevent				\
 	gst/gstghostpad				\
-	gst/gstindex				\
 	gst/gstplugin				\
 	gst/gstpreset				\
 	gst/gstquery				\
@@ -98,9 +101,11 @@ endif
 
 check_PROGRAMS =				\
 	$(ABI_CHECKS)			     	\
+	gst/gstatomicqueue			\
 	gst/gstbuffer				\
 	gst/gstbufferlist			\
 	gst/gstmeta				\
+	gst/gstmemory				\
 	gst/gstbus				\
 	gst/gstcaps     			\
 	$(CXX_CHECKS)			     	\
@@ -125,7 +130,6 @@ check_PROGRAMS =				\
 	$(PARSE_CHECKS)				\
 	$(REGISTRY_CHECKS)			\
 	$(LIBSABI_CHECKS)		     	\
-	libs/gdp				\
 	libs/adapter				\
 	libs/bitreader				\
 	libs/bytereader				\
@@ -137,7 +141,7 @@ check_PROGRAMS =				\
 # failing tests
 noinst_PROGRAMS =				\
 	gst/gstpipeline				\
-	libs/collectpads
+	libs/collectpads2
 
 # elements to ignore for the state tests
 # STATE_IGNORE_ELEMENTS =
@@ -176,12 +180,6 @@ libs_gstlibscpp_SOURCES = libs/gstlibscpp.cc
 
 gst_gstutils_LDADD = $(LDADD) $(GSL_LIBS) $(GMP_LIBS)
 
-libs_gdp_SOURCES = \
-	libs/gdp.c
-libs_gdp_LDADD = \
-	$(top_builddir)/libs/gst/dataprotocol/libgstdataprotocol-@GST_MAJORMINOR@.la \
-	$(LDADD)
-
 elements_fdsrc_CFLAGS=$(GST_OBJ_CFLAGS) $(AM_CFLAGS) \
 	-DTESTFILE=\"$(top_srcdir)/configure.ac\"
 elements_filesrc_CFLAGS=$(GST_OBJ_CFLAGS) $(AM_CFLAGS) \
@@ -195,13 +193,12 @@ libs_gstnetclientclock_LDADD = \
 	$(LDADD)
 libs_gstnettimeprovider_LDADD = \
 	$(top_builddir)/libs/gst/net/libgstnet-@GST_MAJORMINOR@.la \
-	$(LDADD)
+	$(GIO_LIBS) $(LDADD)
 
 # valgrind testing
 # these just need valgrind fixing, period
 VALGRIND_TO_FIX = \
 	gst/gstinfo \
-	libs/collectpads \
 	pipelines/parse-launch
 
 VALGRIND_IGNORE = \
@@ -223,7 +220,6 @@ COVERAGE_DIRS = \
 	libs/gst/base \
 	libs/gst/controller \
 	libs/gst/check \
-	libs/gst/dataprotocol \
 	libs/gst/net \
 	plugins/elements
 COVERAGE_FILES = $(foreach dir,$(COVERAGE_DIRS),$(wildcard $(top_builddir)/$(dir)/*.gcov))
@@ -268,7 +264,7 @@ coverage-report:
 	      coverage/$$dir/index.xml > coverage/$$dir/index.html;	\
 	  fi; \
         done
-
+	
 	for file in $(COVERAGE_FILES_REL); do				\
 	  echo Generating coverage/$$file.html; 			\
 	  perl $(top_srcdir)/common/coverage/coverage-report-entry.pl   \

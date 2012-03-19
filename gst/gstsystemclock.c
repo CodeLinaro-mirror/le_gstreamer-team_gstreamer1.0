@@ -57,7 +57,7 @@
 
 #define GET_ENTRY_STATUS(e)          ((GstClockReturn) g_atomic_int_get(&GST_CLOCK_ENTRY_STATUS(e)))
 #define SET_ENTRY_STATUS(e,val)      (g_atomic_int_set(&GST_CLOCK_ENTRY_STATUS(e),(val)))
-#define CAS_ENTRY_STATUS(e,old,val)  (G_ATOMIC_INT_COMPARE_AND_EXCHANGE(\
+#define CAS_ENTRY_STATUS(e,old,val)  (g_atomic_int_compare_and_exchange(\
                                        (&GST_CLOCK_ENTRY_STATUS(e)), (old), (val)))
 
 /* Define this to get some extra debug about jitter from each clock_wait */
@@ -121,12 +121,11 @@ static void gst_system_clock_async_thread (GstClock * clock);
 static gboolean gst_system_clock_start_async (GstSystemClock * clock);
 static void gst_system_clock_add_wakeup (GstSystemClock * sysclock);
 
-static GStaticMutex _gst_sysclock_mutex = G_STATIC_MUTEX_INIT;
-
-static GstClockClass *parent_class = NULL;
+static GMutex _gst_sysclock_mutex;
 
 /* static guint gst_system_clock_signals[LAST_SIGNAL] = { 0 }; */
 
+#define gst_system_clock_parent_class parent_class
 G_DEFINE_TYPE (GstSystemClock, gst_system_clock, GST_TYPE_CLOCK);
 
 static void
@@ -137,8 +136,6 @@ gst_system_clock_class_init (GstSystemClockClass * klass)
 
   gobject_class = (GObjectClass *) klass;
   gstclock_class = (GstClockClass *) klass;
-
-  parent_class = g_type_class_peek_parent (klass);
 
   g_type_class_add_private (klass, sizeof (GstSystemClockPrivate));
 
@@ -279,7 +276,7 @@ gst_system_clock_obtain (void)
 {
   GstClock *clock;
 
-  g_static_mutex_lock (&_gst_sysclock_mutex);
+  g_mutex_lock (&_gst_sysclock_mutex);
   clock = _the_system_clock;
 
   if (clock == NULL) {
@@ -292,9 +289,9 @@ gst_system_clock_obtain (void)
     gst_object_ref_sink (clock);
 
     _the_system_clock = clock;
-    g_static_mutex_unlock (&_gst_sysclock_mutex);
+    g_mutex_unlock (&_gst_sysclock_mutex);
   } else {
-    g_static_mutex_unlock (&_gst_sysclock_mutex);
+    g_mutex_unlock (&_gst_sysclock_mutex);
     GST_CAT_DEBUG (GST_CAT_CLOCK, "returning static system clock");
   }
 
@@ -735,8 +732,9 @@ gst_system_clock_start_async (GstSystemClock * clock)
   if (G_LIKELY (clock->thread != NULL))
     return TRUE;                /* Thread already running. Nothing to do */
 
-  clock->thread = g_thread_create ((GThreadFunc) gst_system_clock_async_thread,
-      clock, TRUE, &error);
+  clock->thread = g_thread_try_new ("GstSystemClock",
+      (GThreadFunc) gst_system_clock_async_thread, clock, &error);
+
   if (G_UNLIKELY (error))
     goto no_thread;
 

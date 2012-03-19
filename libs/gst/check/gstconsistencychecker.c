@@ -42,12 +42,16 @@ struct _GstStreamConsistency
 };
 
 static gboolean
-source_pad_data_cb (GstPad * pad, GstProbeType type, GstMiniObject * data,
+source_pad_data_cb (GstPad * pad, GstPadProbeInfo * info,
     GstStreamConsistency * consist)
 {
+  GstMiniObject *data = GST_PAD_PROBE_INFO_DATA (info);
+
   if (GST_IS_BUFFER (data)) {
-    GST_DEBUG_OBJECT (pad, "Buffer %" GST_TIME_FORMAT,
-        GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (GST_BUFFER (data))));
+    GST_DEBUG_OBJECT (pad,
+        "Buffer pts %" GST_TIME_FORMAT ", dts %" GST_TIME_FORMAT,
+        GST_TIME_ARGS (GST_BUFFER_PTS (GST_BUFFER_CAST (data))),
+        GST_TIME_ARGS (GST_BUFFER_DTS (GST_BUFFER_CAST (data))));
     /* If an EOS went through, a buffer would be invalid */
     fail_if (consist->eos, "Buffer received after EOS");
     /* Buffers need to be preceded by a segment event */
@@ -118,7 +122,7 @@ gst_consistency_checker_new (GstPad * pad)
   consist = g_new0 (GstStreamConsistency, 1);
   consist->pad = g_object_ref (pad);
   consist->probeid =
-      gst_pad_add_probe (pad, GST_PROBE_TYPE_DATA,
+      gst_pad_add_probe (pad, GST_PAD_PROBE_TYPE_DATA_DOWNSTREAM,
       (GstPadProbeCallback) source_pad_data_cb, consist, NULL);
 
   return consist;

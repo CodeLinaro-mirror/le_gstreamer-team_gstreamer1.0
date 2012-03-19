@@ -7,7 +7,7 @@
 <link rel="home" href="index.html" title="GStreamer 0.11 Core Reference Manual">
 <link rel="up" href="gstreamer-support.html" title="GStreamer Core Support">
 <link rel="prev" href="gstreamer-support.html" title="GStreamer Core Support">
-<link rel="next" href="gstreamer-GstTrace.html" title="GstTrace">
+<link rel="next" href="gstreamer-hierarchy.html" title="Object Hierarchy">
 <meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
@@ -18,7 +18,7 @@
 <td><a accesskey="u" href="gstreamer-support.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">GStreamer 0.11 Core Reference Manual</th>
-<td><a accesskey="n" href="gstreamer-GstTrace.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="gstreamer-hierarchy.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gstreamer-GstInfo.synopsis" class="shortcut">Top</a>
@@ -50,52 +50,52 @@ enum                <a class="link" href="gstreamer-GstInfo.html#GstDebugGraphDe
 #define             <a class="link" href="gstreamer-GstInfo.html#GST-FUNCTION:CAPS" title="GST_FUNCTION">GST_FUNCTION</a>
 <span class="returnvalue">void</span>                (<a class="link" href="gstreamer-GstInfo.html#GstLogFunction" title="GstLogFunction ()">*GstLogFunction</a>)                   (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="type">GstDebugLevel</span></a> level</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *file</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *function</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> line</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *object</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *file</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *function</code></em>,
+                                                         <em class="parameter"><code><span class="type">gint</span> line</code></em>,
+                                                         <em class="parameter"><code><span class="type">GObject</span> *object</code></em>,
                                                          <em class="parameter"><code><span class="type">GstDebugMessage</span> *message</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);
+                                                         <em class="parameter"><code><span class="type">gpointer</span> data</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstInfo.html#gst-debug-log" title="gst_debug_log ()">gst_debug_log</a>                       (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="type">GstDebugLevel</span></a> level</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *file</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *function</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> line</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *object</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *file</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *function</code></em>,
+                                                         <em class="parameter"><code><span class="type">gint</span> line</code></em>,
+                                                         <em class="parameter"><code><span class="type">GObject</span> *object</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *format</code></em>,
                                                          <em class="parameter"><code>...</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstInfo.html#gst-debug-log-valist" title="gst_debug_log_valist ()">gst_debug_log_valist</a>                (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="type">GstDebugLevel</span></a> level</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *file</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *function</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> line</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *object</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *file</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *function</code></em>,
+                                                         <em class="parameter"><code><span class="type">gint</span> line</code></em>,
+                                                         <em class="parameter"><code><span class="type">GObject</span> *object</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *format</code></em>,
                                                          <em class="parameter"><code><span class="type">va_list</span> args</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="gstreamer-GstInfo.html#gst-debug-message-get" title="gst_debug_message_get ()">gst_debug_message_get</a>               (<em class="parameter"><code><span class="type">GstDebugMessage</span> *message</code></em>);
+const <span class="returnvalue">gchar</span> *       <a class="link" href="gstreamer-GstInfo.html#gst-debug-message-get" title="gst_debug_message_get ()">gst_debug_message_get</a>               (<em class="parameter"><code><span class="type">GstDebugMessage</span> *message</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstInfo.html#gst-debug-log-default" title="gst_debug_log_default ()">gst_debug_log_default</a>               (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="type">GstDebugLevel</span></a> level</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *file</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *function</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> line</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *object</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *file</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *function</code></em>,
+                                                         <em class="parameter"><code><span class="type">gint</span> line</code></em>,
+                                                         <em class="parameter"><code><span class="type">GObject</span> *object</code></em>,
                                                          <em class="parameter"><code><span class="type">GstDebugMessage</span> *message</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> unused</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="gstreamer-GstInfo.html#gst-debug-level-get-name" title="gst_debug_level_get_name ()">gst_debug_level_get_name</a>            (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="type">GstDebugLevel</span></a> level</code></em>);
+                                                         <em class="parameter"><code><span class="type">gpointer</span> unused</code></em>);
+const <span class="returnvalue">gchar</span> *       <a class="link" href="gstreamer-GstInfo.html#gst-debug-level-get-name" title="gst_debug_level_get_name ()">gst_debug_level_get_name</a>            (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="type">GstDebugLevel</span></a> level</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstInfo.html#gst-debug-add-log-function" title="gst_debug_add_log_function ()">gst_debug_add_log_function</a>          (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstLogFunction" title="GstLogFunction ()"><span class="type">GstLogFunction</span></a> func</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               <a class="link" href="gstreamer-GstInfo.html#gst-debug-remove-log-function" title="gst_debug_remove_log_function ()">gst_debug_remove_log_function</a>       (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstLogFunction" title="GstLogFunction ()"><span class="type">GstLogFunction</span></a> func</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               <a class="link" href="gstreamer-GstInfo.html#gst-debug-remove-log-function-by-data" title="gst_debug_remove_log_function_by_data ()">gst_debug_remove_log_function_by_data</a>
-                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstInfo.html#gst-debug-set-active" title="gst_debug_set_active ()">gst_debug_set_active</a>                (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> active</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gstreamer-GstInfo.html#gst-debug-is-active" title="gst_debug_is_active ()">gst_debug_is_active</a>                 (<em class="parameter"><code><span class="type">void</span></code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstInfo.html#gst-debug-set-colored" title="gst_debug_set_colored ()">gst_debug_set_colored</a>               (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> colored</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gstreamer-GstInfo.html#gst-debug-is-colored" title="gst_debug_is_colored ()">gst_debug_is_colored</a>                (<em class="parameter"><code><span class="type">void</span></code></em>);
+                                                         <em class="parameter"><code><span class="type">gpointer</span> data</code></em>);
+<span class="returnvalue">guint</span>               <a class="link" href="gstreamer-GstInfo.html#gst-debug-remove-log-function" title="gst_debug_remove_log_function ()">gst_debug_remove_log_function</a>       (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstLogFunction" title="GstLogFunction ()"><span class="type">GstLogFunction</span></a> func</code></em>);
+<span class="returnvalue">guint</span>               <a class="link" href="gstreamer-GstInfo.html#gst-debug-remove-log-function-by-data" title="gst_debug_remove_log_function_by_data ()">gst_debug_remove_log_function_by_data</a>
+                                                        (<em class="parameter"><code><span class="type">gpointer</span> data</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstInfo.html#gst-debug-set-active" title="gst_debug_set_active ()">gst_debug_set_active</a>                (<em class="parameter"><code><span class="type">gboolean</span> active</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="gstreamer-GstInfo.html#gst-debug-is-active" title="gst_debug_is_active ()">gst_debug_is_active</a>                 (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstInfo.html#gst-debug-set-colored" title="gst_debug_set_colored ()">gst_debug_set_colored</a>               (<em class="parameter"><code><span class="type">gboolean</span> colored</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="gstreamer-GstInfo.html#gst-debug-is-colored" title="gst_debug_is_colored ()">gst_debug_is_colored</a>                (<em class="parameter"><code><span class="type">void</span></code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstInfo.html#gst-debug-set-default-threshold" title="gst_debug_set_default_threshold ()">gst_debug_set_default_threshold</a>     (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="type">GstDebugLevel</span></a> level</code></em>);
 <a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="returnvalue">GstDebugLevel</span></a>       <a class="link" href="gstreamer-GstInfo.html#gst-debug-get-default-threshold" title="gst_debug_get_default_threshold ()">gst_debug_get_default_threshold</a>     (<em class="parameter"><code><span class="type">void</span></code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstInfo.html#gst-debug-set-threshold-for-name" title="gst_debug_set_threshold_for_name ()">gst_debug_set_threshold_for_name</a>    (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+<span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstInfo.html#gst-debug-set-threshold-for-name" title="gst_debug_set_threshold_for_name ()">gst_debug_set_threshold_for_name</a>    (<em class="parameter"><code>const <span class="type">gchar</span> *name</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="type">GstDebugLevel</span></a> level</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstInfo.html#gst-debug-unset-threshold-for-name" title="gst_debug_unset_threshold_for_name ()">gst_debug_unset_threshold_for_name</a>  (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstInfo.html#gst-debug-unset-threshold-for-name" title="gst_debug_unset_threshold_for_name ()">gst_debug_unset_threshold_for_name</a>  (<em class="parameter"><code>const <span class="type">gchar</span> *name</code></em>);
 #define             <a class="link" href="gstreamer-GstInfo.html#GST-DEBUG-CATEGORY:CAPS" title="GST_DEBUG_CATEGORY()">GST_DEBUG_CATEGORY</a>                  (cat)
 #define             <a class="link" href="gstreamer-GstInfo.html#GST-DEBUG-CATEGORY-EXTERN:CAPS" title="GST_DEBUG_CATEGORY_EXTERN()">GST_DEBUG_CATEGORY_EXTERN</a>           (cat)
 #define             <a class="link" href="gstreamer-GstInfo.html#GST-DEBUG-CATEGORY-STATIC:CAPS" title="GST_DEBUG_CATEGORY_STATIC()">GST_DEBUG_CATEGORY_STATIC</a>           (cat)
@@ -110,12 +110,12 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="type">GstDebugLevel</span></a> level</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstInfo.html#gst-debug-category-reset-threshold" title="gst_debug_category_reset_threshold ()">gst_debug_category_reset_threshold</a>  (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>);
 <a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="returnvalue">GstDebugLevel</span></a>       <a class="link" href="gstreamer-GstInfo.html#gst-debug-category-get-threshold" title="gst_debug_category_get_threshold ()">gst_debug_category_get_threshold</a>    (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="gstreamer-GstInfo.html#gst-debug-category-get-name" title="gst_debug_category_get_name ()">gst_debug_category_get_name</a>         (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               <a class="link" href="gstreamer-GstInfo.html#gst-debug-category-get-color" title="gst_debug_category_get_color ()">gst_debug_category_get_color</a>        (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="gstreamer-GstInfo.html#gst-debug-category-get-description" title="gst_debug_category_get_description ()">gst_debug_category_get_description</a>  (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *            <a class="link" href="gstreamer-GstInfo.html#gst-debug-get-all-categories" title="gst_debug_get_all_categories ()">gst_debug_get_all_categories</a>        (<em class="parameter"><code><span class="type">void</span></code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="gstreamer-GstInfo.html#gst-debug-construct-term-color" title="gst_debug_construct_term_color ()">gst_debug_construct_term_color</a>      (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> colorinfo</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="gstreamer-GstInfo.html#gst-debug-construct-win-color" title="gst_debug_construct_win_color ()">gst_debug_construct_win_color</a>       (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> colorinfo</code></em>);
+const <span class="returnvalue">gchar</span> *       <a class="link" href="gstreamer-GstInfo.html#gst-debug-category-get-name" title="gst_debug_category_get_name ()">gst_debug_category_get_name</a>         (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>);
+<span class="returnvalue">guint</span>               <a class="link" href="gstreamer-GstInfo.html#gst-debug-category-get-color" title="gst_debug_category_get_color ()">gst_debug_category_get_color</a>        (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>);
+const <span class="returnvalue">gchar</span> *       <a class="link" href="gstreamer-GstInfo.html#gst-debug-category-get-description" title="gst_debug_category_get_description ()">gst_debug_category_get_description</a>  (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>);
+<span class="returnvalue">GSList</span> *            <a class="link" href="gstreamer-GstInfo.html#gst-debug-get-all-categories" title="gst_debug_get_all_categories ()">gst_debug_get_all_categories</a>        (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">gchar</span> *             <a class="link" href="gstreamer-GstInfo.html#gst-debug-construct-term-color" title="gst_debug_construct_term_color ()">gst_debug_construct_term_color</a>      (<em class="parameter"><code><span class="type">guint</span> colorinfo</code></em>);
+<span class="returnvalue">gint</span>                <a class="link" href="gstreamer-GstInfo.html#gst-debug-construct-win-color" title="gst_debug_construct_win_color ()">gst_debug_construct_win_color</a>       (<em class="parameter"><code><span class="type">guint</span> colorinfo</code></em>);
 #define             <a class="link" href="gstreamer-GstInfo.html#GST-CAT-LEVEL-LOG:CAPS" title="GST_CAT_LEVEL_LOG()">GST_CAT_LEVEL_LOG</a>                   (cat,
                                                          level,
                                                          object,
@@ -223,7 +223,7 @@ The debugging subsystem works only after GStreamer has been initialized
 The debugging subsystem is used to log informational messages while the
 application runs.  Each messages has some properties attached to it. Among
 these properties are the debugging category, the severity (called "level"
-here) and an optional <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> it belongs to. Each of these messages is sent
+here) and an optional <span class="type">GObject</span> it belongs to. Each of these messages is sent
 to all registered debugging handlers, which then handle the messages.
 GStreamer attaches a default handler on startup, which outputs requested
 messages to stderr.
@@ -280,12 +280,12 @@ categories. These are explained at <a class="link" href="gstreamer-GstInfo.html#
 <a name="GstDebugLevel"></a><h3>enum GstDebugLevel</h3>
 <pre class="programlisting">typedef enum {
   GST_LEVEL_NONE = 0,
-  GST_LEVEL_ERROR,
-  GST_LEVEL_WARNING,
-  GST_LEVEL_INFO,
-  GST_LEVEL_DEBUG,
-  GST_LEVEL_LOG,
-  GST_LEVEL_FIXME = 6,
+  GST_LEVEL_ERROR = 1,
+  GST_LEVEL_WARNING = 2,
+  GST_LEVEL_FIXME = 3,
+  GST_LEVEL_INFO = 4,
+  GST_LEVEL_DEBUG = 5,
+  GST_LEVEL_LOG = 6,
   GST_LEVEL_TRACE = 7,
   /* add more */
   GST_LEVEL_MEMDUMP = 9,
@@ -323,6 +323,15 @@ message is, the greater the probability that the debugging system outputs it.
 </td>
 </tr>
 <tr>
+<td><p><a name="GST-LEVEL-FIXME:CAPS"></a><span class="term"><code class="literal">GST_LEVEL_FIXME</code></span></p></td>
+<td>Fixme messages are messages that indicate that something
+ in the executed code path is not fully implemented or handled yet. Note
+ that this does not replace proper error handling in any way, the purpose
+ of this message is to make it easier to spot incomplete/unfinished pieces
+ of code when reading the debug log. (Since: 0.10.23)
+</td>
+</tr>
+<tr>
 <td><p><a name="GST-LEVEL-INFO:CAPS"></a><span class="term"><code class="literal">GST_LEVEL_INFO</code></span></p></td>
 <td>Informational messages should be used to keep the developer
  updated about what is happening.
@@ -348,15 +357,6 @@ message is, the greater the probability that the debugging system outputs it.
  should never output anything else but LOG messages. Use this log level to
  log recurring information in chain functions and loop functions, for
  example.
-</td>
-</tr>
-<tr>
-<td><p><a name="GST-LEVEL-FIXME:CAPS"></a><span class="term"><code class="literal">GST_LEVEL_FIXME</code></span></p></td>
-<td>Fixme messages are messages that indicate that something
- in the executed code path is not fully implemented or handled yet. Note
- that this does not replace proper error handling in any way, the purpose
- of this message is to make it easier to spot incomplete/unfinished pieces
- of code when reading the debug log. (Since: 0.10.23)
 </td>
 </tr>
 <tr>
@@ -636,12 +636,12 @@ function signature in C++ code.
 <a name="GstLogFunction"></a><h3>GstLogFunction ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                (*GstLogFunction)                   (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="type">GstDebugLevel</span></a> level</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *file</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *function</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> line</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *object</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *file</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *function</code></em>,
+                                                         <em class="parameter"><code><span class="type">gint</span> line</code></em>,
+                                                         <em class="parameter"><code><span class="type">GObject</span> *object</code></em>,
                                                          <em class="parameter"><code><span class="type">GstDebugMessage</span> *message</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">gpointer</span> data</code></em>);</pre>
 <p>
 Function prototype for a logging function that can be registered with
 <a class="link" href="gstreamer-GstInfo.html#gst-debug-add-log-function" title="gst_debug_add_log_function ()"><code class="function">gst_debug_add_log_function()</code></a>.
@@ -674,7 +674,7 @@ Use G_GNUC_NO_INSTRUMENT on that function.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>object</code></em> :</span></p></td>
-<td>a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a>
+<td>a <span class="type">GObject</span>
 </td>
 </tr>
 <tr>
@@ -693,11 +693,11 @@ Use G_GNUC_NO_INSTRUMENT on that function.
 <a name="gst-debug-log"></a><h3>gst_debug_log ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                gst_debug_log                       (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="type">GstDebugLevel</span></a> level</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *file</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *function</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> line</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *object</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *file</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *function</code></em>,
+                                                         <em class="parameter"><code><span class="type">gint</span> line</code></em>,
+                                                         <em class="parameter"><code><span class="type">GObject</span> *object</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *format</code></em>,
                                                          <em class="parameter"><code>...</code></em>);</pre>
 <p>
 Logs the given message using the currently registered debugging handlers.
@@ -747,11 +747,11 @@ or NULL if none. <span class="annotation">[<acronym title="Don't free data after
 <a name="gst-debug-log-valist"></a><h3>gst_debug_log_valist ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                gst_debug_log_valist                (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="type">GstDebugLevel</span></a> level</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *file</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *function</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> line</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *object</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *file</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *function</code></em>,
+                                                         <em class="parameter"><code><span class="type">gint</span> line</code></em>,
+                                                         <em class="parameter"><code><span class="type">GObject</span> *object</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *format</code></em>,
                                                          <em class="parameter"><code><span class="type">va_list</span> args</code></em>);</pre>
 <p>
 Logs the given message using the currently registered debugging handlers.
@@ -799,7 +799,7 @@ or NULL if none. <span class="annotation">[<acronym title="Don't free data after
 <hr>
 <div class="refsect2">
 <a name="gst-debug-message-get"></a><h3>gst_debug_message_get ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       gst_debug_message_get               (<em class="parameter"><code><span class="type">GstDebugMessage</span> *message</code></em>);</pre>
+<pre class="programlisting">const <span class="returnvalue">gchar</span> *       gst_debug_message_get               (<em class="parameter"><code><span class="type">GstDebugMessage</span> *message</code></em>);</pre>
 <p>
 Gets the string representation of a <span class="type">GstDebugMessage</span>. This function is used
 in debug handlers to extract the message.
@@ -823,12 +823,12 @@ in debug handlers to extract the message.
 <a name="gst-debug-log-default"></a><h3>gst_debug_log_default ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                gst_debug_log_default               (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="type">GstDebugLevel</span></a> level</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *file</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *function</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> line</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *object</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *file</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *function</code></em>,
+                                                         <em class="parameter"><code><span class="type">gint</span> line</code></em>,
+                                                         <em class="parameter"><code><span class="type">GObject</span> *object</code></em>,
                                                          <em class="parameter"><code><span class="type">GstDebugMessage</span> *message</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> unused</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">gpointer</span> unused</code></em>);</pre>
 <p>
 The default logging handler used by GStreamer. Logging functions get called
 whenever a macro like GST_DEBUG or similar is used. This function outputs the
@@ -883,7 +883,7 @@ or NULL if none. <span class="annotation">[<acronym title="Don't free data after
 <hr>
 <div class="refsect2">
 <a name="gst-debug-level-get-name"></a><h3>gst_debug_level_get_name ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       gst_debug_level_get_name            (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="type">GstDebugLevel</span></a> level</code></em>);</pre>
+<pre class="programlisting">const <span class="returnvalue">gchar</span> *       gst_debug_level_get_name            (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="type">GstDebugLevel</span></a> level</code></em>);</pre>
 <p>
 Get the string representation of a debugging level
 </p>
@@ -905,10 +905,10 @@ Get the string representation of a debugging level
 <div class="refsect2">
 <a name="gst-debug-add-log-function"></a><h3>gst_debug_add_log_function ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                gst_debug_add_log_function          (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstLogFunction" title="GstLogFunction ()"><span class="type">GstLogFunction</span></a> func</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">gpointer</span> data</code></em>);</pre>
 <p>
 Adds the logging function to the list of logging functions.
-Be sure to use <a href="http://library.gnome.org/devel/glib/unstable/glib-Miscellaneous-Macros.html#G-GNUC-NO-INSTRUMENT:CAPS"><span class="type">G_GNUC_NO_INSTRUMENT</span></a> on that function, it is needed.
+Be sure to use <span class="type">G_GNUC_NO_INSTRUMENT</span> on that function, it is needed.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -928,7 +928,7 @@ Be sure to use <a href="http://library.gnome.org/devel/glib/unstable/glib-Miscel
 <hr>
 <div class="refsect2">
 <a name="gst-debug-remove-log-function"></a><h3>gst_debug_remove_log_function ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               gst_debug_remove_log_function       (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstLogFunction" title="GstLogFunction ()"><span class="type">GstLogFunction</span></a> func</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">guint</span>               gst_debug_remove_log_function       (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstLogFunction" title="GstLogFunction ()"><span class="type">GstLogFunction</span></a> func</code></em>);</pre>
 <p>
 Removes all registered instances of the given logging functions.
 </p>
@@ -949,8 +949,8 @@ Removes all registered instances of the given logging functions.
 <hr>
 <div class="refsect2">
 <a name="gst-debug-remove-log-function-by-data"></a><h3>gst_debug_remove_log_function_by_data ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               gst_debug_remove_log_function_by_data
-                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">guint</span>               gst_debug_remove_log_function_by_data
+                                                        (<em class="parameter"><code><span class="type">gpointer</span> data</code></em>);</pre>
 <p>
 Removes all registered instances of log functions with the given user data.
 </p>
@@ -971,7 +971,7 @@ Removes all registered instances of log functions with the given user data.
 <hr>
 <div class="refsect2">
 <a name="gst-debug-set-active"></a><h3>gst_debug_set_active ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_debug_set_active                (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> active</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_debug_set_active                (<em class="parameter"><code><span class="type">gboolean</span> active</code></em>);</pre>
 <p>
 If activated, debugging messages are sent to the debugging
 handlers.
@@ -995,7 +995,7 @@ during initialization.</p>
 <hr>
 <div class="refsect2">
 <a name="gst-debug-is-active"></a><h3>gst_debug_is_active ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_debug_is_active                 (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            gst_debug_is_active                 (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 Checks if debugging output is activated.
 </p>
@@ -1010,7 +1010,7 @@ Checks if debugging output is activated.
 <hr>
 <div class="refsect2">
 <a name="gst-debug-set-colored"></a><h3>gst_debug_set_colored ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_debug_set_colored               (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> colored</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_debug_set_colored               (<em class="parameter"><code><span class="type">gboolean</span> colored</code></em>);</pre>
 <p>
 Sets or unsets the use of coloured debugging output.
 </p>
@@ -1028,7 +1028,7 @@ This function may be called before <a class="link" href="gstreamer-Gst.html#gst-
 <hr>
 <div class="refsect2">
 <a name="gst-debug-is-colored"></a><h3>gst_debug_is_colored ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_debug_is_colored                (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            gst_debug_is_colored                (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 Checks if the debugging output should be colored.
 </p>
@@ -1077,7 +1077,7 @@ Returns the default threshold that is used for new categories.
 <hr>
 <div class="refsect2">
 <a name="gst-debug-set-threshold-for-name"></a><h3>gst_debug_set_threshold_for_name ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_debug_set_threshold_for_name    (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_debug_set_threshold_for_name    (<em class="parameter"><code>const <span class="type">gchar</span> *name</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugLevel" title="enum GstDebugLevel"><span class="type">GstDebugLevel</span></a> level</code></em>);</pre>
 <p>
 Sets all categories which match the given glob style pattern to the given
@@ -1100,7 +1100,7 @@ level.
 <hr>
 <div class="refsect2">
 <a name="gst-debug-unset-threshold-for-name"></a><h3>gst_debug_unset_threshold_for_name ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_debug_unset_threshold_for_name  (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_debug_unset_threshold_for_name  (<em class="parameter"><code>const <span class="type">gchar</span> *name</code></em>);</pre>
 <p>
 Resets all categories with the given name back to the default level.
 </p>
@@ -1351,7 +1351,7 @@ Returns the threshold of a <a class="link" href="gstreamer-GstInfo.html#GstDebug
 <hr>
 <div class="refsect2">
 <a name="gst-debug-category-get-name"></a><h3>gst_debug_category_get_name ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       gst_debug_category_get_name         (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>);</pre>
+<pre class="programlisting">const <span class="returnvalue">gchar</span> *       gst_debug_category_get_name         (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>);</pre>
 <p>
 Returns the name of a debug category.
 </p>
@@ -1372,7 +1372,7 @@ Returns the name of a debug category.
 <hr>
 <div class="refsect2">
 <a name="gst-debug-category-get-color"></a><h3>gst_debug_category_get_color ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               gst_debug_category_get_color        (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">guint</span>               gst_debug_category_get_color        (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>);</pre>
 <p>
 Returns the color of a debug category used when printing output in this
 category.
@@ -1394,7 +1394,7 @@ category.
 <hr>
 <div class="refsect2">
 <a name="gst-debug-category-get-description"></a><h3>gst_debug_category_get_description ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       gst_debug_category_get_description  (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>);</pre>
+<pre class="programlisting">const <span class="returnvalue">gchar</span> *       gst_debug_category_get_description  (<em class="parameter"><code><a class="link" href="gstreamer-GstInfo.html#GstDebugCategory" title="struct GstDebugCategory"><span class="type">GstDebugCategory</span></a> *category</code></em>);</pre>
 <p>
 Returns the description of a debug category.
 </p>
@@ -1415,7 +1415,7 @@ Returns the description of a debug category.
 <hr>
 <div class="refsect2">
 <a name="gst-debug-get-all-categories"></a><h3>gst_debug_get_all_categories ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *            gst_debug_get_all_categories        (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">GSList</span> *            gst_debug_get_all_categories        (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 Returns a snapshot of a all categories that are currently in use . This list
 may change anytime.
@@ -1434,7 +1434,7 @@ debug categories. <span class="annotation">[<acronym title="Free data container 
 <hr>
 <div class="refsect2">
 <a name="gst-debug-construct-term-color"></a><h3>gst_debug_construct_term_color ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             gst_debug_construct_term_color      (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> colorinfo</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gchar</span> *             gst_debug_construct_term_color      (<em class="parameter"><code><span class="type">guint</span> colorinfo</code></em>);</pre>
 <p>
 Constructs a string that can be used for getting the desired color in color
 terminals.
@@ -1459,7 +1459,7 @@ definition. <span class="annotation">[<acronym title="Free data after the code i
 <hr>
 <div class="refsect2">
 <a name="gst-debug-construct-win-color"></a><h3>gst_debug_construct_win_color ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                gst_debug_construct_win_color       (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> colorinfo</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gint</span>                gst_debug_construct_win_color       (<em class="parameter"><code><span class="type">guint</span> colorinfo</code></em>);</pre>
 <p>
 Constructs an integer that can be used for getting the desired color in
 windows' terminals (cmd.exe). As there is no mean to underline, we simply
@@ -1505,7 +1505,7 @@ below.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>object</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to or NULL if none</td>
+<td>the <span class="type">GObject</span> the message belongs to or NULL if none</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
@@ -1531,7 +1531,7 @@ Output an error message belonging to the given object in the given category.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to</td>
+<td>the <span class="type">GObject</span> the message belongs to</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
@@ -1557,7 +1557,7 @@ Output a warning message belonging to the given object in the given category.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to</td>
+<td>the <span class="type">GObject</span> the message belongs to</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
@@ -1584,7 +1584,7 @@ category.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to</td>
+<td>the <span class="type">GObject</span> the message belongs to</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
@@ -1610,7 +1610,7 @@ Output an debugging message belonging to the given object in the given category.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to</td>
+<td>the <span class="type">GObject</span> the message belongs to</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
@@ -1636,7 +1636,7 @@ Output an logging message belonging to the given object in the given category.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to</td>
+<td>the <span class="type">GObject</span> the message belongs to</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
@@ -1662,7 +1662,7 @@ Output a fixme message belonging to the given object in the given category.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to</td>
+<td>the <span class="type">GObject</span> the message belongs to</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
@@ -1690,7 +1690,7 @@ category.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to</td>
+<td>the <span class="type">GObject</span> the message belongs to</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
@@ -1717,7 +1717,7 @@ category.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to</td>
+<td>the <span class="type">GObject</span> the message belongs to</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
@@ -1934,7 +1934,7 @@ Output an error message belonging to the given object in the default category.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to</td>
+<td>the <span class="type">GObject</span> the message belongs to</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
@@ -1956,7 +1956,7 @@ Output a warning message belonging to the given object in the default category.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to</td>
+<td>the <span class="type">GObject</span> the message belongs to</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
@@ -1979,7 +1979,7 @@ category.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to</td>
+<td>the <span class="type">GObject</span> the message belongs to</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
@@ -2002,7 +2002,7 @@ category.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to</td>
+<td>the <span class="type">GObject</span> the message belongs to</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
@@ -2024,7 +2024,7 @@ Output a logging message belonging to the given object in the default category.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to</td>
+<td>the <span class="type">GObject</span> the message belongs to</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
@@ -2046,7 +2046,7 @@ Output a fixme message belonging to the given object in the default category.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to</td>
+<td>the <span class="type">GObject</span> the message belongs to</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
@@ -2069,7 +2069,7 @@ Output a tracing message belonging to the given object in the default category.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to</td>
+<td>the <span class="type">GObject</span> the message belongs to</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>...</code></em> :</span></p></td>
@@ -2091,7 +2091,7 @@ Output a logging message belonging to the given object in the default category.
 <tbody>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> the message belongs to</td>
+<td>the <span class="type">GObject</span> the message belongs to</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
@@ -2314,7 +2314,7 @@ freed by the caller.
 <hr>
 <div class="refsect2">
 <a name="GST-DEBUG-BIN-TO-DOT-FILE:CAPS"></a><h3>GST_DEBUG_BIN_TO_DOT_FILE()</h3>
-<pre class="programlisting">#define GST_DEBUG_BIN_TO_DOT_FILE(bin, details, file_name) _gst_debug_bin_to_dot_file (bin, details, file_name)
+<pre class="programlisting">#define GST_DEBUG_BIN_TO_DOT_FILE(bin, details, file_name) gst_debug_bin_to_dot_file (bin, details, file_name)
 </pre>
 <p>
 To aid debugging applications one can use this method to write out the whole
@@ -2354,7 +2354,7 @@ one or more other <a class="link" href="gstreamer-GstInfo.html#GstDebugGraphDeta
 <hr>
 <div class="refsect2">
 <a name="GST-DEBUG-BIN-TO-DOT-FILE-WITH-TS:CAPS"></a><h3>GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS()</h3>
-<pre class="programlisting">#define GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(bin, details, file_name) _gst_debug_bin_to_dot_file_with_ts (bin, details, file_name)
+<pre class="programlisting">#define GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(bin, details, file_name) gst_debug_bin_to_dot_file_with_ts (bin, details, file_name)
 </pre>
 <p>
 This works like <a class="link" href="gstreamer-GstInfo.html#GST-DEBUG-BIN-TO-DOT-FILE:CAPS" title="GST_DEBUG_BIN_TO_DOT_FILE()"><code class="function">GST_DEBUG_BIN_TO_DOT_FILE()</code></a>, but adds the current timestamp

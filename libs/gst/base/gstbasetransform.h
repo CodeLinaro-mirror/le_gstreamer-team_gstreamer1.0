@@ -85,7 +85,7 @@ G_BEGIN_DECLS
  *
  * Since: 0.10.13
  */
-#define GST_BASE_TRANSFORM_LOCK(obj)   g_mutex_lock (GST_BASE_TRANSFORM_CAST (obj)->transform_lock)
+#define GST_BASE_TRANSFORM_LOCK(obj)   g_mutex_lock (&GST_BASE_TRANSFORM_CAST (obj)->transform_lock)
 
 /**
  * GST_BASE_TRANSFORM_UNLOCK:
@@ -95,7 +95,7 @@ G_BEGIN_DECLS
  *
  * Since: 0.10.13
  */
-#define GST_BASE_TRANSFORM_UNLOCK(obj) g_mutex_unlock (GST_BASE_TRANSFORM_CAST (obj)->transform_lock)
+#define GST_BASE_TRANSFORM_UNLOCK(obj) g_mutex_unlock (&GST_BASE_TRANSFORM_CAST (obj)->transform_lock)
 
 typedef struct _GstBaseTransform GstBaseTransform;
 typedef struct _GstBaseTransformClass GstBaseTransformClass;
@@ -131,7 +131,7 @@ struct _GstBaseTransform {
   /* MT-protected (with STREAM_LOCK) */
   GstSegment     segment;
 
-  GMutex	*transform_lock;
+  GMutex	 transform_lock;
 
   /*< private >*/
   GstBaseTransformPrivate *priv;
@@ -159,8 +159,8 @@ struct _GstBaseTransform {
  *                  should must chain up to the parent if they didn't handle the
  *                  query
  * @propose_allocation: Propose buffer allocation parameters for upstream elements.
- *                      This function is only called when not operating in
- *                      passthrough mode. The default implementation is NULL.
+ *                      This function must be implemented if the element reads or
+ *                      writes the buffer content. The default implementation is NULL.
  * @decide_allocation: Setup the allocation parameters for allocating output
  *                    buffers. The passed in query contains the result of the
  *                    downstream allocation query. This function is only called

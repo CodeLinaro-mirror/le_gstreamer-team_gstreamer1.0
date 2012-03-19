@@ -64,19 +64,19 @@ Windows.  It is released under the GNU Library General Public License
     <xi:include href="xml/gstbufferpool.xml" />
     <xi:include href="xml/gstbus.xml" />
     <xi:include href="xml/gstcaps.xml" />
+    <xi:include href="xml/gstsample.xml" />
     <xi:include href="xml/gstchildproxy.xml" />
     <xi:include href="xml/gstclock.xml" />
     <xi:include href="xml/gstconfig.xml" />
+    <xi:include href="xml/gstcontrolbinding.xml" />
+    <xi:include href="xml/gstcontrolsource.xml" />
     <xi:include href="xml/gstdatetime.xml" />
     <xi:include href="xml/gstelement.xml" />
     <xi:include href="xml/gstelementfactory.xml" />
     <xi:include href="xml/gsterror.xml" />
     <xi:include href="xml/gstevent.xml" />
-    <xi:include href="xml/gstfilter.xml" />
     <xi:include href="xml/gstformat.xml" />
     <xi:include href="xml/gstghostpad.xml" />
-    <xi:include href="xml/gstindex.xml" />
-    <xi:include href="xml/gstindexfactory.xml" />
     <xi:include href="xml/gstiterator.xml" />
     <xi:include href="xml/gstmemory.xml" />
     <xi:include href="xml/gstmessage.xml" />
@@ -118,7 +118,6 @@ Windows.  It is released under the GNU Library General Public License
     </para>
 
     <xi:include href="xml/gstinfo.xml" />
-    <xi:include href="xml/gsttrace.xml" />
 
   </chapter>
 

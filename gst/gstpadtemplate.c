@@ -123,7 +123,6 @@ enum
   LAST_SIGNAL
 };
 
-static GstObject *parent_class = NULL;
 static guint gst_pad_template_signals[LAST_SIGNAL] = { 0 };
 
 static void gst_pad_template_dispose (GObject * object);
@@ -132,6 +131,7 @@ static void gst_pad_template_set_property (GObject * object, guint prop_id,
 static void gst_pad_template_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
 
+#define gst_pad_template_parent_class parent_class
 G_DEFINE_TYPE (GstPadTemplate, gst_pad_template, GST_TYPE_OBJECT);
 
 static void
@@ -142,8 +142,6 @@ gst_pad_template_class_init (GstPadTemplateClass * klass)
 
   gobject_class = (GObjectClass *) klass;
   gstobject_class = (GstObjectClass *) klass;
-
-  parent_class = g_type_class_peek_parent (klass);
 
   /**
    * GstPadTemplate::pad-created:
@@ -274,17 +272,7 @@ name_is_valid (const gchar * name, GstPadPresence presence)
   return TRUE;
 }
 
-GType
-gst_static_pad_template_get_type (void)
-{
-  static GType staticpadtemplate_type = 0;
-
-  if (G_UNLIKELY (staticpadtemplate_type == 0)) {
-    staticpadtemplate_type =
-        g_pointer_type_register_static ("GstStaticPadTemplate");
-  }
-  return staticpadtemplate_type;
-}
+G_DEFINE_POINTER_TYPE (GstStaticPadTemplate, gst_static_pad_template);
 
 /**
  * gst_static_pad_template_get:
@@ -322,12 +310,12 @@ gst_static_pad_template_get (GstStaticPadTemplate * pad_template)
  * @name_template: the name template.
  * @direction: the #GstPadDirection of the template.
  * @presence: the #GstPadPresence of the pad.
- * @caps: a #GstCaps set for the template.
+ * @caps: (transfer none): a #GstCaps set for the template.
  *
  * Creates a new pad template with a name according to the given template
  * and with the given arguments.
  *
- * Returns: (transfer full): a new #GstPadTemplate.
+ * Returns: (transfer floating): a new #GstPadTemplate.
  */
 GstPadTemplate *
 gst_pad_template_new (const gchar * name_template,

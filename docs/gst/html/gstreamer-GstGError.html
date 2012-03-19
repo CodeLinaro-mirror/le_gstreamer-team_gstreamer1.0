@@ -49,8 +49,8 @@ enum                <a class="link" href="gstreamer-GstGError.html#GstStreamErro
 #define             <a class="link" href="gstreamer-GstGError.html#GST-RESOURCE-ERROR:CAPS" title="GST_RESOURCE_ERROR">GST_RESOURCE_ERROR</a>
 #define             <a class="link" href="gstreamer-GstGError.html#GST-STREAM-ERROR:CAPS" title="GST_STREAM_ERROR">GST_STREAM_ERROR</a>
 #define             <a class="link" href="gstreamer-GstGError.html#GST-ERROR-SYSTEM:CAPS" title="GST_ERROR_SYSTEM">GST_ERROR_SYSTEM</a>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="gstreamer-GstGError.html#gst-error-get-message" title="gst_error_get_message ()">gst_error_get_message</a>               (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> domain</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> code</code></em>);
+<span class="returnvalue">gchar</span> *             <a class="link" href="gstreamer-GstGError.html#gst-error-get-message" title="gst_error_get_message ()">gst_error_get_message</a>               (<em class="parameter"><code><span class="type">GQuark</span> domain</code></em>,
+                                                         <em class="parameter"><code><span class="type">gint</span> code</code></em>);
 </pre>
 </div>
 <div class="refsect1">
@@ -67,8 +67,8 @@ to mean both (non-fatal) warnings and (fatal) errors; they are treated
 similarly.
 </p>
 <p>
-Errors from elements are the combination of a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> and a debug string.
-The <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> contains:
+Errors from elements are the combination of a <span class="type">GError</span> and a debug string.
+The <span class="type">GError</span> contains:
 </p>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem"><p>a domain type: CORE, LIBRARY, RESOURCE or STREAM</p></li>
@@ -115,7 +115,7 @@ Elements throw errors using the <a class="link" href="GstElement.html#GST-ELEMEN
 <p>
 </p>
 <div class="example">
-<a name="id461342"></a><p class="title"><b>Example 7. Throwing an error</b></p>
+<a name="idp7757168"></a><p class="title"><b>Example 7. Throwing an error</b></p>
 <div class="example-contents"><pre class="programlisting">
     GST_ELEMENT_ERROR (src, RESOURCE, NOT_FOUND,
       (_("No file name specified for reading.")), (NULL));
@@ -549,7 +549,7 @@ can't be decrypted because no suitable key is available. (Since: 0.10.20)
 <p>
 Error domain for core system. Errors in this domain will
 be from the <a class="link" href="gstreamer-GstGError.html#GstCoreError" title="enum GstCoreError"><span class="type">GstCoreError</span></a> enumeration.
-See <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for information on error domains.
+See <span class="type">GError</span> for information on error domains.
 </p>
 </div>
 <hr>
@@ -560,7 +560,7 @@ See <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.h
 <p>
 Error domain for library loading. Errors in this domain will
 be from the <a class="link" href="gstreamer-GstGError.html#GstLibraryError" title="enum GstLibraryError"><span class="type">GstLibraryError</span></a> enumeration.
-See <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for information on error domains.
+See <span class="type">GError</span> for information on error domains.
 </p>
 </div>
 <hr>
@@ -571,7 +571,7 @@ See <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.h
 <p>
 Error domain for resource handling. Errors in this domain will
 be from the <a class="link" href="gstreamer-GstGError.html#GstResourceError" title="enum GstResourceError"><span class="type">GstResourceError</span></a> enumeration.
-See <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for information on error domains.
+See <span class="type">GError</span> for information on error domains.
 </p>
 </div>
 <hr>
@@ -582,7 +582,7 @@ See <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.h
 <p>
 Error domain for media stream processing. Errors in this domain will
 be from the <a class="link" href="gstreamer-GstGError.html#GstStreamError" title="enum GstStreamError"><span class="type">GstStreamError</span></a> enumeration.
-See <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for information on error domains.
+See <span class="type">GError</span> for information on error domains.
 </p>
 </div>
 <hr>
@@ -598,8 +598,8 @@ call.  To be used as the debug argument in <a class="link" href="GstElement.html
 <hr>
 <div class="refsect2">
 <a name="gst-error-get-message"></a><h3>gst_error_get_message ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             gst_error_get_message               (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Quarks.html#GQuark"><span class="type">GQuark</span></a> domain</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> code</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gchar</span> *             gst_error_get_message               (<em class="parameter"><code><span class="type">GQuark</span> domain</code></em>,
+                                                         <em class="parameter"><code><span class="type">gint</span> code</code></em>);</pre>
 <p>
 Get a string describing the error message in the current locale.
 </p>

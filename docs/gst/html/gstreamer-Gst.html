@@ -43,22 +43,22 @@
 
 <span class="returnvalue">void</span>                <a class="link" href="gstreamer-Gst.html#gst-init" title="gst_init ()">gst_init</a>                            (<em class="parameter"><code><span class="type">int</span> *argc</code></em>,
                                                          <em class="parameter"><code><span class="type">char</span> **argv[]</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gstreamer-Gst.html#gst-init-check" title="gst_init_check ()">gst_init_check</a>                      (<em class="parameter"><code><span class="type">int</span> *argc</code></em>,
+<span class="returnvalue">gboolean</span>            <a class="link" href="gstreamer-Gst.html#gst-init-check" title="gst_init_check ()">gst_init_check</a>                      (<em class="parameter"><code><span class="type">int</span> *argc</code></em>,
                                                          <em class="parameter"><code><span class="type">char</span> **argv[]</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **err</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Commandline-option-parser.html#GOptionGroup"><span class="returnvalue">GOptionGroup</span></a> *      <a class="link" href="gstreamer-Gst.html#gst-init-get-option-group" title="gst_init_get_option_group ()">gst_init_get_option_group</a>           (<em class="parameter"><code><span class="type">void</span></code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gstreamer-Gst.html#gst-is-initialized" title="gst_is_initialized ()">gst_is_initialized</a>                  (<em class="parameter"><code><span class="type">void</span></code></em>);
+                                                         <em class="parameter"><code><span class="type">GError</span> **err</code></em>);
+<span class="returnvalue">GOptionGroup</span> *      <a class="link" href="gstreamer-Gst.html#gst-init-get-option-group" title="gst_init_get_option_group ()">gst_init_get_option_group</a>           (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="gstreamer-Gst.html#gst-is-initialized" title="gst_is_initialized ()">gst_is_initialized</a>                  (<em class="parameter"><code><span class="type">void</span></code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="gstreamer-Gst.html#gst-deinit" title="gst_deinit ()">gst_deinit</a>                          (<em class="parameter"><code><span class="type">void</span></code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gstreamer-Gst.html#gst-version" title="gst_version ()">gst_version</a>                         (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *major</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *minor</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *micro</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *nano</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             <a class="link" href="gstreamer-Gst.html#gst-version-string" title="gst_version_string ()">gst_version_string</a>                  (<em class="parameter"><code><span class="type">void</span></code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gstreamer-Gst.html#gst-segtrap-is-enabled" title="gst_segtrap_is_enabled ()">gst_segtrap_is_enabled</a>              (<em class="parameter"><code><span class="type">void</span></code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gstreamer-Gst.html#gst-segtrap-set-enabled" title="gst_segtrap_set_enabled ()">gst_segtrap_set_enabled</a>             (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> enabled</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gstreamer-Gst.html#gst-registry-fork-is-enabled" title="gst_registry_fork_is_enabled ()">gst_registry_fork_is_enabled</a>        (<em class="parameter"><code><span class="type">void</span></code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gstreamer-Gst.html#gst-registry-fork-set-enabled" title="gst_registry_fork_set_enabled ()">gst_registry_fork_set_enabled</a>       (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> enabled</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gstreamer-Gst.html#gst-update-registry" title="gst_update_registry ()">gst_update_registry</a>                 (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gstreamer-Gst.html#gst-version" title="gst_version ()">gst_version</a>                         (<em class="parameter"><code><span class="type">guint</span> *major</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint</span> *minor</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint</span> *micro</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint</span> *nano</code></em>);
+<span class="returnvalue">gchar</span> *             <a class="link" href="gstreamer-Gst.html#gst-version-string" title="gst_version_string ()">gst_version_string</a>                  (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="gstreamer-Gst.html#gst-segtrap-is-enabled" title="gst_segtrap_is_enabled ()">gst_segtrap_is_enabled</a>              (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gstreamer-Gst.html#gst-segtrap-set-enabled" title="gst_segtrap_set_enabled ()">gst_segtrap_set_enabled</a>             (<em class="parameter"><code><span class="type">gboolean</span> enabled</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="gstreamer-Gst.html#gst-registry-fork-is-enabled" title="gst_registry_fork_is_enabled ()">gst_registry_fork_is_enabled</a>        (<em class="parameter"><code><span class="type">void</span></code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="gstreamer-Gst.html#gst-registry-fork-set-enabled" title="gst_registry_fork_set_enabled ()">gst_registry_fork_set_enabled</a>       (<em class="parameter"><code><span class="type">gboolean</span> enabled</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="gstreamer-Gst.html#gst-update-registry" title="gst_update_registry ()">gst_update_registry</a>                 (<em class="parameter"><code><span class="type">void</span></code></em>);
 </pre>
 </div>
 <div class="refsect1">
@@ -83,7 +83,7 @@ options, as shown in the following example.
 <p>
 </p>
 <div class="example">
-<a name="id459050"></a><p class="title"><b>Example 1. Initializing the gstreamer library</b></p>
+<a name="idp9994496"></a><p class="title"><b>Example 1. Initializing the gstreamer library</b></p>
 <div class="example-contents"><pre class="programlisting">
 int
 main (int argc, char *argv[])
@@ -105,7 +105,7 @@ You can also use GOption to initialize your own parameters as shown in
 the next code fragment:
 </p>
 <div class="example">
-<a name="id451029"></a><p class="title"><b>Example 2. Initializing own parameters when initializing gstreamer</b></p>
+<a name="idp6500944"></a><p class="title"><b>Example 2. Initializing own parameters when initializing gstreamer</b></p>
 <div class="example-contents"><pre class="programlisting">
 static gboolean stats = FALSE;
 ...
@@ -169,7 +169,7 @@ for how to disable automatic registry updates.
 <p>
 This function should be called before calling any other GLib functions. If
 this is not an option, your program must initialise the GLib thread system
-using <a href="http://library.gnome.org/devel/glib/unstable/glib-Threads.html#g-thread-init"><code class="function">g_thread_init()</code></a> before any other GLib functions are called.
+using <code class="function">g_thread_init()</code> before any other GLib functions are called.
 </p>
 <p>
 </p>
@@ -185,7 +185,7 @@ use <a class="link" href="gstreamer-Gst.html#gst-init-check" title="gst_init_che
 </p>
 <p>
 WARNING: This function does not work in the same way as corresponding
-functions in other glib-style libraries, such as <a href="http://library.gnome.org/devel/gtk/gtk3-General.html#gtk-init"><code class="function">gtk_init()</code></a>.  In
+functions in other glib-style libraries, such as <code class="function">gtk_init()</code>.  In
 particular, unknown command line options cause this function to
 abort program execution.
 </p>
@@ -208,22 +208,22 @@ abort program execution.
 <hr>
 <div class="refsect2">
 <a name="gst-init-check"></a><h3>gst_init_check ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_init_check                      (<em class="parameter"><code><span class="type">int</span> *argc</code></em>,
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            gst_init_check                      (<em class="parameter"><code><span class="type">int</span> *argc</code></em>,
                                                          <em class="parameter"><code><span class="type">char</span> **argv[]</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **err</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">GError</span> **err</code></em>);</pre>
 <p>
 Initializes the GStreamer library, setting up internal path lists,
 registering built-in elements, and loading standard plugins.
 </p>
 <p>
-This function will return <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if GStreamer could not be initialized
+This function will return <code class="literal">FALSE</code> if GStreamer could not be initialized
 for some reason.  If you want your program to fail fatally,
 use <a class="link" href="gstreamer-Gst.html#gst-init" title="gst_init ()"><code class="function">gst_init()</code></a> instead.
 </p>
 <p>
 This function should be called before calling any other GLib functions. If
 this is not an option, your program must initialise the GLib thread system
-using <a href="http://library.gnome.org/devel/glib/unstable/glib-Threads.html#g-thread-init"><code class="function">g_thread_init()</code></a> before any other GLib functions are called.
+using <code class="function">g_thread_init()</code> before any other GLib functions are called.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -240,12 +240,12 @@ using <a href="http://library.gnome.org/devel/glib/unstable/glib-Threads.html#g-
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>err</code></em> :</span></p></td>
-<td>pointer to a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> to which a message will be posted on error</td>
+<td>pointer to a <span class="type">GError</span> to which a message will be posted on error</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if GStreamer could be initialized.</td>
+<code class="literal">TRUE</code> if GStreamer could be initialized.</td>
 </tr>
 </tbody>
 </table></div>
@@ -253,16 +253,16 @@ using <a href="http://library.gnome.org/devel/glib/unstable/glib-Threads.html#g-
 <hr>
 <div class="refsect2">
 <a name="gst-init-get-option-group"></a><h3>gst_init_get_option_group ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Commandline-option-parser.html#GOptionGroup"><span class="returnvalue">GOptionGroup</span></a> *      gst_init_get_option_group           (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">GOptionGroup</span> *      gst_init_get_option_group           (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
-Returns a <a href="http://library.gnome.org/devel/glib/unstable/glib-Commandline-option-parser.html#GOptionGroup"><span class="type">GOptionGroup</span></a> with GStreamer's argument specifications. The
+Returns a <span class="type">GOptionGroup</span> with GStreamer's argument specifications. The
 group is set up to use standard GOption callbacks, so when using this
 group in combination with GOption parsing methods, all argument parsing
 and initialization is automated.
 </p>
 <p>
 This function is useful if you want to integrate GStreamer with other
-libraries that use GOption (see <a href="http://library.gnome.org/devel/glib/unstable/glib-Commandline-option-parser.html#g-option-context-add-group"><code class="function">g_option_context_add_group()</code></a> ).
+libraries that use GOption (see <code class="function">g_option_context_add_group()</code> ).
 </p>
 <p>
 If you use this function, you should make sure you initialise the GLib
@@ -281,7 +281,7 @@ threading system as one of the very first things in your program
 <hr>
 <div class="refsect2">
 <a name="gst-is-initialized"></a><h3>gst_is_initialized ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_is_initialized                  (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            gst_is_initialized                  (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 Use this function to check if GStreamer has been initialized with <a class="link" href="gstreamer-Gst.html#gst-init" title="gst_init ()"><code class="function">gst_init()</code></a>
 or <a class="link" href="gstreamer-Gst.html#gst-init-check" title="gst_init_check ()"><code class="function">gst_init_check()</code></a>.
@@ -315,10 +315,10 @@ After this call GStreamer (including this method) should not be used anymore.
 <hr>
 <div class="refsect2">
 <a name="gst-version"></a><h3>gst_version ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_version                         (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *major</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *minor</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *micro</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *nano</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_version                         (<em class="parameter"><code><span class="type">guint</span> *major</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint</span> *minor</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint</span> *micro</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint</span> *nano</code></em>);</pre>
 <p>
 Gets the version number of the GStreamer library.
 </p>
@@ -351,7 +351,7 @@ Gets the version number of the GStreamer library.
 <hr>
 <div class="refsect2">
 <a name="gst-version-string"></a><h3>gst_version_string ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *             gst_version_string                  (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gchar</span> *             gst_version_string                  (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 This function returns a string that is useful for describing this version
 of GStreamer to the outside world: user agent strings, logging, ...
@@ -369,7 +369,7 @@ of GStreamer. <span class="annotation">[<acronym title="Free data after the code
 <hr>
 <div class="refsect2">
 <a name="gst-segtrap-is-enabled"></a><h3>gst_segtrap_is_enabled ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_segtrap_is_enabled              (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            gst_segtrap_is_enabled              (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 Some functions in the GStreamer core might install a custom SIGSEGV handler
 to better catch and report errors to the application. Currently this feature
@@ -385,7 +385,7 @@ wants to install its own handler without GStreamer interfering.
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if GStreamer is allowed to install a custom SIGSEGV handler.</td>
+<code class="literal">TRUE</code> if GStreamer is allowed to install a custom SIGSEGV handler.</td>
 </tr></tbody>
 </table></div>
 <p class="since">Since 0.10.10</p>
@@ -393,7 +393,7 @@ wants to install its own handler without GStreamer interfering.
 <hr>
 <div class="refsect2">
 <a name="gst-segtrap-set-enabled"></a><h3>gst_segtrap_set_enabled ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_segtrap_set_enabled             (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> enabled</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_segtrap_set_enabled             (<em class="parameter"><code><span class="type">gboolean</span> enabled</code></em>);</pre>
 <p>
 Applications might want to disable/enable the SIGSEGV handling of
 the GStreamer core. See <a class="link" href="gstreamer-Gst.html#gst-segtrap-is-enabled" title="gst_segtrap_is_enabled ()"><code class="function">gst_segtrap_is_enabled()</code></a> for more information.
@@ -410,7 +410,7 @@ the GStreamer core. See <a class="link" href="gstreamer-Gst.html#gst-segtrap-is-
 <hr>
 <div class="refsect2">
 <a name="gst-registry-fork-is-enabled"></a><h3>gst_registry_fork_is_enabled ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_registry_fork_is_enabled        (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            gst_registry_fork_is_enabled        (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 By default GStreamer will perform scanning and rebuilding of the
 registry file using a helper child process.
@@ -425,7 +425,7 @@ are scanned (and loaded) into the application process.
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if GStreamer will use the child helper process when
+<code class="literal">TRUE</code> if GStreamer will use the child helper process when
 rebuilding the registry.</td>
 </tr></tbody>
 </table></div>
@@ -434,7 +434,7 @@ rebuilding the registry.</td>
 <hr>
 <div class="refsect2">
 <a name="gst-registry-fork-set-enabled"></a><h3>gst_registry_fork_set_enabled ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_registry_fork_set_enabled       (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> enabled</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_registry_fork_set_enabled       (<em class="parameter"><code><span class="type">gboolean</span> enabled</code></em>);</pre>
 <p>
 Applications might want to disable/enable spawning of a child helper process
 when rebuilding the registry. See <a class="link" href="gstreamer-Gst.html#gst-registry-fork-is-enabled" title="gst_registry_fork_is_enabled ()"><code class="function">gst_registry_fork_is_enabled()</code></a> for more
@@ -452,7 +452,7 @@ information.
 <hr>
 <div class="refsect2">
 <a name="gst-update-registry"></a><h3>gst_update_registry ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_update_registry                 (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            gst_update_registry                 (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>
 Forces GStreamer to re-scan its plugin paths and update the default
 plugin registry.
@@ -479,8 +479,8 @@ Note that this function may block for a significant amount of time.
 <tbody><tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the registry has been updated successfully (does not
-imply that there were changes), otherwise <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>.</td>
+<code class="literal">TRUE</code> if the registry has been updated successfully (does not
+imply that there were changes), otherwise <code class="literal">FALSE</code>.</td>
 </tr></tbody>
 </table></div>
 <p class="since">Since 0.10.12</p>

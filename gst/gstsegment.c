@@ -113,18 +113,8 @@ gst_segment_copy_into (const GstSegment * src, GstSegment * dest)
   memcpy (dest, src, sizeof (GstSegment));
 }
 
-GType
-gst_segment_get_type (void)
-{
-  static GType gst_segment_type = 0;
-
-  if (G_UNLIKELY (gst_segment_type == 0)) {
-    gst_segment_type = g_boxed_type_register_static ("GstSegment",
-        (GBoxedCopyFunc) gst_segment_copy, (GBoxedFreeFunc) gst_segment_free);
-  }
-
-  return gst_segment_type;
-}
+G_DEFINE_BOXED_TYPE (GstSegment, gst_segment,
+    (GBoxedCopyFunc) gst_segment_copy, (GBoxedFreeFunc) gst_segment_free);
 
 /**
  * gst_segment_new:
@@ -175,7 +165,7 @@ gst_segment_init (GstSegment * segment, GstFormat format)
 {
   g_return_if_fail (segment != NULL);
 
-  segment->flags = GST_SEEK_FLAG_NONE;
+  segment->flags = GST_SEGMENT_FLAG_NONE;
   segment->rate = 1.0;
   segment->applied_rate = 1.0;
   segment->format = format;
@@ -265,16 +255,6 @@ gst_segment_do_seek (GstSegment * segment, gdouble rate,
       if (start == -1)
         start = 0;
       break;
-    case GST_SEEK_TYPE_CUR:
-    {
-      gint64 sstart = (gint64) start;
-      /* add start to currently configured segment */
-      if (sstart > 0 || segment->start > -sstart)
-        start = segment->start + start;
-      else
-        start = 0;
-      break;
-    }
     case GST_SEEK_TYPE_END:
       if (segment->duration != -1) {
         /* add start to total length */
@@ -300,16 +280,6 @@ gst_segment_do_seek (GstSegment * segment, gdouble rate,
       break;
     case GST_SEEK_TYPE_SET:
       /* stop holds required value */
-      break;
-    case GST_SEEK_TYPE_CUR:
-      if (segment->stop != -1) {
-        gint64 sstop = (gint64) stop;
-        if (sstop > 0 || segment->stop > -sstop)
-          stop = segment->stop + stop;
-        else
-          stop = 0;
-      } else
-        stop = -1;
       break;
     case GST_SEEK_TYPE_END:
       if (segment->duration != -1) {

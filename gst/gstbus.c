@@ -78,6 +78,7 @@
 #include "gstpoll.h"
 
 #include "gstbus.h"
+#include "glib-compat-private.h"
 
 #define GST_CAT_DEFAULT GST_CAT_BUS
 /* bus signals */
@@ -99,7 +100,6 @@ enum
 
 static void gst_bus_dispose (GObject * object);
 
-static GstObjectClass *parent_class = NULL;
 static guint gst_bus_signals[LAST_SIGNAL] = { 0 };
 
 struct _GstBusPrivate
@@ -112,6 +112,7 @@ struct _GstBusPrivate
   GPollFD pollfd;
 };
 
+#define gst_bus_parent_class parent_class
 G_DEFINE_TYPE (GstBus, gst_bus, GST_TYPE_OBJECT);
 
 static void
@@ -145,8 +146,6 @@ static void
 gst_bus_class_init (GstBusClass * klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
-
-  parent_class = g_type_class_peek_parent (klass);
 
   gobject_class->dispose = gst_bus_dispose;
   gobject_class->set_property = gst_bus_set_property;
@@ -212,7 +211,7 @@ static void
 gst_bus_init (GstBus * bus)
 {
   bus->queue = gst_atomic_queue_new (32);
-  bus->queue_lock = g_mutex_new ();
+  g_mutex_init (&bus->queue_lock);
 
   bus->priv = G_TYPE_INSTANCE_GET_PRIVATE (bus, GST_TYPE_BUS, GstBusPrivate);
   bus->priv->enable_async = DEFAULT_ENABLE_ASYNC;
@@ -228,7 +227,7 @@ gst_bus_dispose (GObject * object)
   if (bus->queue) {
     GstMessage *message;
 
-    g_mutex_lock (bus->queue_lock);
+    g_mutex_lock (&bus->queue_lock);
     do {
       message = gst_atomic_queue_pop (bus->queue);
       if (message)
@@ -236,9 +235,8 @@ gst_bus_dispose (GObject * object)
     } while (message != NULL);
     gst_atomic_queue_unref (bus->queue);
     bus->queue = NULL;
-    g_mutex_unlock (bus->queue_lock);
-    g_mutex_free (bus->queue_lock);
-    bus->queue_lock = NULL;
+    g_mutex_unlock (&bus->queue_lock);
+    g_mutex_clear (&bus->queue_lock);
 
     if (bus->priv->poll)
       gst_poll_free (bus->priv->poll);
@@ -335,11 +333,11 @@ gst_bus_post (GstBus * bus, GstMessage * message)
     {
       /* async delivery, we need a mutex and a cond to block
        * on */
-      GMutex *lock = g_mutex_new ();
-      GCond *cond = g_cond_new ();
+      GCond *cond = GST_MESSAGE_GET_COND (message);
+      GMutex *lock = GST_MESSAGE_GET_LOCK (message);
 
-      GST_MESSAGE_COND (message) = cond;
-      GST_MESSAGE_GET_LOCK (message) = lock;
+      g_cond_init (cond);
+      g_mutex_init (lock);
 
       GST_DEBUG_OBJECT (bus, "[msg %p] waiting for async delivery", message);
 
@@ -357,8 +355,8 @@ gst_bus_post (GstBus * bus, GstMessage * message)
 
       GST_DEBUG_OBJECT (bus, "[msg %p] delivered asynchronously", message);
 
-      g_mutex_free (lock);
-      g_cond_free (cond);
+      g_mutex_clear (lock);
+      g_cond_clear (cond);
       break;
     }
     default:
@@ -472,7 +470,7 @@ gst_bus_timed_pop_filtered (GstBus * bus, GstClockTime timeout,
   g_return_val_if_fail (types != 0, NULL);
   g_return_val_if_fail (timeout == 0 || bus->priv->poll != NULL, NULL);
 
-  g_mutex_lock (bus->queue_lock);
+  g_mutex_lock (&bus->queue_lock);
 
   while (TRUE) {
     gint ret;
@@ -483,8 +481,10 @@ gst_bus_timed_pop_filtered (GstBus * bus, GstClockTime timeout,
     while ((message = gst_atomic_queue_pop (bus->queue))) {
       if (bus->priv->poll)
         gst_poll_read_control (bus->priv->poll);
-      GST_DEBUG_OBJECT (bus, "got message %p, %s, type mask is %u",
-          message, GST_MESSAGE_TYPE_NAME (message), (guint) types);
+
+      GST_DEBUG_OBJECT (bus, "got message %p, %s from %s, type mask is %u",
+          message, GST_MESSAGE_TYPE_NAME (message),
+          GST_MESSAGE_SRC_NAME (message), (guint) types);
       if ((GST_MESSAGE_TYPE (message) & types) != 0) {
         /* exit the loop, we have a message */
         goto beach;
@@ -515,9 +515,9 @@ gst_bus_timed_pop_filtered (GstBus * bus, GstClockTime timeout,
 
     /* only here in timeout case */
     g_assert (bus->priv->poll);
-    g_mutex_unlock (bus->queue_lock);
+    g_mutex_unlock (&bus->queue_lock);
     ret = gst_poll_wait (bus->priv->poll, timeout - elapsed);
-    g_mutex_lock (bus->queue_lock);
+    g_mutex_lock (&bus->queue_lock);
 
     if (ret == 0) {
       GST_INFO_OBJECT (bus, "timed out, breaking loop");
@@ -529,7 +529,7 @@ gst_bus_timed_pop_filtered (GstBus * bus, GstClockTime timeout,
 
 beach:
 
-  g_mutex_unlock (bus->queue_lock);
+  g_mutex_unlock (&bus->queue_lock);
 
   return message;
 }
@@ -631,11 +631,11 @@ gst_bus_peek (GstBus * bus)
 
   g_return_val_if_fail (GST_IS_BUS (bus), NULL);
 
-  g_mutex_lock (bus->queue_lock);
+  g_mutex_lock (&bus->queue_lock);
   message = gst_atomic_queue_peek (bus->queue);
   if (message)
     gst_message_ref (message);
-  g_mutex_unlock (bus->queue_lock);
+  g_mutex_unlock (&bus->queue_lock);
 
   GST_DEBUG_OBJECT (bus, "peek on bus, got message %p", message);
 
@@ -733,7 +733,8 @@ gst_bus_source_dispatch (GSource * source, GSourceFunc callback,
   if (!handler)
     goto no_handler;
 
-  GST_DEBUG_OBJECT (bus, "source %p calling dispatch with %p", source, message);
+  GST_DEBUG_OBJECT (bus, "source %p calling dispatch with %" GST_PTR_FORMAT,
+      source, message);
 
   keep = handler (bus, message, user_data);
   gst_message_unref (message);
@@ -797,6 +798,9 @@ gst_bus_create_watch (GstBus * bus)
 
   source = (GstBusSource *) g_source_new (&gst_bus_source_funcs,
       sizeof (GstBusSource));
+
+  g_source_set_name ((GSource *) source, "GStreamer message bus watch");
+
   source->bus = gst_object_ref (bus);
   g_source_add_poll ((GSource *) source, &bus->priv->pollfd);
 
@@ -862,7 +866,7 @@ gst_bus_add_watch_full_unlocked (GstBus * bus, gint priority,
  * from @func.
  *
  * Returns: The event source id.
- *
+ * Rename to: gst_bus_add_watch
  * MT safe.
  */
 guint
@@ -881,7 +885,7 @@ gst_bus_add_watch_full (GstBus * bus, gint priority,
 }
 
 /**
- * gst_bus_add_watch:
+ * gst_bus_add_watch: (skip)
  * @bus: a #GstBus to create the watch for
  * @func: A function to call when a message is received.
  * @user_data: user data passed to @func.
@@ -1194,8 +1198,8 @@ gst_bus_disable_sync_message_emission (GstBus * bus)
  * responsible for calling gst_bus_remove_signal_watch() as many times as this
  * function is called.
  *
- * There can only be a single bus watch per bus, you most remove all signal watch
- * before you can set another type of watch.
+ * There can only be a single bus watch per bus, you must remove any signal
+ * watch before you can set another type of watch.
  *
  * MT safe.
  */

@@ -33,22 +33,31 @@
 #include "gstutils.h"
 
 static GHashTable *metainfo = NULL;
-static GStaticRWLock lock = G_STATIC_RW_LOCK_INIT;
+static GRWLock lock;
 
 void
 _priv_gst_meta_initialize (void)
 {
+  g_rw_lock_init (&lock);
   metainfo = g_hash_table_new (g_str_hash, g_str_equal);
 }
 
 /**
- * gst_meta_register_info:
- * @info: a #GstMetaInfo
+ * gst_meta_register:
+ * @api: the name of the #GstMeta API
+ * @impl: the name of the #GstMeta implementation
+ * @size: the size of the #GstMeta structure
+ * @init_func: a #GstMetaInitFunction
+ * @free_func: a #GstMetaFreeFunction
+ * @copy_func: a #GstMetaCopyFunction
+ * @transform_func: a #GstMetaTransformFunction
  *
- * Register a #GstMetaInfo. The same @info can be retrieved later with
- * gst_meta_get_info() by using @impl as the key.
+ * Register a new #GstMeta implementation.
  *
- * Returns: a #GstMetaInfo that can be used to access metadata.
+ * The same @info can be retrieved later with gst_meta_get_info() by using
+ * @impl as the key.
+ *
+ * Returns: (transfer none): a #GstMetaInfo that can be used to access metadata.
  */
 
 const GstMetaInfo *
@@ -74,9 +83,9 @@ gst_meta_register (const gchar * api, const gchar * impl, gsize size,
   GST_DEBUG ("register \"%s\" implementing \"%s\" of size %" G_GSIZE_FORMAT,
       api, impl, size);
 
-  g_static_rw_lock_writer_lock (&lock);
+  g_rw_lock_writer_lock (&lock);
   g_hash_table_insert (metainfo, (gpointer) impl, (gpointer) info);
-  g_static_rw_lock_writer_unlock (&lock);
+  g_rw_lock_writer_unlock (&lock);
 
   return info;
 }
@@ -85,11 +94,11 @@ gst_meta_register (const gchar * api, const gchar * impl, gsize size,
  * gst_meta_get_info:
  * @impl: the name
  *
- * Lookup a previously registered meta info structure by its implementor name
+ * Lookup a previously registered meta info structure by its implementation name
  * @impl.
  *
- * Returns: a #GstMetaInfo with @impl or #NULL when no such metainfo
- * exists.
+ * Returns: (transfer none): a #GstMetaInfo with @impl, or #NULL when no such
+ * metainfo exists.
  */
 const GstMetaInfo *
 gst_meta_get_info (const gchar * impl)
@@ -98,56 +107,9 @@ gst_meta_get_info (const gchar * impl)
 
   g_return_val_if_fail (impl != NULL, NULL);
 
-  g_static_rw_lock_reader_lock (&lock);
+  g_rw_lock_reader_lock (&lock);
   info = g_hash_table_lookup (metainfo, impl);
-  g_static_rw_lock_reader_unlock (&lock);
+  g_rw_lock_reader_unlock (&lock);
 
   return info;
-}
-
-/* Timing metadata */
-static void
-meta_timing_copy (GstBuffer * copybuf, GstMetaTiming * meta,
-    GstBuffer * buffer, gsize offset, gsize size)
-{
-  GstMetaTiming *timing;
-
-  GST_DEBUG ("trans called from buffer %p to %p, meta %p,"
-      "offset %" G_GSIZE_FORMAT ", size %" G_GSIZE_FORMAT, buffer,
-      copybuf, meta, offset, size);
-
-  timing = gst_buffer_add_meta_timing (copybuf);
-  if (offset == 0) {
-    /* same offset, copy timestamps */
-    timing->pts = meta->pts;
-    timing->dts = meta->dts;
-    if (size == gst_buffer_get_size (buffer)) {
-      /* same size, copy duration */
-      timing->duration = meta->duration;
-    } else {
-      /* else clear */
-      timing->duration = GST_CLOCK_TIME_NONE;
-    }
-  } else {
-    timing->pts = -1;
-    timing->dts = -1;
-    timing->duration = -1;
-  }
-  timing->clock_rate = meta->clock_rate;
-}
-
-const GstMetaInfo *
-gst_meta_timing_get_info (void)
-{
-  static const GstMetaInfo *meta_info = NULL;
-
-  if (meta_info == NULL) {
-    meta_info = gst_meta_register ("GstMetaTiming", "GstMetaTiming",
-        sizeof (GstMetaTiming),
-        (GstMetaInitFunction) NULL,
-        (GstMetaFreeFunction) NULL,
-        (GstMetaCopyFunction) meta_timing_copy,
-        (GstMetaTransformFunction) NULL);
-  }
-  return meta_info;
 }

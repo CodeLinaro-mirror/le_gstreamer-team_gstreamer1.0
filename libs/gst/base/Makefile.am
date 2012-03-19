@@ -11,10 +11,9 @@ libgstbase_@GST_MAJORMINOR@_la_SOURCES = \
 	gstbitreader.c		\
 	gstbytereader.c		\
 	gstbytewriter.c         \
-	gstcollectpads.c	\
+	gstcollectpads2.c	\
 	gstpushsrc.c		\
-	gsttypefindhelper.c	\
-	gstdataqueue.c
+	gsttypefindhelper.c
 
 libgstbase_@GST_MAJORMINOR@_la_CFLAGS = $(GST_OBJ_CFLAGS)
 libgstbase_@GST_MAJORMINOR@_la_LIBADD = $(GST_OBJ_LIBS)
@@ -32,15 +31,17 @@ libgstbase_@GST_MAJORMINOR@include_HEADERS =	\
 	gstbitreader.h		\
 	gstbytereader.h		\
 	gstbytewriter.h         \
-	gstcollectpads.h	\
+	gstcollectpads2.h	\
 	gstpushsrc.h		\
-	gsttypefindhelper.h	\
-	gstdataqueue.h
+	gsttypefindhelper.h
 
 noinst_HEADERS = \
 	gstbytereader-docs.h \
 	gstbytewriter-docs.h \
-	gstbitreader-docs.h
+	gstbitreader-docs.h \
+	gstindex.h
+
+EXTRA_DIST = gstindex.c gstmemindex.c
 
 CLEANFILES = *.gcno *.gcda *.gcov
 
@@ -73,6 +74,7 @@ GstBase-@GST_MAJORMINOR@.gir: $(INTROSPECTION_SCANNER) libgstbase-@GST_MAJORMINO
 		GST_PLUGIN_SYSTEM_PATH="" GST_PLUGIN_PATH="" GST_REGISTRY_UPDATE=no \
 		$(INTROSPECTION_SCANNER) -v --namespace GstBase \
 		--nsversion=@GST_MAJORMINOR@ \
+		--warn-all \
 		--strip-prefix=Gst \
 		-DGST_USE_UNSTABLE_API \
 		-I$(top_srcdir) \

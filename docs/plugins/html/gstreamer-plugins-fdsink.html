@@ -49,8 +49,8 @@
 <div class="refsect1">
 <a name="gstreamer-plugins-fdsink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+  GObject
+   +----GInitiallyUnowned
          +----<a href="../gstreamer-0.11/GstObject.html">GstObject</a>
                +----<a href="../gstreamer-0.11/GstElement.html">GstElement</a>
                      +----<a href="../gstreamer-libs-0.11/GstBaseSink.html">GstBaseSink</a>
@@ -66,7 +66,7 @@ GstFdSink implements
 <div class="refsect1">
 <a name="gstreamer-plugins-fdsink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gstreamer-plugins-fdsink.html#GstFdSink--fd" title='The "fd" property'>fd</a>"                       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
+  "<a class="link" href="gstreamer-plugins-fdsink.html#GstFdSink--fd" title='The "fd" property'>fd</a>"                       <span class="type">gint</span>                  : Read / Write
 </pre>
 </div>
 <div class="refsect1">
@@ -85,7 +85,7 @@ Last reviewed on 2006-04-28 (0.10.6)
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id375243"></a><h3>Element Information</h3>
+<a name="idp7032864"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -108,7 +108,7 @@ Last reviewed on 2006-04-28 (0.10.6)
 </div>
 <hr>
 <div class="refsect2">
-<a name="id361202"></a><h3>Element Pads</h3>
+<a name="idp5347920"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -149,7 +149,7 @@ The opaque <a class="link" href="gstreamer-plugins-fdsink.html#GstFdSink"><span 
 <a name="gstreamer-plugins-fdsink.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
 <a name="GstFdSink--fd"></a><h3>The <code class="literal">"fd"</code> property</h3>
-<pre class="programlisting">  "fd"                       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
+<pre class="programlisting">  "fd"                       <span class="type">gint</span>                  : Read / Write</pre>
 <p>An open file descriptor to write to.</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 1</p>

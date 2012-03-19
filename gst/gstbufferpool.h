@@ -35,13 +35,6 @@ G_BEGIN_DECLS
 typedef struct _GstBufferPoolPrivate GstBufferPoolPrivate;
 typedef struct _GstBufferPoolClass GstBufferPoolClass;
 
-/**
- * GST_BUFFER_POOL_TRACE_NAME:
- *
- * The name used for tracing memory allocations.
- */
-#define GST_BUFFER_POOL_TRACE_NAME           "GstBufferPool"
-
 #define GST_TYPE_BUFFER_POOL                 (gst_buffer_pool_get_type())
 #define GST_IS_BUFFER_POOL(obj)              (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_BUFFER_POOL))
 #define GST_IS_BUFFER_POOL_CLASS(klass)      (G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_BUFFER_POOL))
@@ -89,6 +82,9 @@ typedef struct _GstBufferPoolParams {
   gint64             start;
   gint64             stop;
   GstBufferPoolFlags flags;
+
+  /*< private >*/
+  gpointer _gst_reserved[GST_PADDING];
 } GstBufferPoolParams;
 
 /**
@@ -144,7 +140,8 @@ struct _GstBufferPool {
  *        buffers from the default memory allocator and with the configured
  *        size, prefix and alignment.
  * @reset_buffer: reset the buffer to its state when it was freshly allocated.
- *        The default implementation will clear the flags and timestamps.
+ *        The default implementation will clear the flags, timestamps and
+ *        will remove the metadata added after alloc_buffer.
  * @release_buffer: release a buffer back in the pool. The default
  *        implementation will put the buffer back in the queue and notify any
  *        blocking acquire_buffer calls.

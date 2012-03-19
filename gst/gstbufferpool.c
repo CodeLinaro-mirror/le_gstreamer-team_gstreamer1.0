@@ -27,6 +27,7 @@
  */
 
 #include "gst_private.h"
+#include "glib-compat-private.h"
 
 #include <errno.h>
 #ifdef HAVE_UNISTD_H
@@ -36,6 +37,7 @@
 
 #include "gstinfo.h"
 #include "gstquark.h"
+#include "gstvalue.h"
 
 #include "gstbufferpool.h"
 
@@ -45,12 +47,12 @@ GST_DEBUG_CATEGORY_STATIC (gst_buffer_pool_debug);
 #define GST_BUFFER_POOL_GET_PRIVATE(obj)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_BUFFER_POOL, GstBufferPoolPrivate))
 
-#define GST_BUFFER_POOL_LOCK(pool)   (g_static_rec_mutex_lock(&pool->priv->rec_lock))
-#define GST_BUFFER_POOL_UNLOCK(pool) (g_static_rec_mutex_unlock(&pool->priv->rec_lock))
+#define GST_BUFFER_POOL_LOCK(pool)   (g_rec_mutex_lock(&pool->priv->rec_lock))
+#define GST_BUFFER_POOL_UNLOCK(pool) (g_rec_mutex_unlock(&pool->priv->rec_lock))
 
 struct _GstBufferPoolPrivate
 {
-  GStaticRecMutex rec_lock;
+  GRecMutex rec_lock;
   guint size;
   guint min_buffers;
   guint max_buffers;
@@ -108,7 +110,7 @@ gst_buffer_pool_init (GstBufferPool * pool)
 {
   pool->priv = GST_BUFFER_POOL_GET_PRIVATE (pool);
 
-  g_static_rec_mutex_init (&pool->priv->rec_lock);
+  g_rec_mutex_init (&pool->priv->rec_lock);
 
   pool->poll = gst_poll_new_timer ();
   pool->queue = gst_atomic_queue_new (10);
@@ -116,7 +118,7 @@ gst_buffer_pool_init (GstBufferPool * pool)
   pool->active = FALSE;
   pool->configured = FALSE;
   pool->started = FALSE;
-  pool->config = gst_structure_id_empty_new (GST_QUARK (BUFFER_POOL_CONFIG));
+  pool->config = gst_structure_new_id_empty (GST_QUARK (BUFFER_POOL_CONFIG));
   gst_buffer_pool_config_set (pool->config, NULL, 0, 0, 0, 0, 0);
   gst_poll_write_control (pool->poll);
 
@@ -136,7 +138,7 @@ gst_buffer_pool_finalize (GObject * object)
   gst_atomic_queue_unref (pool->queue);
   gst_poll_free (pool->poll);
   gst_structure_free (pool->config);
-  g_static_rec_mutex_free (&pool->priv->rec_lock);
+  g_rec_mutex_clear (&pool->priv->rec_lock);
 
   G_OBJECT_CLASS (gst_buffer_pool_parent_class)->finalize (object);
 }
@@ -146,7 +148,7 @@ gst_buffer_pool_finalize (GObject * object)
  *
  * Creates a new #GstBufferPool instance.
  *
- * Returns: a new #GstBufferPool instance
+ * Returns: (transfer full): a new #GstBufferPool instance
  */
 GstBufferPool *
 gst_buffer_pool_new (void)
@@ -175,6 +177,14 @@ default_alloc_buffer (GstBufferPool * pool, GstBuffer ** buffer,
   return GST_FLOW_OK;
 }
 
+static gboolean
+mark_meta_pooled (GstBuffer * buffer, GstMeta ** meta, gpointer user_data)
+{
+  GST_META_FLAG_SET (*meta, GST_META_FLAG_POOLED);
+
+  return TRUE;
+}
+
 /* the default implementation for preallocating the buffers
  * in the pool */
 static gboolean
@@ -197,6 +207,7 @@ default_start (GstBufferPool * pool)
     if (pclass->alloc_buffer (pool, &buffer, NULL) != GST_FLOW_OK)
       goto alloc_failed;
 
+    gst_buffer_foreach_meta (buffer, mark_meta_pooled, pool);
     GST_LOG_OBJECT (pool, "prealloced buffer %d: %p", i, buffer);
     /* release to the queue, we call the vmethod directly, we don't need to do
      * the other refcount handling right now. */
@@ -291,7 +302,7 @@ do_stop (GstBufferPool * pool)
  * @active: the new active state
  *
  * Control the active state of @pool. When the pool is active, new calls to
- * gst_buffer_pool_acquire_buffer() will return with GST_FLOW_WRONG_STATE.
+ * gst_buffer_pool_acquire_buffer() will return with GST_FLOW_FLUSHING.
  *
  * Activating the bufferpool will preallocate all resources in the pool based on
  * the configuration of the pool.
@@ -429,7 +440,7 @@ wrong_config:
 /**
  * gst_buffer_pool_set_config:
  * @pool: a #GstBufferPool
- * @config: a #GstStructure
+ * @config: (transfer full): a #GstStructure
  *
  * Set the configuration of the pool. The pool must be inactive and all buffers
  * allocated form this pool must be returned or else this function will do
@@ -502,7 +513,7 @@ have_outstanding:
  * can either be modified and used for the gst_buffer_pool_set_config() call
  * or it must be freed after usage.
  *
- * Returns: a copy of the current configuration of @pool. use
+ * Returns: (transfer full): a copy of the current configuration of @pool. use
  * gst_structure_free() after usage or gst_buffer_pool_set_config().
  */
 GstStructure *
@@ -529,7 +540,7 @@ static const gchar *empty_option[] = { NULL };
  * @pool. An option would typically be enabled with
  * gst_buffer_pool_config_add_option().
  *
- * Returns: a NULL terminated array of strings.
+ * Returns: (array zero-terminated=1) (transfer none): a NULL terminated array of strings.
  */
 const gchar **
 gst_buffer_pool_get_options (GstBufferPool * pool)
@@ -624,34 +635,31 @@ gst_buffer_pool_config_set (GstStructure * config, const GstCaps * caps,
 void
 gst_buffer_pool_config_add_option (GstStructure * config, const gchar * option)
 {
-  GValueArray *array;
   const GValue *value;
-  GValue option_value = { 0 };
-  gint i;
+  GValue option_value = { 0, };
+  guint i, len;
 
   g_return_if_fail (config != NULL);
 
   value = gst_structure_id_get_value (config, GST_QUARK (OPTIONS));
   if (value) {
-    array = (GValueArray *) g_value_get_boxed (value);
+    len = gst_value_array_get_size (value);
+    for (i = 0; i < len; ++i) {
+      const GValue *nth_val = gst_value_array_get_value (value, i);
+
+      if (g_str_equal (option, g_value_get_string (nth_val)))
+        return;
+    }
   } else {
     GValue new_array_val = { 0, };
 
-    array = g_value_array_new (0);
-
-    g_value_init (&new_array_val, G_TYPE_VALUE_ARRAY);
-    g_value_take_boxed (&new_array_val, array);
-
+    g_value_init (&new_array_val, GST_TYPE_ARRAY);
     gst_structure_id_take_value (config, GST_QUARK (OPTIONS), &new_array_val);
-  }
-  for (i = 0; i < array->n_values; i++) {
-    value = g_value_array_get_nth (array, i);
-    if (g_str_equal (option, g_value_get_string (value)))
-      return;
+    value = gst_structure_id_get_value (config, GST_QUARK (OPTIONS));
   }
   g_value_init (&option_value, G_TYPE_STRING);
   g_value_set_string (&option_value, option);
-  g_value_array_append (array, &option_value);
+  gst_value_array_append_value ((GValue *) value, &option_value);
   g_value_unset (&option_value);
 }
 
@@ -667,7 +675,6 @@ gst_buffer_pool_config_add_option (GstStructure * config, const gchar * option)
 guint
 gst_buffer_pool_config_n_options (GstStructure * config)
 {
-  GValueArray *array;
   const GValue *value;
   guint size = 0;
 
@@ -675,8 +682,7 @@ gst_buffer_pool_config_n_options (GstStructure * config)
 
   value = gst_structure_id_get_value (config, GST_QUARK (OPTIONS));
   if (value) {
-    array = (GValueArray *) g_value_get_boxed (value);
-    size = array->n_values;
+    size = gst_value_array_get_size (value);
   }
   return size;
 }
@@ -701,12 +707,9 @@ gst_buffer_pool_config_get_option (GstStructure * config, guint index)
 
   value = gst_structure_id_get_value (config, GST_QUARK (OPTIONS));
   if (value) {
-    GValueArray *array;
-    GValue *option_value;
+    const GValue *option_value;
 
-    array = (GValueArray *) g_value_get_boxed (value);
-    option_value = g_value_array_get_nth (array, index);
-
+    option_value = gst_value_array_get_value (value, index);
     if (option_value)
       ret = g_value_get_string (option_value);
   }
@@ -726,19 +729,17 @@ gboolean
 gst_buffer_pool_config_has_option (GstStructure * config, const gchar * option)
 {
   const GValue *value;
+  guint i, len;
 
   g_return_val_if_fail (config != NULL, 0);
 
   value = gst_structure_id_get_value (config, GST_QUARK (OPTIONS));
   if (value) {
-    GValueArray *array;
-    GValue *option_value;
-    gint i;
+    len = gst_value_array_get_size (value);
+    for (i = 0; i < len; ++i) {
+      const GValue *nth_val = gst_value_array_get_value (value, i);
 
-    array = (GValueArray *) g_value_get_boxed (value);
-    for (i = 0; i < array->n_values; i++) {
-      option_value = g_value_array_get_nth (array, i);
-      if (g_str_equal (option, g_value_get_string (option_value)))
+      if (g_str_equal (option, g_value_get_string (nth_val)))
         return TRUE;
     }
   }
@@ -747,13 +748,13 @@ gst_buffer_pool_config_has_option (GstStructure * config, const gchar * option)
 
 /**
  * gst_buffer_pool_config_get:
- * @config: a #GstBufferPool configuration
- * @caps: the caps of buffers
- * @size: the size of each buffer, not including prefix
- * @min_buffers: the minimum amount of buffers to allocate.
- * @max_buffers: the maximum amount of buffers to allocate or 0 for unlimited.
- * @prefix: prefix each buffer with this many bytes
- * @align: alignment of the buffer data.
+ * @config: (transfer none): a #GstBufferPool configuration
+ * @caps: (out): the caps of buffers
+ * @size: (out): the size of each buffer, not including prefix
+ * @min_buffers: (out): the minimum amount of buffers to allocate.
+ * @max_buffers: (out): the maximum amount of buffers to allocate or 0 for unlimited.
+ * @prefix: (out): prefix each buffer with this many bytes
+ * @align: (out): alignment of the buffer data.
  *
  * Get the configuration values from @config.
  */
@@ -801,6 +802,10 @@ default_acquire_buffer (GstBufferPool * pool, GstBuffer ** buffer,
       /* no max_buffers, we allocate some more */
       if (G_LIKELY (pclass->alloc_buffer)) {
         result = pclass->alloc_buffer (pool, buffer, params);
+        if (result == GST_FLOW_OK && *buffer)
+          gst_buffer_foreach_meta (*buffer, mark_meta_pooled, pool);
+        else
+          result = GST_FLOW_ERROR;
       } else
         result = GST_FLOW_NOT_SUPPORTED;
       GST_LOG_OBJECT (pool, "alloc buffer %p", *buffer);
@@ -810,7 +815,7 @@ default_acquire_buffer (GstBufferPool * pool, GstBuffer ** buffer,
     /* check if we need to wait */
     if (params && (params->flags & GST_BUFFER_POOL_FLAG_DONTWAIT)) {
       GST_LOG_OBJECT (pool, "no more buffers");
-      result = GST_FLOW_UNEXPECTED;
+      result = GST_FLOW_EOS;
       break;
     }
 
@@ -825,7 +830,7 @@ default_acquire_buffer (GstBufferPool * pool, GstBuffer ** buffer,
 flushing:
   {
     GST_DEBUG_OBJECT (pool, "we are flushing");
-    return GST_FLOW_WRONG_STATE;
+    return GST_FLOW_FLUSHING;
   }
 }
 
@@ -847,30 +852,42 @@ dec_outstanding (GstBufferPool * pool)
   }
 }
 
+static gboolean
+remove_meta_unpooled (GstBuffer * buffer, GstMeta ** meta, gpointer user_data)
+{
+  if (!GST_META_FLAG_IS_SET (*meta, GST_META_FLAG_POOLED))
+    *meta = NULL;
+  return TRUE;
+}
+
 static void
 default_reset_buffer (GstBufferPool * pool, GstBuffer * buffer,
     GstBufferPoolParams * params)
 {
   GST_BUFFER_FLAGS (buffer) = 0;
 
-  GST_BUFFER_TIMESTAMP (buffer) = GST_CLOCK_TIME_NONE;
+  GST_BUFFER_PTS (buffer) = GST_CLOCK_TIME_NONE;
+  GST_BUFFER_DTS (buffer) = GST_CLOCK_TIME_NONE;
   GST_BUFFER_DURATION (buffer) = GST_CLOCK_TIME_NONE;
   GST_BUFFER_OFFSET (buffer) = GST_BUFFER_OFFSET_NONE;
   GST_BUFFER_OFFSET_END (buffer) = GST_BUFFER_OFFSET_NONE;
+
+  /* remove all metadata without the POOLED flag */
+  gst_buffer_foreach_meta (buffer, remove_meta_unpooled, pool);
 }
 
 /**
  * gst_buffer_pool_acquire_buffer:
  * @pool: a #GstBufferPool
- * @buffer: a location for a #GstBuffer
- * @params: parameters.
+ * @buffer: (out): a location for a #GstBuffer
+ * @params: (transfer none) (allow-none) parameters.
  *
  * Acquire a buffer from @pool. @buffer should point to a memory location that
  * can hold a pointer to the new buffer.
  *
  * @params can be NULL or contain optional parameters to influence the allocation.
  *
- * Returns: a #GstFlowReturn such as GST_FLOW_WRONG_STATE when the pool is
+ * Returns: a #GstFlowReturn such as GST_FLOW_FLUSHING when the pool is
  * inactive.
  */
 GstFlowReturn
@@ -920,7 +937,7 @@ default_release_buffer (GstBufferPool * pool, GstBuffer * buffer)
 /**
  * gst_buffer_pool_release_buffer:
  * @pool: a #GstBufferPool
- * @buffer: a #GstBuffer
+ * @buffer: (transfer none): a #GstBuffer
  *
  * Release @buffer to @pool. @buffer should have previously been allocated from
  * @pool with gst_buffer_pool_acquire_buffer().
@@ -938,8 +955,7 @@ gst_buffer_pool_release_buffer (GstBufferPool * pool, GstBuffer * buffer)
 
   /* check that the buffer is ours, all buffers returned to the pool have the
    * pool member set to NULL and the pool refcount decreased */
-  if (!g_atomic_pointer_compare_and_exchange ((gpointer *) & buffer->pool,
-          pool, NULL))
+  if (!g_atomic_pointer_compare_and_exchange (&buffer->pool, pool, NULL))
     return;
 
   pclass = GST_BUFFER_POOL_GET_CLASS (pool);

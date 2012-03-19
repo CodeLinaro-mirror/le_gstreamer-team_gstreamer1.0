@@ -296,9 +296,13 @@ gst_capsfilter_accept_caps (GstBaseTransform * base,
   if (ret) {
     /* if we can intersect, see if the other end also accepts */
     if (direction == GST_PAD_SRC)
-      ret = gst_pad_peer_accept_caps (GST_BASE_TRANSFORM_SINK_PAD (base), caps);
+      ret =
+          gst_pad_peer_query_accept_caps (GST_BASE_TRANSFORM_SINK_PAD (base),
+          caps);
     else
-      ret = gst_pad_peer_accept_caps (GST_BASE_TRANSFORM_SRC_PAD (base), caps);
+      ret =
+          gst_pad_peer_query_accept_caps (GST_BASE_TRANSFORM_SRC_PAD (base),
+          caps);
     GST_DEBUG_OBJECT (capsfilter, "peer accept: %d", ret);
   }
 
@@ -355,6 +359,7 @@ gst_capsfilter_prepare_buf (GstBaseTransform * trans, GstBuffer * input,
 
       if (!gst_pad_has_current_caps (trans->srcpad))
         gst_pad_push_event (trans->srcpad, gst_event_new_caps (out_caps));
+      gst_caps_unref (out_caps);
     } else {
       gchar *caps_str = gst_caps_to_string (out_caps);
 

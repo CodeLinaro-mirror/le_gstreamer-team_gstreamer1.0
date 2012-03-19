@@ -43,38 +43,38 @@
 
 struct              <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment">GstSegment</a>;
 enum                <a class="link" href="gstreamer-GstSegment.html#GstSegmentFlags" title="enum GstSegmentFlags">GstSegmentFlags</a>;
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gstreamer-GstSegment.html#gst-segment-clip" title="gst_segment_clip ()">gst_segment_clip</a>                    (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+<span class="returnvalue">gboolean</span>            <a class="link" href="gstreamer-GstSegment.html#gst-segment-clip" title="gst_segment_clip ()">gst_segment_clip</a>                    (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> start</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> stop</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> *clip_start</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> *clip_stop</code></em>);
+                                                         <em class="parameter"><code><span class="type">guint64</span> start</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint64</span> stop</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint64</span> *clip_start</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint64</span> *clip_stop</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstSegment.html#gst-segment-init" title="gst_segment_init ()">gst_segment_init</a>                    (<em class="parameter"><code><a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>);
 <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="returnvalue">GstSegment</span></a> *        <a class="link" href="gstreamer-GstSegment.html#gst-segment-new" title="gst_segment_new ()">gst_segment_new</a>                     (<em class="parameter"><code><span class="type">void</span></code></em>);
 <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="returnvalue">GstSegment</span></a> *        <a class="link" href="gstreamer-GstSegment.html#gst-segment-copy" title="gst_segment_copy ()">gst_segment_copy</a>                    (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstSegment.html#gst-segment-free" title="gst_segment_free ()">gst_segment_free</a>                    (<em class="parameter"><code><a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gstreamer-GstSegment.html#gst-segment-do-seek" title="gst_segment_do_seek ()">gst_segment_do_seek</a>                 (<em class="parameter"><code><a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a> rate</code></em>,
+<span class="returnvalue">gboolean</span>            <a class="link" href="gstreamer-GstSegment.html#gst-segment-do-seek" title="gst_segment_do_seek ()">gst_segment_do_seek</a>                 (<em class="parameter"><code><a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+                                                         <em class="parameter"><code><span class="type">gdouble</span> rate</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstEvent.html#GstSeekFlags" title="enum GstSeekFlags"><span class="type">GstSeekFlags</span></a> flags</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstEvent.html#GstSeekType" title="enum GstSeekType"><span class="type">GstSeekType</span></a> start_type</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> start</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint64</span> start</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstEvent.html#GstSeekType" title="enum GstSeekType"><span class="type">GstSeekType</span></a> stop_type</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> stop</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> *update</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="returnvalue">guint64</span></a>             <a class="link" href="gstreamer-GstSegment.html#gst-segment-to-running-time" title="gst_segment_to_running_time ()">gst_segment_to_running_time</a>         (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint64</span> stop</code></em>,
+                                                         <em class="parameter"><code><span class="type">gboolean</span> *update</code></em>);
+<span class="returnvalue">guint64</span>             <a class="link" href="gstreamer-GstSegment.html#gst-segment-to-running-time" title="gst_segment_to_running_time ()">gst_segment_to_running_time</a>         (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> position</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="returnvalue">guint64</span></a>             <a class="link" href="gstreamer-GstSegment.html#gst-segment-to-stream-time" title="gst_segment_to_stream_time ()">gst_segment_to_stream_time</a>          (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint64</span> position</code></em>);
+<span class="returnvalue">guint64</span>             <a class="link" href="gstreamer-GstSegment.html#gst-segment-to-stream-time" title="gst_segment_to_stream_time ()">gst_segment_to_stream_time</a>          (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> position</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="returnvalue">guint64</span></a>             <a class="link" href="gstreamer-GstSegment.html#gst-segment-to-position" title="gst_segment_to_position ()">gst_segment_to_position</a>             (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint64</span> position</code></em>);
+<span class="returnvalue">guint64</span>             <a class="link" href="gstreamer-GstSegment.html#gst-segment-to-position" title="gst_segment_to_position ()">gst_segment_to_position</a>             (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> running_time</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gstreamer-GstSegment.html#gst-segment-set-running-time" title="gst_segment_set_running_time ()">gst_segment_set_running_time</a>        (<em class="parameter"><code><a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint64</span> running_time</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="gstreamer-GstSegment.html#gst-segment-set-running-time" title="gst_segment_set_running_time ()">gst_segment_set_running_time</a>        (<em class="parameter"><code><a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> running_time</code></em>);
+                                                         <em class="parameter"><code><span class="type">guint64</span> running_time</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstSegment.html#gst-segment-copy-into" title="gst_segment_copy_into ()">gst_segment_copy_into</a>               (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *src</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *dest</code></em>);
 </pre>
@@ -110,25 +110,25 @@ rate and applied_rate is 1.0.
 </p>
 <p>
 If the segment is used for managing seeks, the segment duration should be set with
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstSegment.html#gst-segment-set-duration"><code class="function">gst_segment_set_duration()</code></a>. The public duration field contains the duration of the
+<code class="function">gst_segment_set_duration()</code>. The public duration field contains the duration of the
 segment. When using the segment for seeking, the start and time members should
 normally be left to their default 0 value. The stop position is left to -1 unless
 explicitly configured to a different value after a seek event.
 </p>
 <p>
-The current position in the segment should be set with the <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstSegment.html#gst-segment-set-last-stop"><code class="function">gst_segment_set_last_stop()</code></a>.
+The current position in the segment should be set with the <code class="function">gst_segment_set_last_stop()</code>.
 The public last_stop field contains the last set stop position in the segment.
 </p>
 <p>
 For elements that perform seeks, the current segment should be updated with the
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstSegment.html#gst-segment-set-seek"><code class="function">gst_segment_set_seek()</code></a> and the values from the seek event. This method will update
+<code class="function">gst_segment_set_seek()</code> and the values from the seek event. This method will update
 all the segment fields. The last_stop field will contain the new playback position.
 If the cur_type was different from GST_SEEK_TYPE_NONE, playback continues from
 the last_stop position, possibly with updated flags or rate.
 </p>
 <p>
 For elements that want to use <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> to track the playback region, use
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstSegment.html#gst-segment-set-newsegment"><code class="function">gst_segment_set_newsegment()</code></a> to update the segment fields with the information from
+<code class="function">gst_segment_set_newsegment()</code> to update the segment fields with the information from
 the newsegment event. The <a class="link" href="gstreamer-GstSegment.html#gst-segment-clip" title="gst_segment_clip ()"><code class="function">gst_segment_clip()</code></a> method can be used to check and clip
 the media data to the segment boundaries.
 </p>
@@ -179,11 +179,11 @@ interest in a media file.
 <td>flags for this segment</td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a> <em class="structfield"><code><a name="GstSegment.rate"></a>rate</code></em>;</span></p></td>
+<td><p><span class="term"><span class="type">gdouble</span> <em class="structfield"><code><a name="GstSegment.rate"></a>rate</code></em>;</span></p></td>
 <td>the rate of the segment</td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a> <em class="structfield"><code><a name="GstSegment.applied-rate"></a>applied_rate</code></em>;</span></p></td>
+<td><p><span class="term"><span class="type">gdouble</span> <em class="structfield"><code><a name="GstSegment.applied-rate"></a>applied_rate</code></em>;</span></p></td>
 <td>the already applied rate to the segment</td>
 </tr>
 <tr>
@@ -191,27 +191,27 @@ interest in a media file.
 <td>the format of the segment values</td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> <em class="structfield"><code><a name="GstSegment.base"></a>base</code></em>;</span></p></td>
+<td><p><span class="term"><span class="type">guint64</span> <em class="structfield"><code><a name="GstSegment.base"></a>base</code></em>;</span></p></td>
 <td>the base time of the segment</td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> <em class="structfield"><code><a name="GstSegment.start"></a>start</code></em>;</span></p></td>
+<td><p><span class="term"><span class="type">guint64</span> <em class="structfield"><code><a name="GstSegment.start"></a>start</code></em>;</span></p></td>
 <td>the start of the segment</td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> <em class="structfield"><code><a name="GstSegment.stop"></a>stop</code></em>;</span></p></td>
+<td><p><span class="term"><span class="type">guint64</span> <em class="structfield"><code><a name="GstSegment.stop"></a>stop</code></em>;</span></p></td>
 <td>the stop of the segment</td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> <em class="structfield"><code><a name="GstSegment.time"></a>time</code></em>;</span></p></td>
+<td><p><span class="term"><span class="type">guint64</span> <em class="structfield"><code><a name="GstSegment.time"></a>time</code></em>;</span></p></td>
 <td>the stream time of the segment</td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> <em class="structfield"><code><a name="GstSegment.position"></a>position</code></em>;</span></p></td>
+<td><p><span class="term"><span class="type">guint64</span> <em class="structfield"><code><a name="GstSegment.position"></a>position</code></em>;</span></p></td>
 <td>the position in the segment</td>
 </tr>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> <em class="structfield"><code><a name="GstSegment.duration"></a>duration</code></em>;</span></p></td>
+<td><p><span class="term"><span class="type">guint64</span> <em class="structfield"><code><a name="GstSegment.duration"></a>duration</code></em>;</span></p></td>
 <td>the duration of the segment</td>
 </tr>
 </tbody>
@@ -255,12 +255,12 @@ values of the seek flags.
 <hr>
 <div class="refsect2">
 <a name="gst-segment-clip"></a><h3>gst_segment_clip ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_segment_clip                    (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            gst_segment_clip                    (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> start</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> stop</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> *clip_start</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> *clip_stop</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">guint64</span> start</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint64</span> stop</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint64</span> *clip_start</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint64</span> *clip_stop</code></em>);</pre>
 <p>
 Clip the given <em class="parameter"><code>start</code></em> and <em class="parameter"><code>stop</code></em> values to the segment boundaries given
 in <em class="parameter"><code>segment</code></em>. <em class="parameter"><code>start</code></em> and <em class="parameter"><code>stop</code></em> are compared and clipped to <em class="parameter"><code>segment</code></em>
@@ -410,15 +410,15 @@ Free the allocated segment <em class="parameter"><code>segment</code></em>.
 <hr>
 <div class="refsect2">
 <a name="gst-segment-do-seek"></a><h3>gst_segment_do_seek ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_segment_do_seek                 (<em class="parameter"><code><a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a> rate</code></em>,
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            gst_segment_do_seek                 (<em class="parameter"><code><a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+                                                         <em class="parameter"><code><span class="type">gdouble</span> rate</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstEvent.html#GstSeekFlags" title="enum GstSeekFlags"><span class="type">GstSeekFlags</span></a> flags</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstEvent.html#GstSeekType" title="enum GstSeekType"><span class="type">GstSeekType</span></a> start_type</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> start</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint64</span> start</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstEvent.html#GstSeekType" title="enum GstSeekType"><span class="type">GstSeekType</span></a> stop_type</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> stop</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> *update</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">guint64</span> stop</code></em>,
+                                                         <em class="parameter"><code><span class="type">gboolean</span> *update</code></em>);</pre>
 <p>
 Update the segment structure with the field values of a seek event (see
 <a class="link" href="gstreamer-GstEvent.html#gst-event-new-seek" title="gst_event_new_seek ()"><code class="function">gst_event_new_seek()</code></a>).
@@ -495,7 +495,7 @@ has been changed but not the playback position.
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the seek could be performed.</td>
+<code class="literal">TRUE</code> if the seek could be performed.</td>
 </tr>
 </tbody>
 </table></div>
@@ -503,9 +503,9 @@ has been changed but not the playback position.
 <hr>
 <div class="refsect2">
 <a name="gst-segment-to-running-time"></a><h3>gst_segment_to_running_time ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="returnvalue">guint64</span></a>             gst_segment_to_running_time         (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+<pre class="programlisting"><span class="returnvalue">guint64</span>             gst_segment_to_running_time         (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> position</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">guint64</span> position</code></em>);</pre>
 <p>
 Translate <em class="parameter"><code>position</code></em> to the total running time using the currently configured
 and previously accumulated segments. Position is a value between <em class="parameter"><code>segment</code></em>
@@ -546,9 +546,9 @@ was given.</td>
 <hr>
 <div class="refsect2">
 <a name="gst-segment-to-stream-time"></a><h3>gst_segment_to_stream_time ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="returnvalue">guint64</span></a>             gst_segment_to_stream_time          (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+<pre class="programlisting"><span class="returnvalue">guint64</span>             gst_segment_to_stream_time          (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> position</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">guint64</span> position</code></em>);</pre>
 <p>
 Translate <em class="parameter"><code>position</code></em> to stream time using the currently configured
 segment. The <em class="parameter"><code>position</code></em> value must be between <em class="parameter"><code>segment</code></em> start and
@@ -588,9 +588,9 @@ was given.</td>
 <hr>
 <div class="refsect2">
 <a name="gst-segment-to-position"></a><h3>gst_segment_to_position ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="returnvalue">guint64</span></a>             gst_segment_to_position             (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+<pre class="programlisting"><span class="returnvalue">guint64</span>             gst_segment_to_position             (<em class="parameter"><code>const <a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> running_time</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">guint64</span> running_time</code></em>);</pre>
 <p>
 Convert <em class="parameter"><code>running_time</code></em> into a position in the segment so that
 <a class="link" href="gstreamer-GstSegment.html#gst-segment-to-running-time" title="gst_segment_to_running_time ()"><code class="function">gst_segment_to_running_time()</code></a> with that position returns <em class="parameter"><code>running_time</code></em>.
@@ -622,9 +622,9 @@ Convert <em class="parameter"><code>running_time</code></em> into a position in 
 <hr>
 <div class="refsect2">
 <a name="gst-segment-set-running-time"></a><h3>gst_segment_set_running_time ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_segment_set_running_time        (<em class="parameter"><code><a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            gst_segment_set_running_time        (<em class="parameter"><code><a class="link" href="gstreamer-GstSegment.html#GstSegment" title="struct GstSegment"><span class="type">GstSegment</span></a> *segment</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstFormat.html#GstFormat" title="enum GstFormat"><span class="type">GstFormat</span></a> format</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> running_time</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">guint64</span> running_time</code></em>);</pre>
 <p>
 Adjust the start/stop and base values of <em class="parameter"><code>segment</code></em> such that the next valid
 buffer will be one with <em class="parameter"><code>running_time</code></em>.
@@ -647,7 +647,7 @@ buffer will be one with <em class="parameter"><code>running_time</code></em>.
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the segment could be updated successfully. If <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> is
+<code class="literal">TRUE</code> if the segment could be updated successfully. If <code class="literal">FALSE</code> is
 returned, <em class="parameter"><code>running_time</code></em> is -1 or not in <em class="parameter"><code>segment</code></em>.</td>
 </tr>
 </tbody>

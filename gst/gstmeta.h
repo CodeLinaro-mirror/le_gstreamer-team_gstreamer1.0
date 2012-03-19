@@ -28,23 +28,70 @@ G_BEGIN_DECLS
 typedef struct _GstMeta GstMeta;
 typedef struct _GstMetaInfo GstMetaInfo;
 
+#define GST_META_CAST(meta)   ((GstMeta *)(meta))
+
+/**
+ * GstMetaFlags:
+ * @GST_META_FLAG_NONE: no flags
+ * @GST_META_FLAG_READONLY: metadata should not be modified
+ * @GST_META_FLAG_POOLED: metadata is managed by a bufferpool and should not
+ *    be removed
+ * @GST_META_FLAG_LAST: additional flags can be added starting from this flag.
+ *
+ * Extra metadata flags.
+ */
+typedef enum {
+  GST_META_FLAG_NONE        = 0,
+  GST_META_FLAG_READONLY    = (1 << 0),
+  GST_META_FLAG_POOLED      = (1 << 1),
+
+  GST_META_FLAG_LAST        = (1 << 16)
+} GstMetaFlags;
+
+/**
+ * GST_META_FLAGS:
+ * @meta: a #GstMeta.
+ *
+ * A flags word containing #GstMetaFlags flags set on @meta
+ */
+#define GST_META_FLAGS(meta)  (GST_META_CAST (meta)->flags)
+/**
+ * GST_META_FLAG_IS_SET:
+ * @meta: a #GstMeta.
+ * @flag: the #GstMetaFlags to check.
+ *
+ * Gives the status of a specific flag on a metadata.
+ */
+#define GST_META_FLAG_IS_SET(meta,flag)        !!(GST_META_FLAGS (meta) & (flag))
+/**
+ * GST_META_FLAG_SET:
+ * @meta: a #GstMeta.
+ * @flag: the #GstMetaFlags to set.
+ *
+ * Sets a metadata flag on a metadata.
+ */
+#define GST_META_FLAG_SET(meta,flag)           (GST_META_FLAGS (meta) |= (flag))
+/**
+ * GST_META_FLAG_UNSET:
+ * @meta: a #GstMeta.
+ * @flag: the #GstMetaFlags to clear.
+ *
+ * Clears a metadata flag.
+ */
+#define GST_META_FLAG_UNSET(meta,flag)         (GST_META_FLAGS (meta) &= ~(flag))
+
 /**
  * GstMeta:
+ * @flags: extra flags for the metadata
  * @info: pointer to the #GstMetaInfo
  *
  * Base structure for metadata. Custom metadata will put this structure
  * as the first member of their structure.
  */
 struct _GstMeta {
+  GstMetaFlags       flags;
   const GstMetaInfo *info;
 };
-
-/**
- * GST_META_TRACE_NAME:
- *
- * The name used for tracing memory allocations.
- */
-#define GST_META_TRACE_NAME           "GstMeta"
 
 /**
  * GstMetaInitFunction:
@@ -65,6 +112,17 @@ typedef gboolean (*GstMetaInitFunction) (GstMeta *meta, gpointer params, GstBuff
  */
 typedef void (*GstMetaFreeFunction)     (GstMeta *meta, GstBuffer *buffer);
 
+/**
+ * GstMetaCopyFunction:
+ * @dest: a destination #GstBuffer
+ * @meta: a #GstMeta
+ * @buffer: a #GstBuffer
+ * @offset: an offset
+ * @size: a size
+ *
+ * Function called when the region at @offset and @size in @buffer is copied
+ * into @dest. The function should update the metadata on @dest using @meta.
+ */
 typedef void (*GstMetaCopyFunction)     (GstBuffer *dest, GstMeta *meta,
                                          GstBuffer *buffer, gsize offset, gsize size);
 /**
@@ -106,6 +164,9 @@ struct _GstMetaInfo {
   GstMetaFreeFunction        free_func;
   GstMetaCopyFunction        copy_func;
   GstMetaTransformFunction   transform_func;
+
+  /*< private >*/
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 const GstMetaInfo *  gst_meta_register        (const gchar *api, const gchar *impl,
@@ -115,36 +176,6 @@ const GstMetaInfo *  gst_meta_register        (const gchar *api, const gchar *im
                                                GstMetaCopyFunction        copy_func,
                                                GstMetaTransformFunction   transform_func);
 const GstMetaInfo *  gst_meta_get_info        (const gchar * impl);
-
-/* default metadata */
-
-/* timing metadata */
-typedef struct _GstMetaTiming GstMetaTiming;
-
-const GstMetaInfo *gst_meta_timing_get_info(void);
-#define GST_META_TIMING_INFO (gst_meta_timing_get_info())
-
-/**
- * GstMetaTiming:
- * @meta: parent metadata
- * @dts: the decoding timestamp
- * @pts: the presentation timestamp
- * @duration: the duration
- * @clock_rate: the clock rate of the dts, pts and duration values
- *
- * Extra timing metadata
- */
-struct _GstMetaTiming {
-  GstMeta        meta;        /* common meta header */
-
-  GstClockTime   dts;         /* decoding timestamp */
-  GstClockTime   pts;         /* presentation timestamp */
-  GstClockTime   duration;    /* duration of the data */
-  GstClockTime   clock_rate;  /* clock rate for the above values */
-};
-
-#define gst_buffer_get_meta_timing(b)  ((GstMetaTiming*)gst_buffer_get_meta((b),GST_META_TIMING_INFO))
-#define gst_buffer_add_meta_timing(b)  ((GstMetaTiming*)gst_buffer_add_meta((b),GST_META_TIMING_INFO,NULL))
 
 G_END_DECLS
 

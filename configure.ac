@@ -3,7 +3,7 @@ AC_PREREQ(2.60)
 dnl initialize autoconf
 dnl when going to/from release please set the nano (fourth number) right !
 dnl releases only do Wall, git and prerelease does Werror too
-AC_INIT(GStreamer, 0.11.1,
+AC_INIT(GStreamer, 0.11.2,
     http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer,
     gstreamer)
 AG_GST_INIT
@@ -48,7 +48,7 @@ dnl - interfaces added/removed/changed -> increment CURRENT, REVISION = 0
 dnl - interfaces added -> increment AGE
 dnl - interfaces removed -> AGE = 0
 dnl sets GST_LT_LDFLAGS
-AS_LIBTOOL(GST, 31, 0, 0)
+AS_LIBTOOL(GST, 32, 0, 0)
 
 dnl FIXME: this macro doesn't actually work;
 dnl the generated libtool script has no support for the listed tags.
@@ -73,6 +73,8 @@ AM_GNU_GETTEXT([external])
 AG_GST_GETTEXT([gstreamer-$GST_MAJORMINOR])
 
 dnl *** check for arguments to configure ***
+
+AG_GST_ARG_DISABLE_FATAL_WARNINGS
 
 dnl subsystems - can influence other decisions so needs to be high up
 dnl we need to AM_CONDITIONAL them here for automake 1.6.x compatibility
@@ -104,8 +106,6 @@ else
   GST_REGISTRY_DOC_TYPES=
 fi
 AC_SUBST(GST_REGISTRY_DOC_TYPES)
-AG_GST_CHECK_SUBSYSTEM_DISABLE(NET,[network distribution])
-AM_CONDITIONAL(GST_DISABLE_NET, test "x$GST_DISABLE_NET" = "xyes")
 AG_GST_CHECK_SUBSYSTEM_DISABLE(PLUGIN,[plugin])
 AM_CONDITIONAL(GST_DISABLE_PLUGIN, test "x$GST_DISABLE_PLUGIN" = "xyes")
 
@@ -244,7 +244,7 @@ AC_PATH_PROG(VALGRIND_PATH, valgrind, no)
 AM_CONDITIONAL(HAVE_VALGRIND, test ! "x$VALGRIND_PATH" = "xno")
 
 dnl check for gobject-introspection
-GOBJECT_INTROSPECTION_CHECK([0.6.8])
+GOBJECT_INTROSPECTION_CHECK([1.31.1])
 
 dnl check for documentation tools
 AG_GST_DOCBOOK_CHECK
@@ -380,6 +380,8 @@ AC_CHECK_FUNCS([poll])
 AC_CHECK_FUNCS([ppoll])
 AC_CHECK_FUNCS([pselect])
 
+AC_CHECK_HEADERS([sys/poll.h])
+
 dnl ****************************************
 dnl *** GLib POLL* compatibility defines ***
 dnl ****************************************
@@ -508,29 +510,11 @@ AC_CHECK_LIB(dl, dladdr,
    LIBS="$LIBS -ldl")
 CFLAGS="$save_cflags"
 
-dnl *** checks for socket and nsl libraries ***
-AC_CHECK_FUNC(socket,,[AC_CHECK_LIB(socket,socket)])
-AC_CHECK_FUNC(gethostbyname,,[AC_CHECK_LIB(nsl,gethostbyname)])
-
-dnl check for inet_aton()
-save_libs="$LIBS"
-AC_CHECK_FUNC(inet_aton, ,
-   AC_CHECK_LIB(nsl, inet_aton, ,
-      AC_CHECK_LIB(socket, inet_aton, ,
-         AC_CHECK_LIB(resolv, inet_aton, ,[AC_DEFINE(NO_INET_ATON, 1, [Define if you have no native inet_aton() function.])]))))
-INET_ATON_LIBS=$LIBS
-AC_SUBST(INET_ATON_LIBS)
-LIBS="$save_libs"
-
 dnl *** checks for dependency libraries ***
 
 dnl GLib
-GLIB_REQ=2.26
-
+GLIB_REQ=2.31.10
 AG_GST_GLIB_CHECK([$GLIB_REQ])
-
-dnl Check for glib2 without extra fat, useful for the unversioned tool frontends
-PKG_CHECK_MODULES(GLIB_ONLY, glib-2.0 >= $GLIB_REQ)
 
 dnl Check for documentation xrefs
 GLIB_PREFIX="`$PKG_CONFIG --variable=prefix glib-2.0`"
@@ -610,8 +594,14 @@ AG_GST_SET_PLUGINDIR
 GST_PKG_DEPS="glib-2.0, gobject-2.0, gmodule-no-export-2.0, gthread-2.0"
 AC_SUBST(GST_PKG_DEPS)
 
+dnl make sure it doesn't complain about unused variables if debugging is disabled
+NO_WARNINGS=""
+if test "x${GST_DISABLE_GST_DEBUG}" = "xyes"; then
+  NO_WARNINGS="-Wno-unused"
+fi
+
 dnl define an ERROR_CFLAGS Makefile variable
-AG_GST_SET_ERROR_CFLAGS($GST_GIT, [-Wmissing-declarations -Wmissing-prototypes -Wredundant-decls -Wundef -Wwrite-strings -Wformat-nonliteral -Wformat-security -Wold-style-definition -Winit-self -Wmissing-include-dirs -Waddress -Waggregate-return -Wno-multichar -Wnested-externs])
+AG_GST_SET_ERROR_CFLAGS($FATAL_WARNINGS, [-Wmissing-declarations -Wmissing-prototypes -Wredundant-decls -Wundef -Wwrite-strings -Wformat-nonliteral -Wformat-security -Wold-style-definition -Winit-self -Wmissing-include-dirs -Waddress -Waggregate-return -Wno-multichar -Wnested-externs $NO_WARNINGS])
 
 dnl define correct level for debugging messages
 AG_GST_SET_LEVEL_DEFAULT($GST_GIT)
@@ -658,8 +648,10 @@ dnl vars common to for all internal objects (core libs, elements, applications)
 dnl CFLAGS:
 dnl - src and build dirs need to be added because every piece that gets built
 dnl   will need the GStreamer source and generated headers
-GST_ALL_CXXFLAGS="-I\$(top_srcdir)/libs -I\$(top_srcdir) -I\$(top_builddir)/libs -I\$(top_builddir) $GLIB_CFLAGS $GLIB_EXTRA_CFLAGS \$(GST_OPTION_CXXFLAGS) \$(ERROR_CXXFLAGS)"
-GST_ALL_CFLAGS="-I\$(top_srcdir)/libs -I\$(top_srcdir) -I\$(top_builddir)/libs -I\$(top_builddir) $GLIB_CFLAGS $GLIB_EXTRA_CFLAGS \$(GST_OPTION_CFLAGS) \$(ERROR_CFLAGS)"
+dnl LIBS: XML doesn't need to be added because we don't explicitly use symbols
+dnl       from LibXML except for in the core library
+GST_ALL_CXXFLAGS="-I\$(top_srcdir)/libs -I\$(top_srcdir) -I\$(top_builddir)/libs -I\$(top_builddir) $GLIB_CFLAGS \$(GLIB_EXTRA_CFLAGS) $XML_CFLAGS \$(GST_OPTION_CXXFLAGS) \$(ERROR_CXXFLAGS)"
+GST_ALL_CFLAGS="-I\$(top_srcdir)/libs -I\$(top_srcdir) -I\$(top_builddir)/libs -I\$(top_builddir) $GLIB_CFLAGS \$(GLIB_EXTRA_CFLAGS) $XML_CFLAGS \$(GST_OPTION_CFLAGS) \$(ERROR_CFLAGS)"
 
 dnl FIXME: check if LTLIBINTL is needed everywhere
 dnl I presume it is given that it contains the symbols that _() stuff maps to
@@ -680,7 +672,7 @@ AC_SUBST(GST_ALL_LDFLAGS)
 dnl GST_LIB_LDFLAGS
 dnl linker flags shared by all libraries
 dnl LDFLAGS modifier defining exported symbols from built libraries
-GST_LIB_LDFLAGS="-export-symbols-regex \^[_]*\(gst_\|Gst\|GST_\).*"
+GST_LIB_LDFLAGS="-export-symbols-regex \^[_]?\(gst_\|Gst\|GST_\).*"
 AC_SUBST(GST_LIB_LDFLAGS)
 
 dnl GST_OBJ_*
@@ -721,11 +713,9 @@ libs/gst/check/Makefile
 libs/gst/check/libcheck/Makefile
 libs/gst/check/libcheck/check.h
 libs/gst/controller/Makefile
-libs/gst/dataprotocol/Makefile
 libs/gst/helpers/Makefile
 libs/gst/net/Makefile
 plugins/Makefile
-plugins/indexers/Makefile
 plugins/elements/Makefile
 po/Makefile.in
 tests/Makefile
@@ -769,8 +759,6 @@ pkgconfig/gstreamer-check.pc
 pkgconfig/gstreamer-check-uninstalled.pc
 pkgconfig/gstreamer-controller.pc
 pkgconfig/gstreamer-controller-uninstalled.pc
-pkgconfig/gstreamer-dataprotocol.pc
-pkgconfig/gstreamer-dataprotocol-uninstalled.pc
 pkgconfig/gstreamer-net.pc
 pkgconfig/gstreamer-net-uninstalled.pc
 gst-element-check.m4
@@ -824,7 +812,6 @@ if test "x${GST_DISABLE_TRACE}" = "xno"; then enable_trace="yes"; fi
 if test "x${GST_DISABLE_ALLOC_TRACE}" = "xno"; then enable_alloc_trace="yes"; fi
 if test "x${GST_DISABLE_PLUGIN}" = "xno"; then enable_plugin="yes"; fi
 if test "x${GST_DISABLE_REGISTRY}" = "xno"; then enable_registry="yes"; fi
-if test "x${GST_DISABLE_NET}" = "xno"; then enable_net="yes"; fi
 
 echo "
 
@@ -846,7 +833,6 @@ Configuration
 	Allocation tracing         : ${enable_alloc_trace}
 	Plugin registry            : ${enable_registry}
 	Plugin support	           : ${enable_plugin}
-	Network support            : ${enable_net}
 	Unit testing support       : ${BUILD_CHECK}
 
 	Debug                      : ${USE_DEBUG}
