@@ -43,41 +43,37 @@
 #include &lt;gst/gst.h&gt;
 
 struct              <a class="link" href="GstPluginFeature.html#GstPluginFeature-struct" title="struct GstPluginFeature">GstPluginFeature</a>;
-                    <a class="link" href="GstPluginFeature.html#GstTypeNameData" title="GstTypeNameData">GstTypeNameData</a>;
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (<a class="link" href="GstPluginFeature.html#GstPluginFeatureFilter" title="GstPluginFeatureFilter ()">*GstPluginFeatureFilter</a>)           (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);
+<span class="returnvalue">gboolean</span>            (<a class="link" href="GstPluginFeature.html#GstPluginFeatureFilter" title="GstPluginFeatureFilter ()">*GstPluginFeatureFilter</a>)           (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);
 enum                <a class="link" href="GstPluginFeature.html#GstRank" title="enum GstRank">GstRank</a>;
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="GstPluginFeature.html#gst-plugin-feature-type-name-filter" title="gst_plugin_feature_type_name_filter ()">gst_plugin_feature_type_name_filter</a> (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="GstPluginFeature.html#GstTypeNameData" title="GstTypeNameData"><span class="type">GstTypeNameData</span></a> *data</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="GstPluginFeature.html#gst-plugin-feature-set-rank" title="gst_plugin_feature_set_rank ()">gst_plugin_feature_set_rank</a>         (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> rank</code></em>);
+                                                         <em class="parameter"><code><span class="type">guint</span> rank</code></em>);
 #define             <a class="link" href="GstPluginFeature.html#gst-plugin-feature-set-name" title="gst_plugin_feature_set_name()">gst_plugin_feature_set_name</a>         (feature,
                                                          name)
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               <a class="link" href="GstPluginFeature.html#gst-plugin-feature-get-rank" title="gst_plugin_feature_get_rank ()">gst_plugin_feature_get_rank</a>         (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>);
+<span class="returnvalue">guint</span>               <a class="link" href="GstPluginFeature.html#gst-plugin-feature-get-rank" title="gst_plugin_feature_get_rank ()">gst_plugin_feature_get_rank</a>         (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>);
 #define             <a class="link" href="GstPluginFeature.html#gst-plugin-feature-get-name" title="gst_plugin_feature_get_name()">gst_plugin_feature_get_name</a>         (feature)
 <a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="returnvalue">GstPluginFeature</span></a> *  <a class="link" href="GstPluginFeature.html#gst-plugin-feature-load" title="gst_plugin_feature_load ()">gst_plugin_feature_load</a>             (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="GstPluginFeature.html#gst-plugin-feature-list-copy" title="gst_plugin_feature_list_copy ()">gst_plugin_feature_list_copy</a>        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *list</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="GstPluginFeature.html#gst-plugin-feature-list-free" title="gst_plugin_feature_list_free ()">gst_plugin_feature_list_free</a>        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *list</code></em>);
+<span class="returnvalue">GList</span> *             <a class="link" href="GstPluginFeature.html#gst-plugin-feature-list-copy" title="gst_plugin_feature_list_copy ()">gst_plugin_feature_list_copy</a>        (<em class="parameter"><code><span class="type">GList</span> *list</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="GstPluginFeature.html#gst-plugin-feature-list-free" title="gst_plugin_feature_list_free ()">gst_plugin_feature_list_free</a>        (<em class="parameter"><code><span class="type">GList</span> *list</code></em>);
 #define             <a class="link" href="GstPluginFeature.html#GST-PLUGIN-FEATURE-LIST-DEBUG:CAPS" title="GST_PLUGIN_FEATURE_LIST_DEBUG()">GST_PLUGIN_FEATURE_LIST_DEBUG</a>       (list)
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="GstPluginFeature.html#gst-plugin-feature-check-version" title="gst_plugin_feature_check_version ()">gst_plugin_feature_check_version</a>    (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> min_major</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> min_minor</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> min_micro</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="GstPluginFeature.html#gst-plugin-feature-rank-compare-func" title="gst_plugin_feature_rank_compare_func ()">gst_plugin_feature_rank_compare_func</a>
-                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gconstpointer"><span class="type">gconstpointer</span></a> p1</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gconstpointer"><span class="type">gconstpointer</span></a> p2</code></em>);
+<span class="returnvalue">gboolean</span>            <a class="link" href="GstPluginFeature.html#gst-plugin-feature-check-version" title="gst_plugin_feature_check_version ()">gst_plugin_feature_check_version</a>    (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint</span> min_major</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint</span> min_minor</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint</span> min_micro</code></em>);
+<span class="returnvalue">gint</span>                <a class="link" href="GstPluginFeature.html#gst-plugin-feature-rank-compare-func" title="gst_plugin_feature_rank_compare_func ()">gst_plugin_feature_rank_compare_func</a>
+                                                        (<em class="parameter"><code><span class="type">gconstpointer</span> p1</code></em>,
+                                                         <em class="parameter"><code><span class="type">gconstpointer</span> p2</code></em>);
 </pre>
 </div>
 <div class="refsect1">
 <a name="GstPluginFeature.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+  GObject
+   +----GInitiallyUnowned
          +----<a class="link" href="GstObject.html" title="GstObject">GstObject</a>
                +----GstPluginFeature
                      +----<a class="link" href="GstElementFactory.html" title="GstElementFactory">GstElementFactory</a>
                      +----<a class="link" href="GstTypeFindFactory.html" title="GstTypeFindFactory">GstTypeFindFactory</a>
-                     +----<a class="link" href="GstIndexFactory.html" title="GstIndexFactory">GstIndexFactory</a>
 </pre>
 </div>
 <div class="refsect1">
@@ -97,34 +93,9 @@ Opaque <a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><sp
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstTypeNameData"></a><h3>GstTypeNameData</h3>
-<pre class="programlisting">typedef struct {
-  const gchar   *name;
-  GType          type;
-} GstTypeNameData;
-</pre>
-<p>
-Structure used for filtering based on <em class="parameter"><code>name</code></em> and <em class="parameter"><code>type</code></em>.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="GstTypeNameData.name"></a>name</code></em>;</span></p></td>
-<td>a name</td>
-</tr>
-<tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> <em class="structfield"><code><a name="GstTypeNameData.type"></a>type</code></em>;</span></p></td>
-<td>a GType</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
 <a name="GstPluginFeatureFilter"></a><h3>GstPluginFeatureFilter ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            (*GstPluginFeatureFilter)           (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            (*GstPluginFeatureFilter)           (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>,
+                                                         <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);</pre>
 <p>
 A function that can be used with e.g. <a class="link" href="GstRegistry.html#gst-registry-feature-filter" title="gst_registry_feature_filter ()"><code class="function">gst_registry_feature_filter()</code></a>
 to get a list of pluginfeature that match certain criteria.
@@ -145,7 +116,7 @@ to get a list of pluginfeature that match certain criteria.
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> for a positive match, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise</td>
+<code class="literal">TRUE</code> for a positive match, <code class="literal">FALSE</code> otherwise</td>
 </tr>
 </tbody>
 </table></div>
@@ -198,37 +169,9 @@ These constants serve as a rough guidance for defining the rank of a
 </div>
 <hr>
 <div class="refsect2">
-<a name="gst-plugin-feature-type-name-filter"></a><h3>gst_plugin_feature_type_name_filter ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_plugin_feature_type_name_filter (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="GstPluginFeature.html#GstTypeNameData" title="GstTypeNameData"><span class="type">GstTypeNameData</span></a> *data</code></em>);</pre>
-<p>
-Compares type and name of plugin feature. Can be used with <a class="link" href="gstreamer-GstFilter.html#gst-filter-run" title="gst_filter_run ()"><code class="function">gst_filter_run()</code></a>.
-</p>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>feature</code></em> :</span></p></td>
-<td>the <a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
-<td>the type and name to check against. <span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>TRUE if equal.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
 <a name="gst-plugin-feature-set-rank"></a><h3>gst_plugin_feature_set_rank ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                gst_plugin_feature_set_rank         (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> rank</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">guint</span> rank</code></em>);</pre>
 <p>
 Specifies a rank for a plugin feature, so that autoplugging uses
 the most appropriate feature.
@@ -272,7 +215,7 @@ Sets the name of the plugin feature, getting rid of the old name if there was on
 <hr>
 <div class="refsect2">
 <a name="gst-plugin-feature-get-rank"></a><h3>gst_plugin_feature_get_rank ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               gst_plugin_feature_get_rank         (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">guint</span>               gst_plugin_feature_get_rank         (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>);</pre>
 <p>
 Gets the rank of a plugin feature.
 </p>
@@ -293,13 +236,11 @@ Gets the rank of a plugin feature.
 <hr>
 <div class="refsect2">
 <a name="gst-plugin-feature-get-name"></a><h3>gst_plugin_feature_get_name()</h3>
-<pre class="programlisting">#define                 gst_plugin_feature_get_name(feature)      gst_object_get_name(GST_OBJECT_CAST(feature))
+<pre class="programlisting">#define                 gst_plugin_feature_get_name(feature)      GST_OBJECT_NAME(feature)
 </pre>
 <p>
-Returns a copy of the name of <em class="parameter"><code>feature</code></em>.
-Caller should <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a> the return value after usage.
-For a nameless plugin feature, this returns NULL, which you can safely <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a>
-as well.
+Returns the name of <em class="parameter"><code>feature</code></em>.
+For a nameless plugin feature, this returns NULL.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -310,7 +251,7 @@ as well.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the name of <em class="parameter"><code>feature</code></em>. <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a> after usage. MT safe. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
+<td>the name of <em class="parameter"><code>feature</code></em>. MT safe. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
 </td>
 </tr>
 </tbody>
@@ -356,7 +297,7 @@ feature = loaded_feature;
 <hr>
 <div class="refsect2">
 <a name="gst-plugin-feature-list-copy"></a><h3>gst_plugin_feature_list_copy ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             gst_plugin_feature_list_copy        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *list</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">GList</span> *             gst_plugin_feature_list_copy        (<em class="parameter"><code><span class="type">GList</span> *list</code></em>);</pre>
 <p>
 Copies the list of features. Caller should call <em class="parameter"><code>gst_plugin_feature_list_free</code></em>
 when done with the list.
@@ -383,7 +324,7 @@ with each feature's reference count incremented. <span class="annotation">[<acro
 <hr>
 <div class="refsect2">
 <a name="gst-plugin-feature-list-free"></a><h3>gst_plugin_feature_list_free ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_plugin_feature_list_free        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> *list</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">void</span>                gst_plugin_feature_list_free        (<em class="parameter"><code><span class="type">GList</span> *list</code></em>);</pre>
 <p>
 Unrefs each member of <em class="parameter"><code>list</code></em>, then frees the list.
 </p>
@@ -409,7 +350,7 @@ Debug the plugin feature names in <em class="parameter"><code>list</code></em>.
 <col align="left" valign="top">
 <tbody><tr>
 <td><p><span class="term"><em class="parameter"><code>list</code></em> :</span></p></td>
-<td>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="type">GList</span></a> of
+<td>a <span class="type">GList</span> of
 plugin features. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> Gst.PluginFeature]</span>
 </td>
 </tr></tbody>
@@ -419,10 +360,10 @@ plugin features. <span class="annotation">[<acronym title="Don't free data after
 <hr>
 <div class="refsect2">
 <a name="gst-plugin-feature-check-version"></a><h3>gst_plugin_feature_check_version ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_plugin_feature_check_version    (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> min_major</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> min_minor</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> min_micro</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>            gst_plugin_feature_check_version    (<em class="parameter"><code><a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> *feature</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint</span> min_major</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint</span> min_minor</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint</span> min_micro</code></em>);</pre>
 <p>
 Checks whether the given plugin feature is at least
  the required version
@@ -449,8 +390,8 @@ Checks whether the given plugin feature is at least
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if the plugin feature has at least
-the required version, otherwise <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><span class="type">FALSE</span></a>.</td>
+<span class="type">TRUE</span> if the plugin feature has at least
+the required version, otherwise <span class="type">FALSE</span>.</td>
 </tr>
 </tbody>
 </table></div>
@@ -458,12 +399,12 @@ the required version, otherwise <a href="http://library.gnome.org/devel/glib/uns
 <hr>
 <div class="refsect2">
 <a name="gst-plugin-feature-rank-compare-func"></a><h3>gst_plugin_feature_rank_compare_func ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                gst_plugin_feature_rank_compare_func
-                                                        (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gconstpointer"><span class="type">gconstpointer</span></a> p1</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gconstpointer"><span class="type">gconstpointer</span></a> p2</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gint</span>                gst_plugin_feature_rank_compare_func
+                                                        (<em class="parameter"><code><span class="type">gconstpointer</span> p1</code></em>,
+                                                         <em class="parameter"><code><span class="type">gconstpointer</span> p2</code></em>);</pre>
 <p>
 Compares the two given <a class="link" href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a> instances. This function can be
-used as a <a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GCompareFunc"><span class="type">GCompareFunc</span></a> when sorting by rank and then by name.
+used as a <span class="type">GCompareFunc</span> when sorting by rank and then by name.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">

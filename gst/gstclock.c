@@ -109,6 +109,7 @@
 #include "gstclock.h"
 #include "gstinfo.h"
 #include "gstutils.h"
+#include "glib-compat-private.h"
 
 #ifndef GST_DISABLE_TRACE
 /* #define GST_WITH_ALLOC_TRACE */
@@ -118,7 +119,6 @@ static GstAllocTrace *_gst_clock_entry_trace;
 
 /* #define DEBUGGING_ENABLED */
 
-#define DEFAULT_STATS                   FALSE
 #define DEFAULT_WINDOW_SIZE             32
 #define DEFAULT_WINDOW_THRESHOLD        4
 #define DEFAULT_TIMEOUT                 GST_SECOND / 10
@@ -126,7 +126,6 @@ static GstAllocTrace *_gst_clock_entry_trace;
 enum
 {
   PROP_0,
-  PROP_STATS,
   PROP_WINDOW_SIZE,
   PROP_WINDOW_THRESHOLD,
   PROP_TIMEOUT
@@ -140,13 +139,13 @@ struct _GstClockPrivate
 
 /* seqlocks */
 #define read_seqbegin(clock)                                   \
-  g_atomic_int_get (&clock->ABI.priv->post_count);
+  g_atomic_int_get (&clock->priv->post_count);
 
 static inline gboolean
 read_seqretry (GstClock * clock, gint seq)
 {
   /* no retry if the seqnum did not change */
-  if (G_LIKELY (seq == g_atomic_int_get (&clock->ABI.priv->pre_count)))
+  if (G_LIKELY (seq == g_atomic_int_get (&clock->priv->pre_count)))
     return FALSE;
 
   /* wait for the writer to finish and retry */
@@ -158,12 +157,12 @@ read_seqretry (GstClock * clock, gint seq)
 #define write_seqlock(clock)                      \
 G_STMT_START {                                    \
   GST_OBJECT_LOCK (clock);                        \
-  g_atomic_int_inc (&clock->ABI.priv->pre_count);     \
+  g_atomic_int_inc (&clock->priv->pre_count);     \
 } G_STMT_END;
 
 #define write_sequnlock(clock)                    \
 G_STMT_START {                                    \
-  g_atomic_int_inc (&clock->ABI.priv->post_count);    \
+  g_atomic_int_inc (&clock->priv->post_count);    \
   GST_OBJECT_UNLOCK (clock);                      \
 } G_STMT_END;
 
@@ -174,10 +173,6 @@ static void gst_clock_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_clock_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
-static void gst_clock_update_stats (GstClock * clock);
-
-
-static GstObjectClass *parent_class = NULL;
 
 /* static guint gst_clock_signals[LAST_SIGNAL] = { 0 }; */
 
@@ -189,7 +184,7 @@ gst_clock_entry_new (GstClock * clock, GstClockTime time,
 
   entry = g_slice_new (GstClockEntry);
 #ifndef GST_DISABLE_TRACE
-  gst_alloc_trace_new (_gst_clock_entry_trace, entry);
+  _gst_alloc_trace_new (_gst_clock_entry_trace, entry);
 #endif
   GST_CAT_DEBUG_OBJECT (GST_CAT_CLOCK, clock,
       "created entry %p, time %" GST_TIME_FORMAT, entry, GST_TIME_ARGS (time));
@@ -306,7 +301,7 @@ _gst_clock_id_free (GstClockID id)
     entry->destroy_data (entry->user_data);
 
 #ifndef GST_DISABLE_TRACE
-  gst_alloc_trace_free (_gst_clock_entry_trace, id);
+  _gst_alloc_trace_free (_gst_clock_entry_trace, id);
 #endif
   g_slice_free (GstClockEntry, id);
 }
@@ -500,9 +495,6 @@ gst_clock_id_wait (GstClockID id, GstClockTimeDiff * jitter)
   if (entry->type == GST_CLOCK_ENTRY_PERIODIC)
     entry->time = requested + entry->interval;
 
-  if (G_UNLIKELY (clock->stats))
-    gst_clock_update_stats (clock);
-
   return res;
 
   /* ERRORS */
@@ -649,6 +641,7 @@ gst_clock_id_unschedule (GstClockID id)
 /*
  * GstClock abstract base class implementation
  */
+#define gst_clock_parent_class parent_class
 G_DEFINE_TYPE (GstClock, gst_clock, GST_TYPE_OBJECT);
 
 static void
@@ -656,11 +649,8 @@ gst_clock_class_init (GstClockClass * klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-  parent_class = g_type_class_peek_parent (klass);
-
 #ifndef GST_DISABLE_TRACE
-  _gst_clock_entry_trace =
-      gst_alloc_trace_register (GST_CLOCK_ENTRY_TRACE_NAME);
+  _gst_clock_entry_trace = _gst_alloc_trace_register ("GstClockEntry", -1);
 #endif
 
   gobject_class->dispose = gst_clock_dispose;
@@ -668,10 +658,6 @@ gst_clock_class_init (GstClockClass * klass)
   gobject_class->set_property = gst_clock_set_property;
   gobject_class->get_property = gst_clock_get_property;
 
-  g_object_class_install_property (gobject_class, PROP_STATS,
-      g_param_spec_boolean ("stats", "Stats",
-          "Enable clock stats (unimplemented)", DEFAULT_STATS,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_WINDOW_SIZE,
       g_param_spec_int ("window-size", "Window size",
           "The size of the window used to calculate rate and offset", 2, 1024,
@@ -695,10 +681,9 @@ gst_clock_init (GstClock * clock)
 {
   clock->last_time = 0;
   clock->entries = NULL;
-  clock->entries_changed = g_cond_new ();
-  clock->stats = FALSE;
+  g_cond_init (&clock->entries_changed);
 
-  clock->ABI.priv =
+  clock->priv =
       G_TYPE_INSTANCE_GET_PRIVATE (clock, GST_TYPE_CLOCK, GstClockPrivate);
 
   clock->internal_calibration = 0;
@@ -706,7 +691,7 @@ gst_clock_init (GstClock * clock)
   clock->rate_numerator = 1;
   clock->rate_denominator = 1;
 
-  clock->slave_lock = g_mutex_new ();
+  g_mutex_init (&clock->slave_lock);
   clock->window_size = DEFAULT_WINDOW_SIZE;
   clock->window_threshold = DEFAULT_WINDOW_THRESHOLD;
   clock->filling = TRUE;
@@ -744,8 +729,8 @@ gst_clock_finalize (GObject * object)
   clock->times = NULL;
   GST_CLOCK_SLAVE_UNLOCK (clock);
 
-  g_cond_free (clock->entries_changed);
-  g_mutex_free (clock->slave_lock);
+  g_cond_clear (&clock->entries_changed);
+  g_mutex_clear (&clock->slave_lock);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -1405,11 +1390,6 @@ invalid:
 }
 
 static void
-gst_clock_update_stats (GstClock * clock)
-{
-}
-
-static void
 gst_clock_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)
 {
@@ -1418,11 +1398,6 @@ gst_clock_set_property (GObject * object, guint prop_id,
   clock = GST_CLOCK (object);
 
   switch (prop_id) {
-    case PROP_STATS:
-      GST_OBJECT_LOCK (clock);
-      clock->stats = g_value_get_boolean (value);
-      GST_OBJECT_UNLOCK (clock);
-      break;
     case PROP_WINDOW_SIZE:
       GST_CLOCK_SLAVE_LOCK (clock);
       clock->window_size = g_value_get_int (value);
@@ -1461,11 +1436,6 @@ gst_clock_get_property (GObject * object, guint prop_id,
   clock = GST_CLOCK (object);
 
   switch (prop_id) {
-    case PROP_STATS:
-      GST_OBJECT_LOCK (clock);
-      g_value_set_boolean (value, clock->stats);
-      GST_OBJECT_UNLOCK (clock);
-      break;
     case PROP_WINDOW_SIZE:
       GST_CLOCK_SLAVE_LOCK (clock);
       g_value_set_int (value, clock->window_size);

@@ -117,6 +117,7 @@ am_libgstcoreelements_la_OBJECTS =  \
 	libgstcoreelements_la-gstidentity.lo \
 	libgstcoreelements_la-gstinputselector.lo \
 	libgstcoreelements_la-gstoutputselector.lo \
+	libgstcoreelements_la-gstdataqueue.lo \
 	libgstcoreelements_la-gstmultiqueue.lo \
 	libgstcoreelements_la-gstqueue.lo \
 	libgstcoreelements_la-gstqueue2.lo \
@@ -216,10 +217,12 @@ GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GIO_CFLAGS = @GIO_CFLAGS@
+GIO_LDFLAGS = @GIO_LDFLAGS@
+GIO_LIBS = @GIO_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_EXTRA_CFLAGS = @GLIB_EXTRA_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
-GLIB_ONLY_CFLAGS = @GLIB_ONLY_CFLAGS@
-GLIB_ONLY_LIBS = @GLIB_ONLY_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
 GMP_LIBS = @GMP_LIBS@
@@ -235,7 +238,6 @@ GST_ALL_LIBS = @GST_ALL_LIBS@
 GST_CURRENT = @GST_CURRENT@
 GST_DISABLE_ALLOC_TRACE_DEFINE = @GST_DISABLE_ALLOC_TRACE_DEFINE@
 GST_DISABLE_GST_DEBUG_DEFINE = @GST_DISABLE_GST_DEBUG_DEFINE@
-GST_DISABLE_NET_DEFINE = @GST_DISABLE_NET_DEFINE@
 GST_DISABLE_OPTION_PARSING_DEFINE = @GST_DISABLE_OPTION_PARSING_DEFINE@
 GST_DISABLE_PARSE_DEFINE = @GST_DISABLE_PARSE_DEFINE@
 GST_DISABLE_PLUGIN_DEFINE = @GST_DISABLE_PLUGIN_DEFINE@
@@ -281,7 +283,6 @@ HAVE_PS2PDF = @HAVE_PS2PDF@
 HAVE_XMLLINT = @HAVE_XMLLINT@
 HOST_CPU = @HOST_CPU@
 HTML_DIR = @HTML_DIR@
-INET_ATON_LIBS = @INET_ATON_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -314,6 +315,7 @@ LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
@@ -369,6 +371,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
@@ -402,7 +405,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -438,6 +440,7 @@ libgstcoreelements_la_SOURCES = \
 	gstidentity.c		\
 	gstinputselector.c	\
 	gstoutputselector.c	\
+	gstdataqueue.c 		\
 	gstmultiqueue.c		\
 	gstqueue.c		\
 	gstqueue2.c		\
@@ -464,6 +467,7 @@ noinst_HEADERS = \
 	gstidentity.h		\
 	gstinputselector.h	\
 	gstoutputselector.h	\
+	gstdataqueue.h 		\
 	gstmultiqueue.h		\
 	gstqueue.h		\
 	gstqueue2.h		\
@@ -550,6 +554,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstcoreelements_la-gstcapsfilter.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstcoreelements_la-gstdataqueue.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstcoreelements_la-gstelements.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstcoreelements_la-gstfakesink.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstcoreelements_la-gstfakesrc.Plo@am__quote@
@@ -687,6 +692,14 @@ libgstcoreelements_la-gstoutputselector.lo: gstoutputselector.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstoutputselector.c' object='libgstcoreelements_la-gstoutputselector.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstcoreelements_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstcoreelements_la_CFLAGS) $(CFLAGS) -c -o libgstcoreelements_la-gstoutputselector.lo `test -f 'gstoutputselector.c' || echo '$(srcdir)/'`gstoutputselector.c
+
+libgstcoreelements_la-gstdataqueue.lo: gstdataqueue.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstcoreelements_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstcoreelements_la_CFLAGS) $(CFLAGS) -MT libgstcoreelements_la-gstdataqueue.lo -MD -MP -MF $(DEPDIR)/libgstcoreelements_la-gstdataqueue.Tpo -c -o libgstcoreelements_la-gstdataqueue.lo `test -f 'gstdataqueue.c' || echo '$(srcdir)/'`gstdataqueue.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstcoreelements_la-gstdataqueue.Tpo $(DEPDIR)/libgstcoreelements_la-gstdataqueue.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstdataqueue.c' object='libgstcoreelements_la-gstdataqueue.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstcoreelements_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstcoreelements_la_CFLAGS) $(CFLAGS) -c -o libgstcoreelements_la-gstdataqueue.lo `test -f 'gstdataqueue.c' || echo '$(srcdir)/'`gstdataqueue.c
 
 libgstcoreelements_la-gstmultiqueue.lo: gstmultiqueue.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstcoreelements_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstcoreelements_la_CFLAGS) $(CFLAGS) -MT libgstcoreelements_la-gstmultiqueue.lo -MD -MP -MF $(DEPDIR)/libgstcoreelements_la-gstmultiqueue.Tpo -c -o libgstcoreelements_la-gstmultiqueue.lo `test -f 'gstmultiqueue.c' || echo '$(srcdir)/'`gstmultiqueue.c

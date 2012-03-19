@@ -61,7 +61,7 @@ enum                <a class="link" href="GstPadTemplate.html#GstPadPresence" ti
 #define             <a class="link" href="GstPadTemplate.html#GST-PAD-TEMPLATE-PRESENCE:CAPS" title="GST_PAD_TEMPLATE_PRESENCE()">GST_PAD_TEMPLATE_PRESENCE</a>           (templ)
 #define             <a class="link" href="GstPadTemplate.html#GST-PAD-TEMPLATE-CAPS" title="GST_PAD_TEMPLATE_CAPS()">GST_PAD_TEMPLATE_CAPS</a>               (templ)
 #define             <a class="link" href="GstPadTemplate.html#GST-PAD-TEMPLATE-IS-FIXED:CAPS" title="GST_PAD_TEMPLATE_IS_FIXED()">GST_PAD_TEMPLATE_IS_FIXED</a>           (templ)
-<a class="link" href="GstPadTemplate.html" title="GstPadTemplate"><span class="returnvalue">GstPadTemplate</span></a> *    <a class="link" href="GstPadTemplate.html#gst-pad-template-new" title="gst_pad_template_new ()">gst_pad_template_new</a>                (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name_template</code></em>,
+<a class="link" href="GstPadTemplate.html" title="GstPadTemplate"><span class="returnvalue">GstPadTemplate</span></a> *    <a class="link" href="GstPadTemplate.html#gst-pad-template-new" title="gst_pad_template_new ()">gst_pad_template_new</a>                (<em class="parameter"><code>const <span class="type">gchar</span> *name_template</code></em>,
                                                          <em class="parameter"><code><a class="link" href="GstPad.html#GstPadDirection" title="enum GstPadDirection"><span class="type">GstPadDirection</span></a> direction</code></em>,
                                                          <em class="parameter"><code><a class="link" href="GstPadTemplate.html#GstPadPresence" title="enum GstPadPresence"><span class="type">GstPadPresence</span></a> presence</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstCaps.html#GstCaps" title="struct GstCaps"><span class="type">GstCaps</span></a> *caps</code></em>);
@@ -71,8 +71,8 @@ enum                <a class="link" href="GstPadTemplate.html#GstPadPresence" ti
 <div class="refsect1">
 <a name="GstPadTemplate.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+  GObject
+   +----GInitiallyUnowned
          +----<a class="link" href="GstObject.html" title="GstObject">GstObject</a>
                +----GstPadTemplate
 </pre>
@@ -82,14 +82,14 @@ enum                <a class="link" href="GstPadTemplate.html#GstPadPresence" ti
 <pre class="synopsis">
   "<a class="link" href="GstPadTemplate.html#GstPadTemplate--caps" title='The "caps" property'>caps</a>"                     <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="struct GstCaps"><span class="type">GstCaps</span></a>*              : Read / Write / Construct Only
   "<a class="link" href="GstPadTemplate.html#GstPadTemplate--direction" title='The "direction" property'>direction</a>"                <a class="link" href="GstPad.html#GstPadDirection" title="enum GstPadDirection"><span class="type">GstPadDirection</span></a>       : Read / Write / Construct Only
-  "<a class="link" href="GstPadTemplate.html#GstPadTemplate--name-template" title='The "name-template" property'>name-template</a>"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only
+  "<a class="link" href="GstPadTemplate.html#GstPadTemplate--name-template" title='The "name-template" property'>name-template</a>"            <span class="type">gchar</span>*                : Read / Write / Construct Only
   "<a class="link" href="GstPadTemplate.html#GstPadTemplate--presence" title='The "presence" property'>presence</a>"                 <a class="link" href="GstPadTemplate.html#GstPadPresence" title="enum GstPadPresence"><span class="type">GstPadPresence</span></a>        : Read / Write / Construct Only
 </pre>
 </div>
 <div class="refsect1">
 <a name="GstPadTemplate.signals"></a><h2>Signals</h2>
 <pre class="synopsis">
-  "<a class="link" href="GstPadTemplate.html#GstPadTemplate-pad-created" title='The "pad-created" signal'>pad-created</a>"                                    : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
+  "<a class="link" href="GstPadTemplate.html#GstPadTemplate-pad-created" title='The "pad-created" signal'>pad-created</a>"                                    : <code class="literal">Run Last</code>
 </pre>
 </div>
 <div class="refsect1">
@@ -132,7 +132,7 @@ or <a class="link" href="GstPad.html#gst-pad-new-from-static-template" title="gs
 The following code example shows the code to create a pad from a padtemplate.
 </p>
 <div class="example">
-<a name="id520784"></a><p class="title"><b>Example 12. Create a pad from a padtemplate</b></p>
+<a name="idp6786448"></a><p class="title"><b>Example 11. Create a pad from a padtemplate</b></p>
 <div class="example-contents"><pre class="programlisting">
   GstStaticPadTemplate my_template =
   GST_STATIC_PAD_TEMPLATE (
@@ -193,7 +193,7 @@ Structure describing the <a class="link" href="GstPadTemplate.html#GstStaticPadT
 <col align="left" valign="top">
 <tbody>
 <tr>
-<td><p><span class="term">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *<em class="structfield"><code><a name="GstStaticPadTemplate.name-template"></a>name_template</code></em>;</span></p></td>
+<td><p><span class="term">const <span class="type">gchar</span> *<em class="structfield"><code><a name="GstStaticPadTemplate.name-template"></a>name_template</code></em>;</span></p></td>
 <td>the name of the template</td>
 </tr>
 <tr>
@@ -433,7 +433,7 @@ Check if the properties of the padtemplate are fixed
 <hr>
 <div class="refsect2">
 <a name="gst-pad-template-new"></a><h3>gst_pad_template_new ()</h3>
-<pre class="programlisting"><a class="link" href="GstPadTemplate.html" title="GstPadTemplate"><span class="returnvalue">GstPadTemplate</span></a> *    gst_pad_template_new                (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name_template</code></em>,
+<pre class="programlisting"><a class="link" href="GstPadTemplate.html" title="GstPadTemplate"><span class="returnvalue">GstPadTemplate</span></a> *    gst_pad_template_new                (<em class="parameter"><code>const <span class="type">gchar</span> *name_template</code></em>,
                                                          <em class="parameter"><code><a class="link" href="GstPad.html#GstPadDirection" title="enum GstPadDirection"><span class="type">GstPadDirection</span></a> direction</code></em>,
                                                          <em class="parameter"><code><a class="link" href="GstPadTemplate.html#GstPadPresence" title="enum GstPadPresence"><span class="type">GstPadPresence</span></a> presence</code></em>,
                                                          <em class="parameter"><code><a class="link" href="gstreamer-GstCaps.html#GstCaps" title="struct GstCaps"><span class="type">GstCaps</span></a> *caps</code></em>);</pre>
@@ -458,11 +458,12 @@ and with the given arguments.
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
-<td>a <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="struct GstCaps"><span class="type">GstCaps</span></a> set for the template.</td>
+<td>a <a class="link" href="gstreamer-GstCaps.html#GstCaps" title="struct GstCaps"><span class="type">GstCaps</span></a> set for the template. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a new <a class="link" href="GstPadTemplate.html" title="GstPadTemplate"><span class="type">GstPadTemplate</span></a>. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
+<td>a new <a class="link" href="GstPadTemplate.html" title="GstPadTemplate"><span class="type">GstPadTemplate</span></a>. <span class="annotation">[transfer floating]</span>
 </td>
 </tr>
 </tbody>
@@ -515,7 +516,7 @@ The direction of the pad described by the pad template.
 <hr>
 <div class="refsect2">
 <a name="GstPadTemplate--name-template"></a><h3>The <code class="literal">"name-template"</code> property</h3>
-<pre class="programlisting">  "name-template"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only</pre>
+<pre class="programlisting">  "name-template"            <span class="type">gchar</span>*                : Read / Write / Construct Only</pre>
 <p>
 The name template of the pad template.
 </p>
@@ -539,7 +540,7 @@ When the pad described by the pad template will become available.
 <a name="GstPadTemplate-pad-created"></a><h3>The <code class="literal">"pad-created"</code> signal</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="GstPadTemplate.html" title="GstPadTemplate"><span class="type">GstPadTemplate</span></a> *pad_template,
                                                         <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>         *pad,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>        user_data)         : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a></pre>
+                                                        <span class="type">gpointer</span>        user_data)         : <code class="literal">Run Last</code></pre>
 <p>
 This signal is fired when an element creates a pad from this template.
 </p>

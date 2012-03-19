@@ -41,14 +41,14 @@
 #include &lt;gst/gst.h&gt;
 
                     <a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue">GstAtomicQueue</a>;
-<a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="returnvalue">GstAtomicQueue</span></a> *    <a class="link" href="gstreamer-GstAtomicQueue.html#gst-atomic-queue-new" title="gst_atomic_queue_new ()">gst_atomic_queue_new</a>                (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> initial_size</code></em>);
+<a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="returnvalue">GstAtomicQueue</span></a> *    <a class="link" href="gstreamer-GstAtomicQueue.html#gst-atomic-queue-new" title="gst_atomic_queue_new ()">gst_atomic_queue_new</a>                (<em class="parameter"><code><span class="type">guint</span> initial_size</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstAtomicQueue.html#gst-atomic-queue-ref" title="gst_atomic_queue_ref ()">gst_atomic_queue_ref</a>                (<em class="parameter"><code><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="type">GstAtomicQueue</span></a> *queue</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstAtomicQueue.html#gst-atomic-queue-unref" title="gst_atomic_queue_unref ()">gst_atomic_queue_unref</a>              (<em class="parameter"><code><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="type">GstAtomicQueue</span></a> *queue</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="gstreamer-GstAtomicQueue.html#gst-atomic-queue-push" title="gst_atomic_queue_push ()">gst_atomic_queue_push</a>               (<em class="parameter"><code><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="type">GstAtomicQueue</span></a> *queue</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>            <a class="link" href="gstreamer-GstAtomicQueue.html#gst-atomic-queue-peek" title="gst_atomic_queue_peek ()">gst_atomic_queue_peek</a>               (<em class="parameter"><code><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="type">GstAtomicQueue</span></a> *queue</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>            <a class="link" href="gstreamer-GstAtomicQueue.html#gst-atomic-queue-pop" title="gst_atomic_queue_pop ()">gst_atomic_queue_pop</a>                (<em class="parameter"><code><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="type">GstAtomicQueue</span></a> *queue</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               <a class="link" href="gstreamer-GstAtomicQueue.html#gst-atomic-queue-length" title="gst_atomic_queue_length ()">gst_atomic_queue_length</a>             (<em class="parameter"><code><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="type">GstAtomicQueue</span></a> *queue</code></em>);
+                                                         <em class="parameter"><code><span class="type">gpointer</span> data</code></em>);
+<span class="returnvalue">gpointer</span>            <a class="link" href="gstreamer-GstAtomicQueue.html#gst-atomic-queue-peek" title="gst_atomic_queue_peek ()">gst_atomic_queue_peek</a>               (<em class="parameter"><code><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="type">GstAtomicQueue</span></a> *queue</code></em>);
+<span class="returnvalue">gpointer</span>            <a class="link" href="gstreamer-GstAtomicQueue.html#gst-atomic-queue-pop" title="gst_atomic_queue_pop ()">gst_atomic_queue_pop</a>                (<em class="parameter"><code><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="type">GstAtomicQueue</span></a> *queue</code></em>);
+<span class="returnvalue">guint</span>               <a class="link" href="gstreamer-GstAtomicQueue.html#gst-atomic-queue-length" title="gst_atomic_queue_length ()">gst_atomic_queue_length</a>             (<em class="parameter"><code><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="type">GstAtomicQueue</span></a> *queue</code></em>);
 </pre>
 </div>
 <div class="refsect1">
@@ -74,7 +74,7 @@ Use the acessor functions to get the stored values.
 <hr>
 <div class="refsect2">
 <a name="gst-atomic-queue-new"></a><h3>gst_atomic_queue_new ()</h3>
-<pre class="programlisting"><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="returnvalue">GstAtomicQueue</span></a> *    gst_atomic_queue_new                (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> initial_size</code></em>);</pre>
+<pre class="programlisting"><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="returnvalue">GstAtomicQueue</span></a> *    gst_atomic_queue_new                (<em class="parameter"><code><span class="type">guint</span> initial_size</code></em>);</pre>
 <p>
 Create a new atomic queue instance. <em class="parameter"><code>initial_size</code></em> will be rounded up to the
 nearest power of 2 and used as the initial size of the queue.
@@ -133,7 +133,7 @@ Unref <em class="parameter"><code>queue</code></em> and free the memory when the
 <div class="refsect2">
 <a name="gst-atomic-queue-push"></a><h3>gst_atomic_queue_push ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                gst_atomic_queue_push               (<em class="parameter"><code><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="type">GstAtomicQueue</span></a> *queue</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">gpointer</span> data</code></em>);</pre>
 <p>
 Append <em class="parameter"><code>data</code></em> to the tail of the queue.
 </p>
@@ -156,7 +156,7 @@ Append <em class="parameter"><code>data</code></em> to the tail of the queue.
 <hr>
 <div class="refsect2">
 <a name="gst-atomic-queue-peek"></a><h3>gst_atomic_queue_peek ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>            gst_atomic_queue_peek               (<em class="parameter"><code><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="type">GstAtomicQueue</span></a> *queue</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gpointer</span>            gst_atomic_queue_peek               (<em class="parameter"><code><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="type">GstAtomicQueue</span></a> *queue</code></em>);</pre>
 <p>
 Peek the head element of the queue without removing it from the queue.
 </p>
@@ -179,7 +179,7 @@ Peek the head element of the queue without removing it from the queue.
 <hr>
 <div class="refsect2">
 <a name="gst-atomic-queue-pop"></a><h3>gst_atomic_queue_pop ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>            gst_atomic_queue_pop                (<em class="parameter"><code><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="type">GstAtomicQueue</span></a> *queue</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">gpointer</span>            gst_atomic_queue_pop                (<em class="parameter"><code><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="type">GstAtomicQueue</span></a> *queue</code></em>);</pre>
 <p>
 Get the head element of the queue.
 </p>
@@ -202,7 +202,7 @@ Get the head element of the queue.
 <hr>
 <div class="refsect2">
 <a name="gst-atomic-queue-length"></a><h3>gst_atomic_queue_length ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               gst_atomic_queue_length             (<em class="parameter"><code><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="type">GstAtomicQueue</span></a> *queue</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">guint</span>               gst_atomic_queue_length             (<em class="parameter"><code><a class="link" href="gstreamer-GstAtomicQueue.html#GstAtomicQueue" title="GstAtomicQueue"><span class="type">GstAtomicQueue</span></a> *queue</code></em>);</pre>
 <p>
 Get the amount of items in the queue.
 </p>

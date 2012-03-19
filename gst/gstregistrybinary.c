@@ -353,7 +353,7 @@ gst_registry_binary_initialize_magic (GstBinaryRegistryMagic * m)
  * Returns: %TRUE on success.
  */
 gboolean
-priv_gst_registry_binary_write_cache (GstRegistry * registry,
+priv_gst_registry_binary_write_cache (GstRegistry * registry, GList * plugins,
     const char *location)
 {
   GList *walk;
@@ -370,7 +370,7 @@ priv_gst_registry_binary_write_cache (GstRegistry * registry,
     goto fail;
 
   /* iterate trough the list of plugins and fit them into binary structures */
-  for (walk = registry->plugins; walk; walk = g_list_next (walk)) {
+  for (walk = plugins; walk != NULL; walk = walk->next) {
     GstPlugin *plugin = GST_PLUGIN (walk->data);
 
     if (!plugin->filename)
@@ -523,7 +523,6 @@ priv_gst_registry_binary_read_cache (GstRegistry * registry,
   /* make sure these types exist */
   GST_TYPE_ELEMENT_FACTORY;
   GST_TYPE_TYPE_FIND_FACTORY;
-  GST_TYPE_INDEX_FACTORY;
 
 #ifndef GST_DISABLE_GST_DEBUG
   timer = g_timer_new ();

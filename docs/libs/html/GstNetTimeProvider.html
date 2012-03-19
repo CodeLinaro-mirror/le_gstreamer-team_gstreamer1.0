@@ -47,15 +47,15 @@
 
 struct              <a class="link" href="GstNetTimeProvider.html#GstNetTimeProvider-struct" title="struct GstNetTimeProvider">GstNetTimeProvider</a>;
 <a class="link" href="GstNetTimeProvider.html" title="GstNetTimeProvider"><span class="returnvalue">GstNetTimeProvider</span></a> * <a class="link" href="GstNetTimeProvider.html#gst-net-time-provider-new" title="gst_net_time_provider_new ()">gst_net_time_provider_new</a>          (<em class="parameter"><code><a href="../gstreamer-0.11/GstClock.html"><span class="type">GstClock</span></a> *clock</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *address</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> port</code></em>);
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *address</code></em>,
+                                                         <em class="parameter"><code><span class="type">gint</span> port</code></em>);
 </pre>
 </div>
 <div class="refsect1">
 <a name="GstNetTimeProvider.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+  GObject
+   +----GInitiallyUnowned
          +----<a href="../gstreamer-0.11/GstObject.html">GstObject</a>
                +----GstNetTimeProvider
 </pre>
@@ -63,10 +63,10 @@ struct              <a class="link" href="GstNetTimeProvider.html#GstNetTimeProv
 <div class="refsect1">
 <a name="GstNetTimeProvider.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="GstNetTimeProvider.html#GstNetTimeProvider--active" title='The "active" property'>active</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="GstNetTimeProvider.html#GstNetTimeProvider--address" title='The "address" property'>address</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
+  "<a class="link" href="GstNetTimeProvider.html#GstNetTimeProvider--active" title='The "active" property'>active</a>"                   <span class="type">gboolean</span>              : Read / Write
+  "<a class="link" href="GstNetTimeProvider.html#GstNetTimeProvider--address" title='The "address" property'>address</a>"                  <span class="type">gchar</span>*                : Read / Write
   "<a class="link" href="GstNetTimeProvider.html#GstNetTimeProvider--clock" title='The "clock" property'>clock</a>"                    <a href="../gstreamer-0.11/GstClock.html"><span class="type">GstClock</span></a>*             : Read / Write
-  "<a class="link" href="GstNetTimeProvider.html#GstNetTimeProvider--port" title='The "port" property'>port</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
+  "<a class="link" href="GstNetTimeProvider.html#GstNetTimeProvider--port" title='The "port" property'>port</a>"                     <span class="type">gint</span>                  : Read / Write
 </pre>
 </div>
 <div class="refsect1">
@@ -102,8 +102,8 @@ Opaque <a class="link" href="GstNetTimeProvider.html" title="GstNetTimeProvider"
 <div class="refsect2">
 <a name="gst-net-time-provider-new"></a><h3>gst_net_time_provider_new ()</h3>
 <pre class="programlisting"><a class="link" href="GstNetTimeProvider.html" title="GstNetTimeProvider"><span class="returnvalue">GstNetTimeProvider</span></a> * gst_net_time_provider_new          (<em class="parameter"><code><a href="../gstreamer-0.11/GstClock.html"><span class="type">GstClock</span></a> *clock</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *address</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> port</code></em>);</pre>
+                                                         <em class="parameter"><code>const <span class="type">gchar</span> *address</code></em>,
+                                                         <em class="parameter"><code><span class="type">gint</span> port</code></em>);</pre>
 <p>
 Allows network clients to get the current time of <em class="parameter"><code>clock</code></em>.
 </p>
@@ -135,14 +135,14 @@ to bind to all addresses</td>
 <a name="GstNetTimeProvider.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
 <a name="GstNetTimeProvider--active"></a><h3>The <code class="literal">"active"</code> property</h3>
-<pre class="programlisting">  "active"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<pre class="programlisting">  "active"                   <span class="type">gboolean</span>              : Read / Write</pre>
 <p>TRUE if the clock will respond to queries over the network.</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GstNetTimeProvider--address"></a><h3>The <code class="literal">"address"</code> property</h3>
-<pre class="programlisting">  "address"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<pre class="programlisting">  "address"                  <span class="type">gchar</span>*                : Read / Write</pre>
 <p>The address to bind on, as a dotted quad (x.x.x.x).</p>
 <p>Default value: "0.0.0.0"</p>
 </div>
@@ -155,7 +155,7 @@ to bind to all addresses</td>
 <hr>
 <div class="refsect2">
 <a name="GstNetTimeProvider--port"></a><h3>The <code class="literal">"port"</code> property</h3>
-<pre class="programlisting">  "port"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
+<pre class="programlisting">  "port"                     <span class="type">gint</span>                  : Read / Write</pre>
 <p>The port to receive the packets from, 0=allocate.</p>
 <p>Allowed values: [0,65535]</p>
 <p>Default value: 5637</p>

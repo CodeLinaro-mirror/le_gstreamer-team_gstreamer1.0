@@ -116,16 +116,16 @@ libgstreamer_@GST_MAJORMINOR@_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_2)
 am__libgstreamer_@GST_MAJORMINOR@_la_SOURCES_DIST = gst.c gstobject.c \
 	gstbin.c gstbuffer.c gstbufferlist.c gstbufferpool.c gstbus.c \
-	gstcaps.c gstchildproxy.c gstclock.c gstdatetime.c \
-	gstdebugutils.c gstelement.c gstelementfactory.c gsterror.c \
-	gstevent.c gstfilter.c gstformat.c gstghostpad.c gstindex.c \
-	gstindexfactory.c gstinfo.c gstiterator.c gstatomicqueue.c \
+	gstcaps.c gstchildproxy.c gstclock.c gstcontrolbinding.c \
+	gstcontrolsource.c gstdatetime.c gstdebugutils.c gstelement.c \
+	gstelementfactory.c gsterror.c gstevent.c gstformat.c \
+	gstghostpad.c gstinfo.c gstiterator.c gstatomicqueue.c \
 	gstmessage.c gstmeta.c gstmemory.c gstminiobject.c gstpad.c \
 	gstpadtemplate.c gstparamspecs.c gstpipeline.c gstplugin.c \
 	gstpluginfeature.c gstpluginloader.c gstpoll.c gstpreset.c \
 	gstquark.c gstquery.c gstregistry.c gstregistrychunks.c \
-	gstsegment.c gststructure.c gstsystemclock.c gsttaglist.c \
-	gsttagsetter.c gsttask.c gsttaskpool.c gsttrace.c \
+	gstsample.c gstsegment.c gststructure.c gstsystemclock.c \
+	gsttaglist.c gsttagsetter.c gsttask.c gsttaskpool.c gsttrace.c \
 	gsttypefind.c gsttypefindfactory.c gsturi.c gstutils.c \
 	gstvalue.c gstparse.c gstregistrybinary.c
 @GST_DISABLE_TRACE_FALSE@am__objects_1 = libgstreamer_@GST_MAJORMINOR@_la-gsttrace.lo
@@ -141,17 +141,16 @@ am_libgstreamer_@GST_MAJORMINOR@_la_OBJECTS =  \
 	libgstreamer_@GST_MAJORMINOR@_la-gstcaps.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstchildproxy.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstclock.lo \
+	libgstreamer_@GST_MAJORMINOR@_la-gstcontrolbinding.lo \
+	libgstreamer_@GST_MAJORMINOR@_la-gstcontrolsource.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstdatetime.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstdebugutils.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstelement.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstelementfactory.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gsterror.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstevent.lo \
-	libgstreamer_@GST_MAJORMINOR@_la-gstfilter.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstformat.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstghostpad.lo \
-	libgstreamer_@GST_MAJORMINOR@_la-gstindex.lo \
-	libgstreamer_@GST_MAJORMINOR@_la-gstindexfactory.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstinfo.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstiterator.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstatomicqueue.lo \
@@ -172,6 +171,7 @@ am_libgstreamer_@GST_MAJORMINOR@_la_OBJECTS =  \
 	libgstreamer_@GST_MAJORMINOR@_la-gstquery.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstregistry.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstregistrychunks.lo \
+	libgstreamer_@GST_MAJORMINOR@_la-gstsample.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstsegment.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gststructure.lo \
 	libgstreamer_@GST_MAJORMINOR@_la-gstsystemclock.lo \
@@ -327,10 +327,12 @@ GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GIO_CFLAGS = @GIO_CFLAGS@
+GIO_LDFLAGS = @GIO_LDFLAGS@
+GIO_LIBS = @GIO_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_EXTRA_CFLAGS = @GLIB_EXTRA_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
-GLIB_ONLY_CFLAGS = @GLIB_ONLY_CFLAGS@
-GLIB_ONLY_LIBS = @GLIB_ONLY_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
 GMP_LIBS = @GMP_LIBS@
@@ -346,7 +348,6 @@ GST_ALL_LIBS = @GST_ALL_LIBS@
 GST_CURRENT = @GST_CURRENT@
 GST_DISABLE_ALLOC_TRACE_DEFINE = @GST_DISABLE_ALLOC_TRACE_DEFINE@
 GST_DISABLE_GST_DEBUG_DEFINE = @GST_DISABLE_GST_DEBUG_DEFINE@
-GST_DISABLE_NET_DEFINE = @GST_DISABLE_NET_DEFINE@
 GST_DISABLE_OPTION_PARSING_DEFINE = @GST_DISABLE_OPTION_PARSING_DEFINE@
 GST_DISABLE_PARSE_DEFINE = @GST_DISABLE_PARSE_DEFINE@
 GST_DISABLE_PLUGIN_DEFINE = @GST_DISABLE_PLUGIN_DEFINE@
@@ -392,7 +393,6 @@ HAVE_PS2PDF = @HAVE_PS2PDF@
 HAVE_XMLLINT = @HAVE_XMLLINT@
 HOST_CPU = @HOST_CPU@
 HTML_DIR = @HTML_DIR@
-INET_ATON_LIBS = @INET_ATON_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -425,6 +425,7 @@ LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
@@ -480,6 +481,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
@@ -513,7 +515,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -571,17 +572,16 @@ libgstreamer_@GST_MAJORMINOR@_la_SOURCES = \
 	gstcaps.c		\
 	gstchildproxy.c		\
 	gstclock.c		\
+	gstcontrolbinding.c \
+	gstcontrolsource.c \
 	gstdatetime.c		\
 	gstdebugutils.c		\
 	gstelement.c		\
 	gstelementfactory.c	\
 	gsterror.c		\
 	gstevent.c		\
-	gstfilter.c		\
 	gstformat.c		\
 	gstghostpad.c		\
-	gstindex.c 		\
-	gstindexfactory.c 	\
 	gstinfo.c		\
 	gstiterator.c		\
 	gstatomicqueue.c	\
@@ -602,6 +602,7 @@ libgstreamer_@GST_MAJORMINOR@_la_SOURCES = \
 	gstquery.c		\
 	gstregistry.c		\
 	gstregistrychunks.c	\
+	gstsample.c		\
 	gstsegment.c		\
 	gststructure.c		\
 	gstsystemclock.c	\
@@ -666,6 +667,8 @@ gst_headers = \
 	gstchildproxy.h		\
 	gstclock.h		\
 	gstcompat.h		\
+	gstcontrolbinding.h \
+	gstcontrolsource.h \
 	gstdatetime.h		\
 	gstdebugutils.h		\
 	gstelement.h		\
@@ -673,11 +676,8 @@ gst_headers = \
 	gstelementfactory.h	\
 	gsterror.h		\
 	gstevent.h		\
-	gstfilter.h		\
 	gstformat.h		\
 	gstghostpad.h		\
-	gstindex.h		\
-	gstindexfactory.h	\
 	gstinfo.h		\
 	gstiterator.h		\
 	gstatomicqueue.h	\
@@ -695,6 +695,7 @@ gst_headers = \
 	gstpoll.h		\
 	gstpreset.h             \
 	gstquery.h		\
+	gstsample.h		\
 	gstsegment.h		\
 	gststructure.h		\
 	gstsystemclock.h	\
@@ -702,7 +703,6 @@ gst_headers = \
 	gsttagsetter.h		\
 	gsttask.h		\
 	gsttaskpool.h		\
-	gsttrace.h		\
 	gsttypefind.h		\
 	gsttypefindfactory.h	\
 	gsturi.h		\
@@ -725,6 +725,7 @@ noinst_HEADERS = \
 	gstquark.h		\
 	gstregistrybinary.h     \
 	gstregistrychunks.h     \
+	gsttrace.h		\
 	gst_private.h
 
 @HAVE_INTROSPECTION_TRUE@BUILT_GIRSOURCES = Gst-@GST_MAJORMINOR@.gir
@@ -826,6 +827,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstcaps.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstchildproxy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstclock.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstcontrolbinding.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstcontrolsource.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstdatetime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstdebugutils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstelement.Plo@am__quote@
@@ -833,11 +836,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstenumtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gsterror.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstevent.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstfilter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstformat.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstghostpad.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstindex.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstindexfactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstinfo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstiterator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstmarshal.Plo@am__quote@
@@ -861,6 +861,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstregistry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstregistrybinary.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstregistrychunks.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstsample.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstsegment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gststructure.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstsystemclock.Plo@am__quote@
@@ -979,6 +980,22 @@ libgstreamer_@GST_MAJORMINOR@_la-gstclock.lo: gstclock.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstreamer_@GST_MAJORMINOR@_la-gstclock.lo `test -f 'gstclock.c' || echo '$(srcdir)/'`gstclock.c
 
+libgstreamer_@GST_MAJORMINOR@_la-gstcontrolbinding.lo: gstcontrolbinding.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstreamer_@GST_MAJORMINOR@_la-gstcontrolbinding.lo -MD -MP -MF $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstcontrolbinding.Tpo -c -o libgstreamer_@GST_MAJORMINOR@_la-gstcontrolbinding.lo `test -f 'gstcontrolbinding.c' || echo '$(srcdir)/'`gstcontrolbinding.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstcontrolbinding.Tpo $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstcontrolbinding.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstcontrolbinding.c' object='libgstreamer_@GST_MAJORMINOR@_la-gstcontrolbinding.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstreamer_@GST_MAJORMINOR@_la-gstcontrolbinding.lo `test -f 'gstcontrolbinding.c' || echo '$(srcdir)/'`gstcontrolbinding.c
+
+libgstreamer_@GST_MAJORMINOR@_la-gstcontrolsource.lo: gstcontrolsource.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstreamer_@GST_MAJORMINOR@_la-gstcontrolsource.lo -MD -MP -MF $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstcontrolsource.Tpo -c -o libgstreamer_@GST_MAJORMINOR@_la-gstcontrolsource.lo `test -f 'gstcontrolsource.c' || echo '$(srcdir)/'`gstcontrolsource.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstcontrolsource.Tpo $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstcontrolsource.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstcontrolsource.c' object='libgstreamer_@GST_MAJORMINOR@_la-gstcontrolsource.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstreamer_@GST_MAJORMINOR@_la-gstcontrolsource.lo `test -f 'gstcontrolsource.c' || echo '$(srcdir)/'`gstcontrolsource.c
+
 libgstreamer_@GST_MAJORMINOR@_la-gstdatetime.lo: gstdatetime.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstreamer_@GST_MAJORMINOR@_la-gstdatetime.lo -MD -MP -MF $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstdatetime.Tpo -c -o libgstreamer_@GST_MAJORMINOR@_la-gstdatetime.lo `test -f 'gstdatetime.c' || echo '$(srcdir)/'`gstdatetime.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstdatetime.Tpo $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstdatetime.Plo
@@ -1027,14 +1044,6 @@ libgstreamer_@GST_MAJORMINOR@_la-gstevent.lo: gstevent.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstreamer_@GST_MAJORMINOR@_la-gstevent.lo `test -f 'gstevent.c' || echo '$(srcdir)/'`gstevent.c
 
-libgstreamer_@GST_MAJORMINOR@_la-gstfilter.lo: gstfilter.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstreamer_@GST_MAJORMINOR@_la-gstfilter.lo -MD -MP -MF $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstfilter.Tpo -c -o libgstreamer_@GST_MAJORMINOR@_la-gstfilter.lo `test -f 'gstfilter.c' || echo '$(srcdir)/'`gstfilter.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstfilter.Tpo $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstfilter.Plo
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstfilter.c' object='libgstreamer_@GST_MAJORMINOR@_la-gstfilter.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstreamer_@GST_MAJORMINOR@_la-gstfilter.lo `test -f 'gstfilter.c' || echo '$(srcdir)/'`gstfilter.c
-
 libgstreamer_@GST_MAJORMINOR@_la-gstformat.lo: gstformat.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstreamer_@GST_MAJORMINOR@_la-gstformat.lo -MD -MP -MF $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstformat.Tpo -c -o libgstreamer_@GST_MAJORMINOR@_la-gstformat.lo `test -f 'gstformat.c' || echo '$(srcdir)/'`gstformat.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstformat.Tpo $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstformat.Plo
@@ -1050,22 +1059,6 @@ libgstreamer_@GST_MAJORMINOR@_la-gstghostpad.lo: gstghostpad.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstghostpad.c' object='libgstreamer_@GST_MAJORMINOR@_la-gstghostpad.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstreamer_@GST_MAJORMINOR@_la-gstghostpad.lo `test -f 'gstghostpad.c' || echo '$(srcdir)/'`gstghostpad.c
-
-libgstreamer_@GST_MAJORMINOR@_la-gstindex.lo: gstindex.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstreamer_@GST_MAJORMINOR@_la-gstindex.lo -MD -MP -MF $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstindex.Tpo -c -o libgstreamer_@GST_MAJORMINOR@_la-gstindex.lo `test -f 'gstindex.c' || echo '$(srcdir)/'`gstindex.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstindex.Tpo $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstindex.Plo
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstindex.c' object='libgstreamer_@GST_MAJORMINOR@_la-gstindex.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstreamer_@GST_MAJORMINOR@_la-gstindex.lo `test -f 'gstindex.c' || echo '$(srcdir)/'`gstindex.c
-
-libgstreamer_@GST_MAJORMINOR@_la-gstindexfactory.lo: gstindexfactory.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstreamer_@GST_MAJORMINOR@_la-gstindexfactory.lo -MD -MP -MF $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstindexfactory.Tpo -c -o libgstreamer_@GST_MAJORMINOR@_la-gstindexfactory.lo `test -f 'gstindexfactory.c' || echo '$(srcdir)/'`gstindexfactory.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstindexfactory.Tpo $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstindexfactory.Plo
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstindexfactory.c' object='libgstreamer_@GST_MAJORMINOR@_la-gstindexfactory.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstreamer_@GST_MAJORMINOR@_la-gstindexfactory.lo `test -f 'gstindexfactory.c' || echo '$(srcdir)/'`gstindexfactory.c
 
 libgstreamer_@GST_MAJORMINOR@_la-gstinfo.lo: gstinfo.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstreamer_@GST_MAJORMINOR@_la-gstinfo.lo -MD -MP -MF $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstinfo.Tpo -c -o libgstreamer_@GST_MAJORMINOR@_la-gstinfo.lo `test -f 'gstinfo.c' || echo '$(srcdir)/'`gstinfo.c
@@ -1226,6 +1219,14 @@ libgstreamer_@GST_MAJORMINOR@_la-gstregistrychunks.lo: gstregistrychunks.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstregistrychunks.c' object='libgstreamer_@GST_MAJORMINOR@_la-gstregistrychunks.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstreamer_@GST_MAJORMINOR@_la-gstregistrychunks.lo `test -f 'gstregistrychunks.c' || echo '$(srcdir)/'`gstregistrychunks.c
+
+libgstreamer_@GST_MAJORMINOR@_la-gstsample.lo: gstsample.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstreamer_@GST_MAJORMINOR@_la-gstsample.lo -MD -MP -MF $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstsample.Tpo -c -o libgstreamer_@GST_MAJORMINOR@_la-gstsample.lo `test -f 'gstsample.c' || echo '$(srcdir)/'`gstsample.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstsample.Tpo $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstsample.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstsample.c' object='libgstreamer_@GST_MAJORMINOR@_la-gstsample.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstreamer_@GST_MAJORMINOR@_la-gstsample.lo `test -f 'gstsample.c' || echo '$(srcdir)/'`gstsample.c
 
 libgstreamer_@GST_MAJORMINOR@_la-gstsegment.lo: gstsegment.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstreamer_@GST_MAJORMINOR@_la-gstsegment.lo -MD -MP -MF $(DEPDIR)/libgstreamer_@GST_MAJORMINOR@_la-gstsegment.Tpo -c -o libgstreamer_@GST_MAJORMINOR@_la-gstsegment.lo `test -f 'gstsegment.c' || echo '$(srcdir)/'`gstsegment.c
@@ -1839,6 +1840,7 @@ Android.mk: Makefile.am
 @HAVE_INTROSPECTION_TRUE@	$(AM_V_GEN)GST_PLUGIN_SYSTEM_PATH="" GST_PLUGIN_PATH="" GST_REGISTRY_UPDATE=no \
 @HAVE_INTROSPECTION_TRUE@		$(INTROSPECTION_SCANNER) -v --namespace Gst \
 @HAVE_INTROSPECTION_TRUE@		--nsversion=@GST_MAJORMINOR@ \
+@HAVE_INTROSPECTION_TRUE@		--warn-all \
 @HAVE_INTROSPECTION_TRUE@		-I$(top_srcdir) \
 @HAVE_INTROSPECTION_TRUE@		-I$(top_builddir) \
 @HAVE_INTROSPECTION_TRUE@		-DIN_GOBJECT_INTROSPECTION=1 \

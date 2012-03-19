@@ -117,7 +117,7 @@ struct _GstBus
 
   /*< private >*/
   GstAtomicQueue   *queue;
-  GMutex           *queue_lock;
+  GMutex            queue_lock;
 
   GstBusSyncHandler sync_handler;
   gpointer          sync_handler_data;
@@ -127,7 +127,8 @@ struct _GstBus
 
   /*< private >*/
   GstBusPrivate    *priv;
-  gpointer _gst_reserved[GST_PADDING - 1];
+
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 struct _GstBusClass

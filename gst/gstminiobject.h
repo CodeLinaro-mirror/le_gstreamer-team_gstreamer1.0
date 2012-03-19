@@ -71,7 +71,7 @@ typedef void (*GstMiniObjectFreeFunction) (GstMiniObject *obj);
  * GstMiniObjectWeakNotify:
  * @data: data that was provided when the weak reference was established
  * @where_the_mini_object_was: the mini object being finalized
- * 
+ *
  * A #GstMiniObjectWeakNotify function can be added to a mini object as a
  * callback that gets triggered when the mini object is finalized. Since the
  * mini object is already being finalized when the #GstMiniObjectWeakNotify is
@@ -198,7 +198,7 @@ struct _GstMiniObject {
 void            gst_mini_object_init            (GstMiniObject *mini_object,
                                                  GType type, gsize size);
 
-GstMiniObject * gst_mini_object_copy		(const GstMiniObject *mini_object);
+GstMiniObject * gst_mini_object_copy		(const GstMiniObject *mini_object) G_GNUC_MALLOC;
 gboolean        gst_mini_object_is_writable	(const GstMiniObject *mini_object);
 GstMiniObject * gst_mini_object_make_writable	(GstMiniObject *mini_object);
 

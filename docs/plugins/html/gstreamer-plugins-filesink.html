@@ -49,8 +49,8 @@
 <div class="refsect1">
 <a name="gstreamer-plugins-filesink.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+  GObject
+   +----GInitiallyUnowned
          +----<a href="../gstreamer-0.11/GstObject.html">GstObject</a>
                +----<a href="../gstreamer-0.11/GstElement.html">GstElement</a>
                      +----<a href="../gstreamer-libs-0.11/GstBaseSink.html">GstBaseSink</a>
@@ -66,10 +66,10 @@ GstFileSink implements
 <div class="refsect1">
 <a name="gstreamer-plugins-filesink.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gstreamer-plugins-filesink.html#GstFileSink--location" title='The "location" property'>location</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
+  "<a class="link" href="gstreamer-plugins-filesink.html#GstFileSink--location" title='The "location" property'>location</a>"                 <span class="type">gchar</span>*                : Read / Write
   "<a class="link" href="gstreamer-plugins-filesink.html#GstFileSink--buffer-mode" title='The "buffer-mode" property'>buffer-mode</a>"              <span class="type">GstFileSinkBufferMode</span>  : Read / Write
-  "<a class="link" href="gstreamer-plugins-filesink.html#GstFileSink--buffer-size" title='The "buffer-size" property'>buffer-size</a>"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
-  "<a class="link" href="gstreamer-plugins-filesink.html#GstFileSink--append" title='The "append" property'>append</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
+  "<a class="link" href="gstreamer-plugins-filesink.html#GstFileSink--buffer-size" title='The "buffer-size" property'>buffer-size</a>"              <span class="type">guint</span>                 : Read / Write
+  "<a class="link" href="gstreamer-plugins-filesink.html#GstFileSink--append" title='The "append" property'>append</a>"                   <span class="type">gboolean</span>              : Read / Write
 </pre>
 </div>
 <div class="refsect1">
@@ -80,7 +80,7 @@ Write incoming data to a file in the local file system.
 <p>
 </p>
 <div class="refsect2">
-<a name="id369364"></a><h3>Example launch line</h3>
+<a name="idp6327408"></a><h3>Example launch line</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch v4l2src num-buffers=1 ! jpegenc ! filesink location=capture1.jpeg
 </pre></div> Capture one frame from a v4l2 camera and save as jpeg image.
@@ -90,7 +90,7 @@ gst-launch v4l2src num-buffers=1 ! jpegenc ! filesink location=capture1.jpeg
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id369385"></a><h3>Element Information</h3>
+<a name="idp6329968"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -113,7 +113,7 @@ gst-launch v4l2src num-buffers=1 ! jpegenc ! filesink location=capture1.jpeg
 </div>
 <hr>
 <div class="refsect2">
-<a name="id398611"></a><h3>Element Pads</h3>
+<a name="idp9837072"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -154,7 +154,7 @@ Opaque <a class="link" href="gstreamer-plugins-filesink.html#GstFileSink"><span 
 <a name="gstreamer-plugins-filesink.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
 <a name="GstFileSink--location"></a><h3>The <code class="literal">"location"</code> property</h3>
-<pre class="programlisting">  "location"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<pre class="programlisting">  "location"                 <span class="type">gchar</span>*                : Read / Write</pre>
 <p>Location of the file to write.</p>
 <p>Default value: NULL</p>
 </div>
@@ -168,14 +168,14 @@ Opaque <a class="link" href="gstreamer-plugins-filesink.html#GstFileSink"><span 
 <hr>
 <div class="refsect2">
 <a name="GstFileSink--buffer-size"></a><h3>The <code class="literal">"buffer-size"</code> property</h3>
-<pre class="programlisting">  "buffer-size"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<pre class="programlisting">  "buffer-size"              <span class="type">guint</span>                 : Read / Write</pre>
 <p>Size of buffer in number of bytes for line or full buffer-mode.</p>
 <p>Default value: 65536</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GstFileSink--append"></a><h3>The <code class="literal">"append"</code> property</h3>
-<pre class="programlisting">  "append"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<pre class="programlisting">  "append"                   <span class="type">gboolean</span>              : Read / Write</pre>
 <p>
 Append to an already existing file.
 </p>

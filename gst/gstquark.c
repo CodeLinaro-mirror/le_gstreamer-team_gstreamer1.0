@@ -54,7 +54,9 @@ static const gchar *_quark_strings[] = {
   "min-buffers", "max-buffers", "prefix", "postfix", "align", "time",
   "GstQueryAllocation", "need-pool", "meta", "pool", "GstEventCaps",
   "GstEventReconfigure", "segment", "GstQueryScheduling", "pull-mode",
-  "random-access", "sequential", "allocator", "GstEventFlushStop", "options"
+  "allocator", "GstEventFlushStop", "options", "GstQueryAcceptCaps",
+  "result", "GstQueryCaps", "filter", "modes", "GstEventStreamConfig",
+  "setup-data", "stream-headers", "GstEventGap"
 };
 
 GQuark _priv_gst_quark_table[GST_QUARK_MAX];

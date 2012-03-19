@@ -47,8 +47,8 @@
 <div class="refsect1">
 <a name="gstreamer-plugins-capsfilter.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+  GObject
+   +----GInitiallyUnowned
          +----<a href="../gstreamer-0.11/GstObject.html">GstObject</a>
                +----<a href="../gstreamer-0.11/GstElement.html">GstElement</a>
                      +----<a href="../gstreamer-libs-0.11/GstBaseTransform.html">GstBaseTransform</a>
@@ -70,7 +70,7 @@ data format.
 <p>
 </p>
 <div class="refsect2">
-<a name="id380729"></a><h3>Example launch line</h3>
+<a name="idp7691264"></a><h3>Example launch line</h3>
 <div class="informalexample"><pre class="programlisting">
 gst-launch videotestsrc ! video/x-raw-gray ! ffmpegcolorspace ! autovideosink
 </pre></div> Limits acceptable video from videotestsrc to be grayscale.
@@ -80,7 +80,7 @@ gst-launch videotestsrc ! video/x-raw-gray ! ffmpegcolorspace ! autovideosink
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id381657"></a><h3>Element Information</h3>
+<a name="idp7802608"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -103,7 +103,7 @@ gst-launch videotestsrc ! video/x-raw-gray ! ffmpegcolorspace ! autovideosink
 </div>
 <hr>
 <div class="refsect2">
-<a name="id317380"></a><h3>Element Pads</h3>
+<a name="idp89344"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>

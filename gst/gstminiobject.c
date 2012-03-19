@@ -38,8 +38,6 @@
 #include "gst/gstinfo.h"
 #include <gobject/gvaluecollector.h>
 
-#define GST_DISABLE_TRACE
-
 #ifndef GST_DISABLE_TRACE
 #include "gsttrace.h"
 static GstAllocTrace *_gst_mini_object_trace;
@@ -47,6 +45,14 @@ static GstAllocTrace *_gst_mini_object_trace;
 
 /* Mutex used for weak referencing */
 G_LOCK_DEFINE_STATIC (weak_refs_mutex);
+
+void
+_priv_gst_mini_object_initialize (void)
+{
+#ifndef GST_DISABLE_TRACE
+  _gst_mini_object_trace = _gst_alloc_trace_register ("GstMiniObject", 0);
+#endif
+}
 
 /**
  * gst_mini_object_init:
@@ -69,6 +75,10 @@ gst_mini_object_init (GstMiniObject * mini_object, GType type, gsize size)
   mini_object->size = size;
   mini_object->n_weak_refs = 0;
   mini_object->weak_refs = NULL;
+
+#ifndef GST_DISABLE_TRACE
+  _gst_alloc_trace_new (_gst_mini_object_trace, mini_object);
+#endif
 }
 
 /**
@@ -204,12 +214,13 @@ void
 gst_mini_object_unref (GstMiniObject * mini_object)
 {
   g_return_if_fail (mini_object != NULL);
-  g_return_if_fail (mini_object->refcount > 0);
 
   GST_CAT_TRACE (GST_CAT_REFCOUNTING, "%p unref %d->%d",
       mini_object,
       GST_MINI_OBJECT_REFCOUNT_VALUE (mini_object),
       GST_MINI_OBJECT_REFCOUNT_VALUE (mini_object) - 1);
+
+  g_return_if_fail (mini_object->refcount > 0);
 
   if (G_UNLIKELY (g_atomic_int_dec_and_test (&mini_object->refcount))) {
     gboolean do_free;
@@ -227,7 +238,7 @@ gst_mini_object_unref (GstMiniObject * mini_object)
         weak_refs_notify (mini_object);
 
 #ifndef GST_DISABLE_TRACE
-      gst_alloc_trace_free (_gst_mini_object_trace, mini_object);
+      _gst_alloc_trace_free (_gst_mini_object_trace, mini_object);
 #endif
       if (mini_object->free)
         mini_object->free (mini_object);

@@ -61,6 +61,7 @@
 #include "gstqueue.h"
 
 #include "../../gst/gst-i18n-lib.h"
+#include "../../gst/glib-compat-private.h"
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -91,7 +92,7 @@ GST_DEBUG_CATEGORY_STATIC (queue_dataflow);
                       queue->cur_level.time, \
                       queue->min_threshold.time, \
                       queue->max_size.time, \
-                      queue->queue->length)
+                      queue->queue.length)
 
 /* Queue signals and args */
 enum
@@ -127,7 +128,7 @@ enum
 #define DEFAULT_MAX_SIZE_TIME     GST_SECOND    /* 1 second    */
 
 #define GST_QUEUE_MUTEX_LOCK(q) G_STMT_START {                          \
-  g_mutex_lock (q->qlock);                                              \
+  g_mutex_lock (&q->qlock);                                              \
 } G_STMT_END
 
 #define GST_QUEUE_MUTEX_LOCK_CHECK(q,label) G_STMT_START {              \
@@ -137,13 +138,13 @@ enum
 } G_STMT_END
 
 #define GST_QUEUE_MUTEX_UNLOCK(q) G_STMT_START {                        \
-  g_mutex_unlock (q->qlock);                                            \
+  g_mutex_unlock (&q->qlock);                                            \
 } G_STMT_END
 
 #define GST_QUEUE_WAIT_DEL_CHECK(q, label) G_STMT_START {               \
   STATUS (q, q->sinkpad, "wait for DEL");                               \
   q->waiting_del = TRUE;                                                \
-  g_cond_wait (q->item_del, q->qlock);                                  \
+  g_cond_wait (&q->item_del, &q->qlock);                                  \
   q->waiting_del = FALSE;                                               \
   if (q->srcresult != GST_FLOW_OK) {                                    \
     STATUS (q, q->srcpad, "received DEL wakeup");                       \
@@ -155,7 +156,7 @@ enum
 #define GST_QUEUE_WAIT_ADD_CHECK(q, label) G_STMT_START {               \
   STATUS (q, q->srcpad, "wait for ADD");                                \
   q->waiting_add = TRUE;                                                \
-  g_cond_wait (q->item_add, q->qlock);                                  \
+  g_cond_wait (&q->item_add, &q->qlock);                                  \
   q->waiting_add = FALSE;                                               \
   if (q->srcresult != GST_FLOW_OK) {                                    \
     STATUS (q, q->srcpad, "received ADD wakeup");                       \
@@ -167,14 +168,14 @@ enum
 #define GST_QUEUE_SIGNAL_DEL(q) G_STMT_START {                          \
   if (q->waiting_del) {                                                 \
     STATUS (q, q->srcpad, "signal DEL");                                \
-    g_cond_signal (q->item_del);                                        \
+    g_cond_signal (&q->item_del);                                        \
   }                                                                     \
 } G_STMT_END
 
 #define GST_QUEUE_SIGNAL_ADD(q) G_STMT_START {                          \
   if (q->waiting_add) {                                                 \
     STATUS (q, q->sinkpad, "signal ADD");                               \
-    g_cond_signal (q->item_add);                                        \
+    g_cond_signal (&q->item_add);                                        \
   }                                                                     \
 } G_STMT_END
 
@@ -192,23 +193,29 @@ static void gst_queue_set_property (GObject * object,
 static void gst_queue_get_property (GObject * object,
     guint prop_id, GValue * value, GParamSpec * pspec);
 
-static GstFlowReturn gst_queue_chain (GstPad * pad, GstBuffer * buffer);
+static GstFlowReturn gst_queue_chain (GstPad * pad, GstObject * parent,
+    GstBuffer * buffer);
 static GstFlowReturn gst_queue_push_one (GstQueue * queue);
 static void gst_queue_loop (GstPad * pad);
 
-static gboolean gst_queue_handle_sink_event (GstPad * pad, GstEvent * event);
+static gboolean gst_queue_handle_sink_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
+static gboolean gst_queue_handle_sink_query (GstPad * pad, GstObject * parent,
+    GstQuery * query);
 
-static gboolean gst_queue_handle_src_event (GstPad * pad, GstEvent * event);
-static gboolean gst_queue_handle_src_query (GstPad * pad, GstQuery * query);
+static gboolean gst_queue_handle_src_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
+static gboolean gst_queue_handle_src_query (GstPad * pad, GstObject * parent,
+    GstQuery * query);
 
-static gboolean gst_queue_acceptcaps (GstPad * pad, GstCaps * caps);
-static GstCaps *gst_queue_getcaps (GstPad * pad, GstCaps * filter);
 static GstPadLinkReturn gst_queue_link_sink (GstPad * pad, GstPad * peer);
 static GstPadLinkReturn gst_queue_link_src (GstPad * pad, GstPad * peer);
 static void gst_queue_locked_flush (GstQueue * queue);
 
-static gboolean gst_queue_src_activate_push (GstPad * pad, gboolean active);
-static gboolean gst_queue_sink_activate_push (GstPad * pad, gboolean active);
+static gboolean gst_queue_src_activate_mode (GstPad * pad, GstObject * parent,
+    GstPadMode mode, gboolean active);
+static gboolean gst_queue_sink_activate_mode (GstPad * pad, GstObject * parent,
+    GstPadMode mode, gboolean active);
 
 static gboolean gst_queue_is_empty (GstQueue * queue);
 static gboolean gst_queue_is_filled (GstQueue * queue);
@@ -367,16 +374,14 @@ gst_queue_class_init (GstQueueClass * klass)
       gst_static_pad_template_get (&sinktemplate));
 
   /* Registering debug symbols for function pointers */
-  GST_DEBUG_REGISTER_FUNCPTR (gst_queue_chain);
-  GST_DEBUG_REGISTER_FUNCPTR (gst_queue_sink_activate_push);
-  GST_DEBUG_REGISTER_FUNCPTR (gst_queue_handle_sink_event);
+  GST_DEBUG_REGISTER_FUNCPTR (gst_queue_src_activate_mode);
   GST_DEBUG_REGISTER_FUNCPTR (gst_queue_link_sink);
-  GST_DEBUG_REGISTER_FUNCPTR (gst_queue_getcaps);
-  GST_DEBUG_REGISTER_FUNCPTR (gst_queue_acceptcaps);
-  GST_DEBUG_REGISTER_FUNCPTR (gst_queue_src_activate_push);
   GST_DEBUG_REGISTER_FUNCPTR (gst_queue_link_src);
+  GST_DEBUG_REGISTER_FUNCPTR (gst_queue_handle_sink_event);
+  GST_DEBUG_REGISTER_FUNCPTR (gst_queue_handle_sink_query);
   GST_DEBUG_REGISTER_FUNCPTR (gst_queue_handle_src_event);
   GST_DEBUG_REGISTER_FUNCPTR (gst_queue_handle_src_query);
+  GST_DEBUG_REGISTER_FUNCPTR (gst_queue_chain);
 }
 
 static void
@@ -385,23 +390,23 @@ gst_queue_init (GstQueue * queue)
   queue->sinkpad = gst_pad_new_from_static_template (&sinktemplate, "sink");
 
   gst_pad_set_chain_function (queue->sinkpad, gst_queue_chain);
-  gst_pad_set_activatepush_function (queue->sinkpad,
-      gst_queue_sink_activate_push);
+  gst_pad_set_activatemode_function (queue->sinkpad,
+      gst_queue_sink_activate_mode);
   gst_pad_set_event_function (queue->sinkpad, gst_queue_handle_sink_event);
+  gst_pad_set_query_function (queue->sinkpad, gst_queue_handle_sink_query);
   gst_pad_set_link_function (queue->sinkpad, gst_queue_link_sink);
-  gst_pad_set_getcaps_function (queue->sinkpad, gst_queue_getcaps);
-  gst_pad_set_acceptcaps_function (queue->sinkpad, gst_queue_acceptcaps);
+  GST_PAD_SET_PROXY_CAPS (queue->sinkpad);
+  GST_PAD_SET_PROXY_ALLOCATION (queue->sinkpad);
   gst_element_add_pad (GST_ELEMENT (queue), queue->sinkpad);
 
   queue->srcpad = gst_pad_new_from_static_template (&srctemplate, "src");
 
-  gst_pad_set_activatepush_function (queue->srcpad,
-      gst_queue_src_activate_push);
+  gst_pad_set_activatemode_function (queue->srcpad,
+      gst_queue_src_activate_mode);
   gst_pad_set_link_function (queue->srcpad, gst_queue_link_src);
-  gst_pad_set_acceptcaps_function (queue->srcpad, gst_queue_acceptcaps);
-  gst_pad_set_getcaps_function (queue->srcpad, gst_queue_getcaps);
   gst_pad_set_event_function (queue->srcpad, gst_queue_handle_src_event);
   gst_pad_set_query_function (queue->srcpad, gst_queue_handle_src_query);
+  GST_PAD_SET_PROXY_CAPS (queue->srcpad);
   gst_element_add_pad (GST_ELEMENT (queue), queue->srcpad);
 
   GST_QUEUE_CLEAR_LEVEL (queue->cur_level);
@@ -415,12 +420,13 @@ gst_queue_init (GstQueue * queue)
   queue->head_needs_discont = queue->tail_needs_discont = FALSE;
 
   queue->leaky = GST_QUEUE_NO_LEAK;
-  queue->srcresult = GST_FLOW_WRONG_STATE;
+  queue->srcresult = GST_FLOW_FLUSHING;
 
-  queue->qlock = g_mutex_new ();
-  queue->item_add = g_cond_new ();
-  queue->item_del = g_cond_new ();
-  queue->queue = g_queue_new ();
+  g_mutex_init (&queue->qlock);
+  g_cond_init (&queue->item_add);
+  g_cond_init (&queue->item_del);
+
+  g_queue_init (&queue->queue);
 
   queue->sinktime = GST_CLOCK_TIME_NONE;
   queue->srctime = GST_CLOCK_TIME_NONE;
@@ -438,61 +444,20 @@ gst_queue_init (GstQueue * queue)
 static void
 gst_queue_finalize (GObject * object)
 {
+  GstMiniObject *data;
   GstQueue *queue = GST_QUEUE (object);
 
   GST_DEBUG_OBJECT (queue, "finalizing queue");
 
-  while (!g_queue_is_empty (queue->queue)) {
-    GstMiniObject *data = g_queue_pop_head (queue->queue);
-
+  while ((data = g_queue_pop_head (&queue->queue)))
     gst_mini_object_unref (data);
-  }
-  g_queue_free (queue->queue);
-  g_mutex_free (queue->qlock);
-  g_cond_free (queue->item_add);
-  g_cond_free (queue->item_del);
+
+  g_queue_clear (&queue->queue);
+  g_mutex_clear (&queue->qlock);
+  g_cond_clear (&queue->item_add);
+  g_cond_clear (&queue->item_del);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
-}
-
-static gboolean
-gst_queue_acceptcaps (GstPad * pad, GstCaps * caps)
-{
-  gboolean result;
-  GstQueue *queue;
-  GstPad *otherpad;
-
-  queue = GST_QUEUE (gst_pad_get_parent (pad));
-  if (G_UNLIKELY (queue == NULL))
-    return FALSE;
-
-  otherpad = (pad == queue->srcpad ? queue->sinkpad : queue->srcpad);
-  result = gst_pad_peer_accept_caps (otherpad, caps);
-
-  gst_object_unref (queue);
-
-  return result;
-}
-
-static GstCaps *
-gst_queue_getcaps (GstPad * pad, GstCaps * filter)
-{
-  GstQueue *queue;
-  GstPad *otherpad;
-  GstCaps *result;
-
-  queue = GST_QUEUE (gst_pad_get_parent (pad));
-  if (G_UNLIKELY (queue == NULL))
-    return (filter ? gst_caps_ref (filter) : gst_caps_new_any ());
-
-  otherpad = (pad == queue->srcpad ? queue->sinkpad : queue->srcpad);
-  result = gst_pad_peer_get_caps (otherpad, filter);
-  if (result == NULL)
-    result = (filter ? gst_caps_ref (filter) : gst_caps_new_any ());
-
-  gst_object_unref (queue);
-
-  return result;
 }
 
 static GstPadLinkReturn
@@ -507,7 +472,7 @@ gst_queue_link_src (GstPad * pad, GstPad * peer)
   GstPadLinkReturn result = GST_PAD_LINK_OK;
   GstQueue *queue;
 
-  queue = GST_QUEUE (gst_pad_get_parent (pad));
+  queue = GST_QUEUE (GST_PAD_PARENT (pad));
 
   GST_DEBUG_OBJECT (queue, "queue linking source pad");
 
@@ -527,7 +492,6 @@ gst_queue_link_src (GstPad * pad, GstPad * peer)
     }
     GST_QUEUE_MUTEX_UNLOCK (queue);
   }
-  gst_object_unref (queue);
 
   return result;
 }
@@ -631,9 +595,9 @@ apply_buffer (GstQueue * queue, GstBuffer * buffer, GstSegment * segment,
 static void
 gst_queue_locked_flush (GstQueue * queue)
 {
-  while (!g_queue_is_empty (queue->queue)) {
-    GstMiniObject *data = g_queue_pop_head (queue->queue);
+  GstMiniObject *data;
 
+  while ((data = g_queue_pop_head (&queue->queue))) {
     /* Then lose another reference because we are supposed to destroy that
        data when flushing */
     gst_mini_object_unref (data);
@@ -664,7 +628,7 @@ gst_queue_locked_enqueue_buffer (GstQueue * queue, gpointer item)
   queue->cur_level.bytes += gst_buffer_get_size (buffer);
   apply_buffer (queue, buffer, &queue->sink_segment, TRUE, TRUE);
 
-  g_queue_push_tail (queue->queue, item);
+  g_queue_push_tail (&queue->queue, item);
   GST_QUEUE_SIGNAL_ADD (queue);
 }
 
@@ -685,12 +649,12 @@ gst_queue_locked_enqueue_event (GstQueue * queue, gpointer item)
     case GST_EVENT_SEGMENT:
       apply_segment (queue, event, &queue->sink_segment, TRUE);
       /* if the queue is empty, apply sink segment on the source */
-      if (queue->queue->length == 0) {
+      if (queue->queue.length == 0) {
         GST_CAT_LOG_OBJECT (queue_dataflow, queue, "Apply segment on srcpad");
         apply_segment (queue, event, &queue->src_segment, FALSE);
         queue->newseg_applied_to_src = TRUE;
       }
-      /* a new segment allows us to accept more buffers if we got UNEXPECTED
+      /* a new segment allows us to accept more buffers if we got EOS
        * from downstream */
       queue->unexpected = FALSE;
       break;
@@ -698,7 +662,7 @@ gst_queue_locked_enqueue_event (GstQueue * queue, gpointer item)
       break;
   }
 
-  g_queue_push_tail (queue->queue, item);
+  g_queue_push_tail (&queue->queue, item);
   GST_QUEUE_SIGNAL_ADD (queue);
 }
 
@@ -708,7 +672,7 @@ gst_queue_locked_dequeue (GstQueue * queue, gboolean * is_buffer)
 {
   GstMiniObject *item;
 
-  item = g_queue_pop_head (queue->queue);
+  item = g_queue_pop_head (&queue->queue);
   if (item == NULL)
     goto no_item;
 
@@ -770,15 +734,11 @@ no_item:
 }
 
 static gboolean
-gst_queue_handle_sink_event (GstPad * pad, GstEvent * event)
+gst_queue_handle_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
   GstQueue *queue;
 
-  queue = GST_QUEUE (gst_pad_get_parent (pad));
-  if (G_UNLIKELY (queue == NULL)) {
-    gst_event_unref (event);
-    return FALSE;
-  }
+  queue = GST_QUEUE (parent);
 
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_FLUSH_START:
@@ -789,7 +749,7 @@ gst_queue_handle_sink_event (GstPad * pad, GstEvent * event)
 
       /* now unblock the chain function */
       GST_QUEUE_MUTEX_LOCK (queue);
-      queue->srcresult = GST_FLOW_WRONG_STATE;
+      queue->srcresult = GST_FLOW_FLUSHING;
       /* unblock the loop and chain functions */
       GST_QUEUE_SIGNAL_ADD (queue);
       GST_QUEUE_SIGNAL_DEL (queue);
@@ -839,7 +799,6 @@ gst_queue_handle_sink_event (GstPad * pad, GstEvent * event)
       break;
   }
 done:
-  gst_object_unref (queue);
   return TRUE;
 
   /* ERRORS */
@@ -848,7 +807,6 @@ out_flushing:
     GST_CAT_LOG_OBJECT (queue_dataflow, queue,
         "refusing event, we are flushing");
     GST_QUEUE_MUTEX_UNLOCK (queue);
-    gst_object_unref (queue);
     gst_event_unref (event);
     return FALSE;
   }
@@ -856,16 +814,28 @@ out_eos:
   {
     GST_CAT_LOG_OBJECT (queue_dataflow, queue, "refusing event, we are EOS");
     GST_QUEUE_MUTEX_UNLOCK (queue);
-    gst_object_unref (queue);
     gst_event_unref (event);
     return FALSE;
   }
 }
 
 static gboolean
+gst_queue_handle_sink_query (GstPad * pad, GstObject * parent, GstQuery * query)
+{
+  gboolean res;
+
+  switch (GST_QUERY_TYPE (query)) {
+    default:
+      res = gst_pad_query_default (pad, parent, query);
+      break;
+  }
+  return res;
+}
+
+static gboolean
 gst_queue_is_empty (GstQueue * queue)
 {
-  if (queue->queue->length == 0)
+  if (queue->queue.length == 0)
     return TRUE;
 
   /* It is possible that a max size is reached before all min thresholds are.
@@ -913,12 +883,12 @@ gst_queue_leak_downstream (GstQueue * queue)
 }
 
 static GstFlowReturn
-gst_queue_chain (GstPad * pad, GstBuffer * buffer)
+gst_queue_chain (GstPad * pad, GstObject * parent, GstBuffer * buffer)
 {
   GstQueue *queue;
   GstClockTime duration, timestamp;
 
-  queue = (GstQueue *) GST_OBJECT_PARENT (pad);
+  queue = GST_QUEUE_CAST (parent);
 
   /* we have to lock the queue since we span threads */
   GST_QUEUE_MUTEX_LOCK_CHECK (queue, out_flushing);
@@ -1033,17 +1003,16 @@ out_eos:
 
     gst_buffer_unref (buffer);
 
-    return GST_FLOW_UNEXPECTED;
+    return GST_FLOW_EOS;
   }
 out_unexpected:
   {
-    GST_CAT_LOG_OBJECT (queue_dataflow, queue,
-        "exit because we received UNEXPECTED");
+    GST_CAT_LOG_OBJECT (queue_dataflow, queue, "exit because we received EOS");
     GST_QUEUE_MUTEX_UNLOCK (queue);
 
     gst_buffer_unref (buffer);
 
-    return GST_FLOW_UNEXPECTED;
+    return GST_FLOW_EOS;
   }
 }
 
@@ -1073,9 +1042,6 @@ gst_queue_push_one (GstQueue * queue)
 next:
   if (is_buffer) {
     GstBuffer *buffer;
-#if 0
-    GstCaps *caps;
-#endif
 
     buffer = GST_BUFFER_CAST (data);
 
@@ -1090,21 +1056,8 @@ next:
       }
       queue->head_needs_discont = FALSE;
     }
-#if 0
-    caps = GST_BUFFER_CAPS (buffer);
-#endif
 
     GST_QUEUE_MUTEX_UNLOCK (queue);
-#if 0
-    /* set the right caps on the pad now. We do this before pushing the buffer
-     * because the pad_push call will check (using acceptcaps) if the buffer can
-     * be set on the pad, which might fail because this will be propagated
-     * upstream. Also note that if the buffer has NULL caps, it means that the
-     * caps did not change, so we don't have to change caps on the pad. */
-    if (caps && caps != GST_PAD_CAPS (queue->srcpad))
-      gst_pad_set_caps (queue->srcpad, caps);
-#endif
-
     if (queue->push_newsegment) {
       gst_queue_push_newsegment (queue);
     }
@@ -1113,17 +1066,16 @@ next:
     /* need to check for srcresult here as well */
     GST_QUEUE_MUTEX_LOCK_CHECK (queue, out_flushing);
 
-    if (result == GST_FLOW_UNEXPECTED) {
-      GST_CAT_LOG_OBJECT (queue_dataflow, queue,
-          "got UNEXPECTED from downstream");
+    if (result == GST_FLOW_EOS) {
+      GST_CAT_LOG_OBJECT (queue_dataflow, queue, "got EOS from downstream");
       /* stop pushing buffers, we dequeue all items until we see an item that we
        * can push again, which is EOS or SEGMENT. If there is nothing in the
        * queue we can push, we set a flag to make the sinkpad refuse more
-       * buffers with an UNEXPECTED return value. */
+       * buffers with an EOS return value. */
       while ((data = gst_queue_locked_dequeue (queue, &is_buffer))) {
         if (is_buffer) {
           GST_CAT_LOG_OBJECT (queue_dataflow, queue,
-              "dropping UNEXPECTED buffer %p", data);
+              "dropping EOS buffer %p", data);
           gst_buffer_unref (GST_BUFFER_CAST (data));
         } else {
           GstEvent *event = GST_EVENT_CAST (data);
@@ -1132,12 +1084,12 @@ next:
           if (type == GST_EVENT_EOS || type == GST_EVENT_SEGMENT) {
             /* we found a pushable item in the queue, push it out */
             GST_CAT_LOG_OBJECT (queue_dataflow, queue,
-                "pushing pushable event %s after UNEXPECTED",
+                "pushing pushable event %s after EOS",
                 GST_EVENT_TYPE_NAME (event));
             goto next;
           }
           GST_CAT_LOG_OBJECT (queue_dataflow, queue,
-              "dropping UNEXPECTED event %p", event);
+              "dropping EOS event %p", event);
           gst_event_unref (event);
         }
       }
@@ -1160,11 +1112,11 @@ next:
     gst_pad_push_event (queue->srcpad, event);
 
     GST_QUEUE_MUTEX_LOCK_CHECK (queue, out_flushing);
-    /* if we're EOS, return UNEXPECTED so that the task pauses. */
+    /* if we're EOS, return EOS so that the task pauses. */
     if (type == GST_EVENT_EOS) {
       GST_CAT_LOG_OBJECT (queue_dataflow, queue,
-          "pushed EOS event %p, return UNEXPECTED", event);
-      result = GST_FLOW_UNEXPECTED;
+          "pushed EOS event %p, return EOS", event);
+      result = GST_FLOW_EOS;
     }
   }
   return result;
@@ -1179,7 +1131,7 @@ no_item:
 out_flushing:
   {
     GST_CAT_LOG_OBJECT (queue_dataflow, queue, "exit because we are flushing");
-    return GST_FLOW_WRONG_STATE;
+    return GST_FLOW_FLUSHING;
   }
 }
 
@@ -1238,8 +1190,8 @@ out_flushing:
     GST_QUEUE_SIGNAL_DEL (queue);
     GST_QUEUE_MUTEX_UNLOCK (queue);
     /* let app know about us giving up if upstream is not expected to do so */
-    /* UNEXPECTED is already taken care of elsewhere */
-    if (eos && (ret == GST_FLOW_NOT_LINKED || ret < GST_FLOW_UNEXPECTED)) {
+    /* EOS is already taken care of elsewhere */
+    if (eos && (ret == GST_FLOW_NOT_LINKED || ret < GST_FLOW_EOS)) {
       GST_ELEMENT_ERROR (queue, STREAM, FAILED,
           (_("Internal data flow error.")),
           ("streaming task paused, reason %s (%d)",
@@ -1251,15 +1203,11 @@ out_flushing:
 }
 
 static gboolean
-gst_queue_handle_src_event (GstPad * pad, GstEvent * event)
+gst_queue_handle_src_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
   gboolean res = TRUE;
-  GstQueue *queue = GST_QUEUE (gst_pad_get_parent (pad));
+  GstQueue *queue = GST_QUEUE (parent);
 
-  if (G_UNLIKELY (queue == NULL)) {
-    gst_event_unref (event);
-    return FALSE;
-  }
 #ifndef GST_DISABLE_GST_DEBUG
   GST_CAT_DEBUG_OBJECT (queue_dataflow, queue, "got event %p (%d)",
       event, GST_EVENT_TYPE (event));
@@ -1267,31 +1215,18 @@ gst_queue_handle_src_event (GstPad * pad, GstEvent * event)
 
   res = gst_pad_push_event (queue->sinkpad, event);
 
-  gst_object_unref (queue);
   return res;
 }
 
 static gboolean
-gst_queue_handle_src_query (GstPad * pad, GstQuery * query)
+gst_queue_handle_src_query (GstPad * pad, GstObject * parent, GstQuery * query)
 {
-  GstQueue *queue = GST_QUEUE (gst_pad_get_parent (pad));
-  GstPad *peer;
+  GstQueue *queue = GST_QUEUE (parent);
   gboolean res;
 
-  if (G_UNLIKELY (queue == NULL))
+  res = gst_pad_query_default (pad, parent, query);
+  if (!res)
     return FALSE;
-
-  if (!(peer = gst_pad_get_peer (queue->sinkpad))) {
-    gst_object_unref (queue);
-    return FALSE;
-  }
-
-  res = gst_pad_query (peer, query);
-  gst_object_unref (peer);
-  if (!res) {
-    gst_object_unref (queue);
-    return FALSE;
-  }
 
   switch (GST_QUERY_TYPE (query)) {
     case GST_QUERY_POSITION:
@@ -1347,72 +1282,83 @@ gst_queue_handle_src_query (GstPad * pad, GstQuery * query)
       break;
   }
 
-  gst_object_unref (queue);
   return TRUE;
 }
 
 static gboolean
-gst_queue_sink_activate_push (GstPad * pad, gboolean active)
+gst_queue_sink_activate_mode (GstPad * pad, GstObject * parent, GstPadMode mode,
+    gboolean active)
 {
-  gboolean result = TRUE;
+  gboolean result;
   GstQueue *queue;
 
-  queue = GST_QUEUE (gst_pad_get_parent (pad));
+  queue = GST_QUEUE (parent);
 
-  if (active) {
-    GST_QUEUE_MUTEX_LOCK (queue);
-    queue->srcresult = GST_FLOW_OK;
-    queue->eos = FALSE;
-    queue->unexpected = FALSE;
-    GST_QUEUE_MUTEX_UNLOCK (queue);
-  } else {
-    /* step 1, unblock chain function */
-    GST_QUEUE_MUTEX_LOCK (queue);
-    queue->srcresult = GST_FLOW_WRONG_STATE;
-    gst_queue_locked_flush (queue);
-    GST_QUEUE_MUTEX_UNLOCK (queue);
+  switch (mode) {
+    case GST_PAD_MODE_PUSH:
+      if (active) {
+        GST_QUEUE_MUTEX_LOCK (queue);
+        queue->srcresult = GST_FLOW_OK;
+        queue->eos = FALSE;
+        queue->unexpected = FALSE;
+        GST_QUEUE_MUTEX_UNLOCK (queue);
+      } else {
+        /* step 1, unblock chain function */
+        GST_QUEUE_MUTEX_LOCK (queue);
+        queue->srcresult = GST_FLOW_FLUSHING;
+        gst_queue_locked_flush (queue);
+        GST_QUEUE_MUTEX_UNLOCK (queue);
+      }
+      result = TRUE;
+      break;
+    default:
+      result = FALSE;
+      break;
   }
-
-  gst_object_unref (queue);
-
   return result;
 }
 
 static gboolean
-gst_queue_src_activate_push (GstPad * pad, gboolean active)
+gst_queue_src_activate_mode (GstPad * pad, GstObject * parent, GstPadMode mode,
+    gboolean active)
 {
-  gboolean result = FALSE;
+  gboolean result;
   GstQueue *queue;
 
-  queue = GST_QUEUE (gst_pad_get_parent (pad));
+  queue = GST_QUEUE (parent);
 
-  if (active) {
-    GST_QUEUE_MUTEX_LOCK (queue);
-    queue->srcresult = GST_FLOW_OK;
-    queue->eos = FALSE;
-    queue->unexpected = FALSE;
-    /* we do not start the task yet if the pad is not connected */
-    if (gst_pad_is_linked (pad))
-      result = gst_pad_start_task (pad, (GstTaskFunction) gst_queue_loop, pad);
-    else {
-      GST_INFO_OBJECT (queue, "not starting task as pad is not linked");
-      result = TRUE;
-    }
-    GST_QUEUE_MUTEX_UNLOCK (queue);
-  } else {
-    /* step 1, unblock loop function */
-    GST_QUEUE_MUTEX_LOCK (queue);
-    queue->srcresult = GST_FLOW_WRONG_STATE;
-    /* the item add signal will unblock */
-    g_cond_signal (queue->item_add);
-    GST_QUEUE_MUTEX_UNLOCK (queue);
+  switch (mode) {
+    case GST_PAD_MODE_PUSH:
+      if (active) {
+        GST_QUEUE_MUTEX_LOCK (queue);
+        queue->srcresult = GST_FLOW_OK;
+        queue->eos = FALSE;
+        queue->unexpected = FALSE;
+        /* we do not start the task yet if the pad is not connected */
+        if (gst_pad_is_linked (pad))
+          result =
+              gst_pad_start_task (pad, (GstTaskFunction) gst_queue_loop, pad);
+        else {
+          GST_INFO_OBJECT (queue, "not starting task as pad is not linked");
+          result = TRUE;
+        }
+        GST_QUEUE_MUTEX_UNLOCK (queue);
+      } else {
+        /* step 1, unblock loop function */
+        GST_QUEUE_MUTEX_LOCK (queue);
+        queue->srcresult = GST_FLOW_FLUSHING;
+        /* the item add signal will unblock */
+        g_cond_signal (&queue->item_add);
+        GST_QUEUE_MUTEX_UNLOCK (queue);
 
-    /* step 2, make sure streaming finishes */
-    result = gst_pad_stop_task (pad);
+        /* step 2, make sure streaming finishes */
+        result = gst_pad_stop_task (pad);
+      }
+      break;
+    default:
+      result = FALSE;
+      break;
   }
-
-  gst_object_unref (queue);
-
   return result;
 }
 

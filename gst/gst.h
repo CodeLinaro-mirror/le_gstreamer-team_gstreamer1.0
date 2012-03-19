@@ -36,6 +36,7 @@
 #include <gst/gstenumtypes.h>
 #include <gst/gstversion.h>
 
+#include <gst/gstatomicqueue.h>
 #include <gst/gstbin.h>
 #include <gst/gstbuffer.h>
 #include <gst/gstbufferlist.h>
@@ -43,6 +44,7 @@
 #include <gst/gstcaps.h>
 #include <gst/gstchildproxy.h>
 #include <gst/gstclock.h>
+#include <gst/gstcontrolsource.h>
 #include <gst/gstdatetime.h>
 #include <gst/gstdebugutils.h>
 #include <gst/gstelement.h>
@@ -50,8 +52,6 @@
 #include <gst/gsterror.h>
 #include <gst/gstevent.h>
 #include <gst/gstghostpad.h>
-#include <gst/gstindex.h>
-#include <gst/gstindexfactory.h>
 #include <gst/gstinfo.h>
 #include <gst/gstiterator.h>
 #include <gst/gstmarshal.h>
@@ -67,6 +67,7 @@
 #include <gst/gstpreset.h>
 #include <gst/gstquery.h>
 #include <gst/gstregistry.h>
+#include <gst/gstsample.h>
 #include <gst/gstsegment.h>
 #include <gst/gststructure.h>
 #include <gst/gstsystemclock.h>
@@ -74,7 +75,6 @@
 #include <gst/gsttagsetter.h>
 #include <gst/gsttask.h>
 #include <gst/gsttaskpool.h>
-#include <gst/gsttrace.h>
 #include <gst/gsttypefind.h>
 #include <gst/gsttypefindfactory.h>
 #include <gst/gsturi.h>
@@ -105,7 +105,7 @@ void            gst_segtrap_set_enabled         (gboolean enabled);
 gboolean        gst_registry_fork_is_enabled    (void);
 void            gst_registry_fork_set_enabled   (gboolean enabled);
 
-gboolean        gst_update_registry (void);
+gboolean        gst_update_registry             (void);
 
 G_END_DECLS
 

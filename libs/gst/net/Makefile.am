@@ -3,17 +3,19 @@ lib_LTLIBRARIES = libgstnet-@GST_MAJORMINOR@.la
 libgstnet_@GST_MAJORMINOR@_includedir = $(includedir)/gstreamer-@GST_MAJORMINOR@/gst/net
 libgstnet_@GST_MAJORMINOR@_include_HEADERS = \
     gstnet.h \
+    gstnetaddressmeta.h \
     gstnetclientclock.h \
     gstnettimepacket.h \
     gstnettimeprovider.h
 
 libgstnet_@GST_MAJORMINOR@_la_SOURCES = \
+    gstnetaddressmeta.c \
     gstnetclientclock.c \
     gstnettimepacket.c \
     gstnettimeprovider.c
 
-libgstnet_@GST_MAJORMINOR@_la_CFLAGS = $(GST_OBJ_CFLAGS)
-libgstnet_@GST_MAJORMINOR@_la_LIBADD = $(GST_OBJ_LIBS) $(INET_ATON_LIBS) $(WIN32_LIBS)
+libgstnet_@GST_MAJORMINOR@_la_CFLAGS = $(GST_OBJ_CFLAGS) $(GIO_CFLAGS)
+libgstnet_@GST_MAJORMINOR@_la_LIBADD = $(GST_OBJ_LIBS) $(GIO_LIBS)
 libgstnet_@GST_MAJORMINOR@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
 
 CLEANFILES = *.gcno *.gcda *.gcov
@@ -48,6 +50,7 @@ GstNet-@GST_MAJORMINOR@.gir: $(INTROSPECTION_SCANNER) libgstnet-@GST_MAJORMINOR@
 		GST_PLUGIN_SYSTEM_PATH="" GST_PLUGIN_PATH="" GST_REGISTRY_UPDATE=no \
 		$(INTROSPECTION_SCANNER) -v --namespace GstNet \
 		--strip-prefix=Gst \
+		--warn-all \
 		--nsversion=@GST_MAJORMINOR@ \
 		-DGST_USE_UNSTABLE_API \
 		-I$(top_srcdir) \
@@ -60,8 +63,10 @@ GstNet-@GST_MAJORMINOR@.gir: $(INTROSPECTION_SCANNER) libgstnet-@GST_MAJORMINOR@
 		--library=$(top_builddir)/gst/libgstreamer-@GST_MAJORMINOR@.la \
 		--library=libgstnet-@GST_MAJORMINOR@.la \
 		--include=Gst-@GST_MAJORMINOR@ \
+		--include=Gio-2.0 \
 		--libtool="$(top_builddir)/libtool" \
 		--pkg gstreamer-@GST_MAJORMINOR@ \
+		--pkg gio-2.0 \
 		--pkg-export="gstreamer-net-@GST_MAJORMINOR@" \
 		--add-init-section="gst_init(NULL,NULL);" \
 		--output $@ \

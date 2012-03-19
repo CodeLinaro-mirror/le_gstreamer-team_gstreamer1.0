@@ -117,10 +117,9 @@ am_libgstbase_@GST_MAJORMINOR@_la_OBJECTS =  \
 	libgstbase_@GST_MAJORMINOR@_la-gstbitreader.lo \
 	libgstbase_@GST_MAJORMINOR@_la-gstbytereader.lo \
 	libgstbase_@GST_MAJORMINOR@_la-gstbytewriter.lo \
-	libgstbase_@GST_MAJORMINOR@_la-gstcollectpads.lo \
+	libgstbase_@GST_MAJORMINOR@_la-gstcollectpads2.lo \
 	libgstbase_@GST_MAJORMINOR@_la-gstpushsrc.lo \
-	libgstbase_@GST_MAJORMINOR@_la-gsttypefindhelper.lo \
-	libgstbase_@GST_MAJORMINOR@_la-gstdataqueue.lo
+	libgstbase_@GST_MAJORMINOR@_la-gsttypefindhelper.lo
 libgstbase_@GST_MAJORMINOR@_la_OBJECTS =  \
 	$(am_libgstbase_@GST_MAJORMINOR@_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
@@ -217,10 +216,12 @@ GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GIO_CFLAGS = @GIO_CFLAGS@
+GIO_LDFLAGS = @GIO_LDFLAGS@
+GIO_LIBS = @GIO_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_EXTRA_CFLAGS = @GLIB_EXTRA_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
-GLIB_ONLY_CFLAGS = @GLIB_ONLY_CFLAGS@
-GLIB_ONLY_LIBS = @GLIB_ONLY_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
 GMP_LIBS = @GMP_LIBS@
@@ -236,7 +237,6 @@ GST_ALL_LIBS = @GST_ALL_LIBS@
 GST_CURRENT = @GST_CURRENT@
 GST_DISABLE_ALLOC_TRACE_DEFINE = @GST_DISABLE_ALLOC_TRACE_DEFINE@
 GST_DISABLE_GST_DEBUG_DEFINE = @GST_DISABLE_GST_DEBUG_DEFINE@
-GST_DISABLE_NET_DEFINE = @GST_DISABLE_NET_DEFINE@
 GST_DISABLE_OPTION_PARSING_DEFINE = @GST_DISABLE_OPTION_PARSING_DEFINE@
 GST_DISABLE_PARSE_DEFINE = @GST_DISABLE_PARSE_DEFINE@
 GST_DISABLE_PLUGIN_DEFINE = @GST_DISABLE_PLUGIN_DEFINE@
@@ -282,7 +282,6 @@ HAVE_PS2PDF = @HAVE_PS2PDF@
 HAVE_XMLLINT = @HAVE_XMLLINT@
 HOST_CPU = @HOST_CPU@
 HTML_DIR = @HTML_DIR@
-INET_ATON_LIBS = @INET_ATON_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -315,6 +314,7 @@ LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
@@ -370,6 +370,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
@@ -403,7 +404,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -437,10 +437,9 @@ libgstbase_@GST_MAJORMINOR@_la_SOURCES = \
 	gstbitreader.c		\
 	gstbytereader.c		\
 	gstbytewriter.c         \
-	gstcollectpads.c	\
+	gstcollectpads2.c	\
 	gstpushsrc.c		\
-	gsttypefindhelper.c	\
-	gstdataqueue.c
+	gsttypefindhelper.c
 
 libgstbase_@GST_MAJORMINOR@_la_CFLAGS = $(GST_OBJ_CFLAGS)
 libgstbase_@GST_MAJORMINOR@_la_LIBADD = $(GST_OBJ_LIBS)
@@ -457,16 +456,17 @@ libgstbase_@GST_MAJORMINOR@include_HEADERS = \
 	gstbitreader.h		\
 	gstbytereader.h		\
 	gstbytewriter.h         \
-	gstcollectpads.h	\
+	gstcollectpads2.h	\
 	gstpushsrc.h		\
-	gsttypefindhelper.h	\
-	gstdataqueue.h
+	gsttypefindhelper.h
 
 noinst_HEADERS = \
 	gstbytereader-docs.h \
 	gstbytewriter-docs.h \
-	gstbitreader-docs.h
+	gstbitreader-docs.h \
+	gstindex.h
 
+EXTRA_DIST = gstindex.c gstmemindex.c
 CLEANFILES = *.gcno *.gcda *.gcov $(am__append_1)
 @HAVE_INTROSPECTION_TRUE@BUILT_GIRSOURCES = GstBase-@GST_MAJORMINOR@.gir
 @HAVE_INTROSPECTION_TRUE@gir_headers = $(patsubst %,$(srcdir)/%, $(libgstbase_@GST_MAJORMINOR@include_HEADERS))
@@ -561,8 +561,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstbitreader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstbytereader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstbytewriter.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstcollectpads.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstdataqueue.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstcollectpads2.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstpushsrc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gsttypefindhelper.Plo@am__quote@
 
@@ -654,13 +653,13 @@ libgstbase_@GST_MAJORMINOR@_la-gstbytewriter.lo: gstbytewriter.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbase_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstbase_@GST_MAJORMINOR@_la-gstbytewriter.lo `test -f 'gstbytewriter.c' || echo '$(srcdir)/'`gstbytewriter.c
 
-libgstbase_@GST_MAJORMINOR@_la-gstcollectpads.lo: gstcollectpads.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbase_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstbase_@GST_MAJORMINOR@_la-gstcollectpads.lo -MD -MP -MF $(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstcollectpads.Tpo -c -o libgstbase_@GST_MAJORMINOR@_la-gstcollectpads.lo `test -f 'gstcollectpads.c' || echo '$(srcdir)/'`gstcollectpads.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstcollectpads.Tpo $(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstcollectpads.Plo
+libgstbase_@GST_MAJORMINOR@_la-gstcollectpads2.lo: gstcollectpads2.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbase_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstbase_@GST_MAJORMINOR@_la-gstcollectpads2.lo -MD -MP -MF $(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstcollectpads2.Tpo -c -o libgstbase_@GST_MAJORMINOR@_la-gstcollectpads2.lo `test -f 'gstcollectpads2.c' || echo '$(srcdir)/'`gstcollectpads2.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstcollectpads2.Tpo $(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstcollectpads2.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstcollectpads.c' object='libgstbase_@GST_MAJORMINOR@_la-gstcollectpads.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstcollectpads2.c' object='libgstbase_@GST_MAJORMINOR@_la-gstcollectpads2.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbase_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstbase_@GST_MAJORMINOR@_la-gstcollectpads.lo `test -f 'gstcollectpads.c' || echo '$(srcdir)/'`gstcollectpads.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbase_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstbase_@GST_MAJORMINOR@_la-gstcollectpads2.lo `test -f 'gstcollectpads2.c' || echo '$(srcdir)/'`gstcollectpads2.c
 
 libgstbase_@GST_MAJORMINOR@_la-gstpushsrc.lo: gstpushsrc.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbase_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstbase_@GST_MAJORMINOR@_la-gstpushsrc.lo -MD -MP -MF $(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstpushsrc.Tpo -c -o libgstbase_@GST_MAJORMINOR@_la-gstpushsrc.lo `test -f 'gstpushsrc.c' || echo '$(srcdir)/'`gstpushsrc.c
@@ -677,14 +676,6 @@ libgstbase_@GST_MAJORMINOR@_la-gsttypefindhelper.lo: gsttypefindhelper.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gsttypefindhelper.c' object='libgstbase_@GST_MAJORMINOR@_la-gsttypefindhelper.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbase_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstbase_@GST_MAJORMINOR@_la-gsttypefindhelper.lo `test -f 'gsttypefindhelper.c' || echo '$(srcdir)/'`gsttypefindhelper.c
-
-libgstbase_@GST_MAJORMINOR@_la-gstdataqueue.lo: gstdataqueue.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbase_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -MT libgstbase_@GST_MAJORMINOR@_la-gstdataqueue.lo -MD -MP -MF $(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstdataqueue.Tpo -c -o libgstbase_@GST_MAJORMINOR@_la-gstdataqueue.lo `test -f 'gstdataqueue.c' || echo '$(srcdir)/'`gstdataqueue.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstdataqueue.Tpo $(DEPDIR)/libgstbase_@GST_MAJORMINOR@_la-gstdataqueue.Plo
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gstdataqueue.c' object='libgstbase_@GST_MAJORMINOR@_la-gstdataqueue.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbase_@GST_MAJORMINOR@_la_CFLAGS) $(CFLAGS) -c -o libgstbase_@GST_MAJORMINOR@_la-gstdataqueue.lo `test -f 'gstdataqueue.c' || echo '$(srcdir)/'`gstdataqueue.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -986,6 +977,7 @@ Android.mk: Makefile.am
 @HAVE_INTROSPECTION_TRUE@		GST_PLUGIN_SYSTEM_PATH="" GST_PLUGIN_PATH="" GST_REGISTRY_UPDATE=no \
 @HAVE_INTROSPECTION_TRUE@		$(INTROSPECTION_SCANNER) -v --namespace GstBase \
 @HAVE_INTROSPECTION_TRUE@		--nsversion=@GST_MAJORMINOR@ \
+@HAVE_INTROSPECTION_TRUE@		--warn-all \
 @HAVE_INTROSPECTION_TRUE@		--strip-prefix=Gst \
 @HAVE_INTROSPECTION_TRUE@		-DGST_USE_UNSTABLE_API \
 @HAVE_INTROSPECTION_TRUE@		-I$(top_srcdir) \

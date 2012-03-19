@@ -42,8 +42,6 @@ DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/gstreamer-check.pc.in \
 	$(srcdir)/gstreamer-controller-uninstalled.pc.in \
 	$(srcdir)/gstreamer-controller.pc.in \
-	$(srcdir)/gstreamer-dataprotocol-uninstalled.pc.in \
-	$(srcdir)/gstreamer-dataprotocol.pc.in \
 	$(srcdir)/gstreamer-net-uninstalled.pc.in \
 	$(srcdir)/gstreamer-net.pc.in \
 	$(srcdir)/gstreamer-uninstalled.pc.in \
@@ -92,9 +90,7 @@ CONFIG_CLEAN_FILES = gstreamer.pc gstreamer-uninstalled.pc \
 	gstreamer-base.pc gstreamer-base-uninstalled.pc \
 	gstreamer-check.pc gstreamer-check-uninstalled.pc \
 	gstreamer-controller.pc gstreamer-controller-uninstalled.pc \
-	gstreamer-dataprotocol.pc \
-	gstreamer-dataprotocol-uninstalled.pc gstreamer-net.pc \
-	gstreamer-net-uninstalled.pc
+	gstreamer-net.pc gstreamer-net-uninstalled.pc
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
@@ -181,10 +177,12 @@ GCOV_CFLAGS = @GCOV_CFLAGS@
 GCOV_LIBS = @GCOV_LIBS@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GIO_CFLAGS = @GIO_CFLAGS@
+GIO_LDFLAGS = @GIO_LDFLAGS@
+GIO_LIBS = @GIO_LIBS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_EXTRA_CFLAGS = @GLIB_EXTRA_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
-GLIB_ONLY_CFLAGS = @GLIB_ONLY_CFLAGS@
-GLIB_ONLY_LIBS = @GLIB_ONLY_LIBS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
 GMP_LIBS = @GMP_LIBS@
@@ -200,7 +198,6 @@ GST_ALL_LIBS = @GST_ALL_LIBS@
 GST_CURRENT = @GST_CURRENT@
 GST_DISABLE_ALLOC_TRACE_DEFINE = @GST_DISABLE_ALLOC_TRACE_DEFINE@
 GST_DISABLE_GST_DEBUG_DEFINE = @GST_DISABLE_GST_DEBUG_DEFINE@
-GST_DISABLE_NET_DEFINE = @GST_DISABLE_NET_DEFINE@
 GST_DISABLE_OPTION_PARSING_DEFINE = @GST_DISABLE_OPTION_PARSING_DEFINE@
 GST_DISABLE_PARSE_DEFINE = @GST_DISABLE_PARSE_DEFINE@
 GST_DISABLE_PLUGIN_DEFINE = @GST_DISABLE_PLUGIN_DEFINE@
@@ -246,7 +243,6 @@ HAVE_PS2PDF = @HAVE_PS2PDF@
 HAVE_XMLLINT = @HAVE_XMLLINT@
 HOST_CPU = @HOST_CPU@
 HTML_DIR = @HTML_DIR@
-INET_ATON_LIBS = @INET_ATON_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -279,6 +275,7 @@ LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
@@ -334,6 +331,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
@@ -367,7 +365,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -399,7 +396,6 @@ pcfiles = \
 	gstreamer-base-@GST_MAJORMINOR@.pc			\
 	$(CHECK_PC_I)						\
 	gstreamer-controller-@GST_MAJORMINOR@.pc		\
-	gstreamer-dataprotocol-@GST_MAJORMINOR@.pc		\
 	gstreamer-net-@GST_MAJORMINOR@.pc
 
 pcfiles_uninstalled = \
@@ -407,7 +403,6 @@ pcfiles_uninstalled = \
 	gstreamer-base-@GST_MAJORMINOR@-uninstalled.pc		\
 	$(CHECK_PC_U)						\
 	gstreamer-controller-@GST_MAJORMINOR@-uninstalled.pc	\
-	gstreamer-dataprotocol-@GST_MAJORMINOR@-uninstalled.pc	\
 	gstreamer-net-@GST_MAJORMINOR@-uninstalled.pc
 
 cp_verbose = $(cp_verbose_$(V))
@@ -424,8 +419,6 @@ EXTRA_DIST = \
 	gstreamer-check-uninstalled.pc.in			\
 	gstreamer-controller.pc.in				\
 	gstreamer-controller-uninstalled.pc.in			\
-	gstreamer-dataprotocol.pc.in				\
-	gstreamer-dataprotocol-uninstalled.pc.in		\
 	gstreamer-net.pc.in					\
 	gstreamer-net-uninstalled.pc.in
 
@@ -478,10 +471,6 @@ gstreamer-check-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/gstreame
 gstreamer-controller.pc: $(top_builddir)/config.status $(srcdir)/gstreamer-controller.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 gstreamer-controller-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/gstreamer-controller-uninstalled.pc.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-gstreamer-dataprotocol.pc: $(top_builddir)/config.status $(srcdir)/gstreamer-dataprotocol.pc.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-gstreamer-dataprotocol-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/gstreamer-dataprotocol-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 gstreamer-net.pc: $(top_builddir)/config.status $(srcdir)/gstreamer-net.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@

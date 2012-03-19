@@ -114,8 +114,7 @@ gst_plugin_feature_load (GstPluginFeature * feature)
   GST_DEBUG ("loaded plugin %s", feature->plugin_name);
   gst_object_unref (plugin);
 
-  real_feature =
-      gst_registry_lookup_feature (gst_registry_get_default (),
+  real_feature = gst_registry_lookup_feature (gst_registry_get (),
       GST_OBJECT_NAME (feature));
 
   if (real_feature == NULL)
@@ -145,25 +144,6 @@ not_found:
         "not found.", GST_OBJECT_NAME (real_feature));
     return NULL;
   }
-}
-
-/**
- * gst_plugin_feature_type_name_filter:
- * @feature: the #GstPluginFeature
- * @data: (in): the type and name to check against
- *
- * Compares type and name of plugin feature. Can be used with gst_filter_run().
- *
- * Returns: TRUE if equal.
- */
-gboolean
-gst_plugin_feature_type_name_filter (GstPluginFeature * feature,
-    GstTypeNameData * data)
-{
-  g_return_val_if_fail (GST_IS_PLUGIN_FEATURE (feature), FALSE);
-
-  return ((data->type == 0 || data->type == G_OBJECT_TYPE (feature)) &&
-      (data->name == NULL || !strcmp (data->name, GST_OBJECT_NAME (feature))));
 }
 
 /**
@@ -306,7 +286,7 @@ gst_plugin_feature_check_version (GstPluginFeature * feature,
   GST_DEBUG ("Looking up plugin '%s' containing plugin feature '%s'",
       feature->plugin_name, GST_OBJECT_NAME (feature));
 
-  registry = gst_registry_get_default ();
+  registry = gst_registry_get ();
   plugin = gst_registry_find_plugin (registry, feature->plugin_name);
 
   if (plugin) {
