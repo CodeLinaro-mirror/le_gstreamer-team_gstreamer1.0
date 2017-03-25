@@ -1,3 +1,15 @@
+gstreamer1.0 (1.4.4-2+deb8u1) jessie-security; urgency=high
+
+  * debian/patches/0001-datetime-fix-potential-out-of-bound-read-on-malforme.patch:
+    + The gst_date_time_new_from_iso8601_string function in gst/gstdatetime.c
+      in GStreamer before 1.10.3 allows remote attackers to cause a denial of
+      service (out-of-bounds heap read) via a malformed datetime string.
+      https://bugzilla.gnome.org/show_bug.cgi?id=777263
+
+      Fixes CVE-2017-5838
+
+ -- Sebastian Dröge <slomo@debian.org>  Sat, 25 Mar 2017 14:07:00 +0200
+
 gstreamer1.0 (1.4.4-2) unstable; urgency=medium
 
   * Upload to unstable.
