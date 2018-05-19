@@ -1,5 +1,6 @@
 gstreamer1.0 (1.15.1-1) experimental; urgency=medium
 
+  [ Sebastian Dröge ]
   * New upstream development release
     + debian/libgstreamer-dev.install:
       - Ship gdb helper script.
@@ -10,6 +11,10 @@ gstreamer1.0 (1.15.1-1) experimental; urgency=medium
       on the packages in a very long time (Closes: #857480).
 
       Thanks a lot for their past work!
+
+  [ Simon McVittie ]
+  * Run gtkdocize during build (Closes: #899116) and only build
+    docs if we actually build the docs package.
 
  -- Sebastian Dröge <slomo@debian.org>  Thu, 17 Jan 2019 15:11:28 +0200
 
