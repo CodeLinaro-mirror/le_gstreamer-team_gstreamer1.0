@@ -4,7 +4,7 @@ dnl initialize autoconf
 dnl when going to/from release please set the nano (fourth number) right !
 dnl releases only do Wall, git and prerelease does Werror too
 dnl
-AC_INIT([GStreamer],[1.14.4],[http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer],[gstreamer])
+AC_INIT([GStreamer],[1.15.1],[http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer],[gstreamer])
 AG_GST_INIT
 
 dnl initialize automake (we require GNU make)
@@ -62,7 +62,7 @@ dnl      1.2.5 => 205
 dnl      1.10.9 (who knows) => 1009
 dnl
 dnl sets GST_LT_LDFLAGS
-AS_LIBTOOL(GST, 1404, 0, 1404)
+AS_LIBTOOL(GST, 1501, 0, 1501)
 
 dnl *** autotools stuff ****
 
@@ -117,6 +117,16 @@ fi
 AC_SUBST(GST_REGISTRY_DOC_TYPES)
 AG_GST_CHECK_SUBSYSTEM_DISABLE(PLUGIN,[plugin])
 AM_CONDITIONAL(GST_DISABLE_PLUGIN, test "x$GST_DISABLE_PLUGIN" = "xyes")
+
+GST_DISABLE_CAST_CHECKS_DEFINE=0
+AC_SUBST(GST_DISABLE_CAST_CHECKS_DEFINE)
+
+GST_DISABLE_GLIB_ASSERTS_DEFINE=0
+AC_SUBST(GST_DISABLE_GLIB_ASSERTS_DEFINE)
+
+GST_DISABLE_GLIB_CHECKS_DEFINE=0
+AC_SUBST(GST_DISABLE_GLIB_CHECKS_DEFINE)
+
 
 AG_GST_ARG_DEBUG
 AG_GST_ARG_PROFILING
@@ -247,7 +257,7 @@ AC_ARG_ENABLE(poisoning,
       *)   AC_MSG_ERROR(bad value ${enableval} for --enable-poisoning) ;;
     esac
   ],
-  [USE_POISONING=no]) dnl Default value
+  [USE_POISONING=$GST_GIT]) dnl Default value
 if test "x$USE_POISONING" = xyes; then
   AC_DEFINE(USE_POISONING, 1,
     [Define if we should poison deallocated memory])
@@ -890,6 +900,17 @@ AC_ARG_WITH([memory-alignment],
   ]
 )
 
+dnl Symbol visibility
+VISIBILITY_CFLAGS=""
+AS_COMPILER_FLAG([-fvisibility=hidden], [
+  VISIBILITY_CFLAGS="-fvisibility=hidden"
+  AC_DEFINE(GST_API_EXPORT, [extern __attribute__ ((visibility ("default")))], [public symbol export define])
+], [
+  VISIBILITY_CFLAGS=""
+  AC_DEFINE(GST_API_EXPORT, [extern], [public symbol export define])
+])
+AC_SUBST(VISIBILITY_CFLAGS)
+
 dnl Check for -Bsymbolic-functions linker flag used to avoid
 dnl intra-library PLT jumps, if available.
 AC_ARG_ENABLE(Bsymbolic,
@@ -947,7 +968,7 @@ dnl *** finalize CFLAGS, LDFLAGS, LIBS
 dnl Overview:
 dnl GST_OPTION_CFLAGS:  common cflags for profiling, debugging, errors, ...
 dnl GST_ALL_*:          vars shared by all built objects
-dnl GST_LIB_LDFLAGS:    additional linker flags for all libaries
+dnl GST_LIB_LDFLAGS:    additional linker flags for all libraries
 dnl GST_OBJ_*:          additional vars to link to the core library
 dnl			include GST_ALL_*
 dnl GST_LT_LDFLAGS:	library versioning of our libraries
@@ -987,7 +1008,7 @@ dnl   will need the GStreamer source and generated headers
 dnl LIBS: XML doesn't need to be added because we don't explicitly use symbols
 dnl       from LibXML except for in the core library
 GST_ALL_CXXFLAGS="-I\$(top_srcdir)/libs -I\$(top_srcdir) -I\$(top_builddir)/libs -I\$(top_builddir) $GLIB_CFLAGS \$(GLIB_EXTRA_CFLAGS) $EXTRA_CFLAGS \$(GST_OPTION_CXXFLAGS) \$(ERROR_CXXFLAGS)"
-GST_ALL_CFLAGS="-I\$(top_srcdir)/libs -I\$(top_srcdir) -I\$(top_builddir)/libs -I\$(top_builddir) $GLIB_CFLAGS \$(GLIB_EXTRA_CFLAGS) $EXTRA_CFLAGS \$(GST_OPTION_CFLAGS) \$(ERROR_CFLAGS)"
+GST_ALL_CFLAGS="-I\$(top_srcdir)/libs -I\$(top_srcdir) -I\$(top_builddir)/libs -I\$(top_builddir) $GLIB_CFLAGS \$(GLIB_EXTRA_CFLAGS) $EXTRA_CFLAGS \$(GST_OPTION_CFLAGS) \$(ERROR_CFLAGS) \$(VISIBILITY_CFLAGS)"
 
 dnl FIXME: check if LTLIBINTL is needed everywhere
 dnl I presume it is given that it contains the symbols that _() stuff maps to
@@ -1008,7 +1029,7 @@ AC_SUBST(GST_ALL_LDFLAGS)
 dnl GST_LIB_LDFLAGS
 dnl linker flags shared by all libraries
 dnl LDFLAGS modifier defining exported symbols from built libraries
-GST_LIB_LDFLAGS="-export-symbols-regex \^[_]?\(gst_\|Gst\|GST_\).*"
+GST_LIB_LDFLAGS=""
 AC_SUBST(GST_LIB_LDFLAGS)
 
 dnl GST_OBJ_*
@@ -1023,7 +1044,7 @@ AC_SUBST(GST_OBJ_LIBS)
 
 dnl GST_PLUGIN_LDFLAGS
 dnl LDFLAGS for plugins; includes GST_ALL_LDFLAGS
-GST_PLUGIN_LDFLAGS="-module -avoid-version -export-symbols-regex '^[_]*gst_plugin_.*' $GST_ALL_LDFLAGS"
+GST_PLUGIN_LDFLAGS="-module -avoid-version $GST_ALL_LDFLAGS"
 AC_SUBST(GST_PLUGIN_LDFLAGS, "$GST_PLUGIN_LDFLAGS")
 
 dnl plugin scanner locations
@@ -1072,6 +1093,7 @@ data/bash-completion/helpers/gst
 gst/Makefile
 gst/gstconfig.h
 gst/gstversion.h
+libs/gst/helpers/libgstreamer-gdb.py
 gst/parse/Makefile
 gst/printf/Makefile
 libs/Makefile

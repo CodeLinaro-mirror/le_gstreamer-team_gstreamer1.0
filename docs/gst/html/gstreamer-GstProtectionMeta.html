@@ -87,12 +87,16 @@
 <td class="define_keyword">#define</td>
 <td class="function_name"><a class="link" href="gstreamer-GstProtectionMeta.html#GST-PROTECTION-SYSTEM-ID-CAPS-FIELD:CAPS" title="GST_PROTECTION_SYSTEM_ID_CAPS_FIELD">GST_PROTECTION_SYSTEM_ID_CAPS_FIELD</a></td>
 </tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gstreamer-GstProtectionMeta.html#GST-PROTECTION-UNSPECIFIED-SYSTEM-ID:CAPS" title="GST_PROTECTION_UNSPECIFIED_SYSTEM_ID">GST_PROTECTION_UNSPECIFIED_SYSTEM_ID</a></td>
+</tr>
 </tbody>
 </table></div>
 </div>
 <div class="refsect1">
 <a name="gstreamer-GstProtectionMeta.includes"></a><h2>Includes</h2>
-<pre class="synopsis">#include &lt;gst/gstprotection.h&gt;
+<pre class="synopsis">#include &lt;gst/gst.h&gt;
 </pre>
 </div>
 <div class="refsect1">
@@ -273,6 +277,22 @@ track, including the information needed to decrypt it (if it is encrypted).</p>
 <p>The field name in a GstCaps that is used to signal the UUID of the protection
 system.</p>
 <p class="since">Since: <a class="link" href="ix07.html#api-index-1.6">1.6</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-PROTECTION-UNSPECIFIED-SYSTEM-ID:CAPS"></a><h3>GST_PROTECTION_UNSPECIFIED_SYSTEM_ID</h3>
+<pre class="programlisting">#define GST_PROTECTION_UNSPECIFIED_SYSTEM_ID "unspecified-system-id"
+</pre>
+<p>The protection system value of the unspecified UUID.
+In some cases the system protection ID is not present in the contents or in their
+metadata, as encrypted WebM.
+This define is used to set the value of the "system_id" field in GstProtectionEvent,
+with this value, the application will use an external information to choose which
+protection system to use.</p>
+<p>Example: The matroskademux uses this value in the case of encrypted WebM,
+the application will choose the appropriate protection system based on the information
+received through EME API.</p>
+<p class="since">Since: 1.16</p>
 </div>
 </div>
 </div>

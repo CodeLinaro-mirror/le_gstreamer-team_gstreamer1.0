@@ -5,7 +5,7 @@
 <title>GstDataQueue: GStreamer 1.0 Library Reference Manual</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="GStreamer 1.0 Library Reference Manual">
-<link rel="up" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
+<link rel="up" href="gstreamer-base.html" title="GStreamer Base and Utility Classes">
 <link rel="prev" href="gstreamer-libs-GstTypeFindHelper.html" title="GstTypeFindHelper">
 <link rel="next" href="gstreamer-libs-GstQueueArray.html" title="GstQueueArray">
 <meta name="generator" content="GTK-Doc V1.28 (XML mode)">
@@ -187,7 +187,7 @@
 </div>
 <div class="refsect1">
 <a name="gstreamer-libs-GstDataQueue.includes"></a><h2>Includes</h2>
-<pre class="synopsis">#include &lt;gst/base/gstdataqueue.h&gt;
+<pre class="synopsis">#include &lt;gst/base/base.h&gt;
 </pre>
 </div>
 <div class="refsect1">
@@ -455,8 +455,8 @@ MT safe.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>item</p></td>
-<td class="parameter_description"><p>pointer to store the returned <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueItem" title="struct GstDataQueueItem"><span class="type">GstDataQueueItem</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>pointer to store the returned <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueItem" title="struct GstDataQueueItem"><span class="type">GstDataQueueItem</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
 </tr>
 </tbody>
 </table></div>
@@ -499,8 +499,8 @@ MT safe.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>item</p></td>
-<td class="parameter_description"><p>pointer to store the returned <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueItem" title="struct GstDataQueueItem"><span class="type">GstDataQueueItem</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>pointer to store the returned <a class="link" href="gstreamer-libs-GstDataQueue.html#GstDataQueueItem" title="struct GstDataQueueItem"><span class="type">GstDataQueueItem</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
 </tr>
 </tbody>
 </table></div>
@@ -704,8 +704,8 @@ gst_data_queue_get_level (<em class="parameter"><code><a class="link" href="gstr
 </tr>
 <tr>
 <td class="parameter_name"><p>level</p></td>
-<td class="parameter_description"><p>the location to store the result</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>the location to store the result. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
 </tr>
 </tbody>
 </table></div>

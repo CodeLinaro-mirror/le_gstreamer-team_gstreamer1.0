@@ -188,6 +188,7 @@ GST_START_TEST (test_from_string)
   gst_structure_free (structure);
 
   s = "0.10:decoder-video/mpeg, abc=(boolean)false";
+  structure = NULL;
   ASSERT_CRITICAL (structure = gst_structure_from_string (s, NULL));
   fail_unless (structure == NULL, "Could not get structure from string %s", s);
 
@@ -223,7 +224,7 @@ GST_END_TEST;
 
 GST_START_TEST (test_to_string)
 {
-  GstStructure *st1;
+  GstStructure *st1 = NULL;
 
   ASSERT_CRITICAL (st1 = gst_structure_new_empty ("Foo\nwith-newline"));
   fail_unless (st1 == NULL);
@@ -274,6 +275,20 @@ GST_START_TEST (test_to_from_string)
 
   gst_structure_free (st1);
   gst_structure_free (st2);
+
+  /* pointers are serialized but not deserialized */
+  st1 = gst_structure_new ("test", "ptr", G_TYPE_POINTER, 0xdeadbeef, NULL);
+  str = gst_structure_to_string (st1);
+  /* The way pointers are serialized may be plateform specific so just check
+   * if it contains the address */
+  fail_unless (g_strrstr (str, "deadbeef") || g_strrstr (str, "DEADBEEF"),
+      "Failed to serialize to right string: %s", str);
+
+  st2 = gst_structure_from_string (str, NULL);
+  fail_unless (!st2);
+
+  gst_structure_free (st1);
+  g_free (str);
 }
 
 GST_END_TEST;
@@ -412,6 +427,7 @@ GST_START_TEST (test_structure_new)
           ("0.10:decoder-video/mpeg")));
 
   /* make sure we bail out correctly in case of an error or if parsing fails */
+  s = NULL;
   ASSERT_CRITICAL (s = gst_structure_new ("^joo\nba\ndoo^",
           "abc", G_TYPE_BOOLEAN, FALSE, NULL));
   fail_unless (s == NULL);
@@ -422,17 +438,66 @@ GST_END_TEST;
 GST_START_TEST (test_fixate)
 {
   GstStructure *s;
+  gint i;
 
   s = gst_structure_new ("name",
       "int", G_TYPE_INT, 5,
-      "intrange", GST_TYPE_INT_RANGE, 5, 10,
-      "intrange2", GST_TYPE_INT_RANGE, 5, 10, NULL);
+      "intrange", GST_TYPE_INT_RANGE, 10, 20,
+      "intrange2", GST_TYPE_INT_RANGE, 10, 20,
+      "intrange3", GST_TYPE_INT_RANGE, 10, 20, NULL);
 
+  /* basic test */
   fail_if (gst_structure_fixate_field_nearest_int (s, "int", 5));
-  fail_unless (gst_structure_fixate_field_nearest_int (s, "intrange", 5));
-  fail_if (gst_structure_fixate_field_nearest_int (s, "intrange", 5));
-  fail_unless (gst_structure_fixate_field_nearest_int (s, "intrange2", 15));
-  fail_if (gst_structure_fixate_field_nearest_int (s, "intrange2", 15));
+  fail_unless (gst_structure_fixate_field_nearest_int (s, "intrange", 15));
+  fail_if (gst_structure_fixate_field_nearest_int (s, "intrange", 15));
+  fail_unless (gst_structure_get_int (s, "intrange", &i));
+  fail_unless_equals_int (i, 15);
+
+  /* test range min */
+  fail_unless (gst_structure_fixate_field_nearest_int (s, "intrange2", 5));
+  fail_unless (gst_structure_get_int (s, "intrange2", &i));
+  fail_unless_equals_int (i, 10);
+
+  /* test range max */
+  fail_unless (gst_structure_fixate_field_nearest_int (s, "intrange3", 25));
+  fail_unless (gst_structure_get_int (s, "intrange3", &i));
+  fail_unless_equals_int (i, 20);
+
+  gst_structure_free (s);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_fixate_stepped)
+{
+  GstStructure *s;
+  GValue v = G_VALUE_INIT;
+  gint i;
+
+  s = gst_structure_new_empty ("name");
+
+  g_value_init (&v, GST_TYPE_INT_RANGE);
+  gst_value_set_int_range_step (&v, 10, 20, 5);
+  gst_structure_set_value (s, "intrange1", &v);
+  gst_structure_set_value (s, "intrange2", &v);
+  gst_structure_set_value (s, "intrange3", &v);
+  g_value_unset (&v);
+
+  /* exact */
+  fail_unless (gst_structure_fixate_field_nearest_int (s, "intrange1", 15));
+  fail_unless (gst_structure_get_int (s, "intrange1", &i));
+  fail_unless_equals_int (i, 15);
+
+  /* round down */
+  fail_unless (gst_structure_fixate_field_nearest_int (s, "intrange2", 12));
+  fail_unless (gst_structure_get_int (s, "intrange2", &i));
+  fail_unless_equals_int (i, 10);
+
+  /* round up */
+  fail_unless (gst_structure_fixate_field_nearest_int (s, "intrange3", 13));
+  fail_unless (gst_structure_get_int (s, "intrange3", &i));
+  fail_unless_equals_int (i, 15);
+
   gst_structure_free (s);
 }
 
@@ -889,6 +954,7 @@ gst_structure_suite (void)
   tcase_add_test (tc_chain, test_complete_structure);
   tcase_add_test (tc_chain, test_structure_new);
   tcase_add_test (tc_chain, test_fixate);
+  tcase_add_test (tc_chain, test_fixate_stepped);
   tcase_add_test (tc_chain, test_fixate_frac_list);
   tcase_add_test (tc_chain, test_is_subset_equal_array_list);
   tcase_add_test (tc_chain, test_is_subset_different_name);

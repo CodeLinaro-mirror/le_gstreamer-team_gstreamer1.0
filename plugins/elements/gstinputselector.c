@@ -666,7 +666,8 @@ gst_selector_pad_query (GstPad * pad, GstObject * parent, GstQuery * query)
     case GST_QUERY_CAPS:
     case GST_QUERY_POSITION:
     case GST_QUERY_DURATION:
-      /* always proxy caps/position/duration query, regardless of active pad or not
+    case GST_QUERY_CONTEXT:
+      /* always proxy caps/position/duration/context queries, regardless of active pad or not
        * See https://bugzilla.gnome.org/show_bug.cgi?id=775445 */
       res = gst_pad_peer_query (self->srcpad, query);
       break;
@@ -1281,7 +1282,7 @@ gst_input_selector_class_init (GstInputSelectorClass * klass)
    *
    * The active pad may push more buffers than what is currently displayed/consumed
    * and when changing pads those buffers will be discarded and the only way to
-   * reactivate that pad without loosing the already consumed buffers is to enable cache.
+   * reactivate that pad without losing the already consumed buffers is to enable cache.
    */
   g_object_class_install_property (gobject_class, PROP_CACHE_BUFFERS,
       g_param_spec_boolean ("cache-buffers", "Cache Buffers",
@@ -1368,6 +1369,14 @@ gst_input_selector_set_active_pad (GstInputSelector * self, GstPad * pad)
 
   if (pad == self->active_sinkpad)
     return FALSE;
+
+  /* guard against users setting a src pad or foreign pad as active pad */
+  if (pad != NULL) {
+    g_return_val_if_fail (GST_PAD_IS_SINK (pad), FALSE);
+    g_return_val_if_fail (GST_IS_SELECTOR_PAD (pad), FALSE);
+    g_return_val_if_fail (GST_PAD_PARENT (pad) == GST_ELEMENT_CAST (self),
+        FALSE);
+  }
 
   old = GST_SELECTOR_PAD_CAST (self->active_sinkpad);
   new = GST_SELECTOR_PAD_CAST (pad);

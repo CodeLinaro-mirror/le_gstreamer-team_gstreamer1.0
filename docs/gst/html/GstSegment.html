@@ -223,7 +223,7 @@
 </div>
 <div class="refsect1">
 <a name="GstSegment.includes"></a><h2>Includes</h2>
-<pre class="synopsis">#include &lt;gst/gstprotection.h&gt;
+<pre class="synopsis">#include &lt;gst/gst.h&gt;
 </pre>
 </div>
 <div class="refsect1">
@@ -747,7 +747,7 @@ gst_segment_to_running_time_full (<em class="parameter"><code>const <a class="li
 segment. Compared to <a class="link" href="GstSegment.html#gst-segment-to-running-time" title="gst_segment_to_running_time ()"><code class="function">gst_segment_to_running_time()</code></a> this function can return
 negative running-time.</p>
 <p>This function is typically used by elements that need to synchronize buffers
-against the clock or eachother.</p>
+against the clock or each other.</p>
 <p><em class="parameter"><code>position</code></em>
  can be any value and the result of this function for values outside
 of the segment is extrapolated.</p>
@@ -863,7 +863,7 @@ gst_segment_to_stream_time_full (<em class="parameter"><code>const <a class="lin
 segment. Compared to <a class="link" href="GstSegment.html#gst-segment-to-stream-time" title="gst_segment_to_stream_time ()"><code class="function">gst_segment_to_stream_time()</code></a> this function can return
 negative stream-time.</p>
 <p>This function is typically used by elements that need to synchronize buffers
-against the clock or eachother.</p>
+against the clock or each other.</p>
 <p><em class="parameter"><code>position</code></em>
  can be any value and the result of this function for values outside
 of the segment is extrapolated.</p>

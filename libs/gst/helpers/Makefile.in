@@ -14,6 +14,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
@@ -131,15 +132,16 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-DIST_COMMON = $(srcdir)/Makefile.am $(am__DIST_COMMON)
+DIST_COMMON = $(srcdir)/Makefile.am $(dist_gdb_DATA) \
+	$(am__DIST_COMMON)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = libgstreamer-gdb.py
 CONFIG_CLEAN_VPATH_FILES =
 @ENABLE_BASH_COMPLETION_TRUE@am__EXEEXT_1 =  \
 @ENABLE_BASH_COMPLETION_TRUE@	gst-completion-helper$(EXEEXT)
 @HAVE_PTP_TRUE@am__EXEEXT_2 = gst-ptp-helper$(EXEEXT)
-am__installdirs = "$(DESTDIR)$(helpersdir)"
+am__installdirs = "$(DESTDIR)$(helpersdir)" "$(DESTDIR)$(gdbdir)"
 PROGRAMS = $(helpers_PROGRAMS)
 am__gst_completion_helper_SOURCES_DIST = gst-completion-helper.c
 @ENABLE_BASH_COMPLETION_TRUE@am_gst_completion_helper_OBJECTS = gst_completion_helper-gst-completion-helper.$(OBJEXT)
@@ -221,6 +223,34 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+am__uninstall_files_from_dir = { \
+  test -z "$$files" \
+    || { test ! -d "$$dir" && test ! -f "$$dir" && test ! -r "$$dir"; } \
+    || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
+         $(am__cd) "$$dir" && rm -f $$files; }; \
+  }
+DATA = $(dist_gdb_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -240,7 +270,8 @@ am__define_uniq_tagged_files = \
   done | $(am__uniquify_input)`
 ETAGS = etags
 CTAGS = ctags
-am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp
+am__DIST_COMMON = $(srcdir)/Makefile.in \
+	$(srcdir)/libgstreamer-gdb.py.in $(top_srcdir)/depcomp
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ACLOCAL_AMFLAGS = @ACLOCAL_AMFLAGS@
@@ -325,6 +356,9 @@ GST_ALL_LIBS = @GST_ALL_LIBS@
 GST_API_VERSION = @GST_API_VERSION@
 GST_COMPLETION_HELPER_INSTALLED = @GST_COMPLETION_HELPER_INSTALLED@
 GST_CURRENT = @GST_CURRENT@
+GST_DISABLE_CAST_CHECKS_DEFINE = @GST_DISABLE_CAST_CHECKS_DEFINE@
+GST_DISABLE_GLIB_ASSERTS_DEFINE = @GST_DISABLE_GLIB_ASSERTS_DEFINE@
+GST_DISABLE_GLIB_CHECKS_DEFINE = @GST_DISABLE_GLIB_CHECKS_DEFINE@
 GST_DISABLE_GST_DEBUG_DEFINE = @GST_DISABLE_GST_DEBUG_DEFINE@
 GST_DISABLE_GST_TRACER_HOOKS_DEFINE = @GST_DISABLE_GST_TRACER_HOOKS_DEFINE@
 GST_DISABLE_OPTION_PARSING_DEFINE = @GST_DISABLE_OPTION_PARSING_DEFINE@
@@ -454,6 +488,7 @@ VALGRIND_CFLAGS = @VALGRIND_CFLAGS@
 VALGRIND_LIBS = @VALGRIND_LIBS@
 VALGRIND_PATH = @VALGRIND_PATH@
 VERSION = @VERSION@
+VISIBILITY_CFLAGS = @VISIBILITY_CFLAGS@
 WARNING_CFLAGS = @WARNING_CFLAGS@
 WIN32_LIBS = @WIN32_LIBS@
 XGETTEXT = @XGETTEXT@
@@ -534,6 +569,11 @@ gst_plugin_scanner_LDADD = $(GST_OBJ_LIBS)
 @HAVE_PTP_TRUE@gst_ptp_helper_CFLAGS = $(GST_OBJ_CFLAGS) $(GIO_CFLAGS)
 @HAVE_PTP_TRUE@gst_ptp_helper_LDADD = $(GST_OBJ_LIBS) $(GIO_LIBS) $(CAP_LIBS)
 EXTRA_DIST = ptp_helper_post_install.sh
+DISTCLEANFILES = libgstreamer-gdb.py
+
+# install gdb scripts
+gdbdir = $(datadir)/gstreamer-@GST_API_VERSION@/gdb
+dist_gdb_DATA = gst_gdb.py glib_gobject_helper.py
 all: all-am
 
 .SUFFIXES:
@@ -567,6 +607,8 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+libgstreamer-gdb.py: $(top_builddir)/config.status $(srcdir)/libgstreamer-gdb.py.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 install-helpersPROGRAMS: $(helpers_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(helpers_PROGRAMS)'; test -n "$(helpersdir)" || list=; \
@@ -716,6 +758,27 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+install-dist_gdbDATA: $(dist_gdb_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(dist_gdb_DATA)'; test -n "$(gdbdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(gdbdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(gdbdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(gdbdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(gdbdir)" || exit $$?; \
+	done
+
+uninstall-dist_gdbDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dist_gdb_DATA)'; test -n "$(gdbdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(gdbdir)'; $(am__uninstall_files_from_dir)
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -804,9 +867,9 @@ distdir-am: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(PROGRAMS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(helpersdir)"; do \
+	for dir in "$(DESTDIR)$(helpersdir)" "$(DESTDIR)$(gdbdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -835,6 +898,7 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -864,7 +928,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-helpersPROGRAMS
+install-data-am: install-dist_gdbDATA install-helpersPROGRAMS
 	@$(NORMAL_INSTALL)
 	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
 install-dvi: install-dvi-am
@@ -913,24 +977,27 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-helpersPROGRAMS
-
-.MAKE: install-am install-data-am install-strip
+uninstall-am: uninstall-dist_gdbDATA uninstall-helpersPROGRAMS
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) uninstall-hook
+.MAKE: install-am install-data-am install-strip uninstall-am
 
 .PHONY: CTAGS GTAGS TAGS all all-am am--depfiles check check-am clean \
 	clean-generic clean-helpersPROGRAMS clean-libtool \
 	cscopelist-am ctags ctags-am distclean distclean-compile \
 	distclean-generic distclean-libtool distclean-tags distdir dvi \
 	dvi-am html html-am info info-am install install-am \
-	install-data install-data-am install-data-hook install-dvi \
-	install-dvi-am install-exec install-exec-am \
-	install-helpersPROGRAMS install-html install-html-am \
-	install-info install-info-am install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-helpersPROGRAMS
+	install-data install-data-am install-data-hook \
+	install-dist_gdbDATA install-dvi install-dvi-am install-exec \
+	install-exec-am install-helpersPROGRAMS install-html \
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am tags tags-am uninstall uninstall-am \
+	uninstall-dist_gdbDATA uninstall-helpersPROGRAMS \
+	uninstall-hook
 
 .PRECIOUS: Makefile
 
@@ -939,6 +1006,13 @@ install-data-hook:
 @HAVE_PTP_HELPER_SETUID_TRUE@@HAVE_PTP_TRUE@	- chown root $(DESTDIR)$(helpersdir)/gst-ptp-helper
 @HAVE_PTP_HELPER_SETUID_TRUE@@HAVE_PTP_TRUE@	- chmod u+s $(DESTDIR)$(helpersdir)/gst-ptp-helper
 @HAVE_PTP_HELPER_CAPABILITIES_TRUE@@HAVE_PTP_TRUE@	- $(SETCAP) cap_net_bind_service,cap_net_admin+ep $(DESTDIR)$(helpersdir)/gst-ptp-helper
+
+install-data-hook:
+	$(INSTALL) -d $(DESTDIR)$(datadir)/gdb/auto-load$(libdir)
+	$(INSTALL) $(builddir)/libgstreamer-gdb.py $(DESTDIR)$(datadir)/gdb/auto-load$(libdir)/libgstreamer-@GST_API_VERSION@.so.0.$(GST_CURRENT).$(GST_REVISION)-gdb.py
+
+uninstall-hook:
+	rm -f "$(DESTDIR)$(datadir)/gdb/auto-load$(libdir)/libgstreamer-@GST_API_VERSION@.so.0.$(GST_CURRENT).$(GST_REVISION)-gdb.py"
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

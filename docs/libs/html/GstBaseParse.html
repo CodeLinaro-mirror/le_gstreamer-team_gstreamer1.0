@@ -5,7 +5,7 @@
 <title>GstBaseParse: GStreamer 1.0 Library Reference Manual</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="GStreamer 1.0 Library Reference Manual">
-<link rel="up" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
+<link rel="up" href="gstreamer-base.html" title="GStreamer Base and Utility Classes">
 <link rel="prev" href="GstAggregatorPad.html" title="GstAggregatorPad">
 <link rel="next" href="GstBaseSrc.html" title="GstBaseSrc">
 <meta name="generator" content="GTK-Doc V1.28 (XML mode)">
@@ -179,6 +179,14 @@
 </tr>
 <tr>
 <td class="function_type">
+<a class="link" href="GstBaseParse.html#GstBaseParseFrame" title="GstBaseParseFrame"><span class="returnvalue">GstBaseParseFrame</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstBaseParse.html#gst-base-parse-frame-copy" title="gst_base_parse_frame_copy ()">gst_base_parse_frame_copy</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
 <span class="returnvalue">void</span>
 </td>
 <td class="function_name">
@@ -293,7 +301,7 @@
 </div>
 <div class="refsect1">
 <a name="GstBaseParse.includes"></a><h2>Includes</h2>
-<pre class="synopsis">#include &lt;gst/base/gstbaseparse.h&gt;
+<pre class="synopsis">#include &lt;gst/base/base.h&gt;
 </pre>
 </div>
 <div class="refsect1">
@@ -317,17 +325,15 @@ a parser and share a lot of rather complex code.</p>
 <div class="refsect3">
 <a name="id-1.2.4.5.8.6.2"></a><h4>Set-up phase</h4>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
-<li class="listitem"><p><a class="link" href="GstBaseParse.html" title="GstBaseParse"><span class="type">GstBaseParse</span></a> calls <em class="parameter"><code>start</code></em>
- to inform subclass that data processing is
-about to start now.</p></li>
-<li class="listitem"><p><a class="link" href="GstBaseParse.html" title="GstBaseParse"><span class="type">GstBaseParse</span></a> class calls <em class="parameter"><code>set_sink_caps</code></em>
- to inform the subclass about
-incoming sinkpad caps. Subclass could already set the srcpad caps
-accordingly, but this might be delayed until calling
-<a class="link" href="GstBaseParse.html#gst-base-parse-finish-frame" title="gst_base_parse_finish_frame ()"><code class="function">gst_base_parse_finish_frame()</code></a> with a non-queued frame.</p></li>
+<li class="listitem"><p><a class="link" href="GstBaseParse.html" title="GstBaseParse"><span class="type">GstBaseParse</span></a> calls <a class="link" href="GstBaseParse.html#GstBaseParseClass.start"><code class="function">GstBaseParseClass.start()</code></a> to inform subclass
+that data processing is about to start now.</p></li>
+<li class="listitem"><p><a class="link" href="GstBaseParse.html" title="GstBaseParse"><span class="type">GstBaseParse</span></a> class calls <a class="link" href="GstBaseParse.html#GstBaseParseClass.set-sink-caps"><code class="function">GstBaseParseClass.set_sink_caps()</code></a> to
+inform the subclass about incoming sinkpad caps. Subclass could
+already set the srcpad caps accordingly, but this might be delayed
+until calling <a class="link" href="GstBaseParse.html#gst-base-parse-finish-frame" title="gst_base_parse_finish_frame ()"><code class="function">gst_base_parse_finish_frame()</code></a> with a non-queued frame.</p></li>
 <li class="listitem"><p>At least at this point subclass needs to tell the <a class="link" href="GstBaseParse.html" title="GstBaseParse"><span class="type">GstBaseParse</span></a> class
-how big data chunks it wants to receive (min_frame_size). It can do
-this with <a class="link" href="GstBaseParse.html#gst-base-parse-set-min-frame-size" title="gst_base_parse_set_min_frame_size ()"><code class="function">gst_base_parse_set_min_frame_size()</code></a>.</p></li>
+how big data chunks it wants to receive (minimum frame size ). It can
+do this with <a class="link" href="GstBaseParse.html#gst-base-parse-set-min-frame-size" title="gst_base_parse_set_min_frame_size ()"><code class="function">gst_base_parse_set_min_frame_size()</code></a>.</p></li>
 <li class="listitem"><p><a class="link" href="GstBaseParse.html" title="GstBaseParse"><span class="type">GstBaseParse</span></a> class sets up appropriate data passing mode (pull/push)
 and starts to process the data.</p></li>
 </ul></div>
@@ -339,27 +345,25 @@ and starts to process the data.</p></li>
 by pulling it from upstream or collecting buffers in an internal
 <a class="link" href="GstAdapter.html" title="GstAdapter"><span class="type">GstAdapter</span></a>.</p></li>
 <li class="listitem">
-<p>A buffer of (at least) min_frame_size bytes is passed to subclass with
-<em class="parameter"><code>handle_frame</code></em>
-. Subclass checks the contents and can optionally
-return GST_FLOW_OK along with an amount of data to be skipped to find
-a valid frame (which will result in a subsequent DISCONT).
-If, otherwise, the buffer does not hold a complete frame,
-<em class="parameter"><code>handle_frame</code></em>
- can merely return and will be called again when additional
-data is available.  In push mode this amounts to an
-additional input buffer (thus minimal additional latency), in pull mode
-this amounts to some arbitrary reasonable buffer size increase.
-Of course, <a class="link" href="GstBaseParse.html#gst-base-parse-set-min-frame-size" title="gst_base_parse_set_min_frame_size ()"><code class="function">gst_base_parse_set_min_frame_size()</code></a> could also be used if a
-very specific known amount of additional data is required.
-If, however, the buffer holds a complete valid frame, it can pass
-the size of this frame to <a class="link" href="GstBaseParse.html#gst-base-parse-finish-frame" title="gst_base_parse_finish_frame ()"><code class="function">gst_base_parse_finish_frame()</code></a>.
-If acting as a converter, it can also merely indicate consumed input data
-while simultaneously providing custom output data.
-Note that baseclass performs some processing (such as tracking
-overall consumed data rate versus duration) for each finished frame,
-but other state is only updated upon each call to <em class="parameter"><code>handle_frame</code></em>
-
+<p>A buffer of (at least) min_frame_size bytes is passed to subclass
+with <a class="link" href="GstBaseParse.html#GstBaseParseClass.handle-frame"><code class="function">GstBaseParseClass.handle_frame()</code></a>. Subclass checks the contents
+and can optionally return <a href="../html/GstPad.html#GST-FLOW-OK:CAPS"><span class="type">GST_FLOW_OK</span></a> along with an amount of data
+to be skipped to find a valid frame (which will result in a
+subsequent DISCONT).  If, otherwise, the buffer does not hold a
+complete frame, <a class="link" href="GstBaseParse.html#GstBaseParseClass.handle-frame"><code class="function">GstBaseParseClass.handle_frame()</code></a> can merely return
+and will be called again when additional data is available.  In push
+mode this amounts to an additional input buffer (thus minimal
+additional latency), in pull mode this amounts to some arbitrary
+reasonable buffer size increase.</p>
+<p>Of course, <a class="link" href="GstBaseParse.html#gst-base-parse-set-min-frame-size" title="gst_base_parse_set_min_frame_size ()"><code class="function">gst_base_parse_set_min_frame_size()</code></a> could also be used if
+a very specific known amount of additional data is required.  If,
+however, the buffer holds a complete valid frame, it can pass the
+size of this frame to <a class="link" href="GstBaseParse.html#gst-base-parse-finish-frame" title="gst_base_parse_finish_frame ()"><code class="function">gst_base_parse_finish_frame()</code></a>.</p>
+<p>If acting as a converter, it can also merely indicate consumed input
+data while simultaneously providing custom output data.  Note that
+baseclass performs some processing (such as tracking overall consumed
+data rate versus duration) for each finished frame, but other state
+is only updated upon each call to <a class="link" href="GstBaseParse.html#GstBaseParseClass.handle-frame"><code class="function">GstBaseParseClass.handle_frame()</code></a>
 (such as tracking upstream input timestamp).</p>
 <p>Subclass is also responsible for setting the buffer metadata
 (e.g. buffer timestamp and duration, or keyframe if applicable).
@@ -368,33 +372,29 @@ appropriately configured, see below).  Frame is provided with
 timestamp derived from upstream (as much as generally possible),
 duration obtained from configuration (see below), and offset
 if meaningful (in pull mode).</p>
-<p>Note that <em class="parameter"><code>check_valid_frame</code></em>
- might receive any small
-amount of input data when leftover data is being drained (e.g. at EOS).</p>
+<p>Note that <a class="link" href="GstBaseParse.html#GstBaseParseClass.handle-frame"><code class="function">GstBaseParseClass.handle_frame()</code></a> might receive any small
+amount of input data when leftover data is being drained (e.g. at
+EOS).</p>
 </li>
-<li class="listitem"><p>As part of finish frame processing,
-just prior to actually pushing the buffer in question,
-it is passed to <em class="parameter"><code>pre_push_frame</code></em>
- which gives subclass yet one
-last chance to examine buffer metadata, or to send some custom (tag)
+<li class="listitem"><p>As part of finish frame processing, just prior to actually pushing
+the buffer in question, it is passed to
+<a class="link" href="GstBaseParse.html#GstBaseParseClass.pre-push-frame"><code class="function">GstBaseParseClass.pre_push_frame()</code></a> which gives subclass yet one last
+chance to examine buffer metadata, or to send some custom (tag)
 events, or to perform custom (segment) filtering.</p></li>
 <li class="listitem"><p>During the parsing process <a class="link" href="GstBaseParse.html#GstBaseParseClass" title="struct GstBaseParseClass"><span class="type">GstBaseParseClass</span></a> will handle both srcpad
-and sinkpad events. They will be passed to subclass if <em class="parameter"><code>event</code></em>
- or
-<em class="parameter"><code>src_event</code></em>
- callbacks have been provided.</p></li>
+and sinkpad events. They will be passed to subclass if
+<code class="function">GstBaseParseClass.event()</code> or <a class="link" href="GstBaseParse.html#GstBaseParseClass.src-event"><code class="function">GstBaseParseClass.src_event()</code></a>
+implementations have been provided.</p></li>
 </ul></div>
 </div>
 <div class="refsect3">
 <a name="id-1.2.4.5.8.6.4"></a><h4>Shutdown phase</h4>
-<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><a class="link" href="GstBaseParse.html" title="GstBaseParse"><span class="type">GstBaseParse</span></a> class calls <em class="parameter"><code>stop</code></em>
- to inform the subclass that data
-parsing will be stopped.</p></li></ul></div>
-<p>Subclass is responsible for providing pad template caps for
-source and sink pads. The pads need to be named "sink" and "src". It also
-needs to set the fixed caps on srcpad, when the format is ensured (e.g.
-when base class calls subclass' <em class="parameter"><code>set_sink_caps</code></em>
- function).</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><a class="link" href="GstBaseParse.html" title="GstBaseParse"><span class="type">GstBaseParse</span></a> class calls <a class="link" href="GstBaseParse.html#GstBaseParseClass.stop"><code class="function">GstBaseParseClass.stop()</code></a> to inform the
+subclass that data parsing will be stopped.</p></li></ul></div>
+<p>Subclass is responsible for providing pad template caps for source and
+sink pads. The pads need to be named "sink" and "src". It also needs to
+set the fixed caps on srcpad, when the format is ensured (e.g.  when
+base class calls subclass' <a class="link" href="GstBaseParse.html#GstBaseParseClass.set-sink-caps"><code class="function">GstBaseParseClass.set_sink_caps()</code></a> function).</p>
 <p>This base class uses <a href="../html/gstreamer-GstFormat.html#GST-FORMAT-DEFAULT:CAPS"><code class="literal">GST_FORMAT_DEFAULT</code></a> as a meaning of frames. So,
 subclass conversion routine needs to know that conversion from
 <a href="../html/gstreamer-GstFormat.html#GST-FORMAT-TIME:CAPS"><code class="literal">GST_FORMAT_TIME</code></a> to <a href="../html/gstreamer-GstFormat.html#GST-FORMAT-DEFAULT:CAPS"><code class="literal">GST_FORMAT_DEFAULT</code></a> must return the
@@ -411,10 +411,10 @@ and end of data processing.</p>
 <li class="listitem"><p>Fixate the source pad caps when appropriate</p></li>
 <li class="listitem"><p>Inform base class how big data chunks should be retrieved. This is
 done with <a class="link" href="GstBaseParse.html#gst-base-parse-set-min-frame-size" title="gst_base_parse_set_min_frame_size ()"><code class="function">gst_base_parse_set_min_frame_size()</code></a> function.</p></li>
-<li class="listitem"><p>Examine data chunks passed to subclass with <em class="parameter"><code>handle_frame</code></em>
- and pass
-proper frame(s) to <a class="link" href="GstBaseParse.html#gst-base-parse-finish-frame" title="gst_base_parse_finish_frame ()"><code class="function">gst_base_parse_finish_frame()</code></a>, and setting src pad
-caps and timestamps on frame.</p></li>
+<li class="listitem"><p>Examine data chunks passed to subclass with
+<a class="link" href="GstBaseParse.html#GstBaseParseClass.handle-frame"><code class="function">GstBaseParseClass.handle_frame()</code></a> and pass proper frame(s) to
+<a class="link" href="GstBaseParse.html#gst-base-parse-finish-frame" title="gst_base_parse_finish_frame ()"><code class="function">gst_base_parse_finish_frame()</code></a>, and setting src pad caps and timestamps
+on frame.</p></li>
 <li class="listitem"><p>Provide conversion functions</p></li>
 <li class="listitem"><p>Update the duration information with <a class="link" href="GstBaseParse.html#gst-base-parse-set-duration" title="gst_base_parse_set_duration ()"><code class="function">gst_base_parse_set_duration()</code></a></p></li>
 <li class="listitem"><p>Optionally passthrough using <a class="link" href="GstBaseParse.html#gst-base-parse-set-passthrough" title="gst_base_parse_set_passthrough ()"><code class="function">gst_base_parse_set_passthrough()</code></a></p></li>
@@ -423,14 +423,14 @@ caps and timestamps on frame.</p></li>
 and <a class="link" href="GstBaseParse.html#gst-base-parse-set-frame-rate" title="gst_base_parse_set_frame_rate ()"><code class="function">gst_base_parse_set_frame_rate()</code></a>.</p></li>
 <li class="listitem"><p>In particular, if subclass is unable to determine a duration, but
 parsing (or specs) yields a frames per seconds rate, then this can be
-provided to <a class="link" href="GstBaseParse.html" title="GstBaseParse"><span class="type">GstBaseParse</span></a> to enable it to cater for
-buffer time metadata (which will be taken from upstream as much as
+provided to <a class="link" href="GstBaseParse.html" title="GstBaseParse"><span class="type">GstBaseParse</span></a> to enable it to cater for buffer time
+metadata (which will be taken from upstream as much as
 possible). Internally keeping track of frame durations and respective
 sizes that have been pushed provides <a class="link" href="GstBaseParse.html" title="GstBaseParse"><span class="type">GstBaseParse</span></a> with an estimated
-bitrate. A default <em class="parameter"><code>convert</code></em>
- (used if not overridden) will then use these
-rates to perform obvious conversions.  These rates are also used to
-update (estimated) duration at regular frame intervals.</p></li>
+bitrate. A default <a class="link" href="GstBaseParse.html#GstBaseParseClass.convert"><code class="function">GstBaseParseClass.convert()</code></a> (used if not
+overridden) will then use these rates to perform obvious conversions.
+These rates are also used to update (estimated) duration at regular
+frame intervals.</p></li>
 </ul></div>
 </div>
 </div>
@@ -568,7 +568,8 @@ a seek position, if there's no index and the format is syncable
 gst_base_parse_set_min_frame_size (<em class="parameter"><code><a class="link" href="GstBaseParse.html" title="GstBaseParse"><span class="type">GstBaseParse</span></a> *parse</code></em>,
                                    <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> min_size</code></em>);</pre>
 <p>Subclass can use this function to tell the base class that it needs to
-give at least <span class="type">min_size</span> buffers.</p>
+be given buffers of at least <em class="parameter"><code>min_size</code></em>
+ bytes.</p>
 <div class="refsect3">
 <a name="gst-base-parse-set-min-frame-size.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
@@ -585,8 +586,8 @@ give at least <span class="type">min_size</span> buffers.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>min_size</p></td>
-<td class="parameter_description"><p>Minimum size of the data that this base class should give to
-subclass.</p></td>
+<td class="parameter_description"><p>Minimum size in bytes of the data that this base class should
+give to subclass.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -602,14 +603,10 @@ gst_base_parse_set_passthrough (<em class="parameter"><code><a class="link" href
 <p>Set if the nature of the format or configuration does not allow (much)
 parsing, and the parser should operate in passthrough mode (which only
 applies when operating in push mode). That is, incoming buffers are
-pushed through unmodified, i.e. no <em class="parameter"><code>check_valid_frame</code></em>
- or <em class="parameter"><code>parse_frame</code></em>
-
-callbacks will be invoked, but <em class="parameter"><code>pre_push_frame</code></em>
- will still be invoked,
-so subclass can perform as much or as little is appropriate for
-passthrough semantics in <em class="parameter"><code>pre_push_frame</code></em>
-.</p>
+pushed through unmodified, i.e. no <a class="link" href="GstBaseParse.html#GstBaseParseClass.handle-frame"><code class="function">GstBaseParseClass.handle_frame()</code></a>
+will be invoked, but <a class="link" href="GstBaseParse.html#GstBaseParseClass.pre-push-frame"><code class="function">GstBaseParseClass.pre_push_frame()</code></a> will still be
+invoked, so subclass can perform as much or as little is appropriate for
+passthrough semantics in <a class="link" href="GstBaseParse.html#GstBaseParseClass.pre-push-frame"><code class="function">GstBaseParseClass.pre_push_frame()</code></a>.</p>
 <div class="refsect3">
 <a name="gst-base-parse-set-passthrough.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
@@ -927,7 +924,7 @@ gst_base_parse_convert_default (<em class="parameter"><code><a class="link" href
                                 <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"><span class="type">gint64</span></a> src_value</code></em>,
                                 <em class="parameter"><code><a href="../html/gstreamer-GstFormat.html#GstFormat"><span class="type">GstFormat</span></a> dest_format</code></em>,
                                 <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"><span class="type">gint64</span></a> *dest_value</code></em>);</pre>
-<p>Default implementation of "convert" vmethod in <a class="link" href="GstBaseParse.html" title="GstBaseParse"><span class="type">GstBaseParse</span></a> class.</p>
+<p>Default implementation of <a class="link" href="GstBaseParse.html#GstBaseParseClass.convert"><code class="function">GstBaseParseClass.convert()</code></a>.</p>
 <div class="refsect3">
 <a name="gst-base-parse-convert-default.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
@@ -1101,9 +1098,53 @@ allocated on the stack.</p>
 </div>
 <hr>
 <div class="refsect2">
+<a name="gst-base-parse-frame-copy"></a><h3>gst_base_parse_frame_copy ()</h3>
+<pre class="programlisting"><a class="link" href="GstBaseParse.html#GstBaseParseFrame" title="GstBaseParseFrame"><span class="returnvalue">GstBaseParseFrame</span></a> *
+gst_base_parse_frame_copy (<em class="parameter"><code><a class="link" href="GstBaseParse.html#GstBaseParseFrame" title="GstBaseParseFrame"><span class="type">GstBaseParseFrame</span></a> *frame</code></em>);</pre>
+<p>Copies a <a class="link" href="GstBaseParse.html#GstBaseParseFrame" title="GstBaseParseFrame"><span class="type">GstBaseParseFrame</span></a>.</p>
+<div class="refsect3">
+<a name="gst-base-parse-frame-copy.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstBaseParse.html#GstBaseParseFrame" title="GstBaseParseFrame"><span class="type">GstBaseParseFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="gst-base-parse-frame-copy.returns"></a><h4>Returns</h4>
+<p> A copy of <em class="parameter"><code>frame</code></em>
+</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
 <a name="gst-base-parse-frame-free"></a><h3>gst_base_parse_frame_free ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 gst_base_parse_frame_free (<em class="parameter"><code><a class="link" href="GstBaseParse.html#GstBaseParseFrame" title="GstBaseParseFrame"><span class="type">GstBaseParseFrame</span></a> *frame</code></em>);</pre>
+<p>Frees the provided <em class="parameter"><code>frame</code></em>
+.</p>
+<div class="refsect3">
+<a name="gst-base-parse-frame-free.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>A <a class="link" href="GstBaseParse.html#GstBaseParseFrame" title="GstBaseParseFrame"><span class="type">GstBaseParseFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
 </div>
 <hr>
 <div class="refsect2">
@@ -1618,9 +1659,10 @@ skipped in bitrate calculation.</p></td>
 <a name="GST-BASE-PARSE-FLOW-DROPPED:CAPS"></a><h3>GST_BASE_PARSE_FLOW_DROPPED</h3>
 <pre class="programlisting">#define GST_BASE_PARSE_FLOW_DROPPED     GST_FLOW_CUSTOM_SUCCESS
 </pre>
-<p>A <a href="../html/GstPad.html#GstFlowReturn"><span class="type">GstFlowReturn</span></a> that can be returned from parse_frame to
-indicate that no output buffer was generated, or from pre_push_frame to
-to forego pushing buffer.</p>
+<p>A <a href="../html/GstPad.html#GstFlowReturn"><span class="type">GstFlowReturn</span></a> that can be returned from
+<a class="link" href="GstBaseParse.html#GstBaseParseClass.handle-frame"><code class="function">GstBaseParseClass.handle_frame()</code></a> to indicate that no output buffer was
+generated, or from <a class="link" href="GstBaseParse.html#GstBaseParseClass.pre-push-frame"><code class="function">GstBaseParseClass.pre_push_frame()</code></a> to to forego
+pushing buffer.</p>
 </div>
 </div>
 <div class="refsect1">

@@ -193,6 +193,7 @@ GST_BUFFER_IS_DISCONT
 gst_buffer_new
 gst_buffer_new_allocate
 gst_buffer_new_wrapped
+gst_buffer_new_wrapped_bytes
 gst_buffer_new_wrapped_full
 
 gst_buffer_ref
@@ -391,10 +392,13 @@ gst_buffer_list_remove
 
 gst_buffer_list_ref
 gst_buffer_list_unref
+gst_clear_buffer_list
 gst_buffer_list_copy
 gst_buffer_list_copy_deep
 gst_buffer_list_is_writable
 gst_buffer_list_make_writable
+gst_buffer_list_replace
+gst_buffer_list_take
 
 GstBufferListFunc
 gst_buffer_list_foreach
@@ -460,6 +464,7 @@ gst_caps_get_size
 gst_caps_get_structure
 gst_caps_get_features
 gst_caps_set_features
+gst_caps_set_features_simple
 gst_caps_set_value
 gst_caps_set_simple
 gst_caps_set_simple_valist
@@ -491,6 +496,7 @@ gst_caps_truncate
 gst_caps_fixate
 gst_caps_ref
 gst_caps_unref
+gst_clear_caps
 <SUBSECTION Standard>
 GST_CAPS
 GST_IS_CAPS
@@ -560,11 +566,17 @@ gst_sample_get_buffer_list
 gst_sample_get_caps
 gst_sample_get_info
 gst_sample_get_segment
+gst_sample_set_buffer
 gst_sample_set_buffer_list
+gst_sample_set_caps
+gst_sample_set_segment
+gst_sample_set_info
 gst_sample_new
 gst_sample_ref
 gst_sample_unref
 gst_sample_copy
+gst_sample_is_writable
+gst_sample_make_writable
 <SUBSECTION Standard>
 GST_IS_SAMPLE
 GST_SAMPLE
@@ -661,6 +673,8 @@ gst_clock_wait_for_sync
 gst_clock_is_synced
 gst_clock_set_synced
 gst_clock_id_get_time
+gst_clock_id_get_clock
+gst_clock_id_uses_clock
 gst_clock_id_wait
 gst_clock_id_wait_async
 gst_clock_id_unschedule
@@ -1072,6 +1086,7 @@ GST_ELEMENT_FACTORY_KLASS_DEPAYLOADER
 GST_ELEMENT_FACTORY_KLASS_ENCODER
 GST_ELEMENT_FACTORY_KLASS_ENCRYPTOR
 GST_ELEMENT_FACTORY_KLASS_FORMATTER
+GST_ELEMENT_FACTORY_KLASS_HARDWARE
 GST_ELEMENT_FACTORY_KLASS_MEDIA_AUDIO
 GST_ELEMENT_FACTORY_KLASS_MEDIA_IMAGE
 GST_ELEMENT_FACTORY_KLASS_MEDIA_METADATA
@@ -1637,6 +1652,7 @@ gst_message_type_to_quark
 gst_message_type_get_name
 gst_message_ref
 gst_message_unref
+gst_clear_message
 gst_message_copy
 gst_message_get_structure
 gst_message_writable_structure
@@ -1646,6 +1662,7 @@ gst_message_set_seqnum
 gst_message_has_name
 gst_message_is_writable
 gst_message_replace
+gst_message_take
 
 gst_message_new_eos
 gst_message_new_error
@@ -1805,6 +1822,7 @@ gst_mini_object_init
 
 gst_mini_object_ref
 gst_mini_object_unref
+gst_clear_mini_object
 
 gst_mini_object_weak_ref
 gst_mini_object_weak_unref
@@ -1813,6 +1831,9 @@ gst_mini_object_lock
 gst_mini_object_unlock
 gst_mini_object_is_writable
 gst_mini_object_make_writable
+
+gst_mini_object_add_parent
+gst_mini_object_remove_parent
 
 gst_mini_object_copy
 
@@ -1868,6 +1889,7 @@ gst_object_has_as_ancestor
 gst_object_has_ancestor
 gst_object_ref
 gst_object_unref
+gst_clear_object
 gst_object_ref_sink
 gst_object_replace
 gst_object_get_path_string
@@ -2210,6 +2232,7 @@ GST_PAD_TEMPLATE_CAPS
 GST_PAD_TEMPLATE_IS_FIXED
 GST_PAD_TEMPLATE_GTYPE
 gst_pad_template_new
+gst_pad_template_new_with_gtype
 gst_pad_template_new_from_static_pad_template_with_gtype
 gst_pad_template_get_caps
 
@@ -2490,13 +2513,13 @@ gst_preset_get_type
 <SECTION>
 <FILE>gstprotection</FILE>
 <TITLE>GstProtectionMeta</TITLE>
-<INCLUDE>gst/gstprotection.h</INCLUDE>
 GstProtectionMeta
 gst_buffer_add_protection_meta
 gst_buffer_get_protection_meta
 gst_protection_select_system
 gst_protection_filter_systems_by_available_decryptors
 GST_PROTECTION_SYSTEM_ID_CAPS_FIELD
+GST_PROTECTION_UNSPECIFIED_SYSTEM_ID
 <SUBSECTION Standard>
 GST_PROTECTION_META_API_TYPE
 GST_PROTECTION_META_INFO
@@ -2528,10 +2551,12 @@ gst_query_type_to_quark
 
 gst_query_ref
 gst_query_unref
+gst_clear_query
 gst_query_copy
 gst_query_make_writable
 gst_query_is_writable
 gst_query_replace
+gst_query_take
 gst_query_writable_structure
 
 gst_query_new_custom
@@ -2634,6 +2659,10 @@ gst_query_new_context
 gst_query_set_context
 gst_query_parse_context
 gst_query_parse_context_type
+
+gst_query_new_bitrate
+gst_query_set_bitrate
+gst_query_parse_bitrate
 <SUBSECTION Standard>
 GstQueryClass
 GST_QUERY
@@ -3037,8 +3066,11 @@ gst_tag_list_is_equal
 gst_tag_list_copy
 gst_tag_list_ref
 gst_tag_list_unref
+gst_clear_tag_list
 gst_tag_list_is_writable
 gst_tag_list_make_writable
+gst_tag_list_replace
+gst_tag_list_take
 gst_tag_list_insert
 gst_tag_list_merge
 gst_tag_list_get_tag_size

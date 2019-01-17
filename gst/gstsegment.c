@@ -392,7 +392,7 @@ gst_segment_do_seek (GstSegment * segment, gdouble rate,
  * negative stream-time.
  *
  * This function is typically used by elements that need to synchronize buffers
- * against the clock or eachother.
+ * against the clock or each other.
  *
  * @position can be any value and the result of this function for values outside
  * of the segment is extrapolated.
@@ -709,7 +709,7 @@ gst_segment_position_from_stream_time (const GstSegment * segment,
  * negative running-time.
  *
  * This function is typically used by elements that need to synchronize buffers
- * against the clock or eachother.
+ * against the clock or each other.
  *
  * @position can be any value and the result of this function for values outside
  * of the segment is extrapolated.
@@ -757,6 +757,9 @@ gst_segment_to_running_time_full (const GstSegment * segment, GstFormat format,
     }
   } else {
     stop = segment->stop;
+
+    if (stop == -1 && segment->duration != -1)
+      stop = segment->start + segment->duration;
 
     /* cannot continue if no stop position set or invalid offset */
     g_return_val_if_fail (stop != -1, 0);

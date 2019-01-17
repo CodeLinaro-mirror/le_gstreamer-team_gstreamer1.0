@@ -5,7 +5,7 @@
 <title>GstQueueArray: GStreamer 1.0 Library Reference Manual</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="GStreamer 1.0 Library Reference Manual">
-<link rel="up" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
+<link rel="up" href="gstreamer-base.html" title="GStreamer Base and Utility Classes">
 <link rel="prev" href="gstreamer-libs-GstDataQueue.html" title="GstDataQueue">
 <link rel="next" href="gstreamer-control.html" title="GStreamer Dynamic Parameter Control">
 <meta name="generator" content="GTK-Doc V1.28 (XML mode)">
@@ -57,6 +57,22 @@
 </tr>
 <tr>
 <td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstQueueArray.html#gst-queue-array-set-clear-func" title="gst_queue_array_set_clear_func ()">gst_queue_array_set_clear_func</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstQueueArray.html#gst-queue-array-clear" title="gst_queue_array_clear ()">gst_queue_array_clear</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
 <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
 </td>
 <td class="function_name">
@@ -77,6 +93,14 @@
 </td>
 <td class="function_name">
 <a class="link" href="gstreamer-libs-GstQueueArray.html#gst-queue-array-peek-head" title="gst_queue_array_peek_head ()">gst_queue_array_peek_head</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gstreamer-libs-GstQueueArray.html#gst-queue-array-peek-nth" title="gst_queue_array_peek_nth ()">gst_queue_array_peek_nth</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -156,6 +180,14 @@
 <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>
 </td>
 <td class="function_name">
+<a class="link" href="gstreamer-libs-GstQueueArray.html#gst-queue-array-peek-nth-struct" title="gst_queue_array_peek_nth_struct ()">gst_queue_array_peek_nth_struct</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>
+</td>
+<td class="function_name">
 <a class="link" href="gstreamer-libs-GstQueueArray.html#gst-queue-array-pop-head-struct" title="gst_queue_array_pop_head_struct ()">gst_queue_array_pop_head_struct</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
@@ -201,7 +233,7 @@
 </div>
 <div class="refsect1">
 <a name="gstreamer-libs-GstQueueArray.includes"></a><h2>Includes</h2>
-<pre class="synopsis">#include &lt;gst/base/gstqueuearray.h&gt;
+<pre class="synopsis">#include &lt;gst/base/base.h&gt;
 </pre>
 </div>
 <div class="refsect1">
@@ -265,6 +297,75 @@ gst_queue_array_free (<em class="parameter"><code><a class="link" href="gstreame
 </table></div>
 </div>
 <p class="since">Since: <a class="link" href="ix10.html#api-index-1.2">1.2</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-queue-array-set-clear-func"></a><h3>gst_queue_array_set_clear_func ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_queue_array_set_clear_func (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstQueueArray.html#GstQueueArray" title="GstQueueArray"><span class="type">GstQueueArray</span></a> *array</code></em>,
+                                <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"><span class="type">GDestroyNotify</span></a> clear_func</code></em>);</pre>
+<p>Sets a function to clear an element of <em class="parameter"><code>array</code></em>
+.</p>
+<p>The <em class="parameter"><code>clear_func</code></em>
+ will be called when an element in the array
+data segment is removed and when the array is freed and data
+segment is deallocated as well. <em class="parameter"><code>clear_func</code></em>
+ will be passed a
+pointer to the element to clear, rather than the element itself.</p>
+<p>Note that in contrast with other uses of <a href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"><span class="type">GDestroyNotify</span></a>
+functions, <em class="parameter"><code>clear_func</code></em>
+ is expected to clear the contents of
+the array element it is given, but not free the element itself.</p>
+<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
+<div class="refsect3">
+<a name="gst-queue-array-set-clear-func.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>array</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstQueueArray.html#GstQueueArray" title="GstQueueArray"><span class="type">GstQueueArray</span></a> object</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>clear_func</p></td>
+<td class="parameter_description"><p>a function to clear an element of <em class="parameter"><code>array</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.16</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-queue-array-clear"></a><h3>gst_queue_array_clear ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_queue_array_clear (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstQueueArray.html#GstQueueArray" title="GstQueueArray"><span class="type">GstQueueArray</span></a> *array</code></em>);</pre>
+<p>Clears queue <em class="parameter"><code>array</code></em>
+ and frees all memory associated to it.</p>
+<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
+<div class="refsect3">
+<a name="gst-queue-array-clear.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>array</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gstreamer-libs-GstQueueArray.html#GstQueueArray" title="GstQueueArray"><span class="type">GstQueueArray</span></a> object</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.16</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -355,6 +456,23 @@ remove it from the queue.</p>
 <p> The head of the queue</p>
 </div>
 <p class="since">Since: <a class="link" href="ix10.html#api-index-1.2">1.2</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-queue-array-peek-nth"></a><h3>gst_queue_array_peek_nth ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>
+gst_queue_array_peek_nth (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstQueueArray.html#GstQueueArray" title="GstQueueArray"><span class="type">GstQueueArray</span></a> *array</code></em>,
+                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> idx</code></em>);</pre>
+<p>Returns the item at <em class="parameter"><code>idx</code></em>
+ in <em class="parameter"><code>array</code></em>
+, but does not remove it from the queue.</p>
+<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
+<div class="refsect3">
+<a name="gst-queue-array-peek-nth.returns"></a><h4>Returns</h4>
+<p> The item, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>idx</code></em>
+was out of bounds</p>
+</div>
+<p class="since">Since: 1.16</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -531,10 +649,6 @@ with <em class="parameter"><code>func</code></em>
  if no compare function <em class="parameter"><code>func</code></em>
  is provided,
 and returning the index of the found element.</p>
-<p>Note that the index is not 0-based, but an internal index number with a
-random offset. The index can be used in connection with
-<a class="link" href="gstreamer-libs-GstQueueArray.html#gst-queue-array-drop-element" title="gst_queue_array_drop_element ()"><code class="function">gst_queue_array_drop_element()</code></a>. FIXME: return index 0-based and make
-<a class="link" href="gstreamer-libs-GstQueueArray.html#gst-queue-array-drop-element" title="gst_queue_array_drop_element ()"><code class="function">gst_queue_array_drop_element()</code></a> take a 0-based index.</p>
 <p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
 <div class="refsect3">
 <a name="gst-queue-array-find.parameters"></a><h4>Parameters</h4>
@@ -647,6 +761,23 @@ data pointed to by the returned pointer stays valid only as long as
 the queue array is not modified further!</p>
 </div>
 <p class="since">Since: <a class="link" href="ix08.html#api-index-1.6">1.6</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-queue-array-peek-nth-struct"></a><h3>gst_queue_array_peek_nth_struct ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>
+gst_queue_array_peek_nth_struct (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstQueueArray.html#GstQueueArray" title="GstQueueArray"><span class="type">GstQueueArray</span></a> *array</code></em>,
+                                 <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> idx</code></em>);</pre>
+<p>Returns the item at <em class="parameter"><code>idx</code></em>
+ in <em class="parameter"><code>array</code></em>
+, but does not remove it from the queue.</p>
+<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
+<div class="refsect3">
+<a name="gst-queue-array-peek-nth-struct.returns"></a><h4>Returns</h4>
+<p> The item, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>idx</code></em>
+was out of bounds</p>
+</div>
+<p class="since">Since: 1.16</p>
 </div>
 <hr>
 <div class="refsect2">

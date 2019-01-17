@@ -111,8 +111,9 @@ check_PROGRAMS = $(am__EXEEXT_1) gst/gstatomicqueue$(EXEEXT) \
 	gst/gsttocsetter$(EXEEXT) gst/gstvalue$(EXEEXT) \
 	generic/states$(EXEEXT) $(am__EXEEXT_4) $(am__EXEEXT_5) \
 	$(am__EXEEXT_6) libs/adapter$(EXEEXT) libs/aggregator$(EXEEXT) \
-	libs/bitreader$(EXEEXT) libs/bytereader$(EXEEXT) \
-	libs/bytewriter$(EXEEXT) libs/bitreader-noinline$(EXEEXT) \
+	libs/bitreader$(EXEEXT) libs/bitwriter$(EXEEXT) \
+	libs/bytereader$(EXEEXT) libs/bytewriter$(EXEEXT) \
+	libs/bitreader-noinline$(EXEEXT) \
 	libs/bytereader-noinline$(EXEEXT) \
 	libs/bytewriter-noinline$(EXEEXT) libs/flowcombiner$(EXEEXT) \
 	libs/sparsefile$(EXEEXT) libs/collectpads$(EXEEXT) \
@@ -713,6 +714,12 @@ libs_bitreader_noinline_LDADD = $(LDADD)
 libs_bitreader_noinline_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_API_VERSION@.la \
 	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la \
 	$(am__DEPENDENCIES_1)
+libs_bitwriter_SOURCES = libs/bitwriter.c
+libs_bitwriter_OBJECTS = libs/bitwriter.$(OBJEXT)
+libs_bitwriter_LDADD = $(LDADD)
+libs_bitwriter_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_API_VERSION@.la \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la \
+	$(am__DEPENDENCIES_1)
 libs_bytereader_SOURCES = libs/bytereader.c
 libs_bytereader_OBJECTS = libs/bytereader.$(OBJEXT)
 libs_bytereader_LDADD = $(LDADD)
@@ -925,7 +932,7 @@ am__depfiles_remade = elements/$(DEPDIR)/capsfilter.Po \
 	libs/$(DEPDIR)/aggregator.Po libs/$(DEPDIR)/baseparse.Po \
 	libs/$(DEPDIR)/basesink.Po libs/$(DEPDIR)/basesrc.Po \
 	libs/$(DEPDIR)/bitreader-noinline.Po \
-	libs/$(DEPDIR)/bitreader.Po \
+	libs/$(DEPDIR)/bitreader.Po libs/$(DEPDIR)/bitwriter.Po \
 	libs/$(DEPDIR)/bytereader-noinline.Po \
 	libs/$(DEPDIR)/bytereader.Po \
 	libs/$(DEPDIR)/bytewriter-noinline.Po \
@@ -1006,8 +1013,8 @@ SOURCES = elements/capsfilter.c elements/concat.c \
 	gst/gsttracerrecord.c gst/gsturi.c gst/gstutils.c \
 	gst/gstvalue.c libs/adapter.c libs/aggregator.c \
 	libs/baseparse.c libs/basesink.c libs/basesrc.c \
-	libs/bitreader.c libs/bitreader-noinline.c libs/bytereader.c \
-	libs/bytereader-noinline.c libs/bytewriter.c \
+	libs/bitreader.c libs/bitreader-noinline.c libs/bitwriter.c \
+	libs/bytereader.c libs/bytereader-noinline.c libs/bytewriter.c \
 	libs/bytewriter-noinline.c libs/collectpads.c \
 	libs/controller.c libs/flowcombiner.c libs/gstharness.c \
 	$(libs_gstlibscpp_SOURCES) libs/gstnetclientclock.c \
@@ -1043,8 +1050,8 @@ DIST_SOURCES = elements/capsfilter.c elements/concat.c \
 	gst/gsttracerrecord.c gst/gsturi.c gst/gstutils.c \
 	gst/gstvalue.c libs/adapter.c libs/aggregator.c \
 	libs/baseparse.c libs/basesink.c libs/basesrc.c \
-	libs/bitreader.c libs/bitreader-noinline.c libs/bytereader.c \
-	libs/bytereader-noinline.c libs/bytewriter.c \
+	libs/bitreader.c libs/bitreader-noinline.c libs/bitwriter.c \
+	libs/bytereader.c libs/bytereader-noinline.c libs/bytewriter.c \
 	libs/bytewriter-noinline.c libs/collectpads.c \
 	libs/controller.c libs/flowcombiner.c libs/gstharness.c \
 	$(libs_gstlibscpp_SOURCES) libs/gstnetclientclock.c \
@@ -1370,6 +1377,9 @@ GST_ALL_LIBS = @GST_ALL_LIBS@
 GST_API_VERSION = @GST_API_VERSION@
 GST_COMPLETION_HELPER_INSTALLED = @GST_COMPLETION_HELPER_INSTALLED@
 GST_CURRENT = @GST_CURRENT@
+GST_DISABLE_CAST_CHECKS_DEFINE = @GST_DISABLE_CAST_CHECKS_DEFINE@
+GST_DISABLE_GLIB_ASSERTS_DEFINE = @GST_DISABLE_GLIB_ASSERTS_DEFINE@
+GST_DISABLE_GLIB_CHECKS_DEFINE = @GST_DISABLE_GLIB_CHECKS_DEFINE@
 GST_DISABLE_GST_DEBUG_DEFINE = @GST_DISABLE_GST_DEBUG_DEFINE@
 GST_DISABLE_GST_TRACER_HOOKS_DEFINE = @GST_DISABLE_GST_TRACER_HOOKS_DEFINE@
 GST_DISABLE_OPTION_PARSING_DEFINE = @GST_DISABLE_OPTION_PARSING_DEFINE@
@@ -1499,6 +1509,7 @@ VALGRIND_CFLAGS = @VALGRIND_CFLAGS@
 VALGRIND_LIBS = @VALGRIND_LIBS@
 VALGRIND_PATH = @VALGRIND_PATH@
 VERSION = @VERSION@
+VISIBILITY_CFLAGS = @VISIBILITY_CFLAGS@
 WARNING_CFLAGS = @WARNING_CFLAGS@
 WIN32_LIBS = @WIN32_LIBS@
 XGETTEXT = @XGETTEXT@
@@ -2298,6 +2309,12 @@ libs/bitreader-noinline.$(OBJEXT): libs/$(am__dirstamp) \
 libs/bitreader-noinline$(EXEEXT): $(libs_bitreader_noinline_OBJECTS) $(libs_bitreader_noinline_DEPENDENCIES) $(EXTRA_libs_bitreader_noinline_DEPENDENCIES) libs/$(am__dirstamp)
 	@rm -f libs/bitreader-noinline$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(libs_bitreader_noinline_OBJECTS) $(libs_bitreader_noinline_LDADD) $(LIBS)
+libs/bitwriter.$(OBJEXT): libs/$(am__dirstamp) \
+	libs/$(DEPDIR)/$(am__dirstamp)
+
+libs/bitwriter$(EXEEXT): $(libs_bitwriter_OBJECTS) $(libs_bitwriter_DEPENDENCIES) $(EXTRA_libs_bitwriter_DEPENDENCIES) libs/$(am__dirstamp)
+	@rm -f libs/bitwriter$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(libs_bitwriter_OBJECTS) $(libs_bitwriter_LDADD) $(LIBS)
 libs/bytereader.$(OBJEXT): libs/$(am__dirstamp) \
 	libs/$(DEPDIR)/$(am__dirstamp)
 
@@ -2558,6 +2575,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/basesrc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/bitreader-noinline.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/bitreader.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/bitwriter.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/bytereader-noinline.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/bytereader.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/bytewriter-noinline.Po@am__quote@ # am--include-marker
@@ -3523,6 +3541,13 @@ libs/bitreader.log: libs/bitreader$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+libs/bitwriter.log: libs/bitwriter$(EXEEXT)
+	@p='libs/bitwriter$(EXEEXT)'; \
+	b='libs/bitwriter'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 libs/bytereader.log: libs/bytereader$(EXEEXT)
 	@p='libs/bytereader$(EXEEXT)'; \
 	b='libs/bytereader'; \
@@ -3806,6 +3831,7 @@ distclean: distclean-am
 	-rm -f libs/$(DEPDIR)/basesrc.Po
 	-rm -f libs/$(DEPDIR)/bitreader-noinline.Po
 	-rm -f libs/$(DEPDIR)/bitreader.Po
+	-rm -f libs/$(DEPDIR)/bitwriter.Po
 	-rm -f libs/$(DEPDIR)/bytereader-noinline.Po
 	-rm -f libs/$(DEPDIR)/bytereader.Po
 	-rm -f libs/$(DEPDIR)/bytewriter-noinline.Po
@@ -3956,6 +3982,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f libs/$(DEPDIR)/basesrc.Po
 	-rm -f libs/$(DEPDIR)/bitreader-noinline.Po
 	-rm -f libs/$(DEPDIR)/bitreader.Po
+	-rm -f libs/$(DEPDIR)/bitwriter.Po
 	-rm -f libs/$(DEPDIR)/bytereader-noinline.Po
 	-rm -f libs/$(DEPDIR)/bytereader.Po
 	-rm -f libs/$(DEPDIR)/bytewriter-noinline.Po

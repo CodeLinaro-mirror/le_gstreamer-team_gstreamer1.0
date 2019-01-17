@@ -26,6 +26,7 @@
 
 #include <gst/gst.h>
 #include <stdio.h>
+#include <gst/base/gstqueuearray.h>
 
 G_BEGIN_DECLS
 
@@ -98,7 +99,7 @@ struct _GstQueue2
   gboolean unexpected;
 
   /* the queue of data we're keeping our hands on */
-  GQueue queue;
+  GstQueueArray *queue;
 
   GCond query_handled;
   gboolean last_query; /* result of last serialized query */
@@ -108,8 +109,10 @@ struct _GstQueue2
   GstQueue2Size max_level;       /* max. amount of data allowed in the queue */
   gboolean use_buffering;
   gboolean use_tags_bitrate;
+  gboolean use_bitrate_query;
   gboolean use_rate_estimate;
   GstClockTime buffering_interval;
+  guint downstream_bitrate;     /* the bitrate reported by downstream */
 
   /* low/high watermarks for buffering */
   gint low_watermark;
@@ -118,6 +121,7 @@ struct _GstQueue2
   /* current buffering state */
   gboolean is_buffering;
   gint buffering_percent;
+  gint last_posted_buffering_percent;
 
   /* for measuring input/output rates */
   GTimer *in_timer;

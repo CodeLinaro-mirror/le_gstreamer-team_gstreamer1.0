@@ -140,7 +140,10 @@ struct _GstMetaItem
   GstMetaItem *next;
   GstMeta meta;
 };
-#define ITEM_SIZE(info) ((info)->size + sizeof (GstMetaItem))
+
+/* info->size will be sizeof(FooMeta) which contains a GstMeta at the beginning
+ * too, and then there is again a GstMeta in GstMetaItem, so subtract one. */
+#define ITEM_SIZE(info) ((info)->size + sizeof (GstMetaItem) - sizeof (GstMeta))
 
 #define GST_BUFFER_MEM_MAX         16
 
@@ -288,11 +291,15 @@ _replace_memory (GstBuffer * buffer, guint len, guint idx, guint length,
     GstMemory *old = GST_BUFFER_MEM_PTR (buffer, i);
 
     gst_memory_unlock (old, GST_LOCK_FLAG_EXCLUSIVE);
+    gst_mini_object_remove_parent (GST_MINI_OBJECT_CAST (old),
+        GST_MINI_OBJECT_CAST (buffer));
     gst_memory_unref (old);
   }
 
   if (mem != NULL) {
     /* replace with single memory */
+    gst_mini_object_add_parent (GST_MINI_OBJECT_CAST (mem),
+        GST_MINI_OBJECT_CAST (buffer));
     gst_memory_lock (mem, GST_LOCK_FLAG_EXCLUSIVE);
     GST_BUFFER_MEM_PTR (buffer, idx) = mem;
     idx++;
@@ -435,6 +442,8 @@ _memory_add (GstBuffer * buffer, gint idx, GstMemory * mem)
   /* and insert the new buffer */
   GST_BUFFER_MEM_PTR (buffer, idx) = mem;
   GST_BUFFER_MEM_LEN (buffer) = len + 1;
+  gst_mini_object_add_parent (GST_MINI_OBJECT_CAST (mem),
+      GST_MINI_OBJECT_CAST (buffer));
 
   GST_BUFFER_FLAG_SET (buffer, GST_BUFFER_FLAG_TAG_MEMORY);
 }
@@ -746,6 +755,8 @@ _gst_buffer_free (GstBuffer * buffer)
   len = GST_BUFFER_MEM_LEN (buffer);
   for (i = 0; i < len; i++) {
     gst_memory_unlock (GST_BUFFER_MEM_PTR (buffer, i), GST_LOCK_FLAG_EXCLUSIVE);
+    gst_mini_object_remove_parent (GST_MINI_OBJECT_CAST (GST_BUFFER_MEM_PTR
+            (buffer, i)), GST_MINI_OBJECT_CAST (buffer));
     gst_memory_unref (GST_BUFFER_MEM_PTR (buffer, i));
   }
 
@@ -968,6 +979,33 @@ gst_buffer_new_wrapped (gpointer data, gsize size)
 }
 
 /**
+ * gst_buffer_new_wrapped_bytes:
+ * @bytes: (transfer none): a #GBytes to wrap
+ *
+ * Creates a new #GstBuffer that wraps the given @bytes. The data inside
+ * @bytes cannot be %NULL and the resulting buffer will be marked as read only.
+ *
+ * MT safe.
+ *
+ * Returns: (transfer full): a new #GstBuffer wrapping @bytes
+ *
+ * Since: 1.16
+ */
+GstBuffer *
+gst_buffer_new_wrapped_bytes (GBytes * bytes)
+{
+  guint8 *bytes_data;
+  gsize size;
+
+  g_return_val_if_fail (bytes != NULL, NULL);
+  bytes_data = (guint8 *) g_bytes_get_data (bytes, &size);
+  g_return_val_if_fail (bytes_data != NULL, NULL);
+
+  return gst_buffer_new_wrapped_full (GST_MEMORY_FLAG_READONLY, bytes_data,
+      size, 0, size, g_bytes_ref (bytes), (GDestroyNotify) g_bytes_unref);
+}
+
+/**
  * gst_buffer_n_memory:
  * @buffer: a #GstBuffer.
  *
@@ -1060,10 +1098,14 @@ _get_mapped (GstBuffer * buffer, guint idx, GstMapInfo * info,
 
   if (mapped != mem) {
     /* memory changed, lock new memory */
+    gst_mini_object_add_parent (GST_MINI_OBJECT_CAST (mapped),
+        GST_MINI_OBJECT_CAST (buffer));
     gst_memory_lock (mapped, GST_LOCK_FLAG_EXCLUSIVE);
     GST_BUFFER_MEM_PTR (buffer, idx) = mapped;
     /* unlock old memory */
     gst_memory_unlock (mem, GST_LOCK_FLAG_EXCLUSIVE);
+    gst_mini_object_remove_parent (GST_MINI_OBJECT_CAST (mem),
+        GST_MINI_OBJECT_CAST (buffer));
     GST_BUFFER_FLAG_SET (buffer, GST_BUFFER_FLAG_TAG_MEMORY);
   }
   gst_memory_unref (mem);
@@ -1633,9 +1675,13 @@ gst_buffer_resize_range (GstBuffer * buffer, guint idx, gint length,
         if (newmem == NULL)
           return FALSE;
 
+        gst_mini_object_add_parent (GST_MINI_OBJECT_CAST (newmem),
+            GST_MINI_OBJECT_CAST (buffer));
         gst_memory_lock (newmem, GST_LOCK_FLAG_EXCLUSIVE);
         GST_BUFFER_MEM_PTR (buffer, i) = newmem;
         gst_memory_unlock (mem, GST_LOCK_FLAG_EXCLUSIVE);
+        gst_mini_object_remove_parent (GST_MINI_OBJECT_CAST (mem),
+            GST_MINI_OBJECT_CAST (buffer));
         gst_memory_unref (mem);
 
         GST_BUFFER_FLAG_SET (buffer, GST_BUFFER_FLAG_TAG_MEMORY);
@@ -2095,6 +2141,8 @@ gst_buffer_append_region (GstBuffer * buf1, GstBuffer * buf2, gssize offset,
     GstMemory *mem;
 
     mem = GST_BUFFER_MEM_PTR (buf2, i);
+    gst_mini_object_remove_parent (GST_MINI_OBJECT_CAST (mem),
+        GST_MINI_OBJECT_CAST (buf2));
     GST_BUFFER_MEM_PTR (buf2, i) = NULL;
     _memory_add (buf1, -1, mem);
   }
@@ -2389,11 +2437,9 @@ gst_buffer_foreach_meta (GstBuffer * buffer, GstBufferForeachMetaFunc func,
 
       /* remove from list */
       if (GST_BUFFER_META (buffer) == walk)
-        GST_BUFFER_META (buffer) = next;
+        prev = GST_BUFFER_META (buffer) = next;
       else
         prev->next = next;
-
-      prev = next;
 
       /* call free_func if any */
       if (info->free_func)

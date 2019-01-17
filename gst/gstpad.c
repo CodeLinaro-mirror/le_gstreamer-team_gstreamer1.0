@@ -121,9 +121,6 @@ enum
       /* FILL ME */
 };
 
-#define GST_PAD_GET_PRIVATE(obj)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_PAD, GstPadPrivate))
-
 #define _PAD_PROBE_TYPE_ALL_BOTH_AND_FLUSH (GST_PAD_PROBE_TYPE_ALL_BOTH | GST_PAD_PROBE_TYPE_EVENT_FLUSH)
 
 /* we have a pending and an active event on the pad. On source pads only the
@@ -172,7 +169,7 @@ typedef struct
   gboolean handled;
   gboolean marshalled;
 
-  GHook **called_probes;
+  gulong *called_probes;
   guint n_called_probes;
   guint called_probes_size;
   gboolean retry;
@@ -320,7 +317,8 @@ gst_pad_link_get_name (GstPadLinkReturn ret)
 }
 
 #define gst_pad_parent_class parent_class
-G_DEFINE_TYPE_WITH_CODE (GstPad, gst_pad, GST_TYPE_OBJECT, _do_init);
+G_DEFINE_TYPE_WITH_CODE (GstPad, gst_pad, GST_TYPE_OBJECT,
+    G_ADD_PRIVATE (GstPad) _do_init);
 
 static void
 gst_pad_class_init (GstPadClass * klass)
@@ -330,8 +328,6 @@ gst_pad_class_init (GstPadClass * klass)
 
   gobject_class = G_OBJECT_CLASS (klass);
   gstobject_class = GST_OBJECT_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (GstPadPrivate));
 
   gobject_class->dispose = gst_pad_dispose;
   gobject_class->finalize = gst_pad_finalize;
@@ -402,7 +398,7 @@ gst_pad_class_init (GstPadClass * klass)
 static void
 gst_pad_init (GstPad * pad)
 {
-  pad->priv = GST_PAD_GET_PRIVATE (pad);
+  pad->priv = gst_pad_get_instance_private (pad);
 
   GST_PAD_DIRECTION (pad) = GST_PAD_UNKNOWN;
 
@@ -605,7 +601,7 @@ restart:
     if (G_UNLIKELY (ev->event == NULL))
       goto next;
 
-    /* take aditional ref, func might release the lock */
+    /* take additional ref, func might release the lock */
     ev_ret.event = gst_event_ref (ev->event);
     ev_ret.received = ev->received;
 
@@ -1376,6 +1372,10 @@ cleanup_hook (GstPad * pad, GHook * hook)
 {
   GstPadProbeType type;
 
+  GST_DEBUG_OBJECT (pad,
+      "cleaning up hook %" G_GUINT64_FORMAT " with flags %08x",
+      (guint64) hook->hook_id, hook->flags);
+
   if (!G_HOOK_IS_VALID (hook))
     return;
 
@@ -1444,7 +1444,7 @@ gst_pad_add_probe (GstPad * pad, GstPadProbeType mask,
   GST_CAT_LOG_OBJECT (GST_CAT_SCHEDULING, pad, "adding probe for mask 0x%08x",
       mask);
 
-  /* when no contraints are given for the types, assume all types are
+  /* when no constraints are given for the types, assume all types are
    * acceptable */
   if ((mask & _PAD_PROBE_TYPE_ALL_BOTH_AND_FLUSH) == 0)
     mask |= GST_PAD_PROBE_TYPE_ALL_BOTH;
@@ -1460,7 +1460,7 @@ gst_pad_add_probe (GstPad * pad, GstPadProbeType mask,
   /* add the probe */
   g_hook_append (&pad->probes, hook);
   pad->num_probes++;
-  /* incremenent cookie so that the new hook get's called */
+  /* incremenent cookie so that the new hook gets called */
   pad->priv->probe_list_cookie++;
 
   /* get the id of the hook, we return this and it can be used to remove the
@@ -3419,6 +3419,10 @@ gst_pad_query_default (GstPad * pad, GstObject * parent, GstQuery * query)
       ret = gst_pad_query_latency_default (pad, query);
       forward = FALSE;
       break;
+    case GST_QUERY_BITRATE:
+      /* FIXME: better default handling */
+      forward = TRUE;
+      break;
     case GST_QUERY_POSITION:
     case GST_QUERY_SEEKING:
     case GST_QUERY_FORMATS:
@@ -3472,7 +3476,7 @@ probe_hook_marshal (GHook * hook, ProbeMarshall * data)
    * if we're actually calling probes a second time */
   if (data->retry) {
     for (i = 0; i < data->n_called_probes; i++) {
-      if (data->called_probes[i] == hook) {
+      if (data->called_probes[i] == hook->hook_id) {
         GST_CAT_LOG_OBJECT (GST_CAT_SCHEDULING, pad,
             "hook %lu already called", hook->hook_id);
         return;
@@ -3485,17 +3489,17 @@ probe_hook_marshal (GHook * hook, ProbeMarshall * data)
     if (data->called_probes_size > N_STACK_ALLOCATE_PROBES) {
       data->called_probes_size *= 2;
       data->called_probes =
-          g_renew (GHook *, data->called_probes, data->called_probes_size);
+          g_renew (gulong, data->called_probes, data->called_probes_size);
     } else {
-      GHook **tmp = data->called_probes;
+      gulong *tmp = data->called_probes;
 
       data->called_probes_size *= 2;
-      data->called_probes = g_new (GHook *, data->called_probes_size);
+      data->called_probes = g_new (gulong, data->called_probes_size);
       memcpy (data->called_probes, tmp,
-          N_STACK_ALLOCATE_PROBES * sizeof (GHook *));
+          N_STACK_ALLOCATE_PROBES * sizeof (gulong));
     }
   }
-  data->called_probes[data->n_called_probes++] = hook;
+  data->called_probes[data->n_called_probes++] = hook->hook_id;
 
   flags = hook->flags >> G_HOOK_FLAG_USER_SHIFT;
   type = info->type;
@@ -3691,7 +3695,7 @@ do_probe_callbacks (GstPad * pad, GstPadProbeInfo * info,
   ProbeMarshall data;
   guint cookie;
   gboolean is_block;
-  GHook *called_probes[N_STACK_ALLOCATE_PROBES];
+  gulong called_probes[N_STACK_ALLOCATE_PROBES];
 
   data.pad = pad;
   data.info = info;

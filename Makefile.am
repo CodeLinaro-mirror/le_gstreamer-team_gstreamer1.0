@@ -27,20 +27,14 @@ DIST_SUBDIRS = pkgconfig \
 	common \
 	data
 
-# include before EXTRA_DIST for win32 assignment
-include $(top_srcdir)/common/win32.mak
-
 EXTRA_DIST = \
 	gst-element-check-1.0.m4 \
 	configure.ac autogen.sh depcomp \
 	MAINTAINERS ABOUT-NLS RELEASE gstreamer.doap \
 	scripts/gst-uninstalled \
 	$(shell find "$(top_srcdir)" -type f -name meson.build ! -path "$(top_srcdir)/gstreamer-*" ) \
-	gst/gstenumtypes.c.template gst/gstenumtypes.h.template \
-	libs/gst/controller/controller_mkenum.py \
 	meson_options.txt \
-	gst/parse/gen_lex.py.in gst/parse/gen_grammar.py.in \
-	$(win32)
+	gst/parse/gen_lex.py.in gst/parse/gen_grammar.py.in
 
 DISTCLEANFILES = _stdint.h
 
@@ -142,13 +136,7 @@ check-enum-gettypes: $(top_builddir)/gst/gstenumtypes.h
 
 include $(top_srcdir)/common/coverage/lcov.mak
 
-# Do not run the check-exports test in case any option which causes the API to
-# change has been used
-if !GST_DISABLE_REGISTRY
-CHECK_EXPORTS = check-exports
-endif
-
-check: $(CHECK_EXPORTS) check-enum-gettypes
+check: check-enum-gettypes
 
 # cruft: plugins that have been merged or moved or renamed
 

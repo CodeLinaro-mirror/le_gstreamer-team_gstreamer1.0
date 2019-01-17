@@ -406,7 +406,7 @@ _priv_gst_debug_init (void)
   GST_CAT_ELEMENT_PADS = _gst_debug_category_new ("GST_ELEMENT_PADS",
       GST_DEBUG_BOLD | GST_DEBUG_FG_WHITE | GST_DEBUG_BG_RED, NULL);
   GST_CAT_PADS = _gst_debug_category_new ("GST_PADS",
-      GST_DEBUG_BOLD | GST_DEBUG_FG_RED | GST_DEBUG_BG_RED, NULL);
+      GST_DEBUG_BOLD | GST_DEBUG_FG_RED | GST_DEBUG_BG_BLUE, NULL);
   GST_CAT_PERFORMANCE = _gst_debug_category_new ("GST_PERFORMANCE",
       GST_DEBUG_BOLD | GST_DEBUG_FG_WHITE | GST_DEBUG_BG_RED, NULL);
   GST_CAT_PIPELINE = _gst_debug_category_new ("GST_PIPELINE",
@@ -1587,6 +1587,20 @@ gst_debug_get_default_threshold (void)
   return (GstDebugLevel) g_atomic_int_get (&__default_level);
 }
 
+static gboolean
+gst_debug_apply_entry (GstDebugCategory * cat, LevelNameEntry * entry)
+{
+  if (!g_pattern_match_string (entry->pat, cat->name))
+    return FALSE;
+
+  if (gst_is_initialized ())
+    GST_LOG ("category %s matches pattern %p - gets set to level %d",
+        cat->name, entry->pat, entry->level);
+
+  gst_debug_category_set_threshold (cat, entry->level);
+  return TRUE;
+}
+
 static void
 gst_debug_reset_threshold (gpointer category, gpointer unused)
 {
@@ -1594,23 +1608,16 @@ gst_debug_reset_threshold (gpointer category, gpointer unused)
   GSList *walk;
 
   g_mutex_lock (&__level_name_mutex);
-  walk = __level_name;
-  while (walk) {
-    LevelNameEntry *entry = walk->data;
 
-    walk = g_slist_next (walk);
-    if (g_pattern_match_string (entry->pat, cat->name)) {
-      if (gst_is_initialized ())
-        GST_LOG ("category %s matches pattern %p - gets set to level %d",
-            cat->name, entry->pat, entry->level);
-      gst_debug_category_set_threshold (cat, entry->level);
-      goto exit;
-    }
+  for (walk = __level_name; walk != NULL; walk = walk->next) {
+    if (gst_debug_apply_entry (cat, walk->data))
+      break;
   }
-  gst_debug_category_set_threshold (cat, gst_debug_get_default_threshold ());
 
-exit:
   g_mutex_unlock (&__level_name_mutex);
+
+  if (walk == NULL)
+    gst_debug_category_set_threshold (cat, gst_debug_get_default_threshold ());
 }
 
 static void
@@ -1627,12 +1634,7 @@ for_each_threshold_by_entry (gpointer data, gpointer user_data)
   GstDebugCategory *cat = (GstDebugCategory *) data;
   LevelNameEntry *entry = (LevelNameEntry *) user_data;
 
-  if (g_pattern_match_string (entry->pat, cat->name)) {
-    if (gst_is_initialized ())
-      GST_TRACE ("category %s matches pattern %p - gets set to level %d",
-          cat->name, entry->pat, entry->level);
-    gst_debug_category_set_threshold (cat, entry->level);
-  }
+  gst_debug_apply_entry (cat, entry);
 }
 
 /**

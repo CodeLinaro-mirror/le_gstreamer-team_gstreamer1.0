@@ -25,6 +25,9 @@
 /* The GIO install prefix. */
 #undef GIO_PREFIX
 
+/* public symbol export define */
+#undef GST_API_EXPORT
+
 /* GStreamer API Version */
 #undef GST_API_VERSION
 

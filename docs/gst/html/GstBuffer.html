@@ -165,6 +165,14 @@
 <a class="link" href="GstBuffer.html" title="GstBuffer"><span class="returnvalue">GstBuffer</span></a> *
 </td>
 <td class="function_name">
+<a class="link" href="GstBuffer.html#gst-buffer-new-wrapped-bytes" title="gst_buffer_new_wrapped_bytes ()">gst_buffer_new_wrapped_bytes</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstBuffer.html" title="GstBuffer"><span class="returnvalue">GstBuffer</span></a> *
+</td>
+<td class="function_name">
 <a class="link" href="GstBuffer.html#gst-buffer-new-wrapped-full" title="gst_buffer_new_wrapped_full ()">gst_buffer_new_wrapped_full</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
@@ -1268,6 +1276,39 @@ with g_free and will be marked writable.</p>
 <p>a new <a class="link" href="GstBuffer.html" title="GstBuffer"><span class="type">GstBuffer</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-buffer-new-wrapped-bytes"></a><h3>gst_buffer_new_wrapped_bytes ()</h3>
+<pre class="programlisting"><a class="link" href="GstBuffer.html" title="GstBuffer"><span class="returnvalue">GstBuffer</span></a> *
+gst_buffer_new_wrapped_bytes (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a> *bytes</code></em>);</pre>
+<p>Creates a new <a class="link" href="GstBuffer.html" title="GstBuffer"><span class="type">GstBuffer</span></a> that wraps the given <em class="parameter"><code>bytes</code></em>
+. The data inside
+<em class="parameter"><code>bytes</code></em>
+ cannot be <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> and the resulting buffer will be marked as read only.</p>
+<p>MT safe.</p>
+<div class="refsect3">
+<a name="gst-buffer-new-wrapped-bytes.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>bytes</p></td>
+<td class="parameter_description"><p>a <a href="/usr/share/gtk-doc/html/glib/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a> to wrap. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="gst-buffer-new-wrapped-bytes.returns"></a><h4>Returns</h4>
+<p>a new <a class="link" href="GstBuffer.html" title="GstBuffer"><span class="type">GstBuffer</span></a> wrapping <em class="parameter"><code>bytes</code></em>
+. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+<p class="since">Since: 1.16</p>
 </div>
 <hr>
 <div class="refsect2">

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gstreamer-1.12.0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2018-10-02 22:53+0100\n"
+"POT-Creation-Date: 2019-01-17 01:38+0000\n"
 "PO-Revision-Date: 2017-05-07 12:42+0200\n"
 "Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian <(nothing)>\n"
@@ -931,6 +931,9 @@ msgstr "нема канте „%s“, распакујем елементе"
 msgid "empty pipeline not allowed"
 msgstr "није допуштена празна спојка низа"
 
+msgid "Pipeline construction is invalid, please add queues."
+msgstr ""
+
 msgid "A lot of buffers are being dropped."
 msgstr "Много помоћне меморије је одбачено."
 
@@ -1013,6 +1016,9 @@ msgstr "Датотека „%s“ је прикључница."
 msgid "Failed after iterations as requested."
 msgstr "Неуспех након траженог броја покушаја."
 
+msgid "eos-after and error-after can't both be defined."
+msgstr ""
+
 # bug: this should be full word
 msgid "caps"
 msgstr "могућности"
@@ -1035,7 +1041,8 @@ msgstr "Овај ток не садржи довољно података."
 msgid "Stream contains no data."
 msgstr "Овај ток не садржи податке."
 
-msgid "Implemented Interfaces:\n"
+#, fuzzy, c-format
+msgid "%sImplemented Interfaces%s:\n"
 msgstr "Примењени уређаји:\n"
 
 msgid "readable"
@@ -1062,7 +1069,8 @@ msgstr "измењив само у стање НИШТА или СПРЕМАН"
 msgid "Blacklisted files:"
 msgstr "Забрањене датотеке:"
 
-msgid "Total count: "
+#, fuzzy, c-format
+msgid "%sTotal count%s: %s"
 msgstr "Укупан број:"
 
 #, c-format
@@ -1092,6 +1100,22 @@ msgid_plural "%d features"
 msgstr[0] "%d одлика"
 msgstr[1] "%d одлике"
 msgstr[2] "%d одлика"
+
+#, fuzzy, c-format
+msgid "Error creating pipe: %s\n"
+msgstr "Грешка при затварању датотеке „%s“."
+
+#, fuzzy, c-format
+msgid "Error forking: %s\n"
+msgstr "Грешка при затварању датотеке „%s“."
+
+#, c-format
+msgid "Error reading from console: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Error writing to console: %s\n"
+msgstr "Грешка при упису у датотеку „%s“."
 
 msgid "Print all elements"
 msgstr "Исписује све елементе"
@@ -1132,6 +1156,11 @@ msgstr ""
 
 msgid "Print supported URI schemes, with the elements that implement them"
 msgstr "Штампа подржане шеме адреса, са елементима који их примењују."
+
+msgid ""
+"Disable colors in output. You can also achieve the same by "
+"setting'GST_INSPECT_NO_COLORS' environment variable to any value."
+msgstr ""
 
 #, c-format
 msgid "Could not load plugin file: %s\n"

@@ -75,6 +75,7 @@ enum
 #define DEFAULT_SIGNAL_HANDOFFS           TRUE
 #define DEFAULT_TS_OFFSET               0
 #define DEFAULT_DROP_ALLOCATION         FALSE
+#define DEFAULT_EOS_AFTER               -1
 
 enum
 {
@@ -93,7 +94,8 @@ enum
   PROP_CHECK_IMPERFECT_TIMESTAMP,
   PROP_CHECK_IMPERFECT_OFFSET,
   PROP_SIGNAL_HANDOFFS,
-  PROP_DROP_ALLOCATION
+  PROP_DROP_ALLOCATION,
+  PROP_EOS_AFTER
 };
 
 
@@ -159,7 +161,7 @@ gst_identity_class_init (GstIdentityClass * klass)
           DEFAULT_SLEEP_TIME, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_ERROR_AFTER,
       g_param_spec_int ("error-after", "Error After", "Error after N buffers",
-          G_MININT, G_MAXINT, DEFAULT_ERROR_AFTER,
+          -1, G_MAXINT, DEFAULT_ERROR_AFTER,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_DROP_PROBABILITY,
       g_param_spec_float ("drop-probability", "Drop Probability",
@@ -238,6 +240,18 @@ gst_identity_class_init (GstIdentityClass * klass)
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
+   * GstIdentity:eos-after
+   *
+   * EOS after N buffers.
+   *
+   * Since: 1.16
+   **/
+  g_object_class_install_property (gobject_class, PROP_EOS_AFTER,
+      g_param_spec_int ("eos-after", "EOS After", "EOS after N buffers",
+          -1, G_MAXINT, DEFAULT_EOS_AFTER,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  /**
    * GstIdentity::handoff:
    * @identity: the identity instance
    * @buffer: the buffer that just has been received
@@ -278,6 +292,7 @@ gst_identity_init (GstIdentity * identity)
 {
   identity->sleep_time = DEFAULT_SLEEP_TIME;
   identity->error_after = DEFAULT_ERROR_AFTER;
+  identity->error_after_counter = DEFAULT_ERROR_AFTER;
   identity->drop_probability = DEFAULT_DROP_PROBABILITY;
   identity->drop_buffer_flags = DEFAULT_DROP_BUFFER_FLAGS;
   identity->datarate = DEFAULT_DATARATE;
@@ -291,6 +306,8 @@ gst_identity_init (GstIdentity * identity)
   identity->signal_handoffs = DEFAULT_SIGNAL_HANDOFFS;
   identity->ts_offset = DEFAULT_TS_OFFSET;
   g_cond_init (&identity->blocked_cond);
+  identity->eos_after = DEFAULT_EOS_AFTER;
+  identity->eos_after_counter = DEFAULT_EOS_AFTER;
 
   gst_base_transform_set_gap_aware (GST_BASE_TRANSFORM_CAST (identity), TRUE);
 }
@@ -624,10 +641,16 @@ gst_identity_transform_ip (GstBaseTransform * trans, GstBuffer * buf)
   identity->prev_offset_end = GST_BUFFER_OFFSET_END (buf);
   identity->prev_offset = GST_BUFFER_OFFSET (buf);
 
-  if (identity->error_after >= 0) {
-    identity->error_after--;
-    if (identity->error_after == 0)
+  if (identity->error_after_counter >= 0) {
+    identity->error_after_counter--;
+    if (identity->error_after_counter == 0)
       goto error_after;
+  }
+
+  if (identity->eos_after_counter >= 0) {
+    identity->eos_after_counter--;
+    if (identity->eos_after_counter == 0)
+      goto eos_after;
   }
 
   if (identity->drop_probability > 0.0) {
@@ -699,6 +722,11 @@ error_after:
         (_("Failed after iterations as requested.")), (NULL));
     return GST_FLOW_ERROR;
   }
+eos_after:
+  {
+    GST_DEBUG_OBJECT (identity, "EOS after iterations as requested.");
+    return GST_FLOW_EOS;
+  }
 dropped:
   {
     if (!identity->silent) {
@@ -769,6 +797,9 @@ gst_identity_set_property (GObject * object, guint prop_id,
     case PROP_DROP_ALLOCATION:
       identity->drop_allocation = g_value_get_boolean (value);
       break;
+    case PROP_EOS_AFTER:
+      identity->eos_after = g_value_get_int (value);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -835,6 +866,9 @@ gst_identity_get_property (GObject * object, guint prop_id, GValue * value,
     case PROP_DROP_ALLOCATION:
       g_value_set_boolean (value, identity->drop_allocation);
       break;
+    case PROP_EOS_AFTER:
+      g_value_set_int (value, identity->eos_after);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -848,13 +882,27 @@ gst_identity_start (GstBaseTransform * trans)
 
   identity = GST_IDENTITY (trans);
 
+  if (identity->eos_after != DEFAULT_EOS_AFTER
+      && identity->error_after != DEFAULT_ERROR_AFTER)
+    goto both_afters_defined;
+
   identity->offset = 0;
   identity->prev_timestamp = GST_CLOCK_TIME_NONE;
   identity->prev_duration = GST_CLOCK_TIME_NONE;
   identity->prev_offset_end = GST_BUFFER_OFFSET_NONE;
   identity->prev_offset = GST_BUFFER_OFFSET_NONE;
+  identity->error_after_counter = identity->error_after;
+  identity->eos_after_counter = identity->eos_after;
 
   return TRUE;
+
+  /* ERROR */
+both_afters_defined:
+  {
+    GST_ELEMENT_ERROR (identity, CORE, FAILED,
+        (_("eos-after and error-after can't both be defined.")), (NULL));
+    return FALSE;
+  }
 }
 
 static gboolean

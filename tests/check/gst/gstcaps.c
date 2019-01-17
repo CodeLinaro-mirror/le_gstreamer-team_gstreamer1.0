@@ -1102,19 +1102,24 @@ GST_END_TEST;
 
 GST_START_TEST (test_broken)
 {
-  GstCaps *c1;
+  GstCaps *c1 = NULL;
 
   /* NULL is not valid for media_type */
   ASSERT_CRITICAL (c1 =
       gst_caps_new_simple (NULL, "field", G_TYPE_INT, 1, NULL));
   fail_if (c1);
 
-#ifndef G_DISABLE_CHECKS
   /* such a name is not valid, see gst_structure_validate_name() */
   ASSERT_CRITICAL (c1 =
       gst_caps_new_simple ("1#@abc", "field", G_TYPE_INT, 1, NULL));
   fail_if (c1);
-#endif
+
+  c1 = gst_caps_new_empty_simple ("test/broken-fraction");
+  fail_unless (c1);
+  /* denominator must be non-zero value */
+  ASSERT_CRITICAL (gst_caps_set_simple (c1, "foo", GST_TYPE_FRACTION, 1, 0,
+          NULL));
+  gst_caps_unref (c1);
 }
 
 GST_END_TEST;
@@ -1237,6 +1242,21 @@ GST_START_TEST (test_features)
   f1 = gst_caps_get_features (c1, 0);
   f2 = gst_caps_features_new ("memory:dmabuf", NULL);
   gst_caps_set_features (c1, 0, f2);
+
+  gst_caps_unref (c1);
+
+  /* gst_caps_set_features_simple() */
+  c1 = gst_caps_from_string
+      ("video/x-raw, format=NV12; video/x-raw, format=NV16");
+  fail_unless_equals_int (gst_caps_get_size (c1), 2);
+
+  f1 = gst_caps_features_new ("memory:EGLImage", NULL);
+  gst_caps_set_features_simple (c1, f1);
+
+  f2 = gst_caps_get_features (c1, 0);
+  fail_unless (gst_caps_features_is_equal (f1, f2));
+  f2 = gst_caps_get_features (c1, 1);
+  fail_unless (gst_caps_features_is_equal (f1, f2));
 
   gst_caps_unref (c1);
 }

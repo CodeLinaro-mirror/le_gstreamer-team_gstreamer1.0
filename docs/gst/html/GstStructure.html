@@ -643,7 +643,7 @@
 </div>
 <div class="refsect1">
 <a name="GstStructure.includes"></a><h2>Includes</h2>
-<pre class="synopsis">#include &lt;gst/gstprotection.h&gt;
+<pre class="synopsis">#include &lt;gst/gst.h&gt;
 </pre>
 </div>
 <div class="refsect1">
@@ -1647,10 +1647,10 @@ gst_structure_set_list (<em class="parameter"><code><a class="link" href="GstStr
                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray-struct"><span class="type">GValueArray</span></a> *array</code></em>);</pre>
 <p>This is useful in language bindings where unknown GValue types are not
 supported. This function will convert a <em class="parameter"><code>array</code></em>
- to <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><code class="literal">GST_TYPE_ARRAY</code></a> and set
+ to <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><code class="literal">GST_TYPE_LIST</code></a> and set
 the field specified by <em class="parameter"><code>fieldname</code></em>
 . Be aware that this is slower then using
-<a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><code class="literal">GST_TYPE_ARRAY</code></a> in a <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue-struct"><span class="type">GValue</span></a> directly.</p>
+<a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><code class="literal">GST_TYPE_LIST</code></a> in a <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue-struct"><span class="type">GValue</span></a> directly.</p>
 <p>Since 1.12</p>
 <div class="refsect3">
 <a name="gst-structure-set-list.parameters"></a><h4>Parameters</h4>
@@ -2951,10 +2951,10 @@ gst_structure_get_array (<em class="parameter"><code><a class="link" href="GstSt
                          <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *fieldname</code></em>,
                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray-struct"><span class="type">GValueArray</span></a> **array</code></em>);</pre>
 <p>This is useful in language bindings where unknown <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue-struct"><span class="type">GValue</span></a> types are not
-supported. This function will convert the <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><code class="literal">GST_TYPE_ARRAY</code></a> and
-<a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><code class="literal">GST_TYPE_LIST</code></a> into a newly allocated <a href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray-struct"><span class="type">GValueArray</span></a> and return it through
-<em class="parameter"><code>array</code></em>
-. Be aware that this is slower then getting the <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue-struct"><span class="type">GValue</span></a> directly.</p>
+supported. This function will convert the <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><code class="literal">GST_TYPE_ARRAY</code></a> into a newly
+allocated <a href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray-struct"><span class="type">GValueArray</span></a> and return it through <em class="parameter"><code>array</code></em>
+. Be aware that this is
+slower then getting the <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue-struct"><span class="type">GValue</span></a> directly.</p>
 <div class="refsect3">
 <a name="gst-structure-get-array.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
@@ -2986,8 +2986,8 @@ supported. This function will convert the <a class="link" href="gstreamer-GstVal
 <a name="gst-structure-get-array.returns"></a><h4>Returns</h4>
 <p> <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the value could be set correctly. If there was no field
 with <em class="parameter"><code>fieldname</code></em>
-or the existing field did not contain an int, this function
-returns <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>.</p>
+or the existing field did not contain a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><code class="literal">GST_TYPE_ARRAY</code></a>,
+this function returns <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>.</p>
 </div>
 </div>
 <hr>
@@ -2998,10 +2998,10 @@ gst_structure_get_list (<em class="parameter"><code><a class="link" href="GstStr
                         <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *fieldname</code></em>,
                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/gobject/gobject-Value-arrays.html#GValueArray-struct"><span class="type">GValueArray</span></a> **array</code></em>);</pre>
 <p>This is useful in language bindings where unknown <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue-struct"><span class="type">GValue</span></a> types are not
-supported. This function will convert the <a class="link" href="gstreamer-GstValue.html#GST-TYPE-ARRAY:CAPS" title="GST_TYPE_ARRAY"><code class="literal">GST_TYPE_ARRAY</code></a> and
-<a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><code class="literal">GST_TYPE_LIST</code></a> into a newly allocated GValueArray and return it through
-<em class="parameter"><code>array</code></em>
-. Be aware that this is slower then getting the <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue-struct"><span class="type">GValue</span></a> directly.</p>
+supported. This function will convert the <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><code class="literal">GST_TYPE_LIST</code></a> into a newly
+allocated GValueArray and return it through <em class="parameter"><code>array</code></em>
+. Be aware that this is
+slower then getting the <a href="/usr/share/gtk-doc/html/gobject/gobject-Generic-values.html#GValue-struct"><span class="type">GValue</span></a> directly.</p>
 <div class="refsect3">
 <a name="gst-structure-get-list.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
@@ -3033,8 +3033,8 @@ supported. This function will convert the <a class="link" href="gstreamer-GstVal
 <a name="gst-structure-get-list.returns"></a><h4>Returns</h4>
 <p> <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the value could be set correctly. If there was no field
 with <em class="parameter"><code>fieldname</code></em>
-or the existing field did not contain an int, this function
-returns <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>.</p>
+or the existing field did not contain a <a class="link" href="gstreamer-GstValue.html#GST-TYPE-LIST:CAPS" title="GST_TYPE_LIST"><code class="literal">GST_TYPE_LIST</code></a>, this
+function returns <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>.</p>
 <p>Since 1.12</p>
 </div>
 </div>
