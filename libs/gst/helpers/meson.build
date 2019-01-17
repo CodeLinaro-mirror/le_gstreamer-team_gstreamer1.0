@@ -3,7 +3,6 @@ executable('gst-plugin-scanner',
   c_args : gst_c_args,
   include_directories : [configinc],
   dependencies : [gobject_dep, gmodule_dep, glib_dep, mathlib, gst_dep],
-  link_with : [printf_lib],
   install_dir : helpers_install_dir,
   install: true,
 )
@@ -24,20 +23,14 @@ endif
 
 # Check PTP support
 have_ptp = false
-if host_machine.system() == 'android'
+if host_system == 'android'
   message('PTP not supported on Android because of permissions.')
-elif host_machine.system() == 'windows'
+elif host_system == 'windows'
   message('PTP not supported on Windows, not ported yet.')
-elif host_machine.system() == 'ios' # FIXME: is it also darwing on iOS ?
+elif host_system == 'ios'
   message('PTP not supported on iOS because of permissions.')
-elif host_machine.system() == 'darwin'
-  if cc.has_header('MobileCoreServices/MobileCoreServices.h')
-    message('PTP not supported on iOS because of permissions.')
-  else
-    have_ptp = true
-  endif
-elif ['linux', 'netbsd', 'freebsd', 'openbsd', 'kfreebsd', 'dragonfly', 'solaris'].contains(host_machine.system())
-  message('PTP supported on ' + host_machine.system() + '.')
+elif ['linux', 'darwin', 'netbsd', 'freebsd', 'openbsd', 'kfreebsd', 'dragonfly', 'solaris'].contains(host_system)
+  message('PTP supported on ' + host_system + '.')
   have_ptp = true
 endif
 
@@ -83,19 +76,19 @@ if have_ptp
   setcap = find_program('setcap', '/usr/sbin/setcap', '/sbin/setcap', required : false)
 
   # user/group to change to in gst-ptp-helper
-  ptp_helper_setuid_user = get_option('with-ptp-helper-setuid-user')
+  ptp_helper_setuid_user = get_option('ptp-helper-setuid-user')
   if ptp_helper_setuid_user != ''
     cdata.set_quoted('HAVE_PTP_HELPER_SETUID_USER', ptp_helper_setuid_user,
       description : 'PTP helper setuid user')
   endif
-  ptp_helper_setuid_group = get_option('with-ptp-helper-setuid-group')
+  ptp_helper_setuid_group = get_option('ptp-helper-setuid-group')
   if ptp_helper_setuid_group != ''
     cdata.set_quoted('HAVE_PTP_HELPER_SETUID_GROUP', ptp_helper_setuid_group,
       description : 'PTP helper setuid group')
   endif
 
   # how to install gst-ptp-helper
-  with_ptp_helper_permissions = get_option('with-ptp-helper-permissions')
+  with_ptp_helper_permissions = get_option('ptp-helper-permissions')
   if with_ptp_helper_permissions == 'auto'
     if gst_ptp_have_cap and setcap.found()
       with_ptp_helper_permissions = 'capabilities'
@@ -124,7 +117,6 @@ if have_ptp
     c_args : gst_c_args,
     include_directories : [configinc, libsinc],
     dependencies : [gio_dep, gobject_dep, glib_dep, mathlib, gst_dep, cap_dep],
-    link_with : [printf_lib],
     install_dir : helpers_install_dir,
     install : true)
 
@@ -132,3 +124,24 @@ if have_ptp
       helpers_install_dir, with_ptp_helper_permissions,
       setcap.found() ? setcap.path() : '')
 endif
+
+install_data(['gst_gdb.py', 'glib_gobject_helper.py'],
+  install_dir : join_paths(get_option('datadir'), 'glib-2.0', 'gdb'))
+
+gdbconf = configuration_data()
+gdbconf.set('GST_API_VERSION', apiversion)
+gdbconf.set('DATADIR', '@0@/@1@'.format(get_option('prefix'), get_option('datadir')))
+
+if host_system != 'windows'
+  # XXX: We add a leading './' because prefix is an absolute path and we
+  # need it to be a relative path so that join_paths appends it to the end.
+  gdb_install_dir = join_paths(get_option('datadir'), 'gdb', 'auto-load', './' + get_option('prefix'), get_option('libdir'))
+else
+  # FIXME: Cannot install on Windows because the path will contain a drive
+  # letter and colons are not allowed in paths.
+  gdb_install_dir = disabler()
+endif
+configure_file(input : 'libgstreamer-gdb.py.in',
+  output : 'libgstreamer-@0@.so.@1@-gdb.py'.format(apiversion, libversion),
+  install_dir : gdb_install_dir,
+  configuration : gdbconf)

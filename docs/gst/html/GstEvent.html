@@ -2027,7 +2027,7 @@ gst_event_parse_stream (<em class="parameter"><code><a class="link" href="GstEve
 </tr>
 <tr>
 <td class="parameter_name"><p>stream</p></td>
-<td class="parameter_description"><p>adress of variable to store the stream. </p></td>
+<td class="parameter_description"><p>address of variable to store the stream. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
 </tr>
 </tbody>
@@ -3571,6 +3571,7 @@ gst_event_parse_stream_group_done (<em class="parameter"><code><a class="link" h
   GstMiniObject mini_object;
 
   GstEventType  type;
+  /* FIXME 2.0: Remove the GstEvent::timestamp field */
   guint64       timestamp;
   guint32       seqnum;
 };

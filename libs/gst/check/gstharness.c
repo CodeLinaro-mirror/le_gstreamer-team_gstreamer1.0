@@ -147,6 +147,19 @@ static GstStaticPadTemplate hsinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS_ANY);
 
+typedef struct
+{
+  GType api;
+  GstStructure *params;
+} ProposeMeta;
+
+static void
+propose_meta_clear (ProposeMeta * meta)
+{
+  if (meta->params)
+    gst_structure_free (meta->params);
+}
+
 struct _GstHarnessPrivate
 {
   gchar *element_sinkpad_name;
@@ -178,6 +191,8 @@ struct _GstHarnessPrivate
   GstAllocationParams allocation_params;
   GstAllocator *propose_allocator;
   GstAllocationParams propose_allocation_params;
+
+  GArray *propose_allocation_metas;
 
   gboolean blocking_push_mode;
   GCond blocking_push_cond;
@@ -389,6 +404,15 @@ gst_harness_sink_query (GstPad * pad, GstObject * parent, GstQuery * query)
         g_assert_cmpuint (0, ==, size);
         gst_query_add_allocation_param (query,
             priv->propose_allocator, &priv->propose_allocation_params);
+
+        if (priv->propose_allocation_metas) {
+          guint i;
+          for (i = 0; i < priv->propose_allocation_metas->len; i++) {
+            ProposeMeta *meta =
+                &g_array_index (priv->propose_allocation_metas, ProposeMeta, i);
+            gst_query_add_allocation_meta (query, meta->api, meta->params);
+          }
+        }
 
         GST_DEBUG_OBJECT (pad, "proposing allocation %" GST_PTR_FORMAT,
             priv->propose_allocator);
@@ -1052,6 +1076,9 @@ gst_harness_teardown (GstHarness * h)
   gst_object_replace ((GstObject **) & priv->allocator, NULL);
   gst_object_replace ((GstObject **) & priv->pool, NULL);
 
+  if (priv->propose_allocation_metas)
+    g_array_unref (priv->propose_allocation_metas);
+
   /* if we hold the last ref, set to NULL */
   if (gst_harness_element_unref (h) == 0) {
     gboolean state_change;
@@ -1082,7 +1109,7 @@ gst_harness_teardown (GstHarness * h)
  * @h: a #GstHarness
  * @srcpad: a #GstPad to link to the harness sinkpad
  *
- * Links the specifed #GstPad the @GstHarness sinkpad. This can be useful if
+ * Links the specified #GstPad the @GstHarness sinkpad. This can be useful if
  * perhaps the srcpad did not exist at the time of creating the harness,
  * like a demuxer that provides a sometimes-pad after receiving data.
  *
@@ -1108,7 +1135,7 @@ gst_harness_add_element_src_pad (GstHarness * h, GstPad * srcpad)
  * @h: a #GstHarness
  * @sinkpad: a #GstPad to link to the harness srcpad
  *
- * Links the specifed #GstPad the @GstHarness srcpad.
+ * Links the specified #GstPad the @GstHarness srcpad.
  *
  * MT safe.
  *
@@ -1152,6 +1179,7 @@ gst_harness_set_src_caps (GstHarness * h, GstCaps * caps)
 
   gst_segment_init (&segment, GST_FORMAT_TIME);
   handled = gst_pad_push_event (h->srcpad, gst_event_new_segment (&segment));
+  g_assert (handled);
 }
 
 /**
@@ -1337,30 +1365,15 @@ gst_harness_set_time (GstHarness * h, GstClockTime time)
  * MT safe.
  *
  * Returns: a @gboolean %TRUE if the waits have been registered, %FALSE if not.
- * (Could be that it timed out waiting or that more waits then waits was found)
+ * (Could be that it timed out waiting or that more waits than waits was found)
  *
  * Since: 1.6
  */
 gboolean
 gst_harness_wait_for_clock_id_waits (GstHarness * h, guint waits, guint timeout)
 {
-  GstTestClock *testclock = h->priv->testclock;
-  gint64 start_time;
-  gboolean ret;
-
-  start_time = g_get_monotonic_time ();
-  while (gst_test_clock_peek_id_count (testclock) < waits) {
-    gint64 time_spent;
-
-    g_usleep (G_USEC_PER_SEC / 1000);
-    time_spent = g_get_monotonic_time () - start_time;
-    if ((time_spent / G_USEC_PER_SEC) > timeout)
-      break;
-  }
-
-  ret = (waits == gst_test_clock_peek_id_count (testclock));
-
-  return ret;
+  return gst_test_clock_timed_wait_for_multiple_pending_ids (h->priv->testclock,
+      waits, timeout * 1000, NULL);
 }
 
 /**
@@ -1373,7 +1386,7 @@ gst_harness_wait_for_clock_id_waits (GstHarness * h, guint waits, guint timeout)
  * 3: Release the #GstClockID wait.
  * Together, this provides an easy way to not have to think about the details
  * around clocks and time, but still being able to write deterministic tests
- * that are dependant on this. A "crank" can be though of as the notion of
+ * that are dependent on this. A "crank" can be though of as the notion of
  * manually driving the clock forward to its next logical step.
  *
  * MT safe.
@@ -1427,7 +1440,7 @@ gst_harness_crank_multiple_clock_waits (GstHarness * h, guint waits)
  *
  * This will set the harnessed #GstElement to %GST_STATE_PLAYING.
  * #GstElements without a sink-#GstPad and with the %GST_ELEMENT_FLAG_SOURCE
- * flag set is concidered a src #GstElement
+ * flag set is considered a src #GstElement
  * Non-src #GstElements (like sinks and filters) are automatically set to
  * playing by the #GstHarness, but src #GstElements are not to avoid them
  * starting to produce buffers.
@@ -2162,6 +2175,38 @@ gst_harness_set_propose_allocator (GstHarness * h, GstAllocator * allocator,
 }
 
 /**
+ * gst_harness_add_propose_allocation_meta:
+ * @h: a #GstHarness
+ * @api: a metadata API
+ * @params: (allow-none) (transfer none): API specific parameters
+ *
+ * Add api with params as one of the supported metadata API to propose when
+ * receiving an allocation query.
+ *
+ * MT safe.
+ *
+ * Since: 1.16
+ */
+void
+gst_harness_add_propose_allocation_meta (GstHarness * h, GType api,
+    const GstStructure * params)
+{
+  GstHarnessPrivate *priv = h->priv;
+  ProposeMeta meta;
+
+  meta.api = api;
+  meta.params = params ? gst_structure_copy (params) : NULL;
+
+  if (!priv->propose_allocation_metas) {
+    priv->propose_allocation_metas =
+        g_array_new (FALSE, FALSE, sizeof (ProposeMeta));
+    g_array_set_clear_func (priv->propose_allocation_metas,
+        (GDestroyNotify) propose_meta_clear);
+  }
+  g_array_append_val (priv->propose_allocation_metas, meta);
+}
+
+/**
  * gst_harness_add_src_harness:
  * @h: a #GstHarness
  * @src_harness: (transfer full): a #GstHarness to be added as a src-harness.
@@ -2172,7 +2217,7 @@ gst_harness_set_propose_allocator (GstHarness * h, GstAllocator * allocator,
  * By adding a src-type #GstElement, it is then easy to use functions like
  * gst_harness_push_from_src or gst_harness_src_crank_and_push_many
  * to provide your harnessed element with input. The @has_clock_wait variable
- * is a greate way to control you src-element with, in that you can have it
+ * is a great way to control you src-element with, in that you can have it
  * produce a buffer for you by simply cranking the clock, and not have it
  * spin out of control producing buffers as fast as possible.
  *
@@ -2364,7 +2409,7 @@ forward_sticky_events (GstPad * pad, GstEvent ** ev, gpointer user_data)
  * responses the element output might create in sink elements. An example might
  * be an existing sink providing some analytical data on the input it receives that
  * can be useful to your testing. If the goal is to test a sink-element itself,
- * this is better acheived using gst_harness_new directly on the sink.
+ * this is better achieved using gst_harness_new directly on the sink.
  *
  * If a sink-harness already exists it will be replaced.
  *
@@ -2499,6 +2544,18 @@ gst_harness_find_element (GstHarness * h, const gchar * element_name)
   gboolean done = FALSE;
   GstIterator *iter;
   GValue data = G_VALUE_INIT;
+
+  if (!GST_IS_BIN (h->element)) {
+    GstPluginFeature *feature;
+
+    g_return_val_if_fail (GST_IS_ELEMENT (h->element), NULL);
+
+    feature = GST_PLUGIN_FEATURE (gst_element_get_factory (h->element));
+    if (!strcmp (element_name, gst_plugin_feature_get_name (feature)))
+      return gst_object_ref (h->element);
+
+    return NULL;
+  }
 
   iter = gst_bin_iterate_elements (GST_BIN (h->element));
   done = FALSE;

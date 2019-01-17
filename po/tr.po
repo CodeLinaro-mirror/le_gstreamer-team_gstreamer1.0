@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gstreamer 1.12.0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2018-10-02 22:53+0100\n"
+"POT-Creation-Date: 2019-01-17 01:38+0000\n"
 "PO-Revision-Date: 2017-05-05 11:51+0300\n"
 "Last-Translator: Mehmet Kececi <mkececi@mehmetkececi.com>\n"
 "Language-Team: Turkish <gnu-tr-u12a@lists.sourceforge.net>\n"
@@ -916,6 +916,9 @@ msgstr "\"%s\" ikilisi yok, öge açılamıyor"
 msgid "empty pipeline not allowed"
 msgstr "boş boruhattına izin verilmiyor"
 
+msgid "Pipeline construction is invalid, please add queues."
+msgstr ""
+
 msgid "A lot of buffers are being dropped."
 msgstr "Tampon belleklerin bir çoğu bırakılıyor."
 
@@ -998,6 +1001,9 @@ msgstr "Dosya \"%s\" bir sokettir."
 msgid "Failed after iterations as requested."
 msgstr "İstenildiği gibi tekrarlama başarısız oldu."
 
+msgid "eos-after and error-after can't both be defined."
+msgstr ""
+
 msgid "caps"
 msgstr "kabiliyetler"
 
@@ -1019,7 +1025,8 @@ msgstr "Akışı yeterli veri içermiyor."
 msgid "Stream contains no data."
 msgstr "Akış hiçbir veri içermiyor."
 
-msgid "Implemented Interfaces:\n"
+#, fuzzy, c-format
+msgid "%sImplemented Interfaces%s:\n"
 msgstr "Gerçeklenmiş Arayüzler:\n"
 
 msgid "readable"
@@ -1046,7 +1053,8 @@ msgstr "sadece NULL ya da READY olarak değiştirilebilir"
 msgid "Blacklisted files:"
 msgstr "Kara listeye alınan dosyalar:"
 
-msgid "Total count: "
+#, fuzzy, c-format
+msgid "%sTotal count%s: %s"
 msgstr "Toplam sayı: "
 
 #, c-format
@@ -1072,6 +1080,22 @@ msgid "%d feature"
 msgid_plural "%d features"
 msgstr[0] "%d özelliği"
 msgstr[1] "%d özelliği"
+
+#, fuzzy, c-format
+msgid "Error creating pipe: %s\n"
+msgstr "\"%s\" kapatılırken hata."
+
+#, fuzzy, c-format
+msgid "Error forking: %s\n"
+msgstr "\"%s\" kapatılırken hata."
+
+#, c-format
+msgid "Error reading from console: %s\n"
+msgstr ""
+
+#, fuzzy, c-format
+msgid "Error writing to console: %s\n"
+msgstr "\"%s\" dosyası yazılırken hata."
 
 msgid "Print all elements"
 msgstr "Bütün ögeleri yazdır"
@@ -1112,6 +1136,11 @@ msgstr ""
 
 msgid "Print supported URI schemes, with the elements that implement them"
 msgstr "Desteklenen URI şemalarını onlara uygulanan ögelerle yazdır"
+
+msgid ""
+"Disable colors in output. You can also achieve the same by "
+"setting'GST_INSPECT_NO_COLORS' environment variable to any value."
+msgstr ""
 
 #, c-format
 msgid "Could not load plugin file: %s\n"

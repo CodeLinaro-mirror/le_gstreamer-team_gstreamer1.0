@@ -216,6 +216,11 @@ _gst_caps_free (GstCaps * caps)
 #ifdef DEBUG_REFCOUNT
   GST_CAT_TRACE (GST_CAT_CAPS, "freeing caps %p", caps);
 #endif
+
+#ifdef USE_POISONING
+  memset (caps, 0xff, sizeof (GstCapsImpl));
+#endif
+
   g_slice_free1 (sizeof (GstCapsImpl), caps);
 }
 
@@ -928,6 +933,39 @@ gst_caps_set_features (GstCaps * caps, guint index, GstCapsFeatures * features)
 }
 
 /**
+ * gst_caps_set_features_simple:
+ * @caps: a #GstCaps
+ * @features: (allow-none) (transfer full): the #GstCapsFeatures to set
+ *
+ * Sets the #GstCapsFeatures @features for all the structures of @caps.
+ *
+ * Since: 1.16
+ */
+void
+gst_caps_set_features_simple (GstCaps * caps, GstCapsFeatures * features)
+{
+  guint i;
+  guint n;
+
+  g_return_if_fail (caps != NULL);
+  g_return_if_fail (IS_WRITABLE (caps));
+
+  n = gst_caps_get_size (caps);
+
+  for (i = 0; i < n; i++) {
+    GstCapsFeatures *f;
+
+    /* Transfer ownership of @features to the last structure */
+    if (features && i < n - 1)
+      f = gst_caps_features_copy (features);
+    else
+      f = features;
+
+    gst_caps_set_features (caps, i, f);
+  }
+}
+
+/**
  * gst_caps_copy_nth:
  * @caps: the #GstCaps to copy
  * @nth: the nth structure to copy
@@ -1044,6 +1082,7 @@ gst_caps_set_simple_valist (GstCaps * caps, const char *field, va_list varargs)
     G_VALUE_COLLECT_INIT (&value, type, varargs, 0, &err);
     if (G_UNLIKELY (err)) {
       g_critical ("%s", err);
+      g_free (err);
       return;
     }
 
@@ -2539,4 +2578,24 @@ gst_caps_filter_and_map_in_place (GstCaps * caps, GstCapsFilterMapFunc func,
       i++;
     }
   }
+}
+
+/**
+ * gst_caps_copy:
+ * @caps: a #GstCaps.
+ *
+ * Creates a new #GstCaps as a copy of the old @caps. The new caps will have a
+ * refcount of 1, owned by the caller. The structures are copied as well.
+ *
+ * Note that this function is the semantic equivalent of a gst_caps_ref()
+ * followed by a gst_caps_make_writable(). If you only want to hold on to a
+ * reference to the data, you should use gst_caps_ref().
+ *
+ * When you are finished with the caps, call gst_caps_unref() on it.
+ *
+ * Returns: the new #GstCaps
+ */
+GstCaps *(gst_caps_copy) (const GstCaps * caps)
+{
+  return GST_CAPS (gst_mini_object_copy (GST_MINI_OBJECT_CAST (caps)));
 }

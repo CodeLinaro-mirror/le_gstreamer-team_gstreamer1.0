@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gstreamer 1.12.0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2018-10-02 22:53+0100\n"
+"POT-Creation-Date: 2019-01-17 01:38+0000\n"
 "PO-Revision-Date: 2017-05-04 22:17+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <translation-team-uk@lists.sourceforge.net>\n"
@@ -926,6 +926,9 @@ msgstr "немає фрагмента «%s», розпаковуємо елем�
 msgid "empty pipeline not allowed"
 msgstr "не можна використовувати порожній канал"
 
+msgid "Pipeline construction is invalid, please add queues."
+msgstr ""
+
 msgid "A lot of buffers are being dropped."
 msgstr "Викинуто багато буферів."
 
@@ -1008,6 +1011,9 @@ msgstr "Файл «%s» є сокетом."
 msgid "Failed after iterations as requested."
 msgstr "Помилка після ітерацій у запитаному порядку."
 
+msgid "eos-after and error-after can't both be defined."
+msgstr ""
+
 msgid "caps"
 msgstr "можливості"
 
@@ -1029,7 +1035,8 @@ msgstr "У потоці міститься недостатньо даних."
 msgid "Stream contains no data."
 msgstr "Потік не містить даних."
 
-msgid "Implemented Interfaces:\n"
+#, fuzzy, c-format
+msgid "%sImplemented Interfaces%s:\n"
 msgstr "Реалізовані інтерфейси:\n"
 
 msgid "readable"
@@ -1056,7 +1063,8 @@ msgstr "можна змінювати лише у станах NULL і READY"
 msgid "Blacklisted files:"
 msgstr "Заблоковані файли:"
 
-msgid "Total count: "
+#, fuzzy, c-format
+msgid "%sTotal count%s: %s"
 msgstr "Загальна кількість:"
 
 #, c-format
@@ -1086,6 +1094,22 @@ msgid_plural "%d features"
 msgstr[0] "%d функція"
 msgstr[1] "%d функції"
 msgstr[2] "%d функцій"
+
+#, fuzzy, c-format
+msgid "Error creating pipe: %s\n"
+msgstr "Помилка закривання файла «%s»."
+
+#, fuzzy, c-format
+msgid "Error forking: %s\n"
+msgstr "Помилка закривання файла «%s»."
+
+#, fuzzy, c-format
+msgid "Error reading from console: %s\n"
+msgstr "Помилка при повторному скануванні реєстру модулів %s: %s"
+
+#, fuzzy, c-format
+msgid "Error writing to console: %s\n"
+msgstr "Помилка при записуванні до файла «%s»."
 
 msgid "Print all elements"
 msgstr "Вивести усі елементи"
@@ -1126,6 +1150,11 @@ msgstr ""
 
 msgid "Print supported URI schemes, with the elements that implement them"
 msgstr "Показати підтримувані схеми адрес з елементами, які їх реалізують"
+
+msgid ""
+"Disable colors in output. You can also achieve the same by "
+"setting'GST_INSPECT_NO_COLORS' environment variable to any value."
+msgstr ""
 
 #, c-format
 msgid "Could not load plugin file: %s\n"
@@ -1399,9 +1428,6 @@ msgstr "Спорожнення каналу...\n"
 #~ msgid "Print alloc trace (if enabled at compile time)"
 #~ msgstr ""
 #~ "Вивести трасування розподілу пам’яті (якщо ввімкнено при компіляції)"
-
-#~ msgid "Error re-scanning registry %s: %s"
-#~ msgstr "Помилка при повторному скануванні реєстру модулів %s: %s"
 
 #~ msgid "Error re-scanning registry %s"
 #~ msgstr "Помилка при повторному скануванні реєстру %s"

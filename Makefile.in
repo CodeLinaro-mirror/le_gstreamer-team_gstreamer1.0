@@ -14,8 +14,6 @@
 
 @SET_MAKE@
 
-# various tests to make sure we dist the win32 stuff (for MSVC builds) right
-
 # include this snippet to add a common release: target by using
 # include $(top_srcdir)/common/release.mak
 
@@ -236,7 +234,6 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(srcdir)/stamp.h.in $(top_srcdir)/common/coverage/lcov.mak \
 	$(top_srcdir)/common/cruft.mak $(top_srcdir)/common/po.mak \
 	$(top_srcdir)/common/release.mak \
-	$(top_srcdir)/common/win32.mak \
 	$(top_srcdir)/data/bash-completion/helpers/gst.in ABOUT-NLS \
 	AUTHORS COPYING ChangeLog INSTALL NEWS README TODO compile \
 	config.guess config.rpath config.sub install-sh ltmain.sh \
@@ -368,6 +365,9 @@ GST_ALL_LIBS = @GST_ALL_LIBS@
 GST_API_VERSION = @GST_API_VERSION@
 GST_COMPLETION_HELPER_INSTALLED = @GST_COMPLETION_HELPER_INSTALLED@
 GST_CURRENT = @GST_CURRENT@
+GST_DISABLE_CAST_CHECKS_DEFINE = @GST_DISABLE_CAST_CHECKS_DEFINE@
+GST_DISABLE_GLIB_ASSERTS_DEFINE = @GST_DISABLE_GLIB_ASSERTS_DEFINE@
+GST_DISABLE_GLIB_CHECKS_DEFINE = @GST_DISABLE_GLIB_CHECKS_DEFINE@
 GST_DISABLE_GST_DEBUG_DEFINE = @GST_DISABLE_GST_DEBUG_DEFINE@
 GST_DISABLE_GST_TRACER_HOOKS_DEFINE = @GST_DISABLE_GST_TRACER_HOOKS_DEFINE@
 GST_DISABLE_OPTION_PARSING_DEFINE = @GST_DISABLE_OPTION_PARSING_DEFINE@
@@ -497,6 +497,7 @@ VALGRIND_CFLAGS = @VALGRIND_CFLAGS@
 VALGRIND_LIBS = @VALGRIND_LIBS@
 VALGRIND_PATH = @VALGRIND_PATH@
 VERSION = @VERSION@
+VISIBILITY_CFLAGS = @VISIBILITY_CFLAGS@
 WARNING_CFLAGS = @WARNING_CFLAGS@
 WIN32_LIBS = @WIN32_LIBS@
 XGETTEXT = @XGETTEXT@
@@ -581,37 +582,17 @@ DIST_SUBDIRS = pkgconfig \
 	common \
 	data
 
-
-# the MANIFEST contains all win32 related files that should be disted
-win32 = $(shell cat $(top_srcdir)/win32/MANIFEST)
-
-# wildcard is apparently not portable to other makes, hence the use of find
-# these are library .def files with the symbols to export
-win32defs = $(shell find $(top_srcdir)/win32/common -name '*.def')
-
-# wildcard is apparently not portable to other makes, hence the use of find
-# these are files that need to be disted with CRLF line endings:
-win32crlf = $(shell find $(top_srcdir)/win32 -name '*.dsw' -o -name '*.dsp')
-
-# include before EXTRA_DIST for win32 assignment
 EXTRA_DIST = \
 	gst-element-check-1.0.m4 \
 	configure.ac autogen.sh depcomp \
 	MAINTAINERS ABOUT-NLS RELEASE gstreamer.doap \
 	scripts/gst-uninstalled \
 	$(shell find "$(top_srcdir)" -type f -name meson.build ! -path "$(top_srcdir)/gstreamer-*" ) \
-	gst/gstenumtypes.c.template gst/gstenumtypes.h.template \
-	libs/gst/controller/controller_mkenum.py \
 	meson_options.txt \
-	gst/parse/gen_lex.py.in gst/parse/gen_grammar.py.in \
-	$(win32)
+	gst/parse/gen_lex.py.in gst/parse/gen_grammar.py.in
 
 DISTCLEANFILES = _stdint.h
 @GST_GCOV_ENABLED_TRUE@GCOV_DIRS = gst libs
-
-# Do not run the check-exports test in case any option which causes the API to
-# change has been used
-@GST_DISABLE_REGISTRY_FALSE@CHECK_EXPORTS = check-exports
 
 # cruft: plugins that have been merged or moved or renamed
 CRUFT_FILES = \
@@ -669,7 +650,7 @@ all: config.h
 .SUFFIXES:
 am--refresh: Makefile
 	@:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/common/win32.mak $(top_srcdir)/common/release.mak $(top_srcdir)/common/po.mak $(top_srcdir)/common/coverage/lcov.mak $(top_srcdir)/common/cruft.mak $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/common/release.mak $(top_srcdir)/common/po.mak $(top_srcdir)/common/coverage/lcov.mak $(top_srcdir)/common/cruft.mak $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -691,7 +672,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__maybe_remake_depfiles)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__maybe_remake_depfiles);; \
 	esac;
-$(top_srcdir)/common/win32.mak $(top_srcdir)/common/release.mak $(top_srcdir)/common/po.mak $(top_srcdir)/common/coverage/lcov.mak $(top_srcdir)/common/cruft.mak $(am__empty):
+$(top_srcdir)/common/release.mak $(top_srcdir)/common/po.mak $(top_srcdir)/common/coverage/lcov.mak $(top_srcdir)/common/cruft.mak $(am__empty):
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
@@ -1183,76 +1164,6 @@ uninstall-am: uninstall-aclocalDATA
 .PRECIOUS: Makefile
 
 
-win32-debug:
-	@echo; \
-	echo win32     = $(win32); \
-	echo; \
-	echo win32defs = $(win32defs); \
-	echo; \
-	echo win32crlf = $(win32crlf); \
-	echo
-
-win32-check-crlf:
-	@echo Checking win32 files for CR LF line endings ...; \
-	fail=0 ; \
-	for each in $(win32crlf) ; do \
-	  result=`perl -e 'print grep(/\r\n/,<>)' "$$each" | wc -l`; \
-	  if test "$$result" = 0 ; then \
-	    echo $$each must be fixed to have CRLF line endings ; \
-	    fail=1; \
-	  fi ; \
-	done ; \
-	exit $$fail
-
-# make sure all symbols we export on linux are defined in the win32 .def too
-# (don't care about other unixes for now, it's enough if it works on one of
-# the linux build bots; we assume .so )
-check-exports:
-	@fail=0 ; \
-	for l in $(win32defs); do \
-	  libbase=`basename "$$l" ".def"`; \
-	  libso=`find "$(top_builddir)" -name "$$libbase-@GST_API_VERSION@.so" | grep -v /_build/ | head -n1`; \
-	  libdef="$(top_srcdir)/win32/common/$$libbase.def"; \
-	  if test "x$$libso" != "x"; then \
-	    echo Checking symbols in $$libso; \
-	    if ! ($(top_srcdir)/common/check-exports $$libdef $$libso) ; then \
-	      echo "$$libdef"; \
-	      if test "$$libbase" != "libgstgl"; then \
-	        fail=1; \
-	      fi; \
-	    fi; \
-	  fi; \
-	done ; \
-	if test $$fail != 0; then \
-	  echo '-----------------------------------------------------------'; \
-	  echo 'Run this to update the .def files:'; \
-	  echo 'make update-exports'; \
-	  echo '-----------------------------------------------------------'; \
-	fi; \
-	exit $$fail
-
-update-exports:
-	make check-exports 2>&1 | patch -p1
-	if test -f "$(top_srcdir)/win32/common/libgstgl.def"; then \
-	  git checkout "$(top_srcdir)/win32/common/libgstgl.def";  \
-	fi
-	git add $(top_srcdir)/win32/common/lib*.def
-	git diff --cached -- $(top_srcdir)/win32/common/
-	echo '^^^--- updated and staged changes above'
-
-# complain about nonportable printf format strings (%lld, %llu, %zu etc.)
-check-nonportable-print-format:
-	@fail=0 ; \
-	loc=`find "$(top_srcdir)" -name '*.c' | xargs grep -n -e '%[0-9]*ll[udx]' -e '%[0-9]*z[udx]'`; \
-	if test "x$$loc" != "x"; then \
-	  echo "Please fix the following print format strings:" ; \
-	  find "$(top_srcdir)" -name '*.c' | xargs grep -n -e '%[0-9]*ll[udx]' -e '%[0-9]*z[udx]'; \
-	  fail=1; \
-	fi; \
-	exit $$fail
-
-dist-hook: check-exports win32-check-crlf
-
 release: dist
 	@$(MAKE) $(PACKAGE)-$(VERSION).tar.xz.sha256sum
 	@echo
@@ -1433,7 +1344,7 @@ lcov:
 @GST_GCOV_ENABLED_FALSE@lcov-report:
 @GST_GCOV_ENABLED_FALSE@	echo "Need to reconfigure with --enable-gcov"
 
-check: $(CHECK_EXPORTS) check-enum-gettypes
+check: check-enum-gettypes
 
 check-cruft:
 	@cruft_files=""; cruft_dirs=""; \

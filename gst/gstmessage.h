@@ -193,7 +193,7 @@ GST_API GType _gst_message_type;
 #define GST_MESSAGE(obj)                         (GST_MESSAGE_CAST(obj))
 
 /* the lock is used to handle the synchronous handling of messages,
- * the emiting thread is block until the handling thread processed
+ * the emitting thread is blocked until the handling thread processed
  * the message using this mutex/cond pair */
 #define GST_MESSAGE_GET_LOCK(message)   (&GST_MESSAGE_CAST(message)->lock)
 #define GST_MESSAGE_LOCK(message)       g_mutex_lock(GST_MESSAGE_GET_LOCK(message))
@@ -379,6 +379,25 @@ gst_message_unref (GstMessage * msg)
   gst_mini_object_unref (GST_MINI_OBJECT_CAST (msg));
 }
 
+/**
+ * gst_clear_message: (skip)
+ * @msg_ptr: a pointer to a #GstMessage reference
+ *
+ * Clears a reference to a #GstMessage.
+ *
+ * @msg_ptr must not be %NULL.
+ *
+ * If the reference is %NULL then this function does nothing. Otherwise, the
+ * reference count of the message is decreased and the pointer is set to %NULL.
+ *
+ * Since: 1.16
+ */
+static inline void
+gst_clear_message (GstMessage ** msg_ptr)
+{
+  gst_clear_mini_object ((GstMiniObject **) msg_ptr);
+}
+
 /* copy message */
 /**
  * gst_message_copy:
@@ -436,6 +455,28 @@ static inline gboolean
 gst_message_replace (GstMessage **old_message, GstMessage *new_message)
 {
   return gst_mini_object_replace ((GstMiniObject **) old_message, (GstMiniObject *) new_message);
+}
+
+/**
+ * gst_message_take:
+ * @old_message: (inout) (transfer full): pointer to a pointer to a #GstMessage
+ *     to be replaced.
+ * @new_message: (transfer full) (allow-none): pointer to a #GstMessage that
+ *     will replace the message pointed to by @old_message.
+ *
+ * Modifies a pointer to a #GstMessage to point to a different #GstMessage. This
+ * function is similar to gst_message_replace() except that it takes ownership
+ * of @new_message.
+ *
+ * Returns: %TRUE if @new_message was different from @old_message
+ *
+ * Since: 1.16
+ */
+static inline gboolean
+gst_message_take (GstMessage **old_message, GstMessage *new_message)
+{
+  return gst_mini_object_take ((GstMiniObject **) old_message,
+      (GstMiniObject *) new_message);
 }
 
 

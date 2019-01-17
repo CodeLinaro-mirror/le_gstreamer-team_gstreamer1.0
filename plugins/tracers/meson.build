@@ -5,7 +5,7 @@ gst_tracers_sources = [
   'gsttracers.c',
 ]
 
-if not disable_gst_debug
+if gst_debug
   gst_tracers_sources += ['gstlog.c']
 endif
 
@@ -20,8 +20,7 @@ gst_tracers = library('gstcoretracers',
   c_args : tracers_args,
   include_directories : [configinc],
   dependencies : [gst_dep],
-  link_with : printf_lib,
   install : true,
-  install_dir : '@0@/gstreamer-1.0'.format(get_option('libdir')),
+  install_dir : plugins_install_dir,
 )
-
+pkgconfig.generate(gst_tracers, install_dir : plugins_pkgconfig_install_dir)

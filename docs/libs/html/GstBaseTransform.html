@@ -5,7 +5,7 @@
 <title>GstBaseTransform: GStreamer 1.0 Library Reference Manual</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="GStreamer 1.0 Library Reference Manual">
-<link rel="up" href="gstreamer-base.html" title="GStreamer Base and Utillity Classes">
+<link rel="up" href="gstreamer-base.html" title="GStreamer Base and Utility Classes">
 <link rel="prev" href="GstBaseSink.html" title="GstBaseSink">
 <link rel="next" href="GstPushSrc.html" title="GstPushSrc">
 <meta name="generator" content="GTK-Doc V1.28 (XML mode)">
@@ -225,7 +225,7 @@
 </div>
 <div class="refsect1">
 <a name="GstBaseTransform.includes"></a><h2>Includes</h2>
-<pre class="synopsis">#include &lt;gst/base/gstbasetransform.h&gt;
+<pre class="synopsis">#include &lt;gst/base/base.h&gt;
 </pre>
 </div>
 <div class="refsect1">
@@ -804,8 +804,8 @@ gst_base_transform_update_src_caps (<em class="parameter"><code><a class="link" 
                                     <em class="parameter"><code><a href="../html/GstCaps.html#GstCaps-struct"><span class="type">GstCaps</span></a> *updated_caps</code></em>);</pre>
 <p>Updates the srcpad caps and send the caps downstream. This function
 can be used by subclasses when they have already negotiated their caps
-but found a change in them (or computed new informations). This way,
-they can notify downstream about that change without loosing any
+but found a change in them (or computed new information). This way,
+they can notify downstream about that change without losing any
 buffer.</p>
 <div class="refsect3">
 <a name="gst-base-transform-update-src-caps.parameters"></a><h4>Parameters</h4>

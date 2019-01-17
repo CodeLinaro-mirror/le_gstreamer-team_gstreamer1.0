@@ -18,7 +18,7 @@
 <SECTION>
 <FILE>gstargbcontrolbinding</FILE>
 <TITLE>GstARGBControlBinding</TITLE>
-<INCLUDE>libs/controller/controller.h</INCLUDE>
+<INCLUDE>gst/controller/controller.h</INCLUDE>
 gst_argb_control_binding_new
 <SUBSECTION Standard>
 GstARGBControlBinding
@@ -35,7 +35,7 @@ gst_argb_control_binding_get_type
 <SECTION>
 <FILE>gstdirectcontrolbinding</FILE>
 <TITLE>GstDirectControlBinding</TITLE>
-<INCLUDE>libs/controller/controller.h</INCLUDE>
+<INCLUDE>gst/controller/controller.h</INCLUDE>
 gst_direct_control_binding_new
 gst_direct_control_binding_new_absolute
 <SUBSECTION Standard>
@@ -55,7 +55,7 @@ gst_direct_control_binding_get_type
 <SECTION>
 <FILE>gstproxycontrolbinding</FILE>
 <TITLE>GstProxyControlBinding</TITLE>
-<INCLUDE>libs/controller/controller.h</INCLUDE>
+<INCLUDE>gst/controller/controller.h</INCLUDE>
 gst_proxy_control_binding_new
 <SUBSECTION Standard>
 GstProxyControlBinding
@@ -74,7 +74,7 @@ gst_proxy_control_binding_get_type
 <SECTION>
 <FILE>gsttimedvaluecontrolsource</FILE>
 <TITLE>GstTimedValueControlSource</TITLE>
-<INCLUDE>libs/controller/controller.h</INCLUDE>
+<INCLUDE>gst/controller/controller.h</INCLUDE>
 GstTimedValueControlSource
 GstControlPoint
 gst_timed_value_control_source_find_control_point_iter
@@ -85,6 +85,8 @@ gst_timed_value_control_source_unset
 gst_timed_value_control_source_unset_all
 gst_timed_value_control_source_get_count
 gst_timed_value_control_invalidate_cache
+gst_control_point_copy
+gst_control_point_free
 <SUBSECTION Standard>
 GstTimedValueControlSourceClass
 GstTimedValueControlSourcePrivate
@@ -104,7 +106,7 @@ gst_control_point_get_type
 <SECTION>
 <FILE>gstinterpolationcontrolsource</FILE>
 <TITLE>GstInterpolationControlSource</TITLE>
-<INCLUDE>libs/controller/controller.h</INCLUDE>
+<INCLUDE>gst/controller/controller.h</INCLUDE>
 GstInterpolationControlSource
 GstInterpolationMode
 gst_interpolation_control_source_new
@@ -126,7 +128,7 @@ gst_interpolation_mode_get_type
 <SECTION>
 <FILE>gstlfocontrolsource</FILE>
 <TITLE>GstLFOControlSource</TITLE>
-<INCLUDE>libs/controller/gstlfocontrolsource.h</INCLUDE>
+<INCLUDE>gst/controller/controller.h</INCLUDE>
 GstLFOControlSource
 GstLFOWaveform
 gst_lfo_control_source_new
@@ -148,7 +150,7 @@ gst_lfo_waveform_get_type
 <SECTION>
 <FILE>gsttriggercontrolsource</FILE>
 <TITLE>GstTriggerControlSource</TITLE>
-<INCLUDE>libs/controller/controller.h</INCLUDE>
+<INCLUDE>gst/controller/controller.h</INCLUDE>
 GstTriggerControlSource
 gst_trigger_control_source_new
 GST_TYPE_TRIGGER_WAVEFORM
@@ -170,7 +172,7 @@ gst_trigger_control_source_get_type
 <SECTION>
 <FILE>gstadapter</FILE>
 <TITLE>GstAdapter</TITLE>
-<INCLUDE>gst/base/adapter.h</INCLUDE>
+<INCLUDE>gst/base/base.h</INCLUDE>
 GstAdapter
 gst_adapter_new
 gst_adapter_clear
@@ -221,19 +223,25 @@ gst_adapter_get_type
 <INCLUDE>gst/base/base.h</INCLUDE>
 GstAggregator
 GstAggregatorClass
+GST_AGGREGATOR_FLOW_NEED_DATA
+GST_AGGREGATOR_SRC_PAD
 gst_aggregator_finish_buffer
 gst_aggregator_set_src_caps
 gst_aggregator_get_latency
+gst_aggregator_set_latency
 gst_aggregator_get_buffer_pool
 gst_aggregator_get_allocator
+gst_aggregator_simple_get_next_time
 <SUBSECTION Standard>
 GST_IS_AGGREGATOR
 GST_IS_AGGREGATOR_CLASS
 GST_TYPE_AGGREGATOR
 GST_AGGREGATOR
+GST_AGGREGATOR_CAST
 GST_AGGREGATOR_CLASS
 GST_AGGREGATOR_GET_CLASS
 gst_aggregator_get_type
+GstAggregatorPrivate
 </SECTION>
 
 <SECTION>
@@ -250,7 +258,9 @@ gst_aggregator_pad_has_buffer
 GST_IS_AGGREGATOR_PAD
 GST_IS_AGGREGATOR_PAD_CLASS
 GST_TYPE_AGGREGATOR_PAD
+GstAggregatorPadPrivate
 GST_AGGREGATOR_PAD
+GST_AGGREGATOR_PAD_CAST
 GST_AGGREGATOR_PAD_CLASS
 GST_AGGREGATOR_PAD_GET_CLASS
 gst_aggregator_pad_get_type
@@ -259,7 +269,7 @@ gst_aggregator_pad_get_type
 <SECTION>
 <FILE>gstbaseparse</FILE>
 <TITLE>GstBaseParse</TITLE>
-<INCLUDE>gst/base/gstbaseparse.h</INCLUDE>
+<INCLUDE>gst/base/base.h</INCLUDE>
 GstBaseParse
 GstBaseParseClass
 
@@ -283,6 +293,7 @@ GstBaseParseFrame
 GstBaseParseFrameFlags
 gst_base_parse_frame_new
 gst_base_parse_frame_init
+gst_base_parse_frame_copy
 gst_base_parse_frame_free
 
 gst_base_parse_push_frame
@@ -312,7 +323,7 @@ gst_base_parse_frame_get_type
 <SECTION>
 <FILE>gstbasesrc</FILE>
 <TITLE>GstBaseSrc</TITLE>
-<INCLUDE>gst/base/gstbasesrc.h</INCLUDE>
+<INCLUDE>gst/base/base.h</INCLUDE>
 GstBaseSrc
 GstBaseSrcClass
 GstBaseSrcFlags
@@ -357,7 +368,7 @@ gst_base_src_get_type
 <SECTION>
 <FILE>gstbasesink</FILE>
 <TITLE>GstBaseSink</TITLE>
-<INCLUDE>gst/base/gstbasesink.h</INCLUDE>
+<INCLUDE>gst/base/base.h</INCLUDE>
 GstBaseSink
 GstBaseSinkClass
 
@@ -388,6 +399,8 @@ gst_base_sink_set_max_bitrate
 gst_base_sink_get_max_bitrate
 gst_base_sink_set_last_sample_enabled
 gst_base_sink_is_last_sample_enabled
+gst_base_sink_get_drop_out_of_segment
+gst_base_sink_set_drop_out_of_segment
 
 GST_BASE_SINK_PAD
 GST_BASE_SINK_GET_PREROLL_COND
@@ -417,7 +430,7 @@ gst_base_sink_get_type
 <SECTION>
 <FILE>gstbasetransform</FILE>
 <TITLE>GstBaseTransform</TITLE>
-<INCLUDE>gst/base/gstbasetransform.h</INCLUDE>
+<INCLUDE>gst/base/base.h</INCLUDE>
 GstBaseTransform
 GstBaseTransformClass
 
@@ -460,7 +473,7 @@ gst_base_transform_get_type
 <SECTION>
 <FILE>gstbitreader</FILE>
 <TITLE>GstBitReader</TITLE>
-<INCLUDE>gst/base/gstbitreader.h</INCLUDE>
+<INCLUDE>gst/base/base.h</INCLUDE>
 GstBitReader
 
 GST_BIT_READER_INIT
@@ -505,9 +518,65 @@ GST_BIT_READER
 </SECTION>
 
 <SECTION>
+<FILE>gstbitwriter</FILE>
+<TITLE>GstBitWriter</TITLE>
+<INCLUDE>gst/base/base.h</INCLUDE>
+GstBitWriter
+
+gst_bit_writer_new
+gst_bit_writer_new_with_size
+gst_bit_writer_new_with_data
+
+gst_bit_writer_free
+gst_bit_writer_free_and_get_buffer
+gst_bit_writer_free_and_get_data
+
+gst_bit_writer_init
+gst_bit_writer_init_with_size
+gst_bit_writer_init_with_data
+
+gst_bit_writer_reset
+gst_bit_writer_reset_and_get_buffer
+gst_bit_writer_reset_and_get_data
+
+gst_bit_writer_set_pos
+
+gst_bit_writer_get_size
+gst_bit_writer_get_data
+gst_bit_writer_get_remaining
+
+gst_bit_writer_get_size_unchecked
+gst_bit_writer_get_data_unchecked
+gst_bit_writer_set_pos_unchecked
+gst_bit_writer_get_remaining_unchecked
+
+gst_bit_writer_put_bits_uint16
+gst_bit_writer_put_bits_uint32
+gst_bit_writer_put_bits_uint64
+gst_bit_writer_put_bits_uint8
+gst_bit_writer_put_bytes
+
+gst_bit_writer_put_bits_uint16_unchecked
+gst_bit_writer_put_bits_uint32_unchecked
+gst_bit_writer_put_bits_uint64_unchecked
+gst_bit_writer_put_bits_uint8_unchecked
+gst_bit_writer_put_bytes_unchecked
+
+gst_bit_writer_align_bytes
+gst_bit_writer_align_bytes_unchecked
+
+<SUBSECTION Standard>
+GST_BIT_WRITER_BIT_SIZE
+GST_BIT_WRITER_DATA
+
+<SUBSECTION Private>
+GST_BIT_WRITER
+</SECTION>
+
+<SECTION>
 <FILE>gstbytereader</FILE>
 <TITLE>GstByteReader</TITLE>
-<INCLUDE>gst/base/gstbytereader.h</INCLUDE>
+<INCLUDE>gst/base/base.h</INCLUDE>
 GstByteReader
 
 GST_BYTE_READER_INIT
@@ -665,7 +734,7 @@ g_memdup
 <SECTION>
 <FILE>gstbytewriter</FILE>
 <TITLE>GstByteWriter</TITLE>
-<INCLUDE>gst/base/gstbytewriter.h</INCLUDE>
+<INCLUDE>gst/base/base.h</INCLUDE>
 GstByteWriter
 
 gst_byte_writer_new
@@ -760,7 +829,7 @@ GST_BYTE_WRITER
 <SECTION>
 <FILE>gstcollectpads</FILE>
 <TITLE>GstCollectPads</TITLE>
-<INCLUDE>gst/base/gstcollectpads.h</INCLUDE>
+<INCLUDE>gst/base/base.h</INCLUDE>
 GstCollectPads
 GstCollectData
 
@@ -836,7 +905,7 @@ gst_collect_pads_get_type
 <SECTION>
 <FILE>gstflowcombiner</FILE>
 <TITLE>GstFlowCombiner</TITLE>
-<INCLUDE>gst/base/gstflowcombiner.h</INCLUDE>
+<INCLUDE>gst/base/base.h</INCLUDE>
 GstFlowCombiner
 gst_flow_combiner_new
 gst_flow_combiner_free
@@ -857,7 +926,7 @@ gst_flow_combiner_get_type
 <SECTION>
 <FILE>gstpushsrc</FILE>
 <TITLE>GstPushSrc</TITLE>
-<INCLUDE>gst/base/gstpushsrc.h</INCLUDE>
+<INCLUDE>gst/base/base.h</INCLUDE>
 GstPushSrc
 GstPushSrcClass
 <SUBSECTION Standard>
@@ -874,11 +943,13 @@ gst_push_src_get_type
 <SECTION>
 <FILE>gsttypefindhelper</FILE>
 <TITLE>GstTypeFindHelper</TITLE>
-<INCLUDE>gst/base/gsttypefindhelper.h</INCLUDE>
+<INCLUDE>gst/base/base.h</INCLUDE>
 gst_type_find_helper
 gst_type_find_helper_for_buffer
+gst_type_find_helper_for_buffer_with_extension
 gst_type_find_helper_for_extension
 gst_type_find_helper_for_data
+gst_type_find_helper_for_data_with_extension
 GstTypeFindHelperGetRangeFunction
 gst_type_find_helper_get_range
 <SUBSECTION Private>
@@ -887,7 +958,7 @@ gst_type_find_helper_get_range
 <SECTION>
 <FILE>gstdataqueue</FILE>
 <TITLE>GstDataQueue</TITLE>
-<INCLUDE>gst/base/gstdataqueue.h</INCLUDE>
+<INCLUDE>gst/base/base.h</INCLUDE>
 GstDataQueue
 GstDataQueueSize
 GstDataQueueCheckFullFunction
@@ -921,13 +992,16 @@ gst_data_queue_get_type
 <SECTION>
 <FILE>gstqueuearray</FILE>
 <TITLE>GstQueueArray</TITLE>
-<INCLUDE>gst/base/gstqueuearray.h</INCLUDE>
+<INCLUDE>gst/base/base.h</INCLUDE>
 GstQueueArray
 gst_queue_array_new
 gst_queue_array_free
+gst_queue_array_set_clear_func
+gst_queue_array_clear
 gst_queue_array_get_length
 gst_queue_array_pop_head
 gst_queue_array_peek_head
+gst_queue_array_peek_nth
 gst_queue_array_push_tail
 gst_queue_array_pop_tail
 gst_queue_array_peek_tail
@@ -937,6 +1011,7 @@ gst_queue_array_find
 gst_queue_array_new_for_struct
 gst_queue_array_push_tail_struct
 gst_queue_array_peek_head_struct
+gst_queue_array_peek_nth_struct
 gst_queue_array_pop_head_struct
 gst_queue_array_peek_tail_struct
 gst_queue_array_pop_tail_struct
@@ -948,7 +1023,7 @@ gst_queue_array_drop_struct
 <SECTION>
 <FILE>gstnetaddressmeta</FILE>
 <TITLE>GstNetAddressMeta</TITLE>
-<INCLUDE>gst/net/gstnetaddressmeta.h</INCLUDE>
+<INCLUDE>gst/net/net.h</INCLUDE>
 GstNetAddressMeta
 gst_buffer_add_net_address_meta
 gst_buffer_get_net_address_meta
@@ -963,7 +1038,7 @@ gst_net_address_meta_api_get_type
 <SECTION>
 <FILE>gstnetcontrolmessagemeta</FILE>
 <TITLE>GstNetControlMessageMeta</TITLE>
-<INCLUDE>gst/net/gstnetcontrolmessagemeta.h</INCLUDE>
+<INCLUDE>gst/net/net.h</INCLUDE>
 GstNetControlMessageMeta
 gst_buffer_add_net_control_message_meta
 gst_buffer_get_net_control_message_meta
@@ -978,7 +1053,7 @@ gst_net_control_message_meta_api_get_type
 <SECTION>
 <FILE>gstnetclientclock</FILE>
 <TITLE>GstNetClientClock</TITLE>
-<INCLUDE>gst/net/gstnet.h</INCLUDE>
+<INCLUDE>gst/net/net.h</INCLUDE>
 GstNetClientClock
 GstNtpClock
 gst_net_client_clock_new
@@ -1006,7 +1081,7 @@ gst_ntp_clock_get_type
 <SECTION>
 <FILE>gstnettimepacket</FILE>
 <TITLE>GstNetTimePacket</TITLE>
-<INCLUDE>gst/net/gstnet.h</INCLUDE>
+<INCLUDE>gst/net/net.h</INCLUDE>
 GstNetTimePacket
 GST_NET_TIME_PACKET_SIZE
 gst_net_time_packet_new
@@ -1025,7 +1100,7 @@ socklen_t
 <SECTION>
 <FILE>gstnettimeprovider</FILE>
 <TITLE>GstNetTimeProvider</TITLE>
-<INCLUDE>gst/net/gstnet.h</INCLUDE>
+<INCLUDE>gst/net/net.h</INCLUDE>
 GstNetTimeProvider
 gst_net_time_provider_new
 <SUBSECTION Standard>
@@ -1078,7 +1153,7 @@ gst_ptp_clock_get_type
 <SECTION>
 <FILE>gstcheck</FILE>
 <TITLE>GstCheck</TITLE>
-<INCLUDE>gst/check/gstcheck.h</INCLUDE>
+<INCLUDE>gst/check/check.h</INCLUDE>
 GST_START_TEST
 GST_END_TEST
 
@@ -1140,6 +1215,14 @@ gst_check_setup_src_pad_from_template
 gst_check_objects_destroyed_on_unref
 gst_check_object_destroyed_on_unref
 
+<SUBSECTION log-filter>
+GstCheckLogFilter
+GstCheckLogFilterFunc
+gst_check_add_log_filter
+gst_check_clear_log_filter
+gst_check_remove_log_filter
+
+
 <SUBSECTION Private>
 MAIN_INIT
 MAIN_START_THREADS
@@ -1162,108 +1245,21 @@ GST_CHECK_MAIN
 
 gst_check_chain_func
 gst_check_abi_list
+tcase_skip_broken_loop_test
+tcase_skip_broken_test
 
 buffers
 check_cond
 check_mutex
 
-CHECK_MAJOR_VERSION
-CHECK_MICRO_VERSION
-CHECK_MINOR_VERSION
-CK_ATTRIBUTE_UNUSED
-CK_CPPEND
-CK_CPPSTART
-CK_EXPORT
 END_TEST
-GCC_VERSION_AT_LEAST
-LFun
-List
-Log
-NULL
-SFun
-SRunner
 START_TEST
-Suite
-TCase
-TF
-TFun
-TestResult
-TestStats
-check_list_create
-ck_abort
-ck_abort_msg
-ck_assert
-ck_assert_int_eq
-ck_assert_int_ne
-ck_assert_msg
-ck_assert_str_eq
-ck_assert_str_ne
-ck_strdup_printf
-cur_fork_status
-emalloc
-eprintf
-erealloc
-fail
-fail_if
-fail_unless
-get_env_printmode
-lfile_lfun
-list_add_end
-list_add_front
-list_advance
-list_apply
-list_at_end
-list_free
-list_front
-list_val
-log_srunner_end
-log_srunner_start
-log_suite_end
-log_suite_start
-log_test_start
-log_test_end
-mark_point
-pack
-ppack
-punpack
-rcvmsg_free
-receive_test_result
-send_ctx_info
-send_failure_info
-send_loc_info
-set_fork_status
-setup_messaging
-sr_stat_str
-srunner_end_logging
-srunner_fprint
-srunner_init_logging
-srunner_open_lfile
-srunner_open_xmlfile
-srunner_register_lfun
-stdout_lfun
-subunit_lfun
-tcase_add_exit_test
-tcase_add_loop_exit_test
-tcase_add_loop_test
-tcase_add_loop_test_raise_signal
-tcase_add_test
-tcase_add_test_raise_signal
-tcase_skip_broken_test
-teardown_messaging
-tr_create
-tr_fprint
-tr_reset
-tr_short_str
-tr_str
-tr_xmlprint
-upack
-xml_lfun
 </SECTION>
 
 <SECTION>
 <FILE>gstcheckbufferstraw</FILE>
 <TITLE>GstBufferStraw</TITLE>
-<INCLUDE>gst/check/gstbufferstraw.h</INCLUDE>
+<INCLUDE>gst/check/check.h</INCLUDE>
 gst_buffer_straw_start_pipeline
 gst_buffer_straw_get_buffer
 gst_buffer_straw_stop_pipeline
@@ -1272,7 +1268,7 @@ gst_buffer_straw_stop_pipeline
 <SECTION>
 <FILE>gstcheckconsistencychecker</FILE>
 <TITLE>GstStreamConsistency</TITLE>
-<INCLUDE>gst/check/gstconsistencychecker.h</INCLUDE>
+<INCLUDE>gst/check/check.h</INCLUDE>
 GstStreamConsistency
 gst_consistency_checker_new
 gst_consistency_checker_reset
@@ -1351,6 +1347,8 @@ gst_harness_set_upstream_latency
 gst_harness_set_propose_allocator
 gst_harness_get_allocator
 
+gst_harness_add_propose_allocation_meta
+
 gst_harness_add_src
 gst_harness_add_src_harness
 gst_harness_add_src_parse
@@ -1409,7 +1407,7 @@ GstHarnessPrivate
 <SECTION>
 <FILE>gsttestclock</FILE>
 <TITLE>GstTestClock</TITLE>
-<INCLUDE>gst/check/gsttestclock.h</INCLUDE>
+<INCLUDE>gst/check/check.h</INCLUDE>
 GstTestClock
 GstTestClockClass
 gst_test_clock_new
@@ -1425,6 +1423,7 @@ gst_test_clock_process_next_clock_id
 gst_test_clock_get_next_entry_time
 gst_test_clock_wait_for_multiple_pending_ids
 gst_test_clock_id_list_get_latest_time
+gst_test_clock_timed_wait_for_multiple_pending_ids
 gst_test_clock_process_id_list
 gst_test_clock_crank
 <SUBSECTION Standard>

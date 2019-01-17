@@ -640,9 +640,8 @@ gst_element_get_index (GstElement * element)
  * Adds a pad (link point) to @element. @pad's parent will be set to @element;
  * see gst_object_set_parent() for refcounting information.
  *
- * Pads are not automatically activated so elements should perform the needed
- * steps to activate the pad in case this pad is added in the PAUSED or PLAYING
- * state. See gst_pad_set_active() for more information about activating pads.
+ * Pads are automatically activated when added in the PAUSED or PLAYING
+ * state.
  *
  * The pad and the element should be unlocked when calling this function.
  *
@@ -685,9 +684,6 @@ gst_element_add_pad (GstElement * element, GstPad * pad)
   /* check for active pads */
   if (!active && (GST_STATE (element) > GST_STATE_READY ||
           GST_STATE_NEXT (element) == GST_STATE_PAUSED)) {
-    g_warning ("adding inactive pad '%s' to running element '%s', you need to "
-        "use gst_pad_set_active(pad,TRUE) before adding it.",
-        GST_STR_NULL (pad_name), GST_ELEMENT_NAME (element));
     gst_pad_set_active (pad, TRUE);
   }
 
@@ -1734,7 +1730,7 @@ gst_element_class_get_request_pad_template (GstElementClass *
 }
 
 /* get a random pad on element of the given direction.
- * The pad is random in a sense that it is the first pad that is (optionaly) linked.
+ * The pad is random in a sense that it is the first pad that is (optionally) linked.
  */
 static GstPad *
 gst_element_get_random_pad (GstElement * element,
@@ -2245,6 +2241,10 @@ gst_element_is_locked_state (GstElement * element)
  * Locks the state of an element, so state changes of the parent don't affect
  * this element anymore.
  *
+ * Note that this is racy if the state lock of the parent bin is not taken.
+ * The parent bin might've just checked the flag in another thread and as the
+ * next step proceed to change the child element's state.
+ *
  * MT safe.
  *
  * Returns: %TRUE if the state was changed, %FALSE if bad parameters were given
@@ -2448,7 +2448,7 @@ interrupted:
     if (pending)
       *pending = GST_STATE_VOID_PENDING;
 
-    GST_CAT_INFO_OBJECT (GST_CAT_STATES, element, "interruped");
+    GST_CAT_INFO_OBJECT (GST_CAT_STATES, element, "interrupted");
 
     GST_OBJECT_UNLOCK (element);
 
@@ -2986,14 +2986,14 @@ gst_element_change_state (GstElement * element, GstStateChange transition)
     case GST_STATE_CHANGE_SUCCESS:
       GST_CAT_DEBUG_OBJECT (GST_CAT_STATES, element,
           "element changed state SUCCESS");
-      /* we can commit the state now which will proceeed to
+      /* we can commit the state now which will proceed to
        * the next state */
       ret = gst_element_continue_state (element, ret);
       break;
     case GST_STATE_CHANGE_NO_PREROLL:
       GST_CAT_DEBUG_OBJECT (GST_CAT_STATES, element,
           "element changed state NO_PREROLL");
-      /* we can commit the state now which will proceeed to
+      /* we can commit the state now which will proceed to
        * the next state */
       ret = gst_element_continue_state (element, ret);
       break;

@@ -95,6 +95,7 @@ _gst_memory_free (GstMemory * mem)
   allocator = mem->allocator;
 
   gst_allocator_free (allocator, mem);
+
   gst_object_unref (allocator);
 }
 
@@ -321,7 +322,7 @@ lock_failed:
   }
 error:
   {
-    /* something went wrong, restore the orginal state again
+    /* something went wrong, restore the original state again
      * it is up to the subclass to log an error if needed. */
     GST_CAT_INFO (GST_CAT_MEMORY, "mem %p: subclass map failed", mem);
     gst_memory_unlock (mem, (GstLockFlags) flags);

@@ -73,7 +73,7 @@ GST_START_TEST (test_subbuffer)
   gst_buffer_unmap (sub, &sinfo);
   gst_buffer_unref (sub);
 
-  /* test if metadata is coppied, not a complete buffer copy so only the
+  /* test if metadata is copied, not a complete buffer copy so only the
    * timestamp and offset fields are copied. */
   sub = gst_buffer_copy_region (buffer, GST_BUFFER_COPY_ALL, 0, 1);
   fail_if (sub == NULL, "copy_region of buffer returned NULL");
@@ -86,7 +86,7 @@ GST_START_TEST (test_subbuffer)
       "subbuffer has wrong offset end");
   gst_buffer_unref (sub);
 
-  /* test if metadata is coppied, a complete buffer is copied so all the timing
+  /* test if metadata is copied, a complete buffer is copied so all the timing
    * fields should be copied. */
   sub = gst_buffer_copy_region (buffer, GST_BUFFER_COPY_ALL, 0, 4);
   fail_if (sub == NULL, "copy_region of buffer returned NULL");
@@ -887,6 +887,40 @@ GST_START_TEST (test_parent_buffer_meta)
 
 GST_END_TEST;
 
+GST_START_TEST (test_writable_memory)
+{
+  GstBuffer *buf;
+  GstMemory *mem;
+
+  buf = gst_buffer_new_and_alloc (10);
+  /* make buffer read-only */
+  gst_buffer_ref (buf);
+
+  mem = gst_buffer_peek_memory (buf, 0);
+  fail_if (gst_memory_is_writable (mem));
+
+  gst_buffer_unref (buf);
+  gst_buffer_unref (buf);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_wrapped_bytes)
+{
+  GBytes *bytes = g_bytes_new_static (ro_memory, sizeof (ro_memory));
+  GstBuffer *buf;
+  GstMemory *mem;
+
+  buf = gst_buffer_new_wrapped_bytes (bytes);
+
+  /* the memory should not be writable */
+  mem = gst_buffer_peek_memory (buf, 0);
+  fail_unless (GST_MEMORY_IS_READONLY (mem));
+
+  gst_buffer_unref (buf);
+}
+
+GST_END_TEST;
 
 static Suite *
 gst_buffer_suite (void)
@@ -911,6 +945,8 @@ gst_buffer_suite (void)
   tcase_add_test (tc_chain, test_find);
   tcase_add_test (tc_chain, test_fill);
   tcase_add_test (tc_chain, test_parent_buffer_meta);
+  tcase_add_test (tc_chain, test_writable_memory);
+  tcase_add_test (tc_chain, test_wrapped_bytes);
 
   return s;
 }

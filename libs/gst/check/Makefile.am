@@ -14,6 +14,7 @@ libgstcheck_@GST_API_VERSION@_la_SOURCES =	\
 
 libgstcheck_@GST_API_VERSION@_la_CFLAGS = $(GST_OBJ_CFLAGS) \
 	-UG_DISABLE_ASSERT \
+	-DBUILDING_GST_CHECK \
 	-I$(top_builddir)/libs \
 	-I$(top_builddir)/libs/gst/check \
 	-I$(top_builddir)/libs/gst/check/libcheck
@@ -106,6 +107,7 @@ LIBGSTCHECK_EXPORTED_FUNCS = \
 	gst_harness_add_element_sink_pad \
 	gst_harness_add_parse \
 	gst_harness_add_probe \
+	gst_harness_add_propose_allocation_meta \
 	gst_harness_add_sink \
 	gst_harness_add_sink_harness \
 	gst_harness_add_sink_parse \

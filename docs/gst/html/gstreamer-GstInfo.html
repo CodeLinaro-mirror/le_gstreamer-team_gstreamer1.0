@@ -3228,9 +3228,9 @@ This file can be processed with graphviz to get an image, like this:</p>
 <p>
 There is also a utility called xdot which allows you to view the dot file
 directly without converting it first.</p>
-<p>The macro is only active if gstreamer is configured with
-"--gst-enable-gst-debug" and the environment variable
-GST_DEBUG_DUMP_DOT_DIR is set to a basepath (e.g. /tmp).</p>
+<p>The macro is only active if the environment variable GST_DEBUG_DUMP_DOT_DIR
+is set to a basepath (e.g. /tmp), and the GStreamer debugging subsystem is
+enabled (i.e., no use of `./configure --disable-gst-debug')</p>
 <div class="refsect3">
 <a name="GST-DEBUG-BIN-TO-DOT-FILE.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
@@ -3337,50 +3337,11 @@ present, else <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NU
 <div class="refsect2">
 <a name="GST-TIME-ARGS:CAPS"></a><h3>GST_TIME_ARGS()</h3>
 <pre class="programlisting">#define             GST_TIME_ARGS(t)</pre>
-<p>Format <em class="parameter"><code>t</code></em>
- for the <a class="link" href="gstreamer-GstInfo.html#GST-TIME-FORMAT:CAPS" title="GST_TIME_FORMAT"><span class="type">GST_TIME_FORMAT</span></a> format string. Note: <em class="parameter"><code>t</code></em>
- will be
-evaluated more than once.</p>
-<div class="refsect3">
-<a name="GST-TIME-ARGS.parameters"></a><h4>Parameters</h4>
-<div class="informaltable"><table class="informaltable" width="100%" border="0">
-<colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
-</colgroup>
-<tbody><tr>
-<td class="parameter_name"><p>t</p></td>
-<td class="parameter_description"><p>a <a class="link" href="GstClock.html#GstClockTime" title="GstClockTime"><span class="type">GstClockTime</span></a></p></td>
-<td class="parameter_annotations"> </td>
-</tr></tbody>
-</table></div>
-</div>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GST-STIME-ARGS:CAPS"></a><h3>GST_STIME_ARGS()</h3>
 <pre class="programlisting">#define             GST_STIME_ARGS(t)</pre>
-<p>Format <em class="parameter"><code>t</code></em>
- for the <a class="link" href="gstreamer-GstInfo.html#GST-STIME-FORMAT:CAPS" title="GST_STIME_FORMAT"><span class="type">GST_STIME_FORMAT</span></a> format string. Note: <em class="parameter"><code>t</code></em>
- will be
-evaluated more than once.</p>
-<div class="refsect3">
-<a name="GST-STIME-ARGS.parameters"></a><h4>Parameters</h4>
-<div class="informaltable"><table class="informaltable" width="100%" border="0">
-<colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
-</colgroup>
-<tbody><tr>
-<td class="parameter_name"><p>t</p></td>
-<td class="parameter_description"><p>a <a class="link" href="GstClock.html#GstClockTimeDiff" title="GstClockTimeDiff"><span class="type">GstClockTimeDiff</span></a> or <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"><span class="type">gint64</span></a></p></td>
-<td class="parameter_annotations"> </td>
-</tr></tbody>
-</table></div>
-</div>
-<p class="since">Since: <a class="link" href="ix07.html#api-index-1.6">1.6</a></p>
 </div>
 <hr>
 <div class="refsect2">
@@ -3399,11 +3360,18 @@ This data can be processed with graphviz to get an image.</p>
 <col class="parameters_description">
 <col width="200px" class="parameters_annotations">
 </colgroup>
-<tbody><tr>
+<tbody>
+<tr>
 <td class="parameter_name"><p>bin</p></td>
 <td class="parameter_description"><p>the top-level pipeline that should be analyzed</p></td>
 <td class="parameter_annotations"> </td>
-</tr></tbody>
+</tr>
+<tr>
+<td class="parameter_name"><p>details</p></td>
+<td class="parameter_description"><p>type of <a class="link" href="gstreamer-GstInfo.html#GstDebugGraphDetails" title="enum GstDebugGraphDetails"><span class="type">GstDebugGraphDetails</span></a> to use</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
 </table></div>
 </div>
 <div class="refsect3">
@@ -3449,6 +3417,11 @@ This file can be processed with graphviz to get an image.</p>
 <td class="parameter_annotations"> </td>
 </tr>
 <tr>
+<td class="parameter_name"><p>details</p></td>
+<td class="parameter_description"><p>type of <a class="link" href="gstreamer-GstInfo.html#GstDebugGraphDetails" title="enum GstDebugGraphDetails"><span class="type">GstDebugGraphDetails</span></a> to use</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
 <td class="parameter_name"><p>file_name</p></td>
 <td class="parameter_description"><p>output base filename (e.g. "myplayer"). </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="Override the parsed C type with given type."><span class="acronym">type</span></acronym> filename]</span></td>
@@ -3481,6 +3454,11 @@ to the filename, so that it can be used to take multiple snapshots.</p>
 <td class="parameter_annotations"> </td>
 </tr>
 <tr>
+<td class="parameter_name"><p>details</p></td>
+<td class="parameter_description"><p>type of <a class="link" href="gstreamer-GstInfo.html#GstDebugGraphDetails" title="enum GstDebugGraphDetails"><span class="type">GstDebugGraphDetails</span></a> to use</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
 <td class="parameter_name"><p>file_name</p></td>
 <td class="parameter_description"><p>output base filename (e.g. "myplayer"). </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="Override the parsed C type with given type."><span class="acronym">type</span></acronym> filename]</span></td>
@@ -3496,50 +3474,6 @@ to the filename, so that it can be used to take multiple snapshots.</p>
 gst_info_vasprintf (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **result</code></em>,
                     <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *format</code></em>,
                     <em class="parameter"><code><span class="type">va_list</span> args</code></em>);</pre>
-<p>Allocates and fills a string large enough (including the terminating null
-byte) to hold the specified printf style <em class="parameter"><code>format</code></em>
- and <em class="parameter"><code>args</code></em>
-.</p>
-<p>This function deals with the GStreamer specific printf specifiers
-<a class="link" href="gstreamer-GstInfo.html#GST-PTR-FORMAT:CAPS" title="GST_PTR_FORMAT"><span class="type">GST_PTR_FORMAT</span></a> and <a class="link" href="gstreamer-GstInfo.html#GST-SEGMENT-FORMAT:CAPS" title="GST_SEGMENT_FORMAT"><span class="type">GST_SEGMENT_FORMAT</span></a>.  If you do not have these specifiers
-in your <em class="parameter"><code>format</code></em>
- string, you do not need to use this function and can use
-alternatives such as <a href="/usr/share/gtk-doc/html/glib/glib-String-Utility-Functions.html#g-vasprintf"><code class="function">g_vasprintf()</code></a>.</p>
-<p>Free <em class="parameter"><code>result</code></em>
- with <a href="/usr/share/gtk-doc/html/glib/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a>.</p>
-<div class="refsect3">
-<a name="gst-info-vasprintf.parameters"></a><h4>Parameters</h4>
-<div class="informaltable"><table class="informaltable" width="100%" border="0">
-<colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
-</colgroup>
-<tbody>
-<tr>
-<td class="parameter_name"><p>result</p></td>
-<td class="parameter_description"><p>the resulting string. </p></td>
-<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
-</tr>
-<tr>
-<td class="parameter_name"><p>format</p></td>
-<td class="parameter_description"><p>a printf style format string</p></td>
-<td class="parameter_annotations"> </td>
-</tr>
-<tr>
-<td class="parameter_name"><p>args</p></td>
-<td class="parameter_description"><p>the va_list of printf arguments for <em class="parameter"><code>format</code></em>
-</p></td>
-<td class="parameter_annotations"> </td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<div class="refsect3">
-<a name="gst-info-vasprintf.returns"></a><h4>Returns</h4>
-<p> the length of the string allocated into <em class="parameter"><code>result</code></em>
-or -1 on any error</p>
-</div>
 <p class="since">Since: <a class="link" href="ix06.html#api-index-1.8">1.8</a></p>
 </div>
 <hr>
@@ -4193,7 +4127,7 @@ and <a class="link" href="gstreamer-GstInfo.html#GST-DEBUG-BIN-TO-DOT-FILE-WITH-
 <pre class="programlisting">#  define GST_FUNCTION     ((const char*) (__func__))
 </pre>
 <p>This macro should evaluate to the name of the current function and be should
-be defined when configuring your project, as it is compiler dependant. If it
+be defined when configuring your project, as it is compiler dependent. If it
 is not defined, some default value is used. It is used to provide debugging
 output with the function name of the message.</p>
 <p>Note that this is different from G_STRFUNC as we do not want the full
@@ -4234,71 +4168,24 @@ function signature in C++ code.</p>
 <a name="GST-TIME-FORMAT:CAPS"></a><h3>GST_TIME_FORMAT</h3>
 <pre class="programlisting">#define GST_TIME_FORMAT "u:%02u:%02u.%09u"
 </pre>
-<p>A string that can be used in printf-like format strings to display a
-<a class="link" href="GstClock.html#GstClockTime" title="GstClockTime"><span class="type">GstClockTime</span></a> value in h:m:s format.  Use <a class="link" href="gstreamer-GstInfo.html#GST-TIME-ARGS:CAPS" title="GST_TIME_ARGS()"><code class="function">GST_TIME_ARGS()</code></a> to construct
-the matching arguments.</p>
-<p>Example:</p>
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function">printf</span><span class="gtkdoc opt">(</span><span class="string">&quot;%&quot;</span> GST_TIME_FORMAT <span class="string">&quot;</span><span class="gtkdoc esc">\n</span><span class="string">&quot;</span><span class="gtkdoc opt">,</span> <span class="function"><a href="gstreamer-GstInfo.html#GST-TIME-ARGS:CAPS">GST_TIME_ARGS</a></span><span class="gtkdoc opt">(</span>ts<span class="gtkdoc opt">));</span></pre></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<p></p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GST-STIME-FORMAT:CAPS"></a><h3>GST_STIME_FORMAT</h3>
 <pre class="programlisting">#define GST_STIME_FORMAT "c%" GST_TIME_FORMAT
 </pre>
-<p>A string that can be used in printf-like format strings to display a signed
-<a class="link" href="GstClock.html#GstClockTimeDiff" title="GstClockTimeDiff"><span class="type">GstClockTimeDiff</span></a> or <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint64"><span class="type">gint64</span></a> value in h:m:s format.  Use <a class="link" href="gstreamer-GstInfo.html#GST-TIME-ARGS:CAPS" title="GST_TIME_ARGS()"><code class="function">GST_TIME_ARGS()</code></a> to
-construct the matching arguments.</p>
-<p>Example:</p>
-<div class="informalexample">
-  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function">printf</span><span class="gtkdoc opt">(</span><span class="string">&quot;%&quot;</span> GST_STIME_FORMAT <span class="string">&quot;</span><span class="gtkdoc esc">\n</span><span class="string">&quot;</span><span class="gtkdoc opt">,</span> <span class="function"><a href="gstreamer-GstInfo.html#GST-STIME-ARGS:CAPS">GST_STIME_ARGS</a></span><span class="gtkdoc opt">(</span>ts<span class="gtkdoc opt">));</span></pre></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<p></p>
-<p class="since">Since: <a class="link" href="ix07.html#api-index-1.6">1.6</a></p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GST-PTR-FORMAT:CAPS"></a><h3>GST_PTR_FORMAT</h3>
 <pre class="programlisting">#define GST_PTR_FORMAT     "p\aA"
 </pre>
-<p>printf format type used to debug GStreamer types. You can use this in
-combination with GStreamer's debug logging system as well as the functions
-<a class="link" href="gstreamer-GstInfo.html#gst-info-vasprintf" title="gst_info_vasprintf ()"><code class="function">gst_info_vasprintf()</code></a>, <a class="link" href="gstreamer-GstInfo.html#gst-info-strdup-vprintf" title="gst_info_strdup_vprintf ()"><code class="function">gst_info_strdup_vprintf()</code></a> and <a class="link" href="gstreamer-GstInfo.html#gst-info-strdup-printf" title="gst_info_strdup_printf ()"><code class="function">gst_info_strdup_printf()</code></a>
-to pretty-print the following types: <a class="link" href="GstCaps.html" title="GstCaps"><span class="type">GstCaps</span></a>, <a class="link" href="GstStructure.html" title="GstStructure"><span class="type">GstStructure</span></a>,
-<a class="link" href="GstCapsFeatures.html" title="GstCapsFeatures"><span class="type">GstCapsFeatures</span></a>, <a class="link" href="GstTagList.html" title="GstTagList"><span class="type">GstTagList</span></a>, <a class="link" href="GstDateTime.html" title="GstDateTime"><span class="type">GstDateTime</span></a>, <a class="link" href="GstBuffer.html" title="GstBuffer"><span class="type">GstBuffer</span></a>, <a class="link" href="GstBufferList.html" title="GstBufferList"><span class="type">GstBufferList</span></a>,
-<a class="link" href="GstMessage.html" title="GstMessage"><span class="type">GstMessage</span></a>, <a class="link" href="GstEvent.html" title="GstEvent"><span class="type">GstEvent</span></a>, <a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a>, <a class="link" href="GstContext.html" title="GstContext"><span class="type">GstContext</span></a>, <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>, <a class="link" href="GstObject.html" title="GstObject"><span class="type">GstObject</span></a>. All
-<a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject-struct"><span class="type">GObject</span></a> types will be printed as typename plus pointer, and everything
-else will simply be printed as pointer address.</p>
-<p>This can only be used on types whose size is &gt;= sizeof(gpointer).</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GST-SEGMENT-FORMAT:CAPS"></a><h3>GST_SEGMENT_FORMAT</h3>
 <pre class="programlisting">#define GST_SEGMENT_FORMAT "p\aB"
 </pre>
-<p>printf format type used to debug GStreamer segments. You can use this in
-combination with GStreamer's debug logging system as well as the functions
-<a class="link" href="gstreamer-GstInfo.html#gst-info-vasprintf" title="gst_info_vasprintf ()"><code class="function">gst_info_vasprintf()</code></a>, <a class="link" href="gstreamer-GstInfo.html#gst-info-strdup-vprintf" title="gst_info_strdup_vprintf ()"><code class="function">gst_info_strdup_vprintf()</code></a> and <a class="link" href="gstreamer-GstInfo.html#gst-info-strdup-printf" title="gst_info_strdup_printf ()"><code class="function">gst_info_strdup_printf()</code></a>
-to pretty-print <a class="link" href="GstSegment.html" title="GstSegment"><span class="type">GstSegment</span></a> structures.
-This can only be used on pointers to GstSegment structures.</p>
 </div>
 </div>
 <div class="refsect1">

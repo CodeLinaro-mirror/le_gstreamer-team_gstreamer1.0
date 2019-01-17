@@ -150,39 +150,46 @@ gst_headers = [
 ]
 install_headers(gst_headers, subdir : 'gstreamer-1.0/gst')
 
-disable_registry = get_option('disable_registry')
-if not disable_registry
-  gst_registry = ['gstregistrybinary.c']
+gst_registry = get_option('registry')
+if gst_registry
+  gst_registry_sources = ['gstregistrybinary.c']
 else
-  gst_registry = []
+  gst_registry_sources = []
 endif
 
 # Make copy so configure_file consumes the copy and we can
 # still add to the original cdata later.
 gst_cdata = cdata
 
-if disable_gst_debug
-  gst_cdata.set('GST_DISABLE_GST_DEBUG_DEFINE', '#define GST_DISABLE_GST_DEBUG 1')
-else
+if gst_debug
   gst_cdata.set('GST_DISABLE_GST_DEBUG_DEFINE', '#undef GST_DISABLE_GST_DEBUG')
-endif
-
-if disable_registry
-  gst_cdata.set('GST_DISABLE_REGISTRY_DEFINE', '#define GST_DISABLE_REGISTRY 1')
 else
-  gst_cdata.set('GST_DISABLE_REGISTRY_DEFINE', '#undef GST_DISABLE_REGISTRY')
+  gst_cdata.set('GST_DISABLE_GST_DEBUG_DEFINE', '#define GST_DISABLE_GST_DEBUG 1')
 endif
 
-# FIXME: add --disable-parse option? (but autotools doesn't seem to set this
-# define properly at all either even though it does expose the option)
-gst_cdata.set('GST_DISABLE_PARSE_DEFINE', '#undef GST_DISABLE_PARSE')
+if gst_registry
+  gst_cdata.set('GST_DISABLE_REGISTRY_DEFINE', '#undef GST_DISABLE_REGISTRY')
+else
+  gst_cdata.set('GST_DISABLE_REGISTRY_DEFINE', '#define GST_DISABLE_REGISTRY 1')
+endif
+
+gst_parse = get_option('gst_parse')
+if gst_parse
+  gst_cdata.set('GST_DISABLE_PARSE_DEFINE', '#undef GST_DISABLE_PARSE')
+else
+  gst_cdata.set('GST_DISABLE_PARSE_DEFINE', '#define GST_DISABLE_PARSE 1')
+endif
+
+gst_cdata.set10('GST_DISABLE_CAST_CHECKS_DEFINE', cast_checks.disabled())
+gst_cdata.set10('GST_DISABLE_GLIB_ASSERTS_DEFINE', glib_asserts.disabled())
+gst_cdata.set10('GST_DISABLE_GLIB_CHECKS_DEFINE', glib_checks.disabled())
 
 # FIXME: add --disable-plugin option?
 gst_cdata.set('GST_DISABLE_PLUGIN_DEFINE', '#undef GST_DISABLE_PLUGIN')
 
 configure_file(input : 'gstconfig.h.in',
   output : 'gstconfig.h',
-  install_dir : 'include/gstreamer-1.0/gst',
+  install_dir : join_paths(get_option('includedir'), 'gstreamer-1.0/gst'),
   configuration : gst_cdata)
 
 version_cdata = configuration_data()
@@ -193,94 +200,79 @@ version_cdata.set('GST_VERSION_NANO', gst_version_nano)
 
 gst_version_h = configure_file(input : 'gstversion.h.in',
   output : 'gstversion.h',
-  install_dir : 'include/gstreamer-1.0/gst',
+  install_dir : join_paths(get_option('includedir'), 'gstreamer-1.0/gst'),
   configuration : version_cdata)
 
-gst_enums = gnome.mkenums('gstenumtypes',
+gst_enums = gnome.mkenums_simple('gstenumtypes',
   sources : gst_headers,
-  h_template : 'gstenumtypes.h.template',
-  c_template : 'gstenumtypes.c.template',
+  header_prefix : '#include <gst/gstconfig.h>',
+  body_prefix : '#include "gst/gst_private.h"\n#include <gst/gst.h>',
+  decorator : 'GST_API',
   install_header : true,
   install_dir : join_paths(get_option('includedir'), 'gstreamer-1.0/gst'))
 
 gstenum_h = gst_enums[1]
 gstenum_c = gst_enums[0]
 
+gst_parse_sources = []
+if gst_parse
+  subdir('parse')
+endif
 
-subdir('parse')
 subdir('printf')
 
 libgst_c_args = gst_c_args + [
   '-D_GNU_SOURCE',
-  '-DGST_EXPORTS',
   '-DG_LOG_DOMAIN=g_log_domain_gstreamer',
   '-DGST_DISABLE_DEPRECATED',
 ]
 
-disable_tracer_hooks = get_option('disable_tracer_hooks')
-if disable_tracer_hooks
+tracer_hooks = get_option('tracer_hooks')
+if not tracer_hooks
   libgst_c_args += ['-DGST_DISABLE_GST_TRACER_HOOKS']
-endif
-
-# Make it possible to build both static and shared versions
-# at the same time. By default use shared for unit tests etc.
-# This choice is arbitrary.
-if libtype != 'shared'
-  libgst_static = static_library('gstreamer-1.0', gst_sources,
-    gstenum_h, gstenum_c, grammar, parser, gst_registry,
-    c_args : [libgst_c_args],
-    include_directories : [configinc,
-      # HACK, change include paths in .y and .l in final version.
-      include_directories('parse')],
-    install : true,
-    link_with : printf_lib,
-    dependencies : [gobject_dep, gmodule_dep, glib_dep, mathlib] + backtrace_deps  + platform_deps,
-  )
-  libgst = libgst_static
 endif
 
 # Make sure that subproject building gir files work
 gst_incdirs = [configinc]
 gst_gen_sources = [gstenum_h]
-if libtype != 'static'
-  libgst_shared = shared_library('gstreamer-1.0', gst_sources,
-    gstenum_h, gstenum_c, grammar, parser, gst_registry,
-    version : libversion,
-    soversion : soversion,
-    c_args : libgst_c_args,
-    include_directories : [configinc,
-      # HACK, change include paths in .y and .l in final version.
-      include_directories('parse')],
-    link_with : printf_lib,
-    install : true,
-    dependencies : [gobject_dep, gmodule_dep, glib_dep, mathlib, dl_dep] + backtrace_deps
-                     + platform_deps,
-  )
-  libgst = libgst_shared
-  if build_gir
-    gst_gir_extra_args = gir_init_section + [ '--c-include=gst/gst.h' ]
-    if meson.is_subproject()
-      # FIXME: There must be a better way to do this
-      # Need to pass the include path to find gst/gst.h and gst/gstenumtypes.h (built)
-      gst_gir_extra_args += ['--cflags-begin',
-	  '-I' + meson.current_source_dir() + '/..',
-	  '-I' + meson.current_build_dir() + '/..',
-	  '--cflags-end']
-    endif
+libgst = library('gstreamer-1.0', gst_sources,
+  gstenum_h, gstenum_c, gst_parse_sources, gst_registry_sources,
+  version : libversion,
+  soversion : soversion,
+  darwin_versions : osxversion,
+  c_args : libgst_c_args + ['-DBUILDING_GST'],
+  include_directories : [configinc,
+    # HACK, change include paths in .y and .l in final version.
+    include_directories('parse')],
+  link_with : printf_lib,
+  install : true,
+  dependencies : [gobject_dep, gmodule_dep, glib_dep, mathlib, dl_dep] + backtrace_deps
+                   + platform_deps,
+)
 
-    gst_incdirs += [configinc]
-    gst_gen_sources += [gnome.generate_gir(libgst_shared,
-      sources : gst_sources + gst_headers + gst_enums + [gst_version_h],
-      namespace : 'Gst',
-      nsversion : apiversion,
-      identifier_prefix : 'Gst',
-      symbol_prefix : 'gst',
-      export_packages : 'gstreamer-1.0',
-      includes : ['GLib-2.0', 'GObject-2.0', 'GModule-2.0' ],
-      install : true,
-      extra_args : gst_gir_extra_args,
-    )]
+if build_gir
+  gst_gir_extra_args = gir_init_section + [ '--c-include=gst/gst.h' ]
+  if meson.is_subproject()
+    # FIXME: There must be a better way to do this
+    # Need to pass the include path to find gst/gst.h and gst/gstenumtypes.h (built)
+    gst_gir_extra_args += ['--cflags-begin',
+      '-I' + meson.current_source_dir() + '/..',
+      '-I' + meson.current_build_dir() + '/..',
+      '--cflags-end']
   endif
+
+  gst_incdirs += [configinc]
+  gst_gen_sources += [gnome.generate_gir(libgst,
+    sources : gst_sources + gst_headers + gst_enums + [gst_version_h],
+    namespace : 'Gst',
+    nsversion : apiversion,
+    identifier_prefix : 'Gst',
+    symbol_prefix : 'gst',
+    export_packages : 'gstreamer-1.0',
+    includes : ['GLib-2.0', 'GObject-2.0', 'GModule-2.0' ],
+    install : true,
+    extra_args : gst_gir_extra_args,
+  )]
 endif
 
 gst_dep = declare_dependency(link_with : libgst,

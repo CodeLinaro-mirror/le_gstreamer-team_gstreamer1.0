@@ -243,7 +243,7 @@ later calling <a class="link" href="gstreamer-GstPoll.html#gst-poll-set-controll
 <p>New file descriptors are added to the set using <a class="link" href="gstreamer-GstPoll.html#gst-poll-add-fd" title="gst_poll_add_fd ()"><code class="function">gst_poll_add_fd()</code></a>, and
 removed using <a class="link" href="gstreamer-GstPoll.html#gst-poll-remove-fd" title="gst_poll_remove_fd ()"><code class="function">gst_poll_remove_fd()</code></a>. Controlling which file descriptors
 should be waited for to become readable and/or writable are done using
-<a class="link" href="gstreamer-GstPoll.html#gst-poll-fd-ctl-read" title="gst_poll_fd_ctl_read ()"><code class="function">gst_poll_fd_ctl_read()</code></a> and <a class="link" href="gstreamer-GstPoll.html#gst-poll-fd-ctl-write" title="gst_poll_fd_ctl_write ()"><code class="function">gst_poll_fd_ctl_write()</code></a>.</p>
+<a class="link" href="gstreamer-GstPoll.html#gst-poll-fd-ctl-read" title="gst_poll_fd_ctl_read ()"><code class="function">gst_poll_fd_ctl_read()</code></a>, <a class="link" href="gstreamer-GstPoll.html#gst-poll-fd-ctl-write" title="gst_poll_fd_ctl_write ()"><code class="function">gst_poll_fd_ctl_write()</code></a> and <code class="function">gst_poll_fd_ctl_pri()</code>.</p>
 <p>Use <a class="link" href="gstreamer-GstPoll.html#gst-poll-wait" title="gst_poll_wait ()"><code class="function">gst_poll_wait()</code></a> to wait for the file descriptors to actually become
 readable and/or writable, or to timeout if no file descriptor is available
 in time. The wait can be controlled by calling <a class="link" href="gstreamer-GstPoll.html#gst-poll-restart" title="gst_poll_restart ()"><code class="function">gst_poll_restart()</code></a> and

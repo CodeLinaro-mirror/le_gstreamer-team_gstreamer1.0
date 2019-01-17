@@ -118,6 +118,14 @@
 </tr>
 <tr>
 <td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstQuery.html#gst-clear-query" title="gst_clear_query ()">gst_clear_query</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
 <a class="link" href="GstQuery.html" title="GstQuery"><span class="returnvalue">GstQuery</span></a> *
 </td>
 <td class="function_name">
@@ -142,6 +150,14 @@
 </td>
 <td class="function_name">
 <a class="link" href="GstQuery.html#gst-query-replace" title="gst_query_replace ()">gst_query_replace</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstQuery.html#gst-query-take" title="gst_query_take ()">gst_query_take</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -791,6 +807,30 @@
 <a class="link" href="GstQuery.html#gst-query-parse-context-type" title="gst_query_parse_context_type ()">gst_query_parse_context_type</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
+<tr>
+<td class="function_type">
+<a class="link" href="GstQuery.html" title="GstQuery"><span class="returnvalue">GstQuery</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstQuery.html#gst-query-new-bitrate" title="gst_query_new_bitrate ()">gst_query_new_bitrate</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstQuery.html#gst-query-set-bitrate" title="gst_query_set_bitrate ()">gst_query_set_bitrate</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstQuery.html#gst-query-parse-bitrate" title="gst_query_parse_bitrate ()">gst_query_parse_bitrate</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
 </tbody>
 </table></div>
 </div>
@@ -837,7 +877,7 @@
 </div>
 <div class="refsect1">
 <a name="GstQuery.includes"></a><h2>Includes</h2>
-<pre class="synopsis">#include &lt;gst/gstprotection.h&gt;
+<pre class="synopsis">#include &lt;gst/gst.h&gt;
 </pre>
 </div>
 <div class="refsect1">
@@ -1155,6 +1195,34 @@ will be freed.</p>
 </div>
 <hr>
 <div class="refsect2">
+<a name="gst-clear-query"></a><h3>gst_clear_query ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_clear_query (<em class="parameter"><code><a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a> **query_ptr</code></em>);</pre>
+<p>Clears a reference to a <a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a>.</p>
+<p><em class="parameter"><code>query_ptr</code></em>
+ must not be <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.</p>
+<p>If the reference is <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> then this function does nothing. Otherwise, the
+reference count of the query is decreased and the pointer is set to <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.</p>
+<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
+<div class="refsect3">
+<a name="gst-clear-query.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>query_ptr</p></td>
+<td class="parameter_description"><p>a pointer to a <a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a> reference</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.16</p>
+</div>
+<hr>
+<div class="refsect2">
 <a name="gst-query-copy"></a><h3>gst_query_copy ()</h3>
 <pre class="programlisting"><a class="link" href="GstQuery.html" title="GstQuery"><span class="returnvalue">GstQuery</span></a> *
 gst_query_copy (<em class="parameter"><code>const <a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a> *q</code></em>);</pre>
@@ -1276,6 +1344,52 @@ replace the query pointed to by <em class="parameter"><code>old_query</code></em
 was different from <em class="parameter"><code>old_query</code></em>
 </p>
 </div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-query-take"></a><h3>gst_query_take ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_query_take (<em class="parameter"><code><a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a> **old_query</code></em>,
+                <em class="parameter"><code><a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a> *new_query</code></em>);</pre>
+<p>Modifies a pointer to a <a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a> to point to a different <a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a>. This
+function is similar to <a class="link" href="GstQuery.html#gst-query-replace" title="gst_query_replace ()"><code class="function">gst_query_replace()</code></a> except that it takes ownership of
+<em class="parameter"><code>new_query</code></em>
+.</p>
+<p>Either <em class="parameter"><code>new_query</code></em>
+ or the <a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a> pointed to by <em class="parameter"><code>old_query</code></em>
+ may be <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.</p>
+<div class="refsect3">
+<a name="gst-query-take.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>old_query</p></td>
+<td class="parameter_description"><p>pointer to a
+pointer to a <a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a> to be stolen. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input and for returning results. Default is transfer full."><span class="acronym">inout</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>new_query</p></td>
+<td class="parameter_description"><p>pointer to a <a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a> that will
+replace the query pointed to by <em class="parameter"><code>old_query</code></em>
+. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="gst-query-take.returns"></a><h4>Returns</h4>
+<p> <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>new_query</code></em>
+was different from <em class="parameter"><code>old_query</code></em>
+</p>
+</div>
+<p class="since">Since: 1.16</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -4308,6 +4422,84 @@ gst_query_parse_context_type (<em class="parameter"><code><a class="link" href="
 </div>
 <p class="since">Since: <a class="link" href="ix10.html#api-index-1.2">1.2</a></p>
 </div>
+<hr>
+<div class="refsect2">
+<a name="gst-query-new-bitrate"></a><h3>gst_query_new_bitrate ()</h3>
+<pre class="programlisting"><a class="link" href="GstQuery.html" title="GstQuery"><span class="returnvalue">GstQuery</span></a> *
+gst_query_new_bitrate (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Constructs a new query object for querying the bitrate.</p>
+<p>Free-function: <a class="link" href="GstQuery.html#gst-query-unref" title="gst_query_unref ()"><code class="function">gst_query_unref()</code></a></p>
+<div class="refsect3">
+<a name="gst-query-new-bitrate.returns"></a><h4>Returns</h4>
+<p>a new <a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+<p class="since">Since: 1.16</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-query-set-bitrate"></a><h3>gst_query_set_bitrate ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_query_set_bitrate (<em class="parameter"><code><a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a> *query</code></em>,
+                       <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nominal_bitrate</code></em>);</pre>
+<p>Set the results of a bitrate query.  The nominal bitrate is the average
+bitrate expected over the length of the stream as advertised in file
+headers (or similar).</p>
+<div class="refsect3">
+<a name="gst-query-set-bitrate.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>query</p></td>
+<td class="parameter_description"><p>a GST_QUERY_BITRATE type <a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nominal_bitrate</p></td>
+<td class="parameter_description"><p>the nominal bitrate in bits per second</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.16</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-query-parse-bitrate"></a><h3>gst_query_parse_bitrate ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_query_parse_bitrate (<em class="parameter"><code><a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a> *query</code></em>,
+                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *nominal_bitrate</code></em>);</pre>
+<p>Get the results of a bitrate query. See also <a class="link" href="GstQuery.html#gst-query-set-bitrate" title="gst_query_set_bitrate ()"><code class="function">gst_query_set_bitrate()</code></a>.</p>
+<div class="refsect3">
+<a name="gst-query-parse-bitrate.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>query</p></td>
+<td class="parameter_description"><p>a GST_QUERY_BITRATE type <a class="link" href="GstQuery.html" title="GstQuery"><span class="type">GstQuery</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nominal_bitrate</p></td>
+<td class="parameter_description"><p>The resulting bitrate in bits per second. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.16</p>
+</div>
 </div>
 <div class="refsect1">
 <a name="GstQuery.other_details"></a><h2>Types and Values</h2>
@@ -4534,6 +4726,13 @@ values. You can get the type flags of a <a class="link" href="GstQuery.html#GstQ
 <td class="enum_member_description">
 <p>query the pipeline-local context from
     downstream or upstream (since 1.2)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-QUERY-BITRATE:CAPS"></a>GST_QUERY_BITRATE</p></td>
+<td class="enum_member_description">
+<p>the bitrate query (since 1.16)</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>

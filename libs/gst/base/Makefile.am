@@ -10,6 +10,7 @@ libgstbase_@GST_API_VERSION@_la_SOURCES = \
 	gstbasesrc.c		\
 	gstbasetransform.c	\
 	gstbitreader.c		\
+	gstbitwriter.c		\
 	gstbytereader.c		\
 	gstbytewriter.c         \
 	gstcollectpads.c	\
@@ -19,7 +20,7 @@ libgstbase_@GST_API_VERSION@_la_SOURCES = \
 	gstqueuearray.c		\
 	gsttypefindhelper.c
 
-libgstbase_@GST_API_VERSION@_la_CFLAGS = $(GST_OBJ_CFLAGS)
+libgstbase_@GST_API_VERSION@_la_CFLAGS = $(GST_OBJ_CFLAGS) -DBUILDING_GST_BASE
 libgstbase_@GST_API_VERSION@_la_LIBADD = $(GST_OBJ_LIBS)
 libgstbase_@GST_API_VERSION@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
 
@@ -36,6 +37,7 @@ libgstbase_@GST_API_VERSION@include_HEADERS =	\
 	gstbasesrc.h		\
 	gstbasetransform.h	\
 	gstbitreader.h		\
+	gstbitwriter.h		\
 	gstbytereader.h		\
 	gstbytewriter.h         \
 	gstcollectpads.h	\
@@ -49,6 +51,7 @@ noinst_HEADERS = \
 	gstbytereader-docs.h \
 	gstbytewriter-docs.h \
 	gstbitreader-docs.h \
+	gstbitwriter-docs.h \
 	gstindex.h
 
 EXTRA_DIST = gstindex.c gstmemindex.c

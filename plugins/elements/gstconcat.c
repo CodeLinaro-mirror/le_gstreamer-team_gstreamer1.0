@@ -23,12 +23,12 @@
  * @title: concat
  * @see_also: #GstFunnel
  *
- * Concatenates streams together to one continous stream.
+ * Concatenates streams together to one continuous stream.
  *
  * All streams but the current one are blocked until the current one
  * finished with %GST_EVENT_EOS. Then the next stream is enabled, while
- * keeping the running time continous for %GST_FORMAT_TIME segments or
- * keeping the segment continous for %GST_FORMAT_BYTES segments.
+ * keeping the running time continuous for %GST_FORMAT_TIME segments or
+ * keeping the segment continuous for %GST_FORMAT_BYTES segments.
  *
  * Streams are switched in the order in which the sinkpads were requested.
  *
@@ -324,6 +324,8 @@ gst_concat_request_new_pad (GstElement * element, GstPadTemplate * templ,
   if (do_notify)
     gst_concat_notify_active_pad (self);
 
+  GST_DEBUG_OBJECT (sinkpad, "requested pad");
+
   return sinkpad;
 }
 
@@ -337,7 +339,7 @@ gst_concat_release_pad (GstElement * element, GstPad * pad)
   gboolean eos = FALSE;
   gboolean do_notify = FALSE;
 
-  GST_DEBUG_OBJECT (self, "releasing pad");
+  GST_DEBUG_OBJECT (pad, "releasing pad");
 
   g_mutex_lock (&self->lock);
   spad->flushing = TRUE;
@@ -575,7 +577,7 @@ gst_concat_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
           /* We know no duration */
           segment.duration = -1;
 
-          /* Update segment values to be continous with last stream */
+          /* Update segment values to be continuous with last stream */
           if (self->format == GST_FORMAT_TIME) {
             segment.base += self->current_start_offset;
           } else {
