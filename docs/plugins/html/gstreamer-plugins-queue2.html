@@ -135,6 +135,16 @@
 <td class="property_name"><a class="link" href="gstreamer-plugins-queue2.html#GstQueue2--low-watermark" title="The “low-watermark” property">low-watermark</a></td>
 <td class="property_flags">Read / Write</td>
 </tr>
+<tr>
+<td class="property_type"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a></td>
+<td class="property_name"><a class="link" href="gstreamer-plugins-queue2.html#GstQueue2--bitrate" title="The “bitrate” property">bitrate</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gstreamer-plugins-queue2.html#GstQueue2--use-bitrate-query" title="The “use-bitrate-query” property">use-bitrate-query</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
 </tbody>
 </table></div>
 </div>
@@ -170,8 +180,8 @@
 <a name="gstreamer-plugins-queue2.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="screen">    <a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject-struct">GObject</a>
     <span class="lineart">╰──</span> <a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-        <span class="lineart">╰──</span> <a href="/usr/share/gtk-doc/html/gstreamer-1.0/GstObject.html#GstObject-struct">GstObject</a>
-            <span class="lineart">╰──</span> <a href="/usr/share/gtk-doc/html/gstreamer-1.0/GstElement.html#GstElement-struct">GstElement</a>
+        <span class="lineart">╰──</span> <a href="../html/GstObject.html#GstObject-struct">GstObject</a>
+            <span class="lineart">╰──</span> <a href="../html/GstElement.html#GstElement-struct">GstElement</a>
                 <span class="lineart">╰──</span> GstQueue2
 </pre>
 </div>
@@ -436,6 +446,24 @@ buffer is disabled. Default 0.</p>
 <p>Flags: Read / Write</p>
 <p>Allowed values: [0,1]</p>
 <p>Default value: 0.01</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstQueue2--bitrate"></a><h3>The <code class="literal">“bitrate”</code> property</h3>
+<pre class="programlisting">  “bitrate”                  <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a></pre>
+<p>The value used to convert between byte and time values for limiting
+the size of the queue.  Values are taken from either the upstream tags
+or from the downstream bitrate query.</p>
+<p>Flags: Read</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstQueue2--use-bitrate-query"></a><h3>The <code class="literal">“use-bitrate-query”</code> property</h3>
+<pre class="programlisting">  “use-bitrate-query”        <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Use a bitrate from a downstream query to estimate buffer duration if not provided.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: TRUE</p>
 </div>
 </div>
 <div class="refsect1">

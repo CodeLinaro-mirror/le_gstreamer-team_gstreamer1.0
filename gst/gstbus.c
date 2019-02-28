@@ -1044,7 +1044,7 @@ gst_bus_add_watch (GstBus * bus, GstBusFunc func, gpointer user_data)
 gboolean
 gst_bus_remove_watch (GstBus * bus)
 {
-  GSource *watch_id;
+  GSource *source;
 
   g_return_val_if_fail (GST_IS_BUS (bus), FALSE);
 
@@ -1052,18 +1052,28 @@ gst_bus_remove_watch (GstBus * bus)
 
   if (bus->priv->signal_watch == NULL) {
     GST_ERROR_OBJECT (bus, "no bus watch was present");
-    goto no_watch;
+    goto error;
   }
 
-  watch_id = bus->priv->signal_watch;
+  if (bus->priv->num_signal_watchers > 0) {
+    GST_ERROR_OBJECT (bus,
+        "trying to remove signal watch with gst_bus_remove_watch()");
+    goto error;
+  }
+
+  source =
+      bus->priv->signal_watch ? g_source_ref (bus->priv->signal_watch) : NULL;
 
   GST_OBJECT_UNLOCK (bus);
 
-  g_source_destroy (watch_id);
+  if (source) {
+    g_source_destroy (source);
+    g_source_unref (source);
+  }
 
   return TRUE;
 
-no_watch:
+error:
   GST_OBJECT_UNLOCK (bus);
 
   return FALSE;
@@ -1453,13 +1463,16 @@ gst_bus_remove_signal_watch (GstBus * bus)
   GST_DEBUG_OBJECT (bus, "removing signal watch %u",
       g_source_get_id (bus->priv->signal_watch));
 
-  source = bus->priv->signal_watch;
+  source =
+      bus->priv->signal_watch ? g_source_ref (bus->priv->signal_watch) : NULL;
 
 done:
   GST_OBJECT_UNLOCK (bus);
 
-  if (source)
+  if (source) {
     g_source_destroy (source);
+    g_source_unref (source);
+  }
 
   return;
 

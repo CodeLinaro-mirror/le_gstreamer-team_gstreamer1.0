@@ -42,9 +42,19 @@
 #endif
 
 #define DEFAULT_PAGER "less"
-#define DEFAULT_LESS_OPTS "FXR"
+
+/* "R" : support color
+ * "X" : do not clear the screen when leaving the pager
+ * "F" : skip the pager if content fit into the screen
+ */
+#define DEFAULT_LESS_OPTS "RXF"
 
 gboolean colored_output = TRUE;
+
+#ifdef G_OS_UNIX
+GPid child_pid = -1;
+#endif
+GMainLoop *loop = NULL;
 
 /* Console colors */
 
@@ -1865,80 +1875,55 @@ print_all_plugin_automatic_install_info (void)
 }
 
 #ifdef G_OS_UNIX
-static void
+static gboolean
 redirect_stdout (void)
 {
-  int pipefd[2];
-  pid_t child_id;
+  GError *error = NULL;
+  gchar **argv;
+  const gchar *pager;
+  gint stdin_fd;
+  gchar **envp;
 
-  if (pipe (pipefd) == -1) {
-    g_printerr (_("Error creating pipe: %s\n"), g_strerror (errno));
-    exit (-1);
-  }
+  pager = g_getenv ("PAGER");
+  if (pager == NULL)
+    pager = DEFAULT_PAGER;
 
-  child_id = fork ();
-  if (child_id == -1) {
-    g_printerr (_("Error forking: %s\n"), g_strerror (errno));
-    exit (-1);
-  }
+  argv = g_strsplit (pager, " ", 0);
 
-  if (child_id == 0) {
-    char **argv;
-    const char *pager;
-    int ret;
+  envp = g_get_environ ();
+  envp = g_environ_setenv (envp, "LESS", DEFAULT_LESS_OPTS, TRUE);
 
-    pager = g_getenv ("PAGER");
-    if (pager == NULL)
-      pager = DEFAULT_PAGER;
-    argv = g_strsplit (pager, " ", 0);
-
-    /* Make sure less will show colors, cat and more always show colors */
-    g_setenv ("LESS", DEFAULT_LESS_OPTS, FALSE);
-
-    /* child process */
-    close (pipefd[1]);
-    dup2 (pipefd[0], STDIN_FILENO);
-    close (pipefd[0]);
-
-    ret = execvp (argv[0], argv);
+  if (!g_spawn_async_with_pipes (NULL, argv, envp,
+          G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH,
+          NULL, NULL, &child_pid, &stdin_fd,
+          /* pass null stdout/stderr to inherit our fds */
+          NULL, NULL, &error)) {
+    g_warning ("g_spawn_async_with_pipes() failed: %s\n",
+        GST_STR_NULL (error->message));
     g_strfreev (argv);
-    if (ret == -1) {
-      /* No less? Let's just dump everything to stdout then */
-      char buffer[1024];
+    g_strfreev (envp);
+    g_clear_error (&error);
 
-      do {
-        int bytes_written;
-
-        if ((ret = read (STDIN_FILENO, buffer, sizeof (buffer))) == -1) {
-          if (errno == EINTR || errno == EAGAIN) {
-            continue;
-          }
-
-          g_printerr (_("Error reading from console: %s\n"),
-              g_strerror (errno));
-          exit (-1);
-        }
-
-        do {
-          bytes_written = write (STDOUT_FILENO, buffer, ret);
-        } while (bytes_written == -1 && (errno == EINTR || errno == EAGAIN));
-
-        if (bytes_written < 0) {
-          g_printerr (_("Error writing to console: %s\n"), g_strerror (errno));
-          exit (-1);
-        }
-      } while (ret > 0);
-
-      exit (0);
-    }
-  } else {
-    close (pipefd[0]);
-    dup2 (pipefd[1], STDOUT_FILENO);
-    if (isatty (STDERR_FILENO))
-      dup2 (pipefd[1], STDERR_FILENO);
-    close (pipefd[1]);
-    close (STDIN_FILENO);
+    return FALSE;
   }
+
+  /* redirect our stdout to child stdin */
+  dup2 (stdin_fd, STDOUT_FILENO);
+  if (isatty (STDERR_FILENO))
+    dup2 (stdin_fd, STDERR_FILENO);
+  close (stdin_fd);
+
+  g_strfreev (argv);
+  g_strfreev (envp);
+
+  return TRUE;
+}
+
+static void
+child_exit_cb (GPid child_pid, gint status, gpointer user_data)
+{
+  g_spawn_close_pid (child_pid);
+  g_main_loop_quit (loop);
 }
 #endif
 
@@ -1957,6 +1942,7 @@ main (int argc, char *argv[])
   guint minver_micro = 0;
   gchar *types = NULL;
   const gchar *no_colors;
+  int exit_code = 0;
 #ifndef GST_DISABLE_OPTION_PARSING
   GOptionEntry options[] = {
     {"print-all", 'a', 0, G_OPTION_ARG_NONE, &print_all,
@@ -2024,26 +2010,6 @@ main (int argc, char *argv[])
   gst_init (&argc, &argv);
 #endif
 
-  no_colors = g_getenv ("GST_INSPECT_NO_COLORS");
-  /* We only support truecolor */
-  colored_output &= (no_colors == NULL);
-
-#ifdef G_OS_UNIX
-  if (isatty (STDOUT_FILENO)) {
-    redirect_stdout ();
-  } else {
-    colored_output = FALSE;
-  }
-#elif defined(G_OS_WIN32)
-  {
-    gint fd = _fileno (stdout);
-    /* On Windows 10, g_log_writer_supports_color will also setup the console
-     * so that it correctly interprets ANSI VT sequences if it's supported */
-    if (!_isatty (fd) || !g_log_writer_supports_color (fd))
-      colored_output = FALSE;
-  }
-#endif
-
   gst_tools_print_version ();
 
   if (print_all && argc > 1) {
@@ -2068,8 +2034,6 @@ main (int argc, char *argv[])
   }
 
   if (check_exists) {
-    int exit_code;
-
     if (argc == 1) {
       g_printerr ("--exists requires an extra command line argument\n");
       exit_code = -1;
@@ -2095,6 +2059,27 @@ main (int argc, char *argv[])
     }
     return exit_code;
   }
+
+  no_colors = g_getenv ("GST_INSPECT_NO_COLORS");
+  /* We only support truecolor */
+  colored_output &= (no_colors == NULL);
+
+#ifdef G_OS_UNIX
+  if (isatty (STDOUT_FILENO)) {
+    if (redirect_stdout ())
+      loop = g_main_loop_new (NULL, FALSE);
+  } else {
+    colored_output = FALSE;
+  }
+#elif defined(G_OS_WIN32)
+  {
+    gint fd = _fileno (stdout);
+    /* On Windows 10, g_log_writer_supports_color will also setup the console
+     * so that it correctly interprets ANSI VT sequences if it's supported */
+    if (!_isatty (fd) || !g_log_writer_supports_color (fd))
+      colored_output = FALSE;
+  }
+#endif
 
   /* if no arguments, print out list of elements */
   if (uri_handlers) {
@@ -2145,24 +2130,32 @@ main (int argc, char *argv[])
           } else {
             g_printerr (_("Could not load plugin file: %s\n"), error->message);
             g_clear_error (&error);
-            return -1;
+            exit_code = -1;
+            goto done;
           }
         } else {
           g_printerr (_("No such element or plugin '%s'\n"), arg);
-          return -1;
+          exit_code = -1;
+          goto done;
         }
       }
     }
   }
 
+done:
+
 #ifdef G_OS_UNIX
-  fflush (stdout);
-  fflush (stderr);
-  /* So that the pipe we create in redirect_stdout() is closed */
-  close (STDOUT_FILENO);
-  close (STDERR_FILENO);
-  wait (NULL);
+  if (loop) {
+    fflush (stdout);
+    fflush (stderr);
+    /* So that the pipe we create in redirect_stdout() is closed */
+    close (STDOUT_FILENO);
+    close (STDERR_FILENO);
+    g_child_watch_add (child_pid, child_exit_cb, NULL);
+    g_main_loop_run (loop);
+    g_main_loop_unref (loop);
+  }
 #endif
 
-  return 0;
+  return exit_code;
 }

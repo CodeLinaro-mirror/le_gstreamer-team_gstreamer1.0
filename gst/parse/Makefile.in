@@ -505,6 +505,7 @@ noinst_LTLIBRARIES = libgstparse.la
 CLEANFILES = grammar.tab.h parse_lex.h grammar.output grammar.tab.c \
 	lex.priv_gst_parse_yy.c
 EXTRA_DIST = \
+	get_flex_version.py \
 	grammar.y \
 	parse.l
 

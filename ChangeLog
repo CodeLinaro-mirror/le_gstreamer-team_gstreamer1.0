@@ -1,3 +1,309 @@
+=== release 1.15.2 ===
+
+2019-02-26 11:38:00 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* ChangeLog:
+	* NEWS:
+	* RELEASE:
+	* configure.ac:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.15.2
+
+2019-02-26 11:38:00 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* docs/plugins/inspect/plugin-coreelements.xml:
+	* docs/plugins/inspect/plugin-coretracers.xml:
+	  Update docs
+
+2019-02-26 11:37:57 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* po/af.po:
+	* po/ast.po:
+	* po/az.po:
+	* po/be.po:
+	* po/bg.po:
+	* po/ca.po:
+	* po/cs.po:
+	* po/da.po:
+	* po/de.po:
+	* po/el.po:
+	* po/en_GB.po:
+	* po/eo.po:
+	* po/es.po:
+	* po/eu.po:
+	* po/fi.po:
+	* po/fr.po:
+	* po/fur.po:
+	* po/gl.po:
+	* po/hr.po:
+	* po/hu.po:
+	* po/id.po:
+	* po/it.po:
+	* po/ja.po:
+	* po/lt.po:
+	* po/nb.po:
+	* po/nl.po:
+	* po/pl.po:
+	* po/pt_BR.po:
+	* po/ro.po:
+	* po/ru.po:
+	* po/rw.po:
+	* po/sk.po:
+	* po/sl.po:
+	* po/sq.po:
+	* po/sr.po:
+	* po/sv.po:
+	* po/tr.po:
+	* po/uk.po:
+	* po/vi.po:
+	* po/zh_CN.po:
+	* po/zh_TW.po:
+	  Update translations
+
+2019-02-25 13:49:43 +0100  Philipp Zabel <p.zabel@pengutronix.de>
+
+	* gst/gstplugin.c:
+	  plugin: add 0BSD as valid license
+	  Add the zero-clause BSD license, which is an alteration of the ISC
+	  license, to the list of valid licenses.
+
+2019-02-25 13:48:38 +0100  Philipp Zabel <p.zabel@pengutronix.de>
+
+	* gst/gstplugin.c:
+	  plugin: fix link to 3-clause BSD license
+	  The current link points to the 2-clause BSD license,
+	  explicitly link to the 3-clause version of the license.
+
+2019-02-20 17:51:40 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gstmacros.h:
+	  gstmacros.h: Fix restrict definition on MSVC
+	  Turns out it's exposed as `__restrict`, not as `restrict`.
+	  https://gitlab.freedesktop.org/gstreamer/gstreamer/merge_requests/95#note_120782
+
+2019-02-20 01:25:11 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gstmacros.h:
+	  gstmacros.h: Fix check for 'restrict' keyword
+	  MSVC also defines it as a keyword. Fixes build errors in projects that
+	  include MSVC's xkeycheck.h which ensures that keywords aren't overriden
+	  with a define.
+
+2019-02-18 09:58:19 +0900  Seungha Yang <seungha.yang@navercorp.com>
+
+	* gst/gstbuffer.c:
+	  buffer: Don't miss return value on Windows build
+	  ... and use InterlockedExchangeAdd64 for the 64bit value.
+	  InterlockedExchangeAdd is 32bit version.
+
+2019-02-15 13:23:37 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstbus.c:
+	  bus: Make removing of signal/bus watches thread-safe
+	  Between getting the GSource with the mutex and destroying it, something
+	  else might've destroyed it already and we would have a dangling pointer.
+	  Keep an additional reference just in case.
+
+2019-02-15 13:20:27 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstbus.c:
+	  bus: Don't allow removing signal watches with gst_bus_remove_watch()
+	  Signal watches are reference counted and gst_bus_remove_watch() would
+	  immediately remove it, breaking the reference counting. Only
+	  gst_bus_remove_signal_watch() should be used for removing signal
+	  watches.
+
+2019-02-11 15:21:21 +1300  Lawrence Troup <lawrence.troup@teknique.com>
+
+	* gst/gstpad.c:
+	* gst/gstpad.h:
+	  pad: Document that pad unlink function is called with pad lock held
+	  Fixes #353
+
+2016-12-02 17:56:59 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* docs/gst/gstreamer-sections.txt:
+	* gst/gst_private.h:
+	* gst/gstbuffer.c:
+	* gst/gstmeta.c:
+	* gst/gstmeta.h:
+	* tests/check/gst/gstmeta.c:
+	  buffer: store sequence number for metas
+	  For metas where order might be significant if multiple metas are
+	  attached to the same buffer, so store a sequence number with the
+	  meta when adding it to the buffer. This allows users of the meta
+	  to make sure metas are processed in the right order.
+	  We need a 64-bit integer for the sequence number here in the API,
+	  a 32-bit one might overflow too easily with high packet/buffer
+	  rates. We could do it rtp-seqnum style of course, but that's a
+	  bit of a pain.
+	  We could also make it so that gst_buffer_add_meta() just keeps metas in
+	  order or rely on the order we add the metas in, but that seems too
+	  fragile overall, when buffers (incl. metas) get merged or split.
+	  Also add a compare function for easier sorting.
+	  We store the seqnum in the MetaItem struct here and not in the
+	  GstMeta struct since there's no padding in the GstMeta struct.
+	  We could add a private struct to GstMeta before the start of
+	  GstMeta, but that's what MetaItem effectively is implementation-
+	  wise. We can still change this later if we want, since it's all
+	  private.
+	  Fixes #262
+
+2019-02-09 11:35:59 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstdeviceprovider.c:
+	  deviceprovider: It's (transfer none) not (transfer-none)
+
+2019-01-30 10:41:58 -0300  Thibault Saunier <tsaunier@igalia.com>
+
+	* docs/gst/gstreamer-sections.txt:
+	* gst/gstdevicemonitor.c:
+	* gst/gstdeviceprovider.c:
+	* gst/gstdeviceprovider.h:
+	* gst/gstmessage.c:
+	* gst/gstmessage.h:
+	* gst/gstquark.c:
+	* gst/gstquark.h:
+	  device-provider: Allow notifying application of device changes
+	  Thi introduces new APIs to post a `DEVICE_CHANGED` message on the
+	  bus so the application is notifies when a device is modified. For
+	  example, if the "defaultness" of a device was changed or any property
+	  that can be changed at any time. Atomically changing the device
+	  object notifying that way allow us to abtract away the internal threads.
+	  New APIS:
+	  - gst_message_new_device_changed
+	  - gst_message_parse_device_changed
+	  - gst_device_provider_device_changed
+
+2019-02-08 16:42:43 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/parse/get_flex_version.py:
+	* gst/parse/meson.build:
+	  meson: Extract flex version using a regex inside a script
+	  Different builds of Flex on different platforms output different strings
+	  in --version. For example:
+	  macOS:
+	  flex 2.5.35 Apple(flex-31)
+	  Windows:
+	  win_flex.exe 2.6.4
+	  C:\Program Files (x86)\GnuWin32\bin\flex.EXE version 2.5.4
+	  We need to look for a string that looks like a version, which means
+	  a regex till https://github.com/mesonbuild/meson/issues/1609 is fixed.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/issues/356
+
+2019-02-05 18:18:48 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* libs/gst/check/gstharness.c:
+	* tests/check/gst/gstmeta.c:
+	* tools/gst-inspect.c:
+	  misc: Fix various compiler warnings on MinGW
+	  gstharness.c: Use G_GSIZE_FORMAT instead of hard-coding %zu
+	  error: unknown conversion type character 'z' in format [-Werror=format]
+	  gst-inspect.c: GPid is void* on non-UNIX, and we only use it on UNIX
+	  error: initialization makes pointer from integer without a cast [-Werror]
+	  gstmeta.c: Use and then discard value
+	  error: value computed is not used [-Werror=unused-value]
+	  With this, gstreamer builds with -Werror on MinGW
+
+2019-01-29 16:26:49 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstdatetime.c:
+	  datetime: new() and new_local_time() constructors are not nullable
+
+2019-01-29 15:50:06 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstpad.c:
+	  pad: Constructors are all not nullable
+	  They can't possibly return NULL except in case of assertions.
+
+2019-01-29 15:49:50 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstpadtemplate.c:
+	  padtemplate: Constructors are all nullable as they check the template name
+
+2019-01-29 12:01:59 +0100  Edward Hervey <edward@centricular.com>
+
+	* tests/check/libs/baseparse.c:
+	  test: Set PTS on proper variable
+	  This would previously set the PTS on a random address causing various
+	  memory corruption
+
+2019-01-25 02:36:18 +0100  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* gst/gstinfo.c:
+	* meson.build:
+	* meson_options.txt:
+	  gstinfo: add Windows stacktraces support
+	  This uses the DbgHelp library if available
+
+2019-01-25 13:46:59 -0500  Nicolas Dufresne <nicolas.dufresne@collabora.com>
+
+	* gst/gstpad.c:
+	  pad: Remove unneeded 64bit upcast in debug trace
+	  The hook->hook_id is a gulong for which there are no portability issues
+	  when tracing in printf format with %lu. So use %lu and remove the upcast
+	  to 64 bit. This makes the code more consistent with everything else
+	  tracing that hook_id and other gulong id.
+
+2019-01-24 13:52:46 -0500  Nicolas Dufresne <nicolas.dufresne@collabora.com>
+
+	* tools/gst-inspect.c:
+	  gst-inspect: Re-add DEFAULT_LESS_OPTS with initial value
+	  Commit 56b4fbef5e6760adc927d0e1c7c8d6a0db9b785c refactored the pipe code
+	  to use GLib utility, but the patch was hading some other changed. LESS
+	  env was now hardcoded in the middle instead of from a define and was
+	  changed from FXR to -RX. The "-" is not even valid for LESS env, and
+	  with the lost of F, we would still use a pager when the content fits the
+	  terminal.
+
+2019-01-23 13:51:08 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gsttaglist.c:
+	  taglist: Remove (scope call) annotation from gst_tag_register()
+	  This was added in 7fdb15d6a2 but it is wrong. (scope call) is for
+	  closures that only have to stay valid for the scope of the call, but the
+	  tag merge function has to stay valid for the whole lifetime of the
+	  application instead.
+	  There's no appropriate scope annotation for that so we have to skip
+	  these functions for now.
+
+2019-01-23 12:15:13 +0900  Seungha Yang <seungha.yang@navercorp.com>
+
+	* tests/check/gst/gstinfo.c:
+	  tests: info: Fix spurious validation
+	  Should be equality check, not assignment.
+	  Additionally, use fail_unless_equals_* macro for better readability
+	  and debugging easier, if possible.
+
+2019-01-23 21:15:09 +0100  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* gst/parse/meson.build:
+	  meson: improve flex version parsing
+	  the output of flex --version can contain more than one space
+
+2019-01-22 14:05:43 +0900  Seungha Yang <seungha.yang@navercorp.com>
+
+	* meson.build:
+	  meson: Correct minimum required GLib version
+	  It's updated to 2.40.0 since the commit 3e8ef4cf5a41e26836f0a5a8cb3ddaa5e55f1524
+
+2019-01-17 11:22:27 +0900  Seungha Yang <seungha.yang@navercorp.com>
+
+	* tools/gst-inspect.c:
+	  gst-inspect: Don't setup pager too early
+	  Setup it only if we have something to print out about inspected results.
+	  Otherwise, gst_tools_print_version() output will be redirected to pager and also
+	  exit immediately without waiting child process.
+
+2019-01-08 21:23:44 +0900  Seungha Yang <seungha.yang@navercorp.com>
+
+	* tools/gst-inspect.c:
+	  gst-inspect: Port to Glib's spawn API
+	  Although we support pager just for *nix until now,
+	  this can make more portable to Windows.
+	  Fixes #342
+
 === release 1.15.1 ===
 
 2019-01-17 01:38:59 +0000  Tim-Philipp Müller <tim@centricular.com>

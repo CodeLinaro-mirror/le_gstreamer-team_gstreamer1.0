@@ -1055,8 +1055,10 @@
     <keyword type="function" name="gst_message_parse_have_context ()" link="GstMessage.html#gst-message-parse-have-context" since="1.2"/>
     <keyword type="function" name="gst_message_new_device_added ()" link="GstMessage.html#gst-message-new-device-added" since="1.4"/>
     <keyword type="function" name="gst_message_new_device_removed ()" link="GstMessage.html#gst-message-new-device-removed" since="1.4"/>
+    <keyword type="function" name="gst_message_new_device_changed ()" link="GstMessage.html#gst-message-new-device-changed" since="1.16"/>
     <keyword type="function" name="gst_message_parse_device_added ()" link="GstMessage.html#gst-message-parse-device-added" since="1.4"/>
     <keyword type="function" name="gst_message_parse_device_removed ()" link="GstMessage.html#gst-message-parse-device-removed" since="1.4"/>
+    <keyword type="function" name="gst_message_parse_device_changed ()" link="GstMessage.html#gst-message-parse-device-changed" since="1.16"/>
     <keyword type="function" name="gst_message_new_property_notify ()" link="GstMessage.html#gst-message-new-property-notify" since="1.10"/>
     <keyword type="function" name="gst_message_parse_property_notify ()" link="GstMessage.html#gst-message-parse-property-notify" since="1.10"/>
     <keyword type="function" name="gst_message_new_streams_selected ()" link="GstMessage.html#gst-message-new-streams-selected" since="1.10"/>
@@ -1086,6 +1088,8 @@
     <keyword type="function" name="gst_meta_api_type_get_tags ()" link="gstreamer-GstMeta.html#gst-meta-api-type-get-tags" since="1.2"/>
     <keyword type="function" name="gst_meta_register ()" link="gstreamer-GstMeta.html#gst-meta-register"/>
     <keyword type="function" name="gst_meta_get_info ()" link="gstreamer-GstMeta.html#gst-meta-get-info"/>
+    <keyword type="function" name="gst_meta_get_seqnum ()" link="gstreamer-GstMeta.html#gst-meta-get-seqnum" since="1.16"/>
+    <keyword type="function" name="gst_meta_compare_seqnum ()" link="gstreamer-GstMeta.html#gst-meta-compare-seqnum" since="1.16"/>
     <keyword type="struct" name="struct GstMeta" link="gstreamer-GstMeta.html#GstMeta"/>
     <keyword type="enum" name="enum GstMetaFlags" link="gstreamer-GstMeta.html#GstMetaFlags"/>
     <keyword type="struct" name="struct GstMetaInfo" link="gstreamer-GstMeta.html#GstMetaInfo"/>
@@ -2349,6 +2353,7 @@
     <keyword type="function" name="gst_device_provider_class_set_static_metadata ()" link="gstreamer-GstDeviceProvider.html#gst-device-provider-class-set-static-metadata" since="1.4"/>
     <keyword type="function" name="gst_device_provider_device_add ()" link="gstreamer-GstDeviceProvider.html#gst-device-provider-device-add" since="1.4"/>
     <keyword type="function" name="gst_device_provider_device_remove ()" link="gstreamer-GstDeviceProvider.html#gst-device-provider-device-remove" since="1.4"/>
+    <keyword type="function" name="gst_device_provider_device_changed ()" link="gstreamer-GstDeviceProvider.html#gst-device-provider-device-changed" since="1.16"/>
     <keyword type="function" name="gst_device_provider_get_bus ()" link="gstreamer-GstDeviceProvider.html#gst-device-provider-get-bus" since="1.4"/>
     <keyword type="function" name="gst_device_provider_get_devices ()" link="gstreamer-GstDeviceProvider.html#gst-device-provider-get-devices" since="1.4"/>
     <keyword type="function" name="gst_device_provider_get_factory ()" link="gstreamer-GstDeviceProvider.html#gst-device-provider-get-factory" since="1.4"/>
@@ -2777,6 +2782,7 @@
     <keyword type="constant" name="GST_MESSAGE_STREAM_COLLECTION" link="GstMessage.html#GST-MESSAGE-STREAM-COLLECTION:CAPS"/>
     <keyword type="constant" name="GST_MESSAGE_STREAMS_SELECTED" link="GstMessage.html#GST-MESSAGE-STREAMS-SELECTED:CAPS"/>
     <keyword type="constant" name="GST_MESSAGE_REDIRECT" link="GstMessage.html#GST-MESSAGE-REDIRECT:CAPS"/>
+    <keyword type="constant" name="GST_MESSAGE_DEVICE_CHANGED" link="GstMessage.html#GST-MESSAGE-DEVICE-CHANGED:CAPS"/>
     <keyword type="constant" name="GST_MESSAGE_ANY" link="GstMessage.html#GST-MESSAGE-ANY:CAPS"/>
     <keyword type="constant" name="GST_STRUCTURE_CHANGE_TYPE_PAD_LINK" link="GstMessage.html#GST-STRUCTURE-CHANGE-TYPE-PAD-LINK:CAPS"/>
     <keyword type="constant" name="GST_STRUCTURE_CHANGE_TYPE_PAD_UNLINK" link="GstMessage.html#GST-STRUCTURE-CHANGE-TYPE-PAD-UNLINK:CAPS"/>

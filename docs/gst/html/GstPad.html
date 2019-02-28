@@ -2970,10 +2970,9 @@ This function makes a copy of the name so you can safely free the name.</p>
 </div>
 <div class="refsect3">
 <a name="gst-pad-new.returns"></a><h4>Returns</h4>
-<p>a new <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> in
-case of an error.</p>
+<p>a new <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>.</p>
 <p>MT safe. </p>
-<p><span class="annotation">[<acronym title="Alias for transfer none, used for objects with floating refs."><span class="acronym">transfer floating</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></p>
+<p><span class="annotation">[<acronym title="Alias for transfer none, used for objects with floating refs."><span class="acronym">transfer floating</span></acronym>]</span></p>
 </div>
 </div>
 <hr>
@@ -3010,9 +3009,8 @@ This function makes a copy of the name so you can safely free the name.</p>
 </div>
 <div class="refsect3">
 <a name="gst-pad-new-from-template.returns"></a><h4>Returns</h4>
-<p>a new <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> in
-case of an error. </p>
-<p><span class="annotation">[<acronym title="Alias for transfer none, used for objects with floating refs."><span class="acronym">transfer floating</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></p>
+<p>a new <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>. </p>
+<p><span class="annotation">[<acronym title="Alias for transfer none, used for objects with floating refs."><span class="acronym">transfer floating</span></acronym>]</span></p>
 </div>
 </div>
 <hr>
@@ -3049,9 +3047,8 @@ This function makes a copy of the name so you can safely free the name.</p>
 </div>
 <div class="refsect3">
 <a name="gst-pad-new-from-static-template.returns"></a><h4>Returns</h4>
-<p>a new <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> in
-case of an error. </p>
-<p><span class="annotation">[<acronym title="Alias for transfer none, used for objects with floating refs."><span class="acronym">transfer floating</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></p>
+<p>a new <a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>. </p>
+<p><span class="annotation">[<acronym title="Alias for transfer none, used for objects with floating refs."><span class="acronym">transfer floating</span></acronym>]</span></p>
 </div>
 </div>
 <hr>
@@ -3978,6 +3975,9 @@ gst_pad_set_unlink_function_full (<em class="parameter"><code><a class="link" hr
                                   <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Datasets.html#GDestroyNotify"><span class="type">GDestroyNotify</span></a> notify</code></em>);</pre>
 <p>Sets the given unlink function for the pad. It will be called
 when the pad is unlinked.</p>
+<p>Note that the pad's lock is already held when the unlink
+function is called, so most pad functions cannot be called
+from within the callback.</p>
 <div class="refsect3">
 <a name="gst-pad-set-unlink-function-full.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
@@ -4020,6 +4020,8 @@ will not be used anymore.</p></td>
 <span class="c_punctuation">(</span>*GstPadUnlinkFunction<span class="c_punctuation">)</span> (<em class="parameter"><code><a class="link" href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a> *pad</code></em>,
                          <em class="parameter"><code><a class="link" href="GstObject.html" title="GstObject"><span class="type">GstObject</span></a> *parent</code></em>);</pre>
 <p>Function signature to handle a unlinking the pad prom its peer.</p>
+<p>The pad's lock is already held when the unlink function is called, so most
+pad functions cannot be called from within the callback.</p>
 <div class="refsect3">
 <a name="GstPadUnlinkFunction.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
