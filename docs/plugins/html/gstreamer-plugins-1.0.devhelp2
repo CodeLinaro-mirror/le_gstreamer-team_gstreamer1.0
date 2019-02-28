@@ -121,6 +121,7 @@
     <keyword type="property" name="The “drop-buffer-flags” property" link="gstreamer-plugins-identity.html#GstIdentity--drop-buffer-flags"/>
     <keyword type="property" name="The “ts-offset” property" link="gstreamer-plugins-identity.html#GstIdentity--ts-offset"/>
     <keyword type="property" name="The “drop-allocation” property" link="gstreamer-plugins-identity.html#GstIdentity--drop-allocation"/>
+    <keyword type="property" name="The “eos-after” property" link="gstreamer-plugins-identity.html#GstIdentity--eos-after"/>
     <keyword type="signal" name="The “handoff” signal" link="gstreamer-plugins-identity.html#GstIdentity-handoff"/>
     <keyword type="struct" name="struct GstInputSelector" link="gstreamer-plugins-input-selector.html#GstInputSelector-struct"/>
     <keyword type="enum" name="enum GstInputSelectorSyncMode" link="gstreamer-plugins-input-selector.html#GstInputSelectorSyncMode"/>
@@ -171,6 +172,8 @@
     <keyword type="property" name="The “use-tags-bitrate” property" link="gstreamer-plugins-queue2.html#GstQueue2--use-tags-bitrate"/>
     <keyword type="property" name="The “high-watermark” property" link="gstreamer-plugins-queue2.html#GstQueue2--high-watermark"/>
     <keyword type="property" name="The “low-watermark” property" link="gstreamer-plugins-queue2.html#GstQueue2--low-watermark"/>
+    <keyword type="property" name="The “bitrate” property" link="gstreamer-plugins-queue2.html#GstQueue2--bitrate"/>
+    <keyword type="property" name="The “use-bitrate-query” property" link="gstreamer-plugins-queue2.html#GstQueue2--use-bitrate-query"/>
     <keyword type="signal" name="The “overrun” signal" link="gstreamer-plugins-queue2.html#GstQueue2-overrun"/>
     <keyword type="struct" name="struct GstQueue" link="gstreamer-plugins-queue.html#GstQueue-struct"/>
     <keyword type="enum" name="enum GstQueueLeaky" link="gstreamer-plugins-queue.html#GstQueueLeaky"/>

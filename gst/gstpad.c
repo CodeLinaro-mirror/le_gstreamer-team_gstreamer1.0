@@ -832,8 +832,7 @@ gst_pad_get_property (GObject * object, guint prop_id,
  * will be assigned.
  * This function makes a copy of the name so you can safely free the name.
  *
- * Returns: (transfer floating) (nullable): a new #GstPad, or %NULL in
- * case of an error.
+ * Returns: (transfer floating): a new #GstPad.
  *
  * MT safe.
  */
@@ -854,8 +853,7 @@ gst_pad_new (const gchar * name, GstPadDirection direction)
  * will be assigned.
  * This function makes a copy of the name so you can safely free the name.
  *
- * Returns: (transfer floating) (nullable): a new #GstPad, or %NULL in
- * case of an error.
+ * Returns: (transfer floating): a new #GstPad.
  */
 GstPad *
 gst_pad_new_from_template (GstPadTemplate * templ, const gchar * name)
@@ -880,8 +878,7 @@ gst_pad_new_from_template (GstPadTemplate * templ, const gchar * name)
  * will be assigned.
  * This function makes a copy of the name so you can safely free the name.
  *
- * Returns: (transfer floating) (nullable): a new #GstPad, or %NULL in
- * case of an error.
+ * Returns: (transfer floating): a new #GstPad.
  */
 GstPad *
 gst_pad_new_from_static_template (GstStaticPadTemplate * templ,
@@ -1373,8 +1370,7 @@ cleanup_hook (GstPad * pad, GHook * hook)
   GstPadProbeType type;
 
   GST_DEBUG_OBJECT (pad,
-      "cleaning up hook %" G_GUINT64_FORMAT " with flags %08x",
-      (guint64) hook->hook_id, hook->flags);
+      "cleaning up hook %lu with flags %08x", hook->hook_id, hook->flags);
 
   if (!G_HOOK_IS_VALID (hook))
     return;
@@ -2086,6 +2082,10 @@ gst_pad_set_link_function_full (GstPad * pad, GstPadLinkFunction link,
  *
  * Sets the given unlink function for the pad. It will be called
  * when the pad is unlinked.
+ *
+ * Note that the pad's lock is already held when the unlink
+ * function is called, so most pad functions cannot be called
+ * from within the callback.
  */
 void
 gst_pad_set_unlink_function_full (GstPad * pad, GstPadUnlinkFunction unlink,

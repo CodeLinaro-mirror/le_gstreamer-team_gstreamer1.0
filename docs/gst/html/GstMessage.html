@@ -798,6 +798,14 @@
 </tr>
 <tr>
 <td class="function_type">
+<a class="link" href="GstMessage.html" title="GstMessage"><span class="returnvalue">GstMessage</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstMessage.html#gst-message-new-device-changed" title="gst_message_new_device_changed ()">gst_message_new_device_changed</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
 <span class="returnvalue">void</span>
 </td>
 <td class="function_name">
@@ -810,6 +818,14 @@
 </td>
 <td class="function_name">
 <a class="link" href="GstMessage.html#gst-message-parse-device-removed" title="gst_message_parse_device_removed ()">gst_message_parse_device_removed</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GstMessage.html#gst-message-parse-device-changed" title="gst_message_parse_device_changed ()">gst_message_parse_device_changed</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -4888,6 +4904,47 @@ disappearance of monitored devices.</p>
 </div>
 <hr>
 <div class="refsect2">
+<a name="gst-message-new-device-changed"></a><h3>gst_message_new_device_changed ()</h3>
+<pre class="programlisting"><a class="link" href="GstMessage.html" title="GstMessage"><span class="returnvalue">GstMessage</span></a> *
+gst_message_new_device_changed (<em class="parameter"><code><a class="link" href="GstObject.html" title="GstObject"><span class="type">GstObject</span></a> *src</code></em>,
+                                <em class="parameter"><code><a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a> *device</code></em>,
+                                <em class="parameter"><code><a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a> *changed_device</code></em>);</pre>
+<p>Creates a new device-changed message. The device-changed message is produced
+by <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> or a <a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a>. They announce that a device
+properties has changed and <em class="parameter"><code>device</code></em>
+ represent the new modified version of <em class="parameter"><code>changed_device</code></em>
+.</p>
+<div class="refsect3">
+<a name="gst-message-new-device-changed.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>src</p></td>
+<td class="parameter_description"><p>The <a class="link" href="GstObject.html" title="GstObject"><span class="type">GstObject</span></a> that created the message</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>device</p></td>
+<td class="parameter_description"><p>The newly created device representing <em class="parameter"><code>replaced_device</code></em>
+with its new configuration. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="gst-message-new-device-changed.returns"></a><h4>Returns</h4>
+<p> a newly allocated <a class="link" href="GstMessage.html" title="GstMessage"><span class="type">GstMessage</span></a></p>
+</div>
+<p class="since">Since: 1.16</p>
+</div>
+<hr>
+<div class="refsect2">
 <a name="gst-message-parse-device-added"></a><h3>gst_message_parse_device_added ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 gst_message_parse_device_added (<em class="parameter"><code><a class="link" href="GstMessage.html" title="GstMessage"><span class="type">GstMessage</span></a> *message</code></em>,
@@ -4953,6 +5010,50 @@ pointer to the removed <a class="link" href="gstreamer-GstDevice.html#GstDevice"
 </table></div>
 </div>
 <p class="since">Since: <a class="link" href="ix08.html#api-index-1.4">1.4</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-message-parse-device-changed"></a><h3>gst_message_parse_device_changed ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_message_parse_device_changed (<em class="parameter"><code><a class="link" href="GstMessage.html" title="GstMessage"><span class="type">GstMessage</span></a> *message</code></em>,
+                                  <em class="parameter"><code><a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a> **device</code></em>,
+                                  <em class="parameter"><code><a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a> **changed_device</code></em>);</pre>
+<p>Parses a device-changed message. The device-changed message is produced by
+<a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> or a <a class="link" href="gstreamer-GstDeviceMonitor.html#GstDeviceMonitor" title="struct GstDeviceMonitor"><span class="type">GstDeviceMonitor</span></a>. It announces the
+disappearance of monitored devices. * It announce that a device properties has
+changed and <em class="parameter"><code>device</code></em>
+ represents the new modified version of <em class="parameter"><code>changed_device</code></em>
+.</p>
+<div class="refsect3">
+<a name="gst-message-parse-device-changed.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>message</p></td>
+<td class="parameter_description"><p>a <a class="link" href="GstMessage.html" title="GstMessage"><span class="type">GstMessage</span></a> of type <a class="link" href="GstMessage.html#GST-MESSAGE-DEVICE-CHANGED:CAPS"><code class="literal">GST_MESSAGE_DEVICE_CHANGED</code></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>device</p></td>
+<td class="parameter_description"><p>A location where to store a
+pointer to the updated version of the <a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a>, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>changed_device</p></td>
+<td class="parameter_description"><p>A location where to store a
+pointer to the old version of the <a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a>, or <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is OK, both for passing and for returning."><span class="acronym">allow-none</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: 1.16</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -5798,6 +5899,14 @@ was updated.</p>
 <p>Message indicating to request the application to
     try to play the given URL(s). Useful if for example a HTTP 302/303
     response is received with a non-HTTP URL inside. (Since 1.10)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MESSAGE-DEVICE-CHANGED:CAPS"></a>GST_MESSAGE_DEVICE_CHANGED</p></td>
+<td class="enum_member_description">
+<p>Message indicating a <a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a> was changed
+    a <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> (Since 1.16)</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>

@@ -105,7 +105,7 @@
 <td class="property_flags">Read / Write</td>
 </tr>
 <tr>
-<td class="property_type"><a href="/usr/share/gtk-doc/html/gstreamer-1.0/GstBuffer.html#GstBufferFlags"><span class="type">GstBufferFlags</span></a></td>
+<td class="property_type"><a href="../html/GstBuffer.html#GstBufferFlags"><span class="type">GstBufferFlags</span></a></td>
 <td class="property_name"><a class="link" href="gstreamer-plugins-identity.html#GstIdentity--drop-buffer-flags" title="The “drop-buffer-flags” property">drop-buffer-flags</a></td>
 <td class="property_flags">Read / Write</td>
 </tr>
@@ -117,6 +117,11 @@
 <tr>
 <td class="property_type"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
 <td class="property_name"><a class="link" href="gstreamer-plugins-identity.html#GstIdentity--drop-allocation" title="The “drop-allocation” property">drop-allocation</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gstreamer-plugins-identity.html#GstIdentity--eos-after" title="The “eos-after” property">eos-after</a></td>
 <td class="property_flags">Read / Write</td>
 </tr>
 </tbody>
@@ -154,9 +159,9 @@
 <a name="gstreamer-plugins-identity.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="screen">    <a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject-struct">GObject</a>
     <span class="lineart">╰──</span> <a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-        <span class="lineart">╰──</span> <a href="/usr/share/gtk-doc/html/gstreamer-1.0/GstObject.html#GstObject-struct">GstObject</a>
-            <span class="lineart">╰──</span> <a href="/usr/share/gtk-doc/html/gstreamer-1.0/GstElement.html#GstElement-struct">GstElement</a>
-                <span class="lineart">╰──</span> <a href="/usr/share/gtk-doc/html/gstreamer-libs-1.0/GstBaseTransform.html#GstBaseTransform-struct">GstBaseTransform</a>
+        <span class="lineart">╰──</span> <a href="../html/GstObject.html#GstObject-struct">GstObject</a>
+            <span class="lineart">╰──</span> <a href="../html/GstElement.html#GstElement-struct">GstElement</a>
+                <span class="lineart">╰──</span> <a href="../html/GstBaseTransform.html#GstBaseTransform-struct">GstBaseTransform</a>
                     <span class="lineart">╰──</span> GstIdentity
 </pre>
 </div>
@@ -306,6 +311,7 @@ useful diagnostic functions, such as offset and timestamp checking.</p>
 <pre class="programlisting">  “error-after”              <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Error after N buffers.</p>
 <p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= G_MAXULONG</p>
 <p>Default value: -1</p>
 </div>
 <hr>
@@ -360,7 +366,7 @@ When set to <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALS
 <hr>
 <div class="refsect2">
 <a name="GstIdentity--drop-buffer-flags"></a><h3>The <code class="literal">“drop-buffer-flags”</code> property</h3>
-<pre class="programlisting">  “drop-buffer-flags”        <a href="/usr/share/gtk-doc/html/gstreamer-1.0/GstBuffer.html#GstBufferFlags"><span class="type">GstBufferFlags</span></a></pre>
+<pre class="programlisting">  “drop-buffer-flags”        <a href="../html/GstBuffer.html#GstBufferFlags"><span class="type">GstBufferFlags</span></a></pre>
 <p>Drop buffers with the given flags.</p>
 <p>Flags: Read / Write</p>
 <p class="since">Since: 1.8</p>
@@ -381,6 +387,16 @@ When set to <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALS
 <p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
+<hr>
+<div class="refsect2">
+<a name="GstIdentity--eos-after"></a><h3>The <code class="literal">“eos-after”</code> property</h3>
+<pre class="programlisting">  “eos-after”                <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>EOS after N buffers.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= G_MAXULONG</p>
+<p>Default value: -1</p>
+<p class="since">Since: 1.16</p>
+</div>
 </div>
 <div class="refsect1">
 <a name="gstreamer-plugins-identity.signal-details"></a><h2>Signal Details</h2>
@@ -388,7 +404,7 @@ When set to <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#FALS
 <a name="GstIdentity-handoff"></a><h3>The <code class="literal">“handoff”</code> signal</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 user_function (<a class="link" href="gstreamer-plugins-identity.html#GstIdentity"><span class="type">GstIdentity</span></a> *identity,
-               <a href="/usr/share/gtk-doc/html/gstreamer-1.0/GstBuffer.html#GstBuffer-struct"><span class="type">GstBuffer</span></a>   *buffer,
+               <a href="../html/GstBuffer.html#GstBuffer-struct"><span class="type">GstBuffer</span></a>   *buffer,
                <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>     user_data)</pre>
 <p>This signal gets emitted before passing the buffer downstream.</p>
 <div class="refsect3">
