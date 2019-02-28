@@ -44,7 +44,7 @@ libgstbase-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_aggregator_pad_pop_buffer@Base 1.14.0
  gst_aggregator_set_latency@Base 1.14.0
  gst_aggregator_set_src_caps@Base 1.14.0
- gst_aggregator_simple_get_next_time@Base 1.15.1
+ gst_aggregator_simple_get_next_time@Base 1.15.2
  gst_base_parse_add_index_entry@Base 1.0.0
  gst_base_parse_convert_default@Base 1.0.0
  gst_base_parse_drain@Base 1.12.0
@@ -75,7 +75,7 @@ libgstbase-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_base_sink_get_latency@Base 1.0.0
  gst_base_sink_get_max_bitrate@Base 1.2.0
  gst_base_sink_get_max_lateness@Base 1.0.0
- gst_base_sink_get_processing_deadline@Base 1.15.1
+ gst_base_sink_get_processing_deadline@Base 1.15.2
  gst_base_sink_get_render_delay@Base 1.0.0
  gst_base_sink_get_sync@Base 1.0.0
  gst_base_sink_get_throttle_time@Base 1.0.0
@@ -91,7 +91,7 @@ libgstbase-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_base_sink_set_last_sample_enabled@Base 1.0.0
  gst_base_sink_set_max_bitrate@Base 1.2.0
  gst_base_sink_set_max_lateness@Base 1.0.0
- gst_base_sink_set_processing_deadline@Base 1.15.1
+ gst_base_sink_set_processing_deadline@Base 1.15.2
  gst_base_sink_set_qos_enabled@Base 1.0.0
  gst_base_sink_set_render_delay@Base 1.0.0
  gst_base_sink_set_sync@Base 1.0.0
@@ -153,27 +153,27 @@ libgstbase-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_bit_reader_set_pos@Base 1.0.0
  gst_bit_reader_skip@Base 1.0.0
  gst_bit_reader_skip_to_byte@Base 1.0.0
- gst_bit_writer_align_bytes@Base 1.15.1
- gst_bit_writer_free@Base 1.15.1
- gst_bit_writer_free_and_get_buffer@Base 1.15.1
- gst_bit_writer_free_and_get_data@Base 1.15.1
- gst_bit_writer_get_data@Base 1.15.1
- gst_bit_writer_get_size@Base 1.15.1
- gst_bit_writer_init@Base 1.15.1
- gst_bit_writer_init_with_data@Base 1.15.1
- gst_bit_writer_init_with_size@Base 1.15.1
- gst_bit_writer_new@Base 1.15.1
- gst_bit_writer_new_with_data@Base 1.15.1
- gst_bit_writer_new_with_size@Base 1.15.1
- gst_bit_writer_put_bits_uint16@Base 1.15.1
- gst_bit_writer_put_bits_uint32@Base 1.15.1
- gst_bit_writer_put_bits_uint64@Base 1.15.1
- gst_bit_writer_put_bits_uint8@Base 1.15.1
- gst_bit_writer_put_bytes@Base 1.15.1
- gst_bit_writer_reset@Base 1.15.1
- gst_bit_writer_reset_and_get_buffer@Base 1.15.1
- gst_bit_writer_reset_and_get_data@Base 1.15.1
- gst_bit_writer_set_pos@Base 1.15.1
+ gst_bit_writer_align_bytes@Base 1.15.2
+ gst_bit_writer_free@Base 1.15.2
+ gst_bit_writer_free_and_get_buffer@Base 1.15.2
+ gst_bit_writer_free_and_get_data@Base 1.15.2
+ gst_bit_writer_get_data@Base 1.15.2
+ gst_bit_writer_get_size@Base 1.15.2
+ gst_bit_writer_init@Base 1.15.2
+ gst_bit_writer_init_with_data@Base 1.15.2
+ gst_bit_writer_init_with_size@Base 1.15.2
+ gst_bit_writer_new@Base 1.15.2
+ gst_bit_writer_new_with_data@Base 1.15.2
+ gst_bit_writer_new_with_size@Base 1.15.2
+ gst_bit_writer_put_bits_uint16@Base 1.15.2
+ gst_bit_writer_put_bits_uint32@Base 1.15.2
+ gst_bit_writer_put_bits_uint64@Base 1.15.2
+ gst_bit_writer_put_bits_uint8@Base 1.15.2
+ gst_bit_writer_put_bytes@Base 1.15.2
+ gst_bit_writer_reset@Base 1.15.2
+ gst_bit_writer_reset_and_get_buffer@Base 1.15.2
+ gst_bit_writer_reset_and_get_data@Base 1.15.2
+ gst_bit_writer_set_pos@Base 1.15.2
  gst_byte_reader_dup_data@Base 1.0.0
  gst_byte_reader_dup_string_utf16@Base 1.0.0
  gst_byte_reader_dup_string_utf32@Base 1.0.0
@@ -332,7 +332,7 @@ libgstbase-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_flow_combiner_update_flow@Base 1.4.0
  gst_flow_combiner_update_pad_flow@Base 1.6.0
  gst_push_src_get_type@Base 1.0.0
- gst_queue_array_clear@Base 1.15.1
+ gst_queue_array_clear@Base 1.15.2
  gst_queue_array_drop_element@Base 1.2.0
  gst_queue_array_drop_struct@Base 1.6.0
  gst_queue_array_find@Base 1.2.0
@@ -343,8 +343,8 @@ libgstbase-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_queue_array_new_for_struct@Base 1.6.0
  gst_queue_array_peek_head@Base 1.2.0
  gst_queue_array_peek_head_struct@Base 1.6.0
- gst_queue_array_peek_nth@Base 1.15.1
- gst_queue_array_peek_nth_struct@Base 1.15.1
+ gst_queue_array_peek_nth@Base 1.15.2
+ gst_queue_array_peek_nth_struct@Base 1.15.2
  gst_queue_array_peek_tail@Base 1.14.0
  gst_queue_array_peek_tail_struct@Base 1.14.0
  gst_queue_array_pop_head@Base 1.2.0
@@ -353,12 +353,12 @@ libgstbase-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_queue_array_pop_tail_struct@Base 1.14.0
  gst_queue_array_push_tail@Base 1.2.0
  gst_queue_array_push_tail_struct@Base 1.6.0
- gst_queue_array_set_clear_func@Base 1.15.1
+ gst_queue_array_set_clear_func@Base 1.15.2
  gst_type_find_helper@Base 1.0.0
  gst_type_find_helper_for_buffer@Base 1.0.0
- gst_type_find_helper_for_buffer_with_extension@Base 1.15.1
+ gst_type_find_helper_for_buffer_with_extension@Base 1.15.2
  gst_type_find_helper_for_data@Base 1.0.0
- gst_type_find_helper_for_data_with_extension@Base 1.15.1
+ gst_type_find_helper_for_data_with_extension@Base 1.15.2
  gst_type_find_helper_for_extension@Base 1.0.0
  gst_type_find_helper_get_range@Base 1.0.0
  gst_type_find_helper_get_range_full@Base 1.14.3
@@ -424,7 +424,7 @@ libgstcheck-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_harness_add_element_src_pad@Base 1.6.0
  gst_harness_add_parse@Base 1.8.0
  gst_harness_add_probe@Base 1.6.0
- gst_harness_add_propose_allocation_meta@Base 1.15.1
+ gst_harness_add_propose_allocation_meta@Base 1.15.2
  gst_harness_add_sink@Base 1.6.0
  gst_harness_add_sink_harness@Base 1.6.0
  gst_harness_add_sink_parse@Base 1.6.0
@@ -787,7 +787,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_buffer_new@Base 1.0.0
  gst_buffer_new_allocate@Base 1.0.0
  gst_buffer_new_wrapped@Base 1.0.0
- gst_buffer_new_wrapped_bytes@Base 1.15.1
+ gst_buffer_new_wrapped_bytes@Base 1.15.2
  gst_buffer_new_wrapped_full@Base 1.0.0
  gst_buffer_peek_memory@Base 1.0.0
  gst_buffer_pool_acquire_buffer@Base 1.0.0
@@ -857,7 +857,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_caps_append_structure@Base 1.0.0
  gst_caps_append_structure_full@Base 1.2.0
  gst_caps_can_intersect@Base 1.0.0
- gst_caps_copy@Base 1.15.1
+ gst_caps_copy@Base 1.15.2
  gst_caps_copy_nth@Base 1.0.0
  gst_caps_features_add@Base 1.2.0
  gst_caps_features_add_id@Base 1.2.0
@@ -917,7 +917,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_caps_normalize@Base 1.0.0
  gst_caps_remove_structure@Base 1.0.0
  gst_caps_set_features@Base 1.2.0
- gst_caps_set_features_simple@Base 1.15.1
+ gst_caps_set_features_simple@Base 1.15.2
  gst_caps_set_simple@Base 1.0.0
  gst_caps_set_simple_valist@Base 1.0.0
  gst_caps_set_value@Base 1.0.0
@@ -939,9 +939,9 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_child_proxy_set@Base 1.0.0
  gst_child_proxy_set_property@Base 1.0.0
  gst_child_proxy_set_valist@Base 1.0.0
- gst_clear_mini_object@Base 1.15.1
- gst_clear_object@Base 1.15.1
- gst_clear_structure@Base 1.15.1
+ gst_clear_mini_object@Base 1.15.2
+ gst_clear_object@Base 1.15.2
+ gst_clear_structure@Base 1.15.2
  gst_clock_add_observation@Base 1.0.0
  gst_clock_add_observation_unapplied@Base 1.6.0
  gst_clock_adjust_unlocked@Base 1.0.0
@@ -956,12 +956,12 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_clock_get_timeout@Base 1.0.0
  gst_clock_get_type@Base 1.0.0
  gst_clock_id_compare_func@Base 1.0.0
- gst_clock_id_get_clock@Base 1.15.1
+ gst_clock_id_get_clock@Base 1.15.2
  gst_clock_id_get_time@Base 1.0.0
  gst_clock_id_ref@Base 1.0.0
  gst_clock_id_unref@Base 1.0.0
  gst_clock_id_unschedule@Base 1.0.0
- gst_clock_id_uses_clock@Base 1.15.1
+ gst_clock_id_uses_clock@Base 1.15.2
  gst_clock_id_wait@Base 1.0.0
  gst_clock_id_wait_async@Base 1.0.0
  gst_clock_is_synced@Base 1.6.0
@@ -1096,6 +1096,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_device_provider_class_set_metadata@Base 1.4.0
  gst_device_provider_class_set_static_metadata@Base 1.4.0
  gst_device_provider_device_add@Base 1.4.0
+ gst_device_provider_device_changed@Base 1.15.2
  gst_device_provider_device_remove@Base 1.4.0
  gst_device_provider_factory_find@Base 1.4.0
  gst_device_provider_factory_get@Base 1.4.0
@@ -1374,6 +1375,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_message_new_clock_provide@Base 1.0.0
  gst_message_new_custom@Base 1.0.0
  gst_message_new_device_added@Base 1.4.0
+ gst_message_new_device_changed@Base 1.15.2
  gst_message_new_device_removed@Base 1.4.0
  gst_message_new_duration_changed@Base 1.0.0
  gst_message_new_element@Base 1.0.0
@@ -1414,6 +1416,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_message_parse_clock_provide@Base 1.0.0
  gst_message_parse_context_type@Base 1.2.0
  gst_message_parse_device_added@Base 1.4.0
+ gst_message_parse_device_changed@Base 1.15.2
  gst_message_parse_device_removed@Base 1.4.0
  gst_message_parse_error@Base 1.0.0
  gst_message_parse_error_details@Base 1.10.0
@@ -1459,10 +1462,12 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_meta_api_type_get_tags@Base 1.2.0
  gst_meta_api_type_has_tag@Base 1.0.0
  gst_meta_api_type_register@Base 1.0.0
+ gst_meta_compare_seqnum@Base 1.15.2
  gst_meta_flags_get_type@Base 1.0.0
  gst_meta_get_info@Base 1.0.0
+ gst_meta_get_seqnum@Base 1.15.2
  gst_meta_register@Base 1.0.0
- gst_mini_object_add_parent@Base 1.15.1
+ gst_mini_object_add_parent@Base 1.15.2
  gst_mini_object_copy@Base 1.0.0
  gst_mini_object_flags_get_type@Base 1.0.0
  gst_mini_object_get_qdata@Base 1.0.0
@@ -1471,7 +1476,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_mini_object_lock@Base 1.0.0
  gst_mini_object_make_writable@Base 1.0.0
  gst_mini_object_ref@Base 1.0.0
- gst_mini_object_remove_parent@Base 1.15.1
+ gst_mini_object_remove_parent@Base 1.15.2
  gst_mini_object_replace@Base 1.0.0
  gst_mini_object_set_qdata@Base 1.0.0
  gst_mini_object_steal@Base 1.0.0
@@ -1692,12 +1697,12 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_poll_add_fd@Base 1.0.0
  gst_poll_fd_can_read@Base 1.0.0
  gst_poll_fd_can_write@Base 1.0.0
- gst_poll_fd_ctl_pri@Base 1.15.1
+ gst_poll_fd_ctl_pri@Base 1.15.2
  gst_poll_fd_ctl_read@Base 1.0.0
  gst_poll_fd_ctl_write@Base 1.0.0
  gst_poll_fd_has_closed@Base 1.0.0
  gst_poll_fd_has_error@Base 1.0.0
- gst_poll_fd_has_pri@Base 1.15.1
+ gst_poll_fd_has_pri@Base 1.15.2
  gst_poll_fd_ignored@Base 1.0.0
  gst_poll_fd_init@Base 1.0.0
  gst_poll_free@Base 1.0.0
@@ -1765,7 +1770,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_query_has_scheduling_mode_with_flags@Base 1.0.0
  gst_query_new_accept_caps@Base 1.0.0
  gst_query_new_allocation@Base 1.0.0
- gst_query_new_bitrate@Base 1.15.1
+ gst_query_new_bitrate@Base 1.15.2
  gst_query_new_buffering@Base 1.0.0
  gst_query_new_caps@Base 1.0.0
  gst_query_new_context@Base 1.2.0
@@ -1783,7 +1788,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_query_parse_accept_caps@Base 1.0.0
  gst_query_parse_accept_caps_result@Base 1.0.0
  gst_query_parse_allocation@Base 1.0.0
- gst_query_parse_bitrate@Base 1.15.1
+ gst_query_parse_bitrate@Base 1.15.2
  gst_query_parse_buffering_percent@Base 1.0.0
  gst_query_parse_buffering_range@Base 1.0.0
  gst_query_parse_buffering_stats@Base 1.0.0
@@ -1812,7 +1817,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_query_remove_nth_allocation_param@Base 1.2.0
  gst_query_remove_nth_allocation_pool@Base 1.2.0
  gst_query_set_accept_caps_result@Base 1.0.0
- gst_query_set_bitrate@Base 1.15.1
+ gst_query_set_bitrate@Base 1.15.2
  gst_query_set_buffering_percent@Base 1.0.0
  gst_query_set_buffering_range@Base 1.0.0
  gst_query_set_buffering_stats@Base 1.0.0
@@ -1870,11 +1875,11 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_sample_get_segment@Base 1.0.0
  gst_sample_get_type@Base 1.0.0
  gst_sample_new@Base 1.0.0
- gst_sample_set_buffer@Base 1.15.1
+ gst_sample_set_buffer@Base 1.15.2
  gst_sample_set_buffer_list@Base 1.6.0
- gst_sample_set_caps@Base 1.15.1
- gst_sample_set_info@Base 1.15.1
- gst_sample_set_segment@Base 1.15.1
+ gst_sample_set_caps@Base 1.15.2
+ gst_sample_set_info@Base 1.15.2
+ gst_sample_set_segment@Base 1.15.2
  gst_scheduling_flags_get_type@Base 1.0.0
  gst_search_mode_get_type@Base 1.0.0
  gst_seek_flags_get_type@Base 1.0.0
