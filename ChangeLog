@@ -1,3 +1,300 @@
+=== release 1.15.90 ===
+
+2019-04-11 00:19:11 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* ChangeLog:
+	* NEWS:
+	* RELEASE:
+	* configure.ac:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.15.90
+
+2019-04-11 00:19:11 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* docs/plugins/inspect/plugin-coreelements.xml:
+	* docs/plugins/inspect/plugin-coretracers.xml:
+	  Update docs
+
+2019-04-10 09:17:01 -0400  Julian Bouzas <julian.bouzas@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	  tracer: latency: Fix typo bug
+
+2019-04-10 09:13:53 -0400  Julian Bouzas <julian.bouzas@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	  tracer: latency: Fix bug when storing latency probe event
+	  The pad name sotred in the latency event has no longer the name of the element,
+	  so we have to get the element Id, element name and pad name values from the data
+	  structure and compare all 3 values.
+
+2019-04-10 10:18:54 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstcontrolbinding.c:
+	  controlbinding: Check if the weak pointer was cleared before explicitly removing it
+	  Otherwise we'll get an assertion if the object behind the weak pointer
+	  was already destroyed in the meantime as we would pass NULL as first
+	  argument to g_object_remove_weak_pointer().
+
+2019-04-09 08:05:09 -0400  Julian Bouzas <julian.bouzas@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	* tools/gst-stats.c:
+	  tracer: latency: Show element id, element name and pad name
+
+2019-03-25 15:36:08 +0100  Julian Bouzas <julian.bouzas@collabora.com>
+
+	* tools/gst-stats.c:
+	  gst-stats: Add element latency support
+	  This will output latency information when parsing a log file with gst-stats that
+	  has latency trace information. It will show the min, max and mean latency for
+	  the pipeline and all its elements. It will also show the reported latency for
+	  each element of the pipeline. Output example:
+	  Latency Statistics:
+	  pulsesrc0_src|fakesink0_sink: mean=190000043 min=190000043 max=190000043
+	  Element Latency Statistics:
+	  flacparse0_src: mean=45561281 min=654988 max=90467575
+	  flacenc0_src: mean=89938883 min=81913512 max=97964254
+	  flacdec0_src: mean=45804881 min=228962 max=91380801
+	  Element Reported Latency:
+	  pulsesrc0: min=10000000 max=200000000 ts=0:00:00.262846528
+	  flacenc0: min=104489795 max=104489795 ts=0:00:00.262898616
+	  flacparse0: min=0 max=0 ts=0:00:00.262927962
+
+2019-03-21 10:37:34 +0100  Julian Bouzas <julian.bouzas@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	* plugins/tracers/gstlatency.h:
+	  tracer: latency: Show per-element reported latency
+
+2019-03-20 12:20:48 +0100  Julian Bouzas <julian.bouzas@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	  tracer: latency: Show element's source pad name instead of element's name
+	  The full pad name gives more information than the element's name, which is very
+	  useful when elements have multiple source pads.
+
+2019-03-18 21:55:50 -0400  Nicolas Dufresne <nicolas.dufresne@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	  latency: Dot not override already stored events
+	  First, the event would be leaved, but also when an element takes
+	  several buffers before producing one, we want the reported latency to be
+	  the aggregation, so the distance from the oldest buffer.
+
+2018-10-31 16:50:48 -0400  Nicolas Dufresne <nicolas.dufresne@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	* plugins/tracers/gstlatency.h:
+	  tracer: latency: Add parameter to select latency type
+	  This sets back the default to trace only pipeline latency, and add flags
+	  to enabled element tracing. It is now possible to only trace element
+	  latency, only trace pipeline latency, trace both or none.
+
+2018-07-06 17:08:24 -0400  Nicolas Dufresne <nicolas.dufresne@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	  tracer: latency: Add per element latency tracer
+	  This adds per element latency tracing.
+
+2018-07-04 14:18:42 -0400  Nicolas Dufresne <nicolas.dufresne@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	  tracer: Don't pass pads inside GstEvent
+	  This removes the passing of pad inside of a GstEvent. While this is not
+	  a bug, it may affect the live time of the pad, hense change the pipeline
+	  behaviour.
+
+2018-11-13 21:19:22 +0100  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* libs/gst/base/gstbasesrc.c:
+	* tests/check/libs/basesrc.c:
+	  basesrc: do not send EOS when automatic_eos is FALSE
+
+2019-04-01 12:22:49 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: add buffer-consumed pad signal
+	  The signal will be emitted when a buffer was consumed on
+	  a pad, if the newly-added "emit-signals" property has been
+	  set to TRUE.
+	  Handlers connected to the signal will receive a valid reference on
+	  the consumed buffer, allowing for example the retrieval of metas in
+	  order to forward them once an output buffer is pushed out.
+
+2019-04-05 11:43:53 +0200  Antonio Ospite <antonio.ospite@collabora.com>
+
+	* tools/gst-inspect.c:
+	  gst-inspect: fix printing the first field of a GstStructure
+	  When printing a GstStructure property (e.g. the "stats" property in
+	  rtpsession) the first field is printed on the same line of the type
+	  description, and this is both inconsistent compared to  how Enum values
+	  are printed and confusing as the reader might miss the first field.
+	  To fix this, add a newline before printing GstStructure fields in
+	  properties.
+	  NOTE: this does not change the existing inconsistent behavior of an
+	  extra newline *after* a GstStructure property, but the latter is not as
+	  annoying and it would take more effort to fix because GstStructure
+	  fields are printed in CAPS descriptions too.
+
+2019-04-01 18:34:07 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* docs/gst/gstreamer-sections.txt:
+	* gst/gstevent.c:
+	* gst/gstevent.h:
+	* gst/gstquark.c:
+	* gst/gstquark.h:
+	* tests/check/gst/gstevent.c:
+	  event: add new seek parameter, "trickmode-interval"
+	  When performing a key unit trickmode seek, it may be useful to
+	  specify a minimum interval between the output frames, either
+	  in very high rate cases, or as a protection against streams
+	  that may contain an overly large amount of key frames.
+	  One use case is ONVIF Section 6.5.3:
+	  <https://www.onvif.org/specs/stream/ONVIF-Streaming-Spec.pdf>
+
+2019-03-22 17:46:03 +0100  Antonio Ospite <antonio.ospite@collabora.com>
+
+	* tests/check/gstreamer.supp:
+	  tests: add the valgrind suppression file from the "common" module
+	  Other gstreamer repositories have their own valgrind suppression file
+	  directly in the repository.
+	  Add a suppression file to the core gstreamer repository too, this makes
+	  it easier to use it with gst-build which does not check out the common
+	  module.
+	  This is also a little step towards the removal of the common submodule.
+	  NOTE: the added file is the latest version from the "common" repository
+	  but it has been renamed from gst.supp to gstreamer.supp for symmetry
+	  with the suppression files in the other repositories.
+
+2019-03-23 18:31:42 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  g-i: pass --quiet to g-ir-scanner
+	  This suppresses the annoying 'g-ir-scanner: link: cc ..' output
+	  that we get even if everything works just fine.
+	  We still get g-ir-scanner warnings and compiler warnings if
+	  we pass this option.
+
+2019-03-23 18:17:43 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* libs/gst/check/gstcheck.c:
+	  check: suppress some g-i warnings
+	  gstcheck.c:142: Warning: GstCheck: gst_check_add_log_filter: return value: Invalid non-constant return of bare structure or union; register as boxed type or (skip)
+	  gstcheck.h:178: Warning: GstCheck: gst_check_run_suite: argument suite: Unresolved type: 'Suite*'
+
+2019-03-23 17:53:54 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  g-i: silence 'nested extern' compiler warnings when building scanner binary
+	  We need a nested extern in our init section for the scanner binary
+	  so we can call gst_init to make sure GStreamer types are initialised
+	  (they are not all lazy init via get_type functions, but some are in
+	  exported variables). There doesn't seem to be any other mechanism to
+	  achieve this, so just remove that warning, it's not important at all.
+
+2019-03-23 17:53:07 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* libs/gst/base/gstbitwriter.c:
+	  bitwriter: mark as 'skip' for gobject-introspection
+	  Silences g-ir-scanner warnings. We do the same for ByteWriter.
+
+2019-03-21 18:55:16 +1100  Matthew Waters <matthew@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: don't leak gap buffer when out of segment
+
+2019-03-21 18:47:04 +1100  Matthew Waters <matthew@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: take the pad lock around queue gap event removal
+	  As is done for every other queue interaction
+
+2019-03-20 17:43:02 +1100  Matthew Waters <matthew@centricular.com>
+
+	* libs/gst/base/gstbaseparse.c:
+	  baseparse: don't reset the disable-passthrough property value
+	  Resetting as a result of _reset() on PAUSED->READY is unexpected.
+
+2019-03-14 11:59:43 +0100  Stephane Cerveau <scerveau@fluendo.com>
+
+	* gst/gstelement.c:
+	  gst_element_get_factory: update documentation
+	  Inform about a potential NULL result.
+
+2019-03-13 18:46:14 +0100  Stephane Cerveau <scerveau@fluendo.com>
+
+	* gst/gstelementfactory.c:
+	  gst_element_factory_get_metadata: protect from null factory
+
+2019-03-12 21:19:23 +0000  Damian Vicino <sdavtaker@gmail.com>
+
+	* README:
+	  Update README
+
+2019-03-12 20:12:37 +0000  Damian Vicino <sdavtaker@gmail.com>
+
+	* README:
+	  Update README to have correct name of the license file documented (COPYING). There is no LICENSE file in the root directory, and COPYING file content is a license file.
+
+2019-03-10 15:35:39 +0900  Seungha Yang <seungha.yang@navercorp.com>
+
+	* tests/check/meson.build:
+	  tests: fdsrc: Exclude unit test on Windows
+	  Since elements_fdsrc.test_num_buffers uses blocking pipe on Windows,
+	  the test will never be finished. But emulating non-blocking fd without
+	  win32 APIs on Windows is a little tricky.
+
+2019-03-08 16:19:29 +0100  Santiago Carot-Nemesio <scarot@twilio.com>
+
+	* gst/gsttaskpool.c:
+	  gsttaskpool: Do not block tasks while cleaning up the taskpool
+	  There is a deadlock if any thread from the pool tries to push
+	  a new task while other thread is waiting for the pool of threads
+	  to finish. With this patch the thread will get an error when it
+	  tries to add a new task while the taskpool is being cleaned up.
+
+2019-03-06 19:46:46 +0100  Marco Trevisan (Treviño) <mail@3v1n0.net>
+
+	* gst/gsturi.c:
+	  gsturi: Fix annotation on get_path to return a nullable
+	  Use proper syntax or the (nullable): part will be part of the description
+
+2019-03-06 19:34:12 +0100  Marco Trevisan (Treviño) <mail@3v1n0.net>
+
+	* gst/gstmessage.c:
+	  gstmessage: Fix annotations on details
+	  Details argument should be nullable, but the docstring uses a wrong syntax.
+
+2019-03-06 09:04:54 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* tests/check/gst/gstbuffer.c:
+	  tests: fix leak in buffer test_wrapped_bytes test
+
+2019-03-01 11:59:14 +0100  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* gst/gstbuffer.c:
+	* tests/check/gst/gstmeta.c:
+	  gstbuffer: store meta in add order
+	  The previous implementation of add was implemented as a prepend,
+	  switch to append as that seems like the expected order.
+
+2019-03-04 09:01:07 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* configure.ac:
+	* docs/plugins/inspect/plugin-coreelements.xml:
+	* docs/plugins/inspect/plugin-coretracers.xml:
+	* meson.build:
+	  Back to development
+
+2019-02-28 16:48:57 +0100  Santiago Carot-Nemesio <sancane@gmail.com>
+
+	* gst/gsttaskpool.c:
+	  taskpool: Set error in case something goes wrong in the default handlers
+
 === release 1.15.2 ===
 
 2019-02-26 11:38:00 +0000  Tim-Philipp Müller <tim@centricular.com>
@@ -9,6 +306,11 @@
 	* gstreamer.doap:
 	* meson.build:
 	  Release 1.15.2
+
+2019-02-26 13:23:47 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* gst/parse/Makefile.am:
+	  meson: dist get_flex_version.py
 
 2019-02-26 11:38:00 +0000  Tim-Philipp Müller <tim@centricular.com>
 

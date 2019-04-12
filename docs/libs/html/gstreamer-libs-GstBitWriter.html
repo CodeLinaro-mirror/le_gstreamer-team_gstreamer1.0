@@ -330,6 +330,7 @@ number of bits into 8, 16, 32 and 64 bit variables.</p>
 gst_bit_writer_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>Creates a new, empty <a class="link" href="gstreamer-libs-GstBitWriter.html#GstBitWriter" title="struct GstBitWriter"><span class="type">GstBitWriter</span></a> instance.</p>
 <p>Free-function: gst_bit_writer_free</p>
+<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
 <div class="refsect3">
 <a name="gst-bit-writer-new.returns"></a><h4>Returns</h4>
 <p>a new, empty <a class="link" href="gstreamer-libs-GstByteWriter.html#GstByteWriter" title="GstByteWriter"><span class="type">GstByteWriter</span></a> instance. </p>
@@ -342,6 +343,36 @@ gst_bit_writer_new (<em class="parameter"><code><span class="type">void</span></
 <pre class="programlisting"><a class="link" href="gstreamer-libs-GstBitWriter.html#GstBitWriter" title="struct GstBitWriter"><span class="returnvalue">GstBitWriter</span></a> *
 gst_bit_writer_new_with_size (<em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#guint32"><span class="type">guint32</span></a> size</code></em>,
                               <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> fixed</code></em>);</pre>
+<p>Creates a <a class="link" href="gstreamer-libs-GstBitWriter.html#GstBitWriter" title="struct GstBitWriter"><span class="type">GstBitWriter</span></a> instance with the given initial data size.</p>
+<p>Free-function: gst_bit_writer_free</p>
+<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
+<div class="refsect3">
+<a name="gst-bit-writer-new-with-size.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>Initial size of data in bytes</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>fixed</p></td>
+<td class="parameter_description"><p>If <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> the data can't be reallocated</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="gst-bit-writer-new-with-size.returns"></a><h4>Returns</h4>
+<p>a new <a class="link" href="gstreamer-libs-GstBitWriter.html#GstBitWriter" title="struct GstBitWriter"><span class="type">GstBitWriter</span></a> instance. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
 </div>
 <hr>
 <div class="refsect2">
@@ -356,6 +387,7 @@ gst_bit_writer_new_with_data (<em class="parameter"><code><a href="/usr/share/gt
  bits from the
 <a class="link" href="gstreamer-libs-GstBitWriter.html#GstBitWriter" title="struct GstBitWriter"><span class="type">GstBitWriter</span></a> from the beginnig.</p>
 <p>Free-function: gst_bit_writer_free</p>
+<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
 <div class="refsect3">
 <a name="gst-bit-writer-new-with-data.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
@@ -482,6 +514,7 @@ usage. </p>
 gst_bit_writer_init (<em class="parameter"><code><a class="link" href="gstreamer-libs-GstBitWriter.html#GstBitWriter" title="struct GstBitWriter"><span class="type">GstBitWriter</span></a> *bitwriter</code></em>);</pre>
 <p>Initializes <em class="parameter"><code>bitwriter</code></em>
  to an empty instance.</p>
+<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
 <div class="refsect3">
 <a name="gst-bit-writer-init.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
@@ -508,6 +541,7 @@ gst_bit_writer_init_with_size (<em class="parameter"><code><a class="link" href=
 <p>Initializes a <a class="link" href="gstreamer-libs-GstBitWriter.html#GstBitWriter" title="struct GstBitWriter"><span class="type">GstBitWriter</span></a> instance and allocates the given data
 <em class="parameter"><code>size</code></em>
 .</p>
+<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
 <div class="refsect3">
 <a name="gst-bit-writer-init-with-size.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
@@ -551,6 +585,7 @@ gst_bit_writer_init_with_data (<em class="parameter"><code><a class="link" href=
  is <a href="/usr/share/gtk-doc/html/glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> it is possible to read <em class="parameter"><code>size</code></em>
  bits from the
 <a class="link" href="gstreamer-libs-GstBitWriter.html#GstBitWriter" title="struct GstBitWriter"><span class="type">GstBitWriter</span></a> from the beginning.</p>
+<p><span class="annotation">[<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></p>
 <div class="refsect3">
 <a name="gst-bit-writer-init-with-data.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
