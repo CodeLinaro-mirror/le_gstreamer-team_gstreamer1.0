@@ -16,7 +16,9 @@
 <td width="100%" align="left" class="shortcuts">
 <a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
                   <a href="#GstAggregatorPad.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
-                  <a href="#GstAggregatorPad.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+                  <a href="#GstAggregatorPad.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#GstAggregatorPad.properties" class="shortcut">Properties</a></span><span id="nav_signals">  <span class="dim">|</span> 
+                  <a href="#GstAggregatorPad.signals" class="shortcut">Signals</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="gstreamer-base.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -81,6 +83,36 @@
 </td>
 </tr>
 </tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GstAggregatorPad.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody><tr>
+<td class="property_type"><a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="GstAggregatorPad.html#GstAggregatorPad--emit-signals" title="The “emit-signals” property">emit-signals</a></td>
+<td class="property_flags">Read / Write</td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GstAggregatorPad.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col width="150px" class="signals_return">
+<col width="300px" class="signals_name">
+<col width="200px" class="signals_flags">
+</colgroup>
+<tbody><tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="GstAggregatorPad.html#GstAggregatorPad-buffer-consumed" title="The “buffer-consumed” signal">buffer-consumed</a></td>
+<td class="signal_flags"><a href="/usr/share/gtk-doc/html/gobject/gobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></td>
+</tr></tbody>
 </table></div>
 </div>
 <div class="refsect1">
@@ -327,6 +359,48 @@ if the buffer should be skipped.</p></td>
 </tbody>
 </table></div>
 </div>
+</div>
+</div>
+<div class="refsect1">
+<a name="GstAggregatorPad.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstAggregatorPad--emit-signals"></a><h3>The <code class="literal">“emit-signals”</code> property</h3>
+<pre class="programlisting">  “emit-signals”             <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Enables the emission of signals such as <a class="link" href="GstAggregatorPad.html#GstAggregatorPad-buffer-consumed" title="The “buffer-consumed” signal"><span class="type">“buffer-consumed”</span></a></p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+<p class="since">Since: 1.16</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="GstAggregatorPad.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2">
+<a name="GstAggregatorPad-buffer-consumed"></a><h3>The <code class="literal">“buffer-consumed”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="GstAggregatorPad.html" title="GstAggregatorPad"><span class="type">GstAggregatorPad</span></a> *gstaggregatorpad,
+               <a href="../html/GstBuffer.html#GstBuffer-struct"><span class="type">GstBuffer</span></a>        *arg1,
+               <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>          user_data)</pre>
+<p>Signals that a buffer was consumed. As aggregator pads store buffers
+in an internal queue, there is no direct match between input and output
+buffers at any given time. This signal can be useful to forward metas
+such as <a href="/usr/share/gtk-doc/html/gst-plugins-base-libs-1.0/gst-plugins-base-libs-gstvideometa.html#GstVideoTimeCodeMeta"><span class="type">GstVideoTimeCodeMeta</span></a> or <span class="type">GstVideoCaptionMeta</span> at the right time.</p>
+<div class="refsect3">
+<a name="GstAggregatorPad-buffer-consumed.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p>Flags: <a href="/usr/share/gtk-doc/html/gobject/gobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></p>
+<p class="since">Since: 1.16</p>
 </div>
 </div>
 <div class="refsect1">

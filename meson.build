@@ -1,5 +1,5 @@
 project('gstreamer', 'c',
-  version : '1.15.2',
+  version : '1.15.90',
   meson_version : '>= 0.47',
   default_options : [ 'warning_level=1',
                       'buildtype=debugoptimized' ])
@@ -397,7 +397,6 @@ warning_flags = [
   '-Waddress',
   '-Waggregate-return',
   '-Wno-multichar',
-  '-Wnested-externs',
   '-Wdeclaration-after-statement',
   '-Wvla',
   '-Wpointer-arith',
@@ -459,7 +458,7 @@ gir_init_section = [ '--add-init-section=extern void gst_init(gint*,gchar**);' +
     'g_setenv("GST_REGISTRY_1.0", "/no/way/this/exists.reg", TRUE);' + \
     'g_setenv("GST_PLUGIN_PATH_1_0", "", TRUE);' + \
     'g_setenv("GST_PLUGIN_SYSTEM_PATH_1_0", "", TRUE);' + \
-    'gst_init(NULL,NULL);' ]
+    'gst_init(NULL,NULL);', '--quiet']
 
 gst_c_args = ['-DHAVE_CONFIG_H']
 

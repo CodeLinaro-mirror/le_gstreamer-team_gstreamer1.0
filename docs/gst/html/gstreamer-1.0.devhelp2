@@ -835,6 +835,8 @@
     <keyword type="function" name="gst_event_parse_qos ()" link="GstEvent.html#gst-event-parse-qos"/>
     <keyword type="function" name="gst_event_new_seek ()" link="GstEvent.html#gst-event-new-seek"/>
     <keyword type="function" name="gst_event_parse_seek ()" link="GstEvent.html#gst-event-parse-seek"/>
+    <keyword type="function" name="gst_event_set_seek_trickmode_interval ()" link="GstEvent.html#gst-event-set-seek-trickmode-interval" since="1.16"/>
+    <keyword type="function" name="gst_event_parse_seek_trickmode_interval ()" link="GstEvent.html#gst-event-parse-seek-trickmode-interval" since="1.16"/>
     <keyword type="function" name="gst_event_new_navigation ()" link="GstEvent.html#gst-event-new-navigation"/>
     <keyword type="function" name="gst_event_new_latency ()" link="GstEvent.html#gst-event-new-latency"/>
     <keyword type="function" name="gst_event_parse_latency ()" link="GstEvent.html#gst-event-parse-latency"/>

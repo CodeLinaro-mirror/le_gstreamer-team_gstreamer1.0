@@ -49,15 +49,21 @@
 <a name="gstreamer-plugins-latencytracer.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="screen">    <a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject-struct">GObject</a>
     <span class="lineart">╰──</span> <a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-        <span class="lineart">╰──</span> <a href="../html/GstObject.html#GstObject-struct">GstObject</a>
-            <span class="lineart">╰──</span> <a href="../html/GstTracer.html#GstTracer-struct">GstTracer</a>
+        <span class="lineart">╰──</span> <a href="/usr/share/gtk-doc/html/gstreamer-1.0/GstObject.html#GstObject-struct">GstObject</a>
+            <span class="lineart">╰──</span> <a href="/usr/share/gtk-doc/html/gstreamer-1.0/GstTracer.html#GstTracer-struct">GstTracer</a>
                 <span class="lineart">╰──</span> GstLatencyTracer
 </pre>
 </div>
 <div class="refsect1">
 <a name="gstreamer-plugins-latencytracer.description"></a><h2>Description</h2>
 <p>A tracing module that determines src-to-sink latencies by injecting custom
-events at sources and process them at sinks.</p>
+events at sources and process them at sinks. This elements supports tracing
+the entire pipeline latency and per element latency. By default, only
+pipeline latency is traced. The 'flags' parameter can be used to enabled
+element tracing.</p>
+<p><code class="literal">
+GST_TRACERS="latency(flags=pipeline+element)" GST_DEBUG=GST_TRACER:7 ./...
+</code></p>
 </div>
 <div class="refsect1">
 <a name="gstreamer-plugins-latencytracer.functions_details"></a><h2>Functions</h2>
