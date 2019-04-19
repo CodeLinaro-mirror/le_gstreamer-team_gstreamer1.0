@@ -380,27 +380,7 @@ if the buffer should be skipped.</p></td>
 user_function (<a class="link" href="GstAggregatorPad.html" title="GstAggregatorPad"><span class="type">GstAggregatorPad</span></a> *gstaggregatorpad,
                <a href="../html/GstBuffer.html#GstBuffer-struct"><span class="type">GstBuffer</span></a>        *arg1,
                <a href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>          user_data)</pre>
-<p>Signals that a buffer was consumed. As aggregator pads store buffers
-in an internal queue, there is no direct match between input and output
-buffers at any given time. This signal can be useful to forward metas
-such as <a href="/usr/share/gtk-doc/html/gst-plugins-base-libs-1.0/gst-plugins-base-libs-gstvideometa.html#GstVideoTimeCodeMeta"><span class="type">GstVideoTimeCodeMeta</span></a> or <span class="type">GstVideoCaptionMeta</span> at the right time.</p>
-<div class="refsect3">
-<a name="GstAggregatorPad-buffer-consumed.parameters"></a><h4>Parameters</h4>
-<div class="informaltable"><table class="informaltable" width="100%" border="0">
-<colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
-</colgroup>
-<tbody><tr>
-<td class="parameter_name"><p>user_data</p></td>
-<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
-<td class="parameter_annotations"> </td>
-</tr></tbody>
-</table></div>
-</div>
 <p>Flags: <a href="/usr/share/gtk-doc/html/gobject/gobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS">Run First</a></p>
-<p class="since">Since: 1.16</p>
 </div>
 </div>
 <div class="refsect1">

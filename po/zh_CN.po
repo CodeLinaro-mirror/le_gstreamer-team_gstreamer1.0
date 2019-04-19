@@ -5,10 +5,10 @@
 # Tianze Wang <zwpwjwtz@126.com>, 2015.
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer 1.12.0\n"
+"Project-Id-Version: gstreamer 1.15.1\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2019-04-11 00:19+0100\n"
-"PO-Revision-Date: 2017-05-05 22:53+0800\n"
+"POT-Creation-Date: 2019-04-19 00:15+0100\n"
+"PO-Revision-Date: 2019-02-28 16:15+0100\n"
 "Last-Translator: Tianze Wang <zwpwjwtz@126.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.7\n"
 
 msgid "Print the GStreamer version"
 msgstr "打印 GStreamer 版本"
@@ -895,7 +895,7 @@ msgid "empty pipeline not allowed"
 msgstr "不允许空管道"
 
 msgid "Pipeline construction is invalid, please add queues."
-msgstr ""
+msgstr "无法建立有效的管道，请改用队列。"
 
 msgid "A lot of buffers are being dropped."
 msgstr "许多缓冲被丢弃。"
@@ -980,7 +980,7 @@ msgid "Failed after iterations as requested."
 msgstr "在完成所要求的迭代操作后出错。"
 
 msgid "eos-after and error-after can't both be defined."
-msgstr ""
+msgstr "无法同时定义 eos-after 和 error-after。"
 
 msgid "caps"
 msgstr "分析器"
@@ -1003,9 +1003,9 @@ msgstr "流中没有足够数据。"
 msgid "Stream contains no data."
 msgstr "流中不含数据"
 
-#, fuzzy, c-format
+#, c-format
 msgid "%sImplemented Interfaces%s:\n"
-msgstr "实现的接口:\n"
+msgstr "%s实现的接口%s:\n"
 
 msgid "readable"
 msgstr "可读"
@@ -1031,9 +1031,9 @@ msgstr "只能在NULL、或READY状态下改变"
 msgid "Blacklisted files:"
 msgstr "文件黑名单:"
 
-#, fuzzy, c-format
+#, c-format
 msgid "%sTotal count%s: %s"
-msgstr "总数:"
+msgstr "%s总数%s：%s"
 
 #, c-format
 msgid "%d blacklisted file"
@@ -1094,6 +1094,8 @@ msgid ""
 "Disable colors in output. You can also achieve the same by "
 "setting'GST_INSPECT_NO_COLORS' environment variable to any value."
 msgstr ""
+"禁止在输出中使用文字着色功能。您也可以通过设置“GST_INSPECT_NO_COLORS”环境变量"
+"（可以为任意值）来实现同样的效果。"
 
 #, c-format
 msgid "Could not load plugin file: %s\n"
@@ -1301,21 +1303,17 @@ msgstr "设置 NULL 管道 ...\n"
 msgid "Freeing pipeline ...\n"
 msgstr "释放管道资源 ...\n"
 
-#, fuzzy
 #~ msgid "Error creating pipe: %s\n"
-#~ msgstr "关闭文件“%s”出错。"
+#~ msgstr "创建管道时出错：“%s\n"
 
-#, fuzzy
 #~ msgid "Error forking: %s\n"
-#~ msgstr "关闭文件“%s”出错。"
+#~ msgstr "创建子进程时出错：%s\n"
 
-#, fuzzy
 #~ msgid "Error reading from console: %s\n"
-#~ msgstr "重新扫描寄存器 %s 时出错: %s"
+#~ msgstr "从终端中读取内容时出错：%s\n"
 
-#, fuzzy
 #~ msgid "Error writing to console: %s\n"
-#~ msgstr "写入文件“%s”时出错。"
+#~ msgstr "写入到终端时出错：%s\n"
 
 #~ msgid "bin"
 #~ msgstr "储仓"
