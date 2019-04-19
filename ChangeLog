@@ -1,3 +1,93 @@
+=== release 1.16.0 ===
+
+2019-04-19 00:15:21 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* ChangeLog:
+	* NEWS:
+	* README:
+	* RELEASE:
+	* configure.ac:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.16.0
+
+2019-04-19 00:15:21 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* docs/plugins/inspect/plugin-coreelements.xml:
+	* docs/plugins/inspect/plugin-coretracers.xml:
+	  Update docs
+
+2019-04-19 00:15:19 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* po/zh_CN.po:
+	  Update translations
+
+2019-04-18 10:13:51 +0200  Olivier Crête <olivier.crete@collabora.com>
+
+	* libs/gst/base/gstbasesrc.c:
+	  basesrc: Downgrade EOS warning
+	  In the case of pushfilesrc, this is the expected behaviour, so let's
+	  downgrade the warning to a debug message to avoid confusing users.
+
+2019-04-17 20:46:58 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* tests/check/libs/basesrc.c:
+	  tests: basesrc: unref gst_bus_timed_pop_filtered return
+
+2019-04-16 13:29:00 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* gst/gst.c:
+	* gst/gst_private.h:
+	* gst/gstinfo.c:
+	  gstinfo: clean up function pointer names hashtable
+	  And add strduped function pointer names to the global quark
+	  table, so that they don't get reported as lost by valgrind.
+	  This allows us to use GST_DEBUG when running tests under
+	  valgrind.
+
+2019-04-16 23:50:15 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: fix doc chunk for new buffer-consumed signal
+	  Fixes 'Warning: GstBase: incorrect number of parameters in
+	  comment block, parameter annotations will be ignored.' from
+	  g-ir-scanner.
+
+2019-04-12 09:23:52 -0400  Julian Bouzas <julian.bouzas@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	  tracer: latency: Don't compare element name as element Id is already unique
+
+2019-04-12 08:38:03 -0400  Julian Bouzas <julian.bouzas@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	  tracer: latency: Remove redundant if conditions
+
+2019-04-12 08:34:49 -0400  Julian Bouzas <julian.bouzas@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	  tracer: latency: Make GST_DEBUG logs consistent
+
+2019-04-12 08:28:22 -0400  Julian Bouzas <julian.bouzas@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	  tracer: latency: Fix bug when dropping sub-latency probe event
+	  Fixes #373
+
+2019-04-12 16:37:18 +0200  Philipp Zabel <p.zabel@pengutronix.de>
+
+	* gst/gstevent.c:
+	  event: fix seek event creation
+	  Creating seek events segfaults on 32-bit ARM since commit 2fa15d53717c
+	  ('event: add new seek parameter, "trickmode-interval"'), which missed
+	  casting the trickmode-interval initializer in the variable argument list
+	  to guint64.
+
+2019-04-11 15:32:51 -0400  Xavier Claessens <xavier.claessens@collabora.com>
+
+	* tools/gst-inspect.c:
+	  gst-inspect: Do not print warning if 'less' is missing
+
 === release 1.15.90 ===
 
 2019-04-11 00:19:11 +0100  Tim-Philipp Müller <tim@centricular.com>
