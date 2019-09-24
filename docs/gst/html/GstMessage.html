@@ -5831,14 +5831,14 @@ was updated.</p>
 <tr>
 <td class="enum_member_name"><p><a name="GST-MESSAGE-NEED-CONTEXT:CAPS"></a>GST_MESSAGE_NEED_CONTEXT</p></td>
 <td class="enum_member_description">
-<p>Message indicating that an element wants a specific context (Since 1.2)</p>
+<p>Message indicating that an element wants a specific context (Since: 1.2)</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="GST-MESSAGE-HAVE-CONTEXT:CAPS"></a>GST_MESSAGE_HAVE_CONTEXT</p></td>
 <td class="enum_member_description">
-<p>Message indicating that an element created a context (Since 1.2)</p>
+<p>Message indicating that an element created a context (Since: 1.2)</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -5849,7 +5849,7 @@ was updated.</p>
     These extended message IDs can't be used directly with mask-based API
     like <a class="link" href="GstBus.html#gst-bus-poll" title="gst_bus_poll ()"><code class="function">gst_bus_poll()</code></a> or <a class="link" href="GstBus.html#gst-bus-timed-pop-filtered" title="gst_bus_timed_pop_filtered ()"><code class="function">gst_bus_timed_pop_filtered()</code></a>, but you can still
     filter for GST_MESSAGE_EXTENDED and then check the result for the
-    specific type. (Since 1.4)</p>
+    specific type. (Since: 1.4)</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -5857,7 +5857,7 @@ was updated.</p>
 <td class="enum_member_name"><p><a name="GST-MESSAGE-DEVICE-ADDED:CAPS"></a>GST_MESSAGE_DEVICE_ADDED</p></td>
 <td class="enum_member_description">
 <p>Message indicating a <a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a> was added to
-    a <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> (Since 1.4)</p>
+    a <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> (Since: 1.4)</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -5865,7 +5865,7 @@ was updated.</p>
 <td class="enum_member_name"><p><a name="GST-MESSAGE-DEVICE-REMOVED:CAPS"></a>GST_MESSAGE_DEVICE_REMOVED</p></td>
 <td class="enum_member_description">
 <p>Message indicating a <a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a> was removed
-    from a <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> (Since 1.4)</p>
+    from a <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> (Since: 1.4)</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -5873,7 +5873,7 @@ was updated.</p>
 <td class="enum_member_name"><p><a name="GST-MESSAGE-PROPERTY-NOTIFY:CAPS"></a>GST_MESSAGE_PROPERTY_NOTIFY</p></td>
 <td class="enum_member_description">
 <p>Message indicating a <a href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject-struct"><span class="type">GObject</span></a> property has
-    changed (Since 1.10)</p>
+    changed (Since: 1.10)</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -5881,7 +5881,7 @@ was updated.</p>
 <td class="enum_member_name"><p><a name="GST-MESSAGE-STREAM-COLLECTION:CAPS"></a>GST_MESSAGE_STREAM_COLLECTION</p></td>
 <td class="enum_member_description">
 <p>Message indicating a new <a class="link" href="gstreamer-GstStreamCollection.html#GstStreamCollection" title="struct GstStreamCollection"><span class="type">GstStreamCollection</span></a>
-    is available (Since 1.10)</p>
+    is available (Since: 1.10)</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -5889,7 +5889,7 @@ was updated.</p>
 <td class="enum_member_name"><p><a name="GST-MESSAGE-STREAMS-SELECTED:CAPS"></a>GST_MESSAGE_STREAMS_SELECTED</p></td>
 <td class="enum_member_description">
 <p>Message indicating the active selection of
-    <a href="gstreamer-GstStream.html#GstStream"><span class="type">GstStreams</span></a> has changed (Since 1.10)</p>
+    <a href="gstreamer-GstStream.html#GstStream"><span class="type">GstStreams</span></a> has changed (Since: 1.10)</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -5898,7 +5898,7 @@ was updated.</p>
 <td class="enum_member_description">
 <p>Message indicating to request the application to
     try to play the given URL(s). Useful if for example a HTTP 302/303
-    response is received with a non-HTTP URL inside. (Since 1.10)</p>
+    response is received with a non-HTTP URL inside. (Since: 1.10)</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -5906,7 +5906,7 @@ was updated.</p>
 <td class="enum_member_name"><p><a name="GST-MESSAGE-DEVICE-CHANGED:CAPS"></a>GST_MESSAGE_DEVICE_CHANGED</p></td>
 <td class="enum_member_description">
 <p>Message indicating a <a class="link" href="gstreamer-GstDevice.html#GstDevice" title="struct GstDevice"><span class="type">GstDevice</span></a> was changed
-    a <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> (Since 1.16)</p>
+    a <a class="link" href="gstreamer-GstDeviceProvider.html#GstDeviceProvider" title="struct GstDeviceProvider"><span class="type">GstDeviceProvider</span></a> (Since: 1.16)</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>

@@ -1,16 +1,16 @@
-# German translation for gstreamer 1.7.90
+# German translation for gstreamer 1.16.0
 # Copyright (C) 2004 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gstreamer package.
 #
 # Roland Illig <roland.illig@gmx.de>, 2004.
-# Christian Kirbach <christian.kirbach@gmail.com>, 2009, 2010, 2011, 2012, 2013, 2015, 2016.
+# Christian Kirbach <christian.kirbach@gmail.com>, 2009, 2010, 2011, 2012, 2013, 2015, 2016, 2019.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer 1.12.0\n"
+"Project-Id-Version: gstreamer 1.16.0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2019-04-19 00:15+0100\n"
-"PO-Revision-Date: 2017-05-25 16:25+0200\n"
+"POT-Creation-Date: 2019-09-23 11:01+0100\n"
+"PO-Revision-Date: 2019-09-08 12:54+0200\n"
 "Last-Translator: Christian Kirbach <christian.kirbach@gmail.com>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
 "Language: de\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 msgid "Print the GStreamer version"
@@ -960,6 +960,8 @@ msgstr "Leere Leitung ist nicht erlaubt"
 
 msgid "Pipeline construction is invalid, please add queues."
 msgstr ""
+"Die Zusammensetzung der Leitung ist ungültig. Bitte fügen Sie Warteschlangen "
+"hinzu."
 
 msgid "A lot of buffers are being dropped."
 msgstr "Es werden viele Puffer verworfen."
@@ -1045,6 +1047,7 @@ msgstr "Nach dem Durchlaufen fehlgeschlagen. Wie gewünscht."
 
 msgid "eos-after and error-after can't both be defined."
 msgstr ""
+"»eos-after« und »error-after« dürfen nicht gleichzeitig festgelgt werden."
 
 msgid "caps"
 msgstr "Fähigkeiten"
@@ -1067,9 +1070,9 @@ msgstr "Der Datenstrom enthält nicht genug Daten."
 msgid "Stream contains no data."
 msgstr "Der Datenstrom enthält keine Daten."
 
-#, fuzzy, c-format
+#, c-format
 msgid "%sImplemented Interfaces%s:\n"
-msgstr "Implementierte Schnittstellen:\n"
+msgstr "%sImplementierte Schnittstellen%s:\n"
 
 msgid "readable"
 msgstr "lesbar"
@@ -1095,9 +1098,9 @@ msgstr "änderbar nur in den Status NULL oder BEREIT"
 msgid "Blacklisted files:"
 msgstr "Dateien auf der schwarzen Liste:"
 
-#, fuzzy, c-format
+#, c-format
 msgid "%sTotal count%s: %s"
-msgstr "Gesamtzahl: "
+msgstr "%sGesamtzahl%s: %s"
 
 #, c-format
 msgid "%d blacklisted file"
@@ -1168,6 +1171,9 @@ msgid ""
 "Disable colors in output. You can also achieve the same by "
 "setting'GST_INSPECT_NO_COLORS' environment variable to any value."
 msgstr ""
+"Farben in der Ausgabe deaktivieren. Die Einstellung kann auch erzielt "
+"werden, indem die Umgebungsvariable GST_INSPECT_NO_COLORS auf einen "
+"beliebigen Wert gesetzt wird."
 
 #, c-format
 msgid "Could not load plugin file: %s\n"
@@ -1381,22 +1387,6 @@ msgstr "Leitung wird auf NULL gesetzt ...\n"
 msgid "Freeing pipeline ...\n"
 msgstr "Leitung wird geleert ...\n"
 
-#, fuzzy
-#~ msgid "Error creating pipe: %s\n"
-#~ msgstr "Fehler beim Schließen der Datei »%s«."
-
-#, fuzzy
-#~ msgid "Error forking: %s\n"
-#~ msgstr "Fehler beim Schließen der Datei »%s«."
-
-#, fuzzy
-#~ msgid "Error reading from console: %s\n"
-#~ msgstr "Fehler beim erneuten Einlesen der Registry %s : %s"
-
-#, fuzzy
-#~ msgid "Error writing to console: %s\n"
-#~ msgstr "Fehler beim Schreiben der Daten »%s«."
-
 #~ msgid "bin"
 #~ msgstr "Behälter"
 
@@ -1453,6 +1443,9 @@ msgstr "Leitung wird geleert ...\n"
 #~ msgid "Print alloc trace (if enabled at compile time)"
 #~ msgstr ""
 #~ "Speicherzuordnungsverfolgung ausgeben (falls zur Kompilierzeit aktiviert)"
+
+#~ msgid "Error re-scanning registry %s: %s"
+#~ msgstr "Fehler beim erneuten Einlesen der Registry %s : %s"
 
 #~ msgid "Error re-scanning registry %s"
 #~ msgstr "Fehler beim erneuten Einlesen der Registry %s"

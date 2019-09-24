@@ -295,7 +295,7 @@ gst_aggregator_pad_flush (GstAggregatorPad * aggpad, GstAggregator * agg)
   PAD_UNLOCK (aggpad);
 
   if (klass->flush)
-    return klass->flush (aggpad, agg);
+    return (klass->flush (aggpad, agg) == GST_FLOW_OK);
 
   return TRUE;
 }
@@ -1032,6 +1032,9 @@ gst_aggregator_update_src_caps (GstAggregator * self)
   if (ret < GST_FLOW_OK) {
     GST_WARNING_OBJECT (self, "Subclass failed to update provided caps");
     goto done;
+  } else if (ret == GST_AGGREGATOR_FLOW_NEED_DATA) {
+    GST_DEBUG_OBJECT (self, "Subclass needs more data to decide on caps");
+    goto done;
   }
   if ((caps == NULL || gst_caps_is_empty (caps)) && ret >= GST_FLOW_OK) {
     ret = GST_FLOW_NOT_NEGOTIATED;
@@ -1145,6 +1148,8 @@ gst_aggregator_aggregate_func (GstAggregator * self)
       flow_return = gst_aggregator_update_src_caps (self);
       if (flow_return != GST_FLOW_OK)
         gst_pad_mark_reconfigure (GST_AGGREGATOR_SRC_PAD (self));
+      if (flow_return == GST_AGGREGATOR_FLOW_NEED_DATA)
+        flow_return = GST_FLOW_OK;
     }
 
     if (timeout || flow_return >= GST_FLOW_OK) {
@@ -1669,17 +1674,26 @@ gst_aggregator_default_create_new_pad (GstAggregator * self,
 
   GST_OBJECT_LOCK (self);
   if (req_name == NULL || strlen (req_name) < 6
-      || !g_str_has_prefix (req_name, "sink_")) {
+      || !g_str_has_prefix (req_name, "sink_")
+      || strrchr (req_name, '%') != NULL) {
     /* no name given when requesting the pad, use next available int */
     serial = ++priv->max_padserial;
   } else {
+    gchar *endptr = NULL;
+
     /* parse serial number from requested padname */
-    serial = g_ascii_strtoull (&req_name[5], NULL, 10);
-    if (serial > priv->max_padserial)
-      priv->max_padserial = serial;
+    serial = g_ascii_strtoull (&req_name[5], &endptr, 10);
+    if (endptr != NULL && *endptr == '\0') {
+      if (serial > priv->max_padserial) {
+        priv->max_padserial = serial;
+      }
+    } else {
+      serial = ++priv->max_padserial;
+    }
   }
 
   name = g_strdup_printf ("sink_%u", serial);
+  g_assert (g_type_is_a (pad_type, GST_TYPE_AGGREGATOR_PAD));
   agg_pad = g_object_new (pad_type,
       "name", name, "direction", GST_PAD_SINK, "template", templ, NULL);
   g_free (name);
@@ -2422,6 +2436,7 @@ gst_aggregator_init (GstAggregator * self, GstAggregatorClass * klass)
 {
   GstPadTemplate *pad_template;
   GstAggregatorPrivate *priv;
+  GType pad_type;
 
   g_return_if_fail (klass->aggregate != NULL);
 
@@ -2441,7 +2456,14 @@ gst_aggregator_init (GstAggregator * self, GstAggregatorClass * klass)
   self->priv->peer_latency_max = self->priv->sub_latency_max = 0;
   self->priv->has_peer_latency = FALSE;
 
-  self->srcpad = gst_pad_new_from_template (pad_template, "src");
+  pad_type =
+      GST_PAD_TEMPLATE_GTYPE (pad_template) ==
+      G_TYPE_NONE ? GST_TYPE_AGGREGATOR_PAD :
+      GST_PAD_TEMPLATE_GTYPE (pad_template);
+  g_assert (g_type_is_a (pad_type, GST_TYPE_AGGREGATOR_PAD));
+  self->srcpad =
+      g_object_new (pad_type, "name", "src", "direction", GST_PAD_SRC,
+      "template", pad_template, NULL);
 
   gst_aggregator_reset_flow_values (self);
 
