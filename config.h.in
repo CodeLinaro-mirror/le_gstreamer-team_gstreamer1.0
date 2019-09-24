@@ -83,6 +83,10 @@
    builds on windows */
 #undef GST_PLUGIN_SCANNER_SUBDIR
 
+/* plugin directory path component, used to find plugins on relocatable builds
+   on windows */
+#undef GST_PLUGIN_SUBDIR
+
 /* location of the installed gst-ptp-helper */
 #undef GST_PTP_HELPER_INSTALLED
 

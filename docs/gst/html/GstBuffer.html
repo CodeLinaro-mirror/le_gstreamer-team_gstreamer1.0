@@ -789,7 +789,7 @@ to hold a reference to another buffer that is only released when the child
 <p>Typically, <a class="link" href="GstBuffer.html#GstParentBufferMeta" title="struct GstParentBufferMeta"><span class="type">GstParentBufferMeta</span></a> is used when the child buffer is directly
 using the <a class="link" href="GstMemory.html" title="GstMemory"><span class="type">GstMemory</span></a> of the parent buffer, and wants to prevent the parent
 buffer from being returned to a buffer pool until the <a class="link" href="GstMemory.html" title="GstMemory"><span class="type">GstMemory</span></a> is available
-for re-use. (Since 1.6)</p>
+for re-use. (Since: 1.6)</p>
 </div>
 <div class="refsect1">
 <a name="GstBuffer.functions_details"></a><h2>Functions</h2>
@@ -4072,7 +4072,7 @@ format as <em class="parameter"><code>offset</code></em>
 <td class="enum_member_description">
 <p>Elements which write to disk or permanent
 				 storage should ensure the data is synced after
-				 writing the contents of this buffer. (Since 1.6)</p>
+				 writing the contents of this buffer. (Since: 1.6)</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -4083,7 +4083,7 @@ format as <em class="parameter"><code>offset</code></em>
                                 This can be used to mark important buffers, e.g. to flag
                                 RTP packets carrying keyframes or codec setup data for RTP
                                 Forward Error Correction purposes, or to prevent still video
-                                frames from being dropped by elements due to QoS. (Since 1.14)</p>
+                                frames from being dropped by elements due to QoS. (Since: 1.14)</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -4173,7 +4173,7 @@ function to specify which items should be copied.</p>
 <td class="enum_member_name"><p><a name="GST-BUFFER-COPY-DEEP:CAPS"></a>GST_BUFFER_COPY_DEEP</p></td>
 <td class="enum_member_description">
 <p>flag indicating that memory should always be
-  copied instead of reffed (Since 1.2)</p>
+  copied instead of reffed (Since: 1.2)</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>

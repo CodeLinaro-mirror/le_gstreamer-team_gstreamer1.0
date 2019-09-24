@@ -5,9 +5,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer 1.16.0\n"
+"Project-Id-Version: gstreamer 1.16.1\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2019-04-19 00:15+0100\n"
+"POT-Creation-Date: 2019-09-23 11:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -309,7 +309,7 @@ msgstr ""
 msgid "Selected clock cannot be used in pipeline."
 msgstr ""
 
-#: gst/gstregistry.c:1694
+#: gst/gstregistry.c:1691
 #, c-format
 msgid "Error writing registry cache to %s: %s"
 msgstr ""
@@ -1157,8 +1157,8 @@ msgstr ""
 msgid "Internal clock error."
 msgstr ""
 
-#: libs/gst/base/gstbasesrc.c:2666 plugins/elements/gstdownloadbuffer.c:842
-#: plugins/elements/gstdownloadbuffer.c:1265
+#: libs/gst/base/gstbasesrc.c:2666 plugins/elements/gstdownloadbuffer.c:848
+#: plugins/elements/gstdownloadbuffer.c:1271
 msgid "Failed to map buffer."
 msgstr ""
 
@@ -1180,22 +1180,22 @@ msgstr ""
 msgid "Filter caps change behaviour"
 msgstr ""
 
-#: plugins/elements/gstdownloadbuffer.c:927 plugins/elements/gstqueue2.c:1792
+#: plugins/elements/gstdownloadbuffer.c:933 plugins/elements/gstqueue2.c:1792
 msgid "No Temp directory specified."
 msgstr ""
 
-#: plugins/elements/gstdownloadbuffer.c:933 plugins/elements/gstqueue2.c:1798
+#: plugins/elements/gstdownloadbuffer.c:939 plugins/elements/gstqueue2.c:1798
 #, c-format
 msgid "Could not create temp file \"%s\"."
 msgstr ""
 
-#: plugins/elements/gstdownloadbuffer.c:941 plugins/elements/gstfilesrc.c:537
+#: plugins/elements/gstdownloadbuffer.c:947 plugins/elements/gstfilesrc.c:537
 #: plugins/elements/gstqueue2.c:1806
 #, c-format
 msgid "Could not open file \"%s\" for reading."
 msgstr ""
 
-#: plugins/elements/gstdownloadbuffer.c:1274 plugins/elements/gstqueue2.c:2225
+#: plugins/elements/gstdownloadbuffer.c:1280 plugins/elements/gstqueue2.c:2225
 msgid "Error while writing to download file."
 msgstr ""
 

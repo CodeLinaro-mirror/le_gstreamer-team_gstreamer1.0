@@ -58,9 +58,9 @@ gst_buffer_get_flags_string (GstBuffer * buffer)
   static const char flag_strings[] =
       "\000\000\000\000live\000decode-only\000discont\000resync\000corrupted\000"
       "marker\000header\000gap\000droppable\000delta-unit\000tag-memory\000"
-      "FIXME";
+      "sync-after\000non-droppable\000FIXME";
   static const guint8 flag_idx[] = { 0, 1, 2, 3, 4, 9, 21, 29, 36, 46, 53,
-    60, 64, 74, 85, 96
+    60, 64, 74, 85, 96, 107, 121,
   };
   int i, max_bytes;
   char *flag_str, *end;
@@ -121,10 +121,23 @@ struct iovec
 #define FDSINK_MAX_ALLOCA_SIZE (64 * 1024)      /* 64k */
 #define FDSINK_MAX_MALLOC_SIZE ( 8 * 1024 * 1024)       /*  8M */
 
-/* UIO_MAXIOV is documented in writev(2), but <sys/uio.h> only
- * declares it on osx/ios if defined(KERNEL) */
-#ifndef UIO_MAXIOV
-#define UIO_MAXIOV 512
+/* Adapted from GLib (gio/gioprivate.h)
+ *
+ * POSIX defines IOV_MAX/UIO_MAXIOV as the maximum number of iovecs that can
+ * be sent in one go.  We define our own version of it here as there are two
+ * possible names, and also define a fall-back value if none of the constants
+ * are defined */
+#if defined(IOV_MAX)
+#define GST_IOV_MAX IOV_MAX
+#elif defined(UIO_MAXIOV)
+#define GST_IOV_MAX UIO_MAXIOV
+#elif defined(__APPLE__)
+/* For osx/ios, UIO_MAXIOV is documented in writev(2), but <sys/uio.h>
+ * only declares it if defined(KERNEL) */
+#define GST_IOV_MAX 512
+#else
+/* 16 is the minimum value required by POSIX */
+#define GST_IOV_MAX 16
 #endif
 
 static gssize
@@ -133,7 +146,7 @@ gst_writev (gint fd, const struct iovec *iov, gint iovcnt, gsize total_bytes)
   gssize written;
 
 #ifdef HAVE_SYS_UIO_H
-  if (iovcnt <= UIO_MAXIOV) {
+  if (iovcnt <= GST_IOV_MAX) {
     do {
       written = writev (fd, iov, iovcnt);
     } while (written < 0 && errno == EINTR);

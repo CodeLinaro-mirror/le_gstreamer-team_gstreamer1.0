@@ -4,7 +4,7 @@ dnl initialize autoconf
 dnl when going to/from release please set the nano (fourth number) right !
 dnl releases only do Wall, git and prerelease does Werror too
 dnl
-AC_INIT([GStreamer],[1.16.0],[http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer],[gstreamer])
+AC_INIT([GStreamer],[1.16.1],[http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer],[gstreamer])
 AG_GST_INIT
 
 dnl initialize automake (we require GNU make)
@@ -62,7 +62,7 @@ dnl      1.2.5 => 205
 dnl      1.10.9 (who knows) => 1009
 dnl
 dnl sets GST_LT_LDFLAGS
-AS_LIBTOOL(GST, 1600, 0, 1600)
+AS_LIBTOOL(GST, 1601, 0, 1601)
 
 dnl *** autotools stuff ****
 
@@ -1069,6 +1069,23 @@ esac
 AC_DEFINE_UNQUOTED(GST_PLUGIN_SCANNER_SUBDIR,
     "$GST_PLUGIN_SCANNER_SUBDIR", [libexecdir path component, used to find plugin-scanner on relocatable builds on windows])
 
+case "${libdir}" in
+  *lib64)
+    GST_PLUGIN_SUBDIR="lib64";;
+  *lib32)
+    GST_PLUGIN_SUBDIR="lib32";;
+  *lib)
+    GST_PLUGIN_SUBDIR="lib";;
+  *)
+    GST_PLUGIN_SUBDIR=`basename ${libdir}`;
+    if test -z "$GST_PLUGIN_SUBDIR"; then
+      AC_MSG_WARN([Couldn't determined libdir suffix, using "lib"])
+      GST_PLUGIN_SUBDIR="lib";
+    fi
+    ;;
+esac
+AC_DEFINE_UNQUOTED(GST_PLUGIN_SUBDIR,
+    "$GST_PLUGIN_SUBDIR", [plugin directory path component, used to find plugins on relocatable builds on windows])
 
 dnl completion helper locations
 AS_AC_EXPAND(GST_COMPLETION_HELPER_INSTALLED,${libexecdir}/gstreamer-$GST_API_VERSION/gst-completion-helper)

@@ -1,17 +1,17 @@
 # Bulgarian translation of gstreamer.
 # Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Free Software Fondation, Inc.
-# Copyright (C) 2011, 2016, 2017 Free Software Fondation, Inc.
+# Copyright (C) 2011, 2016, 2017, 2019 Free Software Fondation, Inc.
 # This file is distributed under the same license as the gstreamer package.
 # Alexander Shopov <ash@kambanaria.org>, 2005, 2006, 2007, 2008, 2009, 2010.
-# Alexander Shopov <ash@kambanaria.org>, 2011, 2016, 2017.
+# Alexander Shopov <ash@kambanaria.org>, 2011, 2016, 2017, 2019.
 #
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer 1.12.0\n"
+"Project-Id-Version: gstreamer 1.16.0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2019-04-19 00:15+0100\n"
-"PO-Revision-Date: 2017-05-08 11:35+0200\n"
+"POT-Creation-Date: 2019-09-23 11:01+0100\n"
+"PO-Revision-Date: 2019-09-04 08:49+0200\n"
 "Last-Translator: Alexander Shopov <ash@kambanaria.org>\n"
 "Language-Team: Bulgarian <dict@ludost.net>\n"
 "Language: bg\n"
@@ -51,7 +51,7 @@ msgid "LIST"
 msgstr "СПИСЪК"
 
 msgid "Disable colored debugging output"
-msgstr "Спиране на оцветените съобщения за изчистване на грешки"
+msgstr "Без оцветяване на съобщенията за изчистване на грешки"
 
 msgid ""
 "Changes coloring mode of the debug log. Possible modes: off, on, disable, "
@@ -62,7 +62,7 @@ msgstr ""
 "„disable“ (спиране), „auto“ (автоматично), „unix“ (стандартно за unix)"
 
 msgid "Disable debugging"
-msgstr "Спиране на съобщенията за изчистване на грешки"
+msgstr "Без съобщения за изчистване на грешки"
 
 msgid "Enable verbose plugin loading diagnostics"
 msgstr "Включване на подробни съобщения при зареждане на приставка"
@@ -86,14 +86,13 @@ msgstr "ПРИСТАВКИ"
 
 msgid "Disable trapping of segmentation faults during plugin loading"
 msgstr ""
-"Спиране на прихващането на сегментационни грешки по времето на зареждане на "
-"приставка"
+"Без прихващане на сегментационни грешки по времето на зареждане на приставка"
 
 msgid "Disable updating the registry"
-msgstr "Регистърът да не се прочита"
+msgstr "Без прочитане на регистъра"
 
 msgid "Disable spawning a helper process while scanning the registry"
-msgstr "Без стартирането на спомагателен процес при изчитането на регистъра"
+msgstr "Без стартиране на спомагателен процес при изчитането на регистъра"
 
 msgid "GStreamer Options"
 msgstr "Настройки на GStreamer"
@@ -927,7 +926,7 @@ msgid "empty pipeline not allowed"
 msgstr "не е позволен празен конвейер"
 
 msgid "Pipeline construction is invalid, please add queues."
-msgstr ""
+msgstr "Неправилно конструиран конвейер. Добавете опашки."
 
 msgid "A lot of buffers are being dropped."
 msgstr "Много буфери се пропускат."
@@ -1012,7 +1011,7 @@ msgid "Failed after iterations as requested."
 msgstr "Грешка след заявения брой повторения."
 
 msgid "eos-after and error-after can't both be defined."
-msgstr ""
+msgstr "Невъзможно е едновременното задаване на „eos-after“ и „error-after“."
 
 msgid "caps"
 msgstr "възможности"
@@ -1035,9 +1034,9 @@ msgstr "Потокът не съдържа достатъчно данни."
 msgid "Stream contains no data."
 msgstr "Потокът не съдържа никакви данни"
 
-#, fuzzy, c-format
+#, c-format
 msgid "%sImplemented Interfaces%s:\n"
-msgstr "Реализирани интерфейси:\n"
+msgstr "%sРеализирани интерфейси%s:\n"
 
 msgid "readable"
 msgstr "с права за четене"
@@ -1068,9 +1067,9 @@ msgstr ""
 msgid "Blacklisted files:"
 msgstr "Забранени файлове:"
 
-#, fuzzy, c-format
+#, c-format
 msgid "%sTotal count%s: %s"
-msgstr "Общ брой:"
+msgstr "%sОбщ брой%s: %s"
 
 #, c-format
 msgid "%d blacklisted file"
@@ -1140,6 +1139,8 @@ msgid ""
 "Disable colors in output. You can also achieve the same by "
 "setting'GST_INSPECT_NO_COLORS' environment variable to any value."
 msgstr ""
+"Без цветове на изхода. Това може да се постигне и със задаването на "
+"произволна стойност на променливата на средата „GST_INSPECT_NO_COLORS“."
 
 #, c-format
 msgid "Could not load plugin file: %s\n"
@@ -1349,15 +1350,3 @@ msgstr "Конвейерът се ЗАНУЛЯВА…\n"
 
 msgid "Freeing pipeline ...\n"
 msgstr "Конвейерът се освобождава…\n"
-
-#, fuzzy
-#~ msgid "Error creating pipe: %s\n"
-#~ msgstr "Грешка при затварянето на файла „%s“."
-
-#, fuzzy
-#~ msgid "Error forking: %s\n"
-#~ msgstr "Грешка при затварянето на файла „%s“."
-
-#, fuzzy
-#~ msgid "Error writing to console: %s\n"
-#~ msgstr "Грешка при запис във файл „%s“."

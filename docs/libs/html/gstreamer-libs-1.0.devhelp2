@@ -70,7 +70,7 @@
     <keyword type="function" name="gst_aggregator_get_allocator ()" link="GstAggregator.html#gst-aggregator-get-allocator"/>
     <keyword type="function" name="gst_aggregator_simple_get_next_time ()" link="GstAggregator.html#gst-aggregator-simple-get-next-time" since="1.16"/>
     <keyword type="struct" name="struct GstAggregator" link="GstAggregator.html#GstAggregator-struct"/>
-    <keyword type="struct" name="struct GstAggregatorClass" link="GstAggregator.html#GstAggregatorClass"/>
+    <keyword type="struct" name="struct GstAggregatorClass" link="GstAggregator.html#GstAggregatorClass" since="1.14"/>
     <keyword type="macro" name="GST_AGGREGATOR_FLOW_NEED_DATA" link="GstAggregator.html#GST-AGGREGATOR-FLOW-NEED-DATA:CAPS"/>
     <keyword type="property" name="The “latency” property" link="GstAggregator.html#GstAggregator--latency"/>
     <keyword type="property" name="The “min-upstream-latency” property" link="GstAggregator.html#GstAggregator--min-upstream-latency"/>
@@ -82,7 +82,7 @@
     <keyword type="function" name="gst_aggregator_pad_is_eos ()" link="GstAggregatorPad.html#gst-aggregator-pad-is-eos"/>
     <keyword type="function" name="gst_aggregator_pad_has_buffer ()" link="GstAggregatorPad.html#gst-aggregator-pad-has-buffer" since="1.14.1"/>
     <keyword type="struct" name="struct GstAggregatorPad" link="GstAggregatorPad.html#GstAggregatorPad-struct"/>
-    <keyword type="struct" name="struct GstAggregatorPadClass" link="GstAggregatorPad.html#GstAggregatorPadClass"/>
+    <keyword type="struct" name="struct GstAggregatorPadClass" link="GstAggregatorPad.html#GstAggregatorPadClass" since="1.14"/>
     <keyword type="property" name="The “emit-signals” property" link="GstAggregatorPad.html#GstAggregatorPad--emit-signals"/>
     <keyword type="signal" name="The “buffer-consumed” signal" link="GstAggregatorPad.html#GstAggregatorPad-buffer-consumed"/>
     <keyword type="function" name="gst_base_parse_merge_tags ()" link="GstBaseParse.html#gst-base-parse-merge-tags" since="1.6"/>
@@ -317,7 +317,7 @@
     <keyword type="function" name="gst_bit_writer_put_bytes_unchecked ()" link="gstreamer-libs-GstBitWriter.html#gst-bit-writer-put-bytes-unchecked"/>
     <keyword type="function" name="gst_bit_writer_align_bytes ()" link="gstreamer-libs-GstBitWriter.html#gst-bit-writer-align-bytes"/>
     <keyword type="function" name="gst_bit_writer_align_bytes_unchecked ()" link="gstreamer-libs-GstBitWriter.html#gst-bit-writer-align-bytes-unchecked"/>
-    <keyword type="struct" name="struct GstBitWriter" link="gstreamer-libs-GstBitWriter.html#GstBitWriter"/>
+    <keyword type="struct" name="struct GstBitWriter" link="gstreamer-libs-GstBitWriter.html#GstBitWriter" since="1.16"/>
     <keyword type="macro" name="GST_BYTE_READER_INIT()" link="gstreamer-libs-GstByteReader.html#GST-BYTE-READER-INIT:CAPS"/>
     <keyword type="function" name="gst_byte_reader_new ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-new"/>
     <keyword type="function" name="gst_byte_reader_free ()" link="gstreamer-libs-GstByteReader.html#gst-byte-reader-free"/>

@@ -1,3 +1,386 @@
+=== release 1.16.1 ===
+
+2019-09-23 11:01:50 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* ChangeLog:
+	* NEWS:
+	* RELEASE:
+	* configure.ac:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.16.1
+
+2019-09-23 11:01:50 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* docs/plugins/inspect/plugin-coreelements.xml:
+	* docs/plugins/inspect/plugin-coretracers.xml:
+	  Update docs
+
+2019-09-23 11:01:47 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* po/bg.po:
+	* po/de.po:
+	* po/fr.po:
+	* po/hr.po:
+	* po/nb.po:
+	* po/tr.po:
+	  Update translations
+
+2019-09-12 10:09:18 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstelementfactory.c:
+	  element: Enforce that elements created by gst_element_factory_create/make() are floating
+	  Bindings might have a hard time making sure that the reference is indeed
+	  still floating after returning here.
+	  See https://gitlab.freedesktop.org/gstreamer/gstreamer/issues/444
+
+2019-09-12 10:08:39 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstdevice.c:
+	  device: Enforce that elements created by gst_device_create_element() are floating
+	  Bindings might have a hard time making sure that the reference is indeed
+	  still floating after returning here.
+	  See https://gitlab.freedesktop.org/gstreamer/gstreamer/issues/444
+
+2019-09-12 10:03:08 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstdevice.c:
+	  device: gst_device_create_element() is `transfer floating`, not `transfer full`
+	  Fixing the annotation fixes leaking of the created element in all
+	  bindings using GObject-Introspection.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/issues/444
+
+2019-09-07 12:32:40 +0100  Jim Mason <jmason@ibinx.com>
+
+	* plugins/elements/gstelements_private.c:
+	  consolidated IOV_MAX/UIO_MAXIOV handling per GLib + legacy behaviour for osx/ios
+
+2019-09-06 19:23:01 +0100  Jim Mason <jmason@ibinx.com>
+
+	* plugins/elements/gstelements_private.c:
+	  gst_writev: respect IOV_MAX for the writev iovec array #439
+
+2019-09-03 10:38:13 +0200  David Svensson Fors <davidsf@axis.com>
+
+	* gst/gstminiobject.c:
+	  miniobject: free qdata array when the last qdata is removed
+	  In cases with many long-lived buffers that have qdata only very
+	  briefly, the memory overhead of keeping an array of 16 GstQData
+	  structs for each buffer can be significant. We free the array when
+	  the last qdata is removed, like it was done in 1.14.
+	  Fixes #436
+
+2019-09-03 13:44:24 -0400  Nicolas Dufresne <nicolas.dufresne@collabora.com>
+
+	* gst/gstbin.c:
+	  bin: Fix minor race when adding to a bin
+	  This patch simply add a null check around a case where a child may have
+	  been unparented concurrently to the deep_add_remove operation. This was
+	  found by accident in the form of an "IS_GST_OBJECT" assertion, but had
+	  no other known side effect in that test.
+
+2019-08-15 12:56:06 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* libs/gst/check/meson.build:
+	  meson: fix warning about configure_file() install kwarg
+	  The install kwarg on configure_file() was only added in
+	  Meson 0.50 but we're targetting older versions as well,
+	  which caused a warning. The install kwarg is not needed
+	  here as we specify install_dir, so we can just drop it.
+	  Fixes #379
+
+2019-08-14 09:51:55 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Actually handle NEED_DATA return from update_src_caps()
+	  The documentation says that this allows the subclass to signal that it
+	  needs more data before it can decide on caps, so let's actually
+	  implement it that way.
+
+2019-08-13 19:57:08 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Assert if the sink/src pad type that is to be used is not a GstAggregatorPad or subclass thereof
+
+2019-08-13 19:55:59 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Ensure that the source pad is created as a GstAggregatorPad if no type is given in the pad template
+	  Otherwise we would create a GstPad and that causes invalid memory
+	  accesses later.
+
+2019-08-06 10:09:22 +0530  Guillaume Desmottes <guillaume.desmottes@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	  latency: fix custom event leaks
+	  If the element before the sink needs $n buffers to produce one output
+	  buffer, we were reffing $n events and unreffing only one.
+	  Prevent this by using g_object_set_qdata_full() to handle the event
+	  unreffing so we're sure no ref will be lost.
+
+2019-08-02 13:07:58 +0530  Guillaume Desmottes <guillaume.desmottes@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	* plugins/tracers/gstrusage.c:
+	* plugins/tracers/gststats.c:
+	  tracers: set MAY_BE_LEAKED on tracer records
+	  The records are static and so appear as false positives when using those
+	  tracers with the leaks tracer as well.
+	  The leaks tracer was already setting this flag on its record so let's
+	  set it on the other ones as well.
+
+2019-06-20 16:42:01 +0530  Guillaume Desmottes <guillaume.desmottes@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	  latency: display event pointer in logs
+	  This is quite useful for debugging when tracer is reporting the wrong
+	  latency because of an element breaking the events/buffers ordering.
+
+2019-07-22 15:06:20 +0000  Alicia Boya García <ntrrgc@gmail.com>
+
+	* plugins/elements/gstdownloadbuffer.c:
+	  downloadbuffer: Check for flush after seek
+	  In gst_download_buffer_wait_for_data(), when a seek is made with
+	  perform_seek_to_offset() the `qlock` is released temporarily. Therefore,
+	  the flushing condition can be set during this period and should be
+	  checked.
+	  This was not being checked before, causing occasional deadlocks when
+	  GST_DOWNLOAD_BUFFER_WAIT_ADD_CHECK() was called.
+	  GST_DOWNLOAD_BUFFER_WAIT_ADD_CHECK() assumes that the caller has already
+	  checked that we're not flushing before, since this is done when
+	  acquiring the lock; so if we release it temporarily somewhere, we need
+	  to check for flush again.
+	  Without that check, the function would keep waiting for the condition
+	  variable to be notified before checking for flushing condition again,
+	  and that may very well never happen. This was reproduced when during pad
+	  deactivation when running WebKit in gdb.
+
+2019-08-08 13:49:07 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* configure.ac:
+	* gst/gstregistry.c:
+	* meson.build:
+	  registry: Use plugin directory from the build system for relocateable Windows builds
+	  Instead of guessing something based on preprocessor defines and magic.
+
+2019-08-06 00:05:22 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* gst/gstmessage.h:
+	  message: fix up enum value for GST_MESSAGE_DEVICE_CHANGED
+	  This was added in 1.16 and accidentally duplicated the value of
+	  the existing GST_MESSAGE_REDIRECT.
+	  As the only known user of this message is GStreamer core itself,
+	  and it is quite an obscure message, it seems best to just fix up
+	  the enum value even if that technically breaks API.
+	  Fixes #418
+
+2019-07-30 21:40:47 -0400  Doug Nazar <nazard@nazar.ca>
+
+	* gst/gstinfo.c:
+	  info: Fix deadlock in gst_ring_buffer_logger_log
+	  gst_ring_buffer_logger_log calls several functions while formatting
+	  the message which may in turn log a message while we already hold
+	  the mutex. Do all formatting first before acquiring the mutex to
+	  avoid this and reduce the time we hold the mutex.
+
+2019-07-19 21:57:09 -0400  Nicolas Dufresne <nicolas.dufresne@collabora.com>
+
+	* plugins/elements/gstidentity.c:
+	  identity: Non-live upstream have no max latency
+	  sync=TRUE implementation changes the latency query of a non-live
+	  upstream into live, though it wrongly set the upstream max latency to 0.
+	  As non-live sources won't loose data if we wait longer, this should have
+	  been reported as have no max latency limite (-1).
+
+2019-07-11 17:53:53 +0100  Philippe Normand <philn@igalia.com>
+
+	* plugins/elements/gstidentity.c:
+	  identity: Fix the ts-offset property getter
+	  Previous code was a copy/paste from the property setter function.
+
+2019-07-08 19:09:03 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Make parsing of explicit sink pad names more robust
+	  When passing "sink_%d" twice to aggregator before it would create two
+	  pads called "sink_0", because it failed to parse "%d" as integer and
+	  used 0 instead then.
+	  Instead validate that parsing was actually successful and also don't
+	  even try to parse if the requested pad name contains a '%'.
+
+2019-06-29 09:22:05 -0400  Nicolas Dufresne <nicolas.dufresne@collabora.com>
+
+	* gst/gstbufferpool.c:
+	* tests/check/gst/gstbufferpool.c:
+	  bufferpool: Fix the buffer size reset code
+	  The offset in gst_buffer_resize() is additive. So to move back the
+	  offset to zero, we need to pass the opposite of the current offset. This
+	  was raised through the related unit test failingon 32bit as on 64bit
+	  the alignment padding was enough to hide the issue. The test was
+	  modified to also fail on 64bit. This patch will remove spurious
+	  assertions like:
+	  assertion 'bufmax >= bufoffs + offset + size' failed
+	  Fixes #316
+
+2019-06-20 13:49:14 +0530  Guillaume Desmottes <guillaume.desmottes@collabora.com>
+
+	* plugins/elements/gstelements_private.c:
+	  gstelements_private: sync gst_buffer_get_flags_string() with new flags
+
+2019-06-19 23:29:24 -0400  Thibault Saunier <tsaunier@igalia.com>
+
+	* plugins/elements/gstmultiqueue.c:
+	  multiqueue: never unref queries we do not own
+	  The `query` argument of gst_pad_query is "transfer none".
+	  Query objects are "borrowed" by the pad query handlers and those
+	  should never unref them.
+	  This was leading to double freed queries in a very racy way with nested
+	  GESTimelines.
+
+2019-06-04 17:55:30 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* plugins/elements/gstconcat.c:
+	  concat: Reset last_stop on FLUSH_STOP too
+	  Otherwise when seeking backwards we would keep the last_stop at the last
+	  position we saw until playback passed the seek position again, and if
+	  switching to the next pad happens in the meantime we would set the wrong
+	  offset in the outgoing segment.
+
+2019-06-04 17:56:30 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* plugins/elements/gstconcat.c:
+	  concat: Improve debug output a bit
+
+2015-07-29 11:48:33 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: fix flow-return boolean return type mismatch
+	  Not that it matters, since we don't check the return value
+	  anyway. Unclear why the aggregator pad flush function should
+	  have a return value at all really, and perhaps it should be
+	  called reset anyway. Spotted by dv on irc.
+
+2019-05-13 16:42:04 +0200  Edward Hervey <bilboed@bilboed.com>
+
+	* gst/gstpad.c:
+	* tests/check/gst/gstpad.c:
+	  gstpad: Probes that return HANDLED can reset the data info field
+	  Before GST_PAD_PROBE_HANDLED was introduced, we had to handle the case
+	  where some probes would reset the probe info data field to NULL. This would
+	  be considered an invalid use-case.
+	  But with GST_PAD_PROBE_HANDLED it is totally fine to reset that, since
+	  the probe has "handled" it.
+
+2019-05-13 13:24:42 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/meson.build:
+	  meson: Link to objects instea of static helper library
+	  Otherwise the objects from that static helper library are not included
+	  in the gstreamer-1.0 static library. This was supposed to be fixed in
+	  Meson, but the pull request hasn't been merged yet:
+	  https://github.com/mesonbuild/meson/pull/3939
+	  Closes https://gitlab.freedesktop.org/gstreamer/gstreamer/issues/398
+
+2019-05-13 14:42:28 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/meson.build:
+	  meson: Pass -DGST_STATIC_COMPILATION for static builds
+	  This is only needed on Windows when building with MSVC, but it is safe
+	  to pass it everywhere.
+	  Closes https://gitlab.freedesktop.org/gstreamer/gstreamer/issues/398
+
+2019-05-11 18:21:19 +0200  Michael Olbrich <m.olbrich@pengutronix.de>
+
+	* libs/gst/helpers/meson.build:
+	  meson: set correct install path for gdb helper
+	  The original version of the patch used glib-2.0 but that was later changed
+	  to gstreamer-1.0 for autotools. The meson file was forgotten.
+	  Fix the path to match the one used in libgstreamer-gdb.py.in.
+
+2019-05-08 12:11:50 +0200  Niels De Graef <niels.degraef@barco.com>
+
+	* gst/gstpromise.h:
+	  gst: Add support for g_autoptr(GstPromise)
+
+2019-05-01 15:46:56 +0200  Niklas Hambüchen <mail@nh2.me>
+
+	* gst/parse/get_flex_version.py:
+	  Make get_flex_version.py script executable
+	  Like all other scripts in the same dir.
+	  It has a hashbang, so it should be executable.
+
+2019-04-24 18:22:06 +0200  Andoni Morales Alastruey <ylatuya@gmail.com>
+
+	* tools/gst-inspect.c:
+	  gst-inspect: fix unused-const-variable error in windows
+	  ../tools/gst-inspect.c:44:20: error: 'DEFAULT_PAGER' defined but not used [-Werror=unused-const-variable=]
+
+2019-04-23 17:33:34 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/base.h:
+	  base: Include gstbitwriter.h in the single-include header
+
+2019-04-23 18:00:59 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstbitwriter.h:
+	  bitwriter: Fix inclusion of header in C++ code
+	  ../subprojects/gstreamer/libs/gst/base/gstbitwriter.h: In function 'gboolean _gst_bit_writer_check_remaining(GstBitWriter*, guint32)':
+	  ../subprojects/gstreamer/libs/gst/base/gstbitwriter.h:161:31: error: invalid conversion from 'gpointer' {aka 'void*'} to 'guint8*' {aka 'unsigned char*'} [-fpermissive]
+	  bitwriter->data = g_realloc (bitwriter->data, (new_bit_size >> 3));
+	  ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+2019-04-23 12:31:07 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstbitwriter.h:
+	  bitwriter: Mark the whole type as Since: 1.16
+
+2019-04-23 14:39:48 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstcaps.c:
+	  caps: Add Since: 1.16 marker to gst_caps_copy()
+
+2019-04-23 14:54:03 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.h:
+	  aggregator: Mark all public structs as Since: 1.14
+
+2019-04-23 15:07:08 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstbaseparse.h:
+	* libs/gst/base/gstbasetransform.h:
+	* libs/gst/base/gstcollectpads.h:
+	* libs/gst/controller/gstinterpolationcontrolsource.h:
+	  libs: Fix various Since markers
+
+2019-04-23 15:08:18 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstallocator.h:
+	* gst/gstbin.h:
+	* gst/gstbuffer.c:
+	* gst/gstbuffer.h:
+	* gst/gstbufferpool.h:
+	* gst/gstclock.h:
+	* gst/gstelement.h:
+	* gst/gstelementfactory.h:
+	* gst/gsterror.h:
+	* gst/gstevent.h:
+	* gst/gstmemory.h:
+	* gst/gstmessage.h:
+	* gst/gstminiobject.h:
+	* gst/gstobject.h:
+	* gst/gstpad.h:
+	* gst/gstparse.h:
+	* gst/gstplugin.h:
+	* gst/gstsegment.h:
+	* gst/gststructure.c:
+	* gst/gstsystemclock.h:
+	  gst: Fix various Since markers
+
+2019-05-02 12:35:17 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* .gitlab-ci.yml:
+	  ci: use template from 1.16 branch
+
 === release 1.16.0 ===
 
 2019-04-19 00:15:21 +0100  Tim-Philipp Müller <tim@centricular.com>
