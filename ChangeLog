@@ -1,3 +1,119 @@
+=== release 1.16.2 ===
+
+2019-12-03 10:57:30 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* ChangeLog:
+	* NEWS:
+	* RELEASE:
+	* configure.ac:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.16.2
+
+2019-12-03 10:57:30 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* docs/plugins/inspect/plugin-coreelements.xml:
+	* docs/plugins/inspect/plugin-coretracers.xml:
+	  Update docs
+
+2019-12-03 10:57:29 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* po/hu.po:
+	  Update translations
+
+2019-12-03 10:40:37 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* gst/parse/grammar.y:
+	* gst/parse/meson.build:
+	  Revert "gst/parse: define pure-parser depending on bison version"
+	  This reverts commit 77141834bb5d124fb5781ed3be6230cc66cb42de.
+	  This breaks the autotools build and it seems too much effort to
+	  fix that up just to fix a bison warning.
+
+2019-11-27 15:47:32 +0100  Edward Hervey <bilboed@bilboed.com>
+
+	* plugins/tracers/gstlatency.c:
+	  tracers: Don't leak temporary GstStructure
+	  CID: 1455462
+
+2019-08-26 12:48:28 +0200  Víctor Manuel Jáquez Leal <vjaquez@igalia.com>
+
+	* gst/parse/grammar.y.in:
+	* gst/parse/meson.build:
+	  gst/parse: define pure-parser depending on bison version
+	  After release bison 2.5 the declaration %pure-parser was deprecated
+	  in favor of %define api.pure
+	  Nonetheless, until bison 3.4, the declaration was treated as backward
+	  compatibility, but now bison shows a warning:
+	  warning: deprecated directive, use ‘%define api.pure’
+	  The patch's approach is to handle both directives according with the
+	  used bison's version, by string replacement at source configuration
+	  stage.
+
+2019-10-25 01:41:27 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* plugins/elements/gsttee.c:
+	  tee: First deactivate the pad and then remove it when releasing pads
+	  This reverts a96002bb28c21b30fb9338a4620ad20504c70aa5, which is not
+	  necessary anymore. If we release the pad after removing it then none of
+	  the deactivation code will actually be called because the pad has no
+	  parent anymore, and we require a parent on the pad for deactivation to
+	  happen.
+	  This can then, among other things, cause a streaming thread to be still
+	  stuck in a pad probe because the pad was never flushed, and waiting
+	  there forever because now the pad will actually never be flushed anymore.
+
+2019-10-25 01:39:50 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* plugins/elements/gsttee.c:
+	  tee: Check for the removed pad flag also in the slow pushing path
+	  If a pad is currently being released we don't want to forward the
+	  FLUSHING flow return but instead consider it as NOT_LINKED. FLUSHING
+	  would also cause upstream to be FLUSHING.
+	  This part was missed in a3c4a3201a705eb1934ceeea34d1ca42d4571c07 and
+	  resulted in a different (and wrong) workaround in
+	  a96002bb28c21b30fb9338a4620ad20504c70aa5.
+
+2019-10-25 01:39:05 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* plugins/elements/gsttee.c:
+	  tee: Lock mutex before reading the removed flag of the pads
+	  Otherwise we're not guaranteed to read the very latest value that
+	  another thread might've written in there when the pad was released, and
+	  could instead work with an old value.
+
+2019-09-30 11:34:51 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstbin.c:
+	  bin: Drop need-context messages without source instead of crashing
+
+2019-09-30 11:49:35 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstbuffer.c:
+	* gst/gstcaps.c:
+	  gst: Don't pass miniobjects to GST_DEBUG_OBJECT() and similar macros
+	  The argument must be at least a GObject according to the GstLogFunction
+	  definition, and while the default C log function handles miniobjects
+	  just fine this is crashing bindings and user-supplied log functions that
+	  (rightfully) don't expect anything but GObjects.
+
+2019-08-20 01:02:48 +0900  Seungha Yang <seungha.yang@navercorp.com>
+
+	* tools/gst-launch.c:
+	  gst-launch: Use gst_print* instead of g_print* to fix broken stdout on Windows
+	  Concurrent Windows' colored debug message and g_print will print
+	  string hard to read. Instead, use gst_print* which serialize
+	  debug output and the APIs call.
+
+2019-08-20 00:59:15 +0900  Seungha Yang <seungha.yang@navercorp.com>
+
+	* gst/gstinfo.c:
+	  info: Take lock around all prinf on Windows
+	  On Windows, concurrent colored gstreamr debug output and usual
+	  stdout/stderr string will cause broken output on terminal.
+	  Since it's OS specific behavior, that's hard to completely avoid it
+	  but we can protect it at least among our printing interfaces side.
+
 === release 1.16.1 ===
 
 2019-09-23 11:01:50 +0100  Tim-Philipp Müller <tim@centricular.com>
