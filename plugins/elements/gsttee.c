@@ -460,12 +460,8 @@ gst_tee_release_pad (GstElement * element, GstPad * pad)
   }
   GST_OBJECT_UNLOCK (tee);
 
-  gst_object_ref (pad);
-  gst_element_remove_pad (GST_ELEMENT_CAST (tee), pad);
-
   gst_pad_set_active (pad, FALSE);
-
-  gst_object_unref (pad);
+  gst_element_remove_pad (GST_ELEMENT_CAST (tee), pad);
 
   if (changed) {
     gst_tee_notify_alloc_pad (tee);
@@ -899,12 +895,14 @@ gst_tee_handle_data (GstTee * tee, gpointer data, gboolean is_list)
       ret = gst_pad_push (pad, GST_BUFFER_CAST (data));
     }
 
+    GST_OBJECT_LOCK (tee);
     if (GST_TEE_PAD_CAST (pad)->removed)
       ret = GST_FLOW_NOT_LINKED;
 
     if (ret == GST_FLOW_NOT_LINKED && tee->allow_not_linked) {
       ret = GST_FLOW_OK;
     }
+    GST_OBJECT_UNLOCK (tee);
 
     gst_object_unref (pad);
 
@@ -943,6 +941,8 @@ restart:
 
       GST_OBJECT_LOCK (tee);
       /* keep track of which pad we pushed and the result value */
+      if (GST_TEE_PAD_CAST (pad)->removed)
+        ret = GST_FLOW_NOT_LINKED;
       GST_TEE_PAD_CAST (pad)->pushed = TRUE;
       GST_TEE_PAD_CAST (pad)->result = ret;
       gst_object_unref (pad);
