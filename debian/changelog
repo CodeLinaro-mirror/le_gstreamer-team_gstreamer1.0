@@ -1,3 +1,9 @@
+gstreamer1.0 (1.16.2-2) unstable; urgency=medium
+
+  * Source-only re-upload.
+
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 09 Dec 2019 12:00:46 +0200
+
 gstreamer1.0 (1.16.2-1) unstable; urgency=medium
 
   * New upstream release
