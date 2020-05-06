@@ -8,6 +8,8 @@ gstreamer1.0 (1.16.2-3) UNRELEASED; urgency=medium
   [ Debian Janitor ]
   * Trim trailing whitespace.
   * Use secure copyright file specification URI.
+  * Wrap long lines in changelog entries: 1.5.1-2, 0.11.94-1, 0.11.93-2,
+    0.11.90-1.
 
  -- Sebastian Dröge <slomo@debian.org>  Wed, 29 Apr 2020 19:30:18 +0300
 
@@ -751,7 +753,8 @@ gstreamer1.0 (0.11.90-1) experimental; urgency=low
   [ Olivier Naudan ]
   * Imported Upstream version 0.11.90
   * debian/rules and debian/changelog: migration to 1.0
-  * debian/control*: aligned libglib2.0-dev version requirement with configure.ac
+  * debian/control*: aligned libglib2.0-dev version requirement with
+    configure.ac
   * gst-codec-info.c: migration to gst 1.0
   * Updated debian/patches to use GST_API_VERSION
   * Refreshed 99_ltmain_as-needed.patch to apply cleanly again
