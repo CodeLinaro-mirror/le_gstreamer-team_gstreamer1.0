@@ -10,6 +10,8 @@ gstreamer1.0 (1.16.2-3) UNRELEASED; urgency=medium
   * Use secure copyright file specification URI.
   * Wrap long lines in changelog entries: 1.5.1-2, 0.11.94-1, 0.11.93-2,
     0.11.90-1.
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Name (from
+    ./configure), Repository, Repository-Browse.
 
  -- Sebastian Dröge <slomo@debian.org>  Wed, 29 Apr 2020 19:30:18 +0300
 
