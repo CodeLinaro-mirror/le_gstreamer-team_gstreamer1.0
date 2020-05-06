@@ -1,8 +1,12 @@
 gstreamer1.0 (1.16.2-3) UNRELEASED; urgency=medium
 
+  [ Sebastian Dröge ]
   * debian/gstreamer-tools-abi.install,
     debian/gstreamer-tools-abi.manpages:
     + Add gst-stats-1.0 tool.
+
+  [ Debian Janitor ]
+  * Trim trailing whitespace.
 
  -- Sebastian Dröge <slomo@debian.org>  Wed, 29 Apr 2020 19:30:18 +0300
 
@@ -562,7 +566,7 @@ gstreamer1.0 (1.2.3-1) unstable; urgency=medium
 
   [ Iain Lane ]
   * Run libtoolize in autoreconf. Drop ltmain-as-needed patch and use
-    dh_autoreconf --as-needed. 
+    dh_autoreconf --as-needed.
 
   [ Sebastian Dröge ]
   * New upstream bugfix release:
