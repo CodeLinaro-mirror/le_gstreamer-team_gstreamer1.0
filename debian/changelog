@@ -7,6 +7,7 @@ gstreamer1.0 (1.16.2-3) UNRELEASED; urgency=medium
 
   [ Debian Janitor ]
   * Trim trailing whitespace.
+  * Use secure copyright file specification URI.
 
  -- Sebastian Dröge <slomo@debian.org>  Wed, 29 Apr 2020 19:30:18 +0300
 
