@@ -17,16 +17,16 @@ LDFLAGS += -Wl,-z,defs -Wl,-O1 -Wl,--as-needed
 DISTRO = "$(shell dpkg-vendor --query vendor)"
 
 GST_PACKAGE_NAME := "GStreamer (unknown Debian derivative)"
-GST_PACKAGE_ORIGIN="http://packages.qa.debian.org/gstreamer$(gst_abi)"
+GST_PACKAGE_ORIGIN="http://packages.qa.debian.org/gstreamer1.0"
 
 ifeq ($(DISTRO),"Debian")
 GST_PACKAGE_NAME := "GStreamer (Debian)"
-GST_PACKAGE_ORIGIN="http://packages.qa.debian.org/gstreamer$(gst_abi)"
+GST_PACKAGE_ORIGIN="http://packages.qa.debian.org/gstreamer1.0"
 endif
 
 ifeq ($(DISTRO),"Ubuntu")
 GST_PACKAGE_NAME := "GStreamer (Ubuntu)"
-GST_PACKAGE_ORIGIN="https://launchpad.net/distros/ubuntu/+source/gstreamer$(gst_abi)"
+GST_PACKAGE_ORIGIN="https://launchpad.net/distros/ubuntu/+source/gstreamer1.0"
 endif
 
 conf_flags = --libdir=lib/$(DEB_HOST_MULTIARCH) --libexecdir=lib/$(DEB_HOST_MULTIARCH)/gstreamer1.0
@@ -67,7 +67,7 @@ override_dh_strip:
 	dh_strip --remaining-packages
 
 override_dh_makeshlibs:
-	dh_makeshlibs -plibgstreamer1.0-0 -X "/usr/lib/$(DEB_HOST_MULTIARCH)/gstreamer-$(gst_abi)" -V 'libgstreamer1.0-0 (>= $(gst_version))' -- -c4
+	dh_makeshlibs -plibgstreamer1.0-0 -X "/usr/lib/$(DEB_HOST_MULTIARCH)/gstreamer-1.0" -V 'libgstreamer1.0-0 (>= $(gst_version))' -- -c4
 
 override_dh_install:
 	dh_install
