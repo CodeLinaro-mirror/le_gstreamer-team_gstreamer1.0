@@ -407,10 +407,7 @@ main (int argc, char **argv)
   guint major, minor, micro, nano;
   gint i;
 
-  if (!g_thread_supported ())
-    g_thread_init (NULL);
-
-  gst_init (NULL, NULL);
+  gst_init (&argc, &argv);
 
   gst_version (&major, &minor, &micro, &nano);
 

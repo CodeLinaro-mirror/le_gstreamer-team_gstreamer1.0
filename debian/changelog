@@ -1,9 +1,8 @@
-gstreamer1.0 (1.16.2-3) UNRELEASED; urgency=medium
+gstreamer1.0 (1.17.1-1) experimental; urgency=medium
 
   [ Sebastian Dröge ]
-  * debian/gstreamer-tools-abi.install,
-    debian/gstreamer-tools-abi.manpages:
-    + Add gst-stats-1.0 tool.
+  * New upstream development release.
+  * Completely redo and modernize the packaging.
 
   [ Debian Janitor ]
   * Trim trailing whitespace.
