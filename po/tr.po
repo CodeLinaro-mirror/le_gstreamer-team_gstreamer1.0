@@ -5,10 +5,10 @@
 # Mehmet Kececi <mkececi@mehmetkececi.com>, 2017, 2019.
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer 1.16.0\n"
+"Project-Id-Version: gstreamer 1.15.1\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2019-12-03 10:57+0000\n"
-"PO-Revision-Date: 2019-09-03 19:52+0300\n"
+"POT-Creation-Date: 2019-02-26 11:37+0000\n"
+"PO-Revision-Date: 2019-01-25 11:54+0300\n"
 "Last-Translator: Mehmet Kececi <mkececi@mehmetkececi.com>\n"
 "Language-Team: Turkish <gnu-tr-u12a@lists.sourceforge.net>\n"
 "Language: tr\n"
@@ -279,7 +279,7 @@ msgid "artist"
 msgstr "sanatçı"
 
 msgid "person(s) responsible for the recording"
-msgstr "kayıttan sorumlu olan kişi(ler)"
+msgstr "kayıttan sorumlu olan kişi ya da kişiler"
 
 msgid "artist sortname"
 msgstr "sanatçı sıralamadı"
@@ -443,7 +443,7 @@ msgid "performer"
 msgstr "icra eden"
 
 msgid "person(s) performing"
-msgstr "icra eden kişi(ler)"
+msgstr "icra eden kişi"
 
 msgid "composer"
 msgstr "düzenleyici"
@@ -868,7 +868,7 @@ msgstr "%s i %s e bağlanamadı, %s başlıklar işlenemiyor %s"
 
 #, c-format
 msgid "could not link %s to %s, neither element can handle caps %s"
-msgstr "%s i %s e bağlanamadı, hiçbir başlık öğesi işlenemiyor %s"
+msgstr "%s i %s e bağlanamadı, hiçbir başlık başlık öğesi işlenemiyor %s"
 
 #, c-format
 msgid "could not link %s to %s with caps %s"
@@ -896,7 +896,7 @@ msgstr "\"%s\" kabiliyetleri ayrıştırılamadı"
 
 #, c-format
 msgid "no sink element for URI \"%s\""
-msgstr "\"%s\" URI'si için sink öğesi yok"
+msgstr "\"%s\" URI'si için 'sink' öğesi yok"
 
 #, c-format
 msgid "no source element for URI \"%s\""
@@ -1125,7 +1125,7 @@ msgid ""
 "Disable colors in output. You can also achieve the same by "
 "setting'GST_INSPECT_NO_COLORS' environment variable to any value."
 msgstr ""
-"Çıktıda renkleri devre dışı bırakın. Aynı zamanda'GST_INSPECT_NO_COLORS' "
+"Çıktıda renkleri devre dışı bırakın. Aynı zamanda 'GST_INSPECT_NO_COLORS' "
 "ortam değişkenini herhangi bir değere ayarlayarak da aynı şekilde elde "
 "edebilirsiniz."
 

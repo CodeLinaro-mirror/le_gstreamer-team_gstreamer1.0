@@ -19,7 +19,7 @@
  * Boston, MA 02110-1301, USA.
  */
 /**
- * SECTION:element-latencytracer
+ * SECTION:tracer-latency
  * @short_description: log processing latency stats
  *
  * A tracing module that determines src-to-sink latencies by injecting custom
@@ -506,9 +506,15 @@ gst_latency_tracer_constructed (GObject * object)
   params_struct = gst_structure_from_string (tmp, NULL);
   g_free (tmp);
 
-  /* Read the flags if available */
   if (params_struct) {
-    const gchar *flags = gst_structure_get_string (params_struct, "flags");
+    const gchar *name, *flags;
+    /* Set the name if assigned */
+    name = gst_structure_get_string (params_struct, "name");
+    if (name)
+      gst_object_set_name (GST_OBJECT (self), name);
+
+    /* Read the flags if available */
+    flags = gst_structure_get_string (params_struct, "flags");
 
     self->flags = 0;
 

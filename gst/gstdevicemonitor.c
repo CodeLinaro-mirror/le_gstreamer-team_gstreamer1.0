@@ -98,6 +98,9 @@
 #include "gst_private.h"
 #include "gstdevicemonitor.h"
 
+GST_DEBUG_CATEGORY_STATIC (devicemonitor_debug);
+#define GST_CAT_DEFAULT devicemonitor_debug
+
 struct _GstDeviceMonitorPrivate
 {
   gboolean started;
@@ -187,6 +190,8 @@ gst_device_monitor_class_init (GstDeviceMonitorClass * klass)
   object_class->set_property = gst_device_monitor_set_property;
   object_class->dispose = gst_device_monitor_dispose;
 
+  GST_DEBUG_CATEGORY_INIT (devicemonitor_debug, "devicemonitor", 0,
+      "debugging info for the device monitor");
   g_object_class_install_property (object_class, PROP_SHOW_ALL,
       g_param_spec_boolean ("show-all", "Show All",
           "Show all devices, even those from hidden providers",
@@ -379,6 +384,13 @@ again:
   devices = NULL;
   hidden = NULL;
 
+  for (i = 0; i < monitor->priv->providers->len; i++) {
+    GstDeviceProvider *provider =
+        g_ptr_array_index (monitor->priv->providers, i);
+
+    update_hidden_providers_list (&hidden, provider);
+  }
+
   cookie = monitor->priv->cookie;
 
   for (i = 0; i < monitor->priv->providers->len; i++) {
@@ -393,7 +405,6 @@ again:
       tmpdev = gst_device_provider_get_devices (provider);
 
       GST_OBJECT_LOCK (monitor);
-      update_hidden_providers_list (&hidden, provider);
     } else {
       tmpdev = NULL;
     }
@@ -889,7 +900,7 @@ gst_device_monitor_set_show_all_devices (GstDeviceMonitor * monitor,
  * gst_device_monitor_get_show_all_devices:
  * @monitor: a #GstDeviceMonitor
  *
- * Get if @monitor is curretly showing all devices, even those from hidden
+ * Get if @monitor is currently showing all devices, even those from hidden
  * providers.
  *
  * Returns: %TRUE when all devices will be shown.

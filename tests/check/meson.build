@@ -78,6 +78,7 @@ core_tests = [
   [ 'libs/typefindhelper.c' ],
   [ 'libs/queuearray.c' ],
   [ 'elements/capsfilter.c', not gst_registry ],
+  [ 'elements/clocksync.c', not gst_registry or not gst_parse ],
   [ 'elements/concat.c', not gst_registry ],
   [ 'elements/dataurisrc.c', not gst_registry ],
   [ 'elements/fakesrc.c', not gst_registry ],
@@ -87,6 +88,7 @@ core_tests = [
   [ 'elements/filesrc.c', not gst_registry ],
   [ 'elements/funnel.c', not gst_registry ],
   [ 'elements/identity.c', not gst_registry or not gst_parse ],
+  [ 'elements/leaks.c' ],
   [ 'elements/multiqueue.c', not gst_registry ],
   [ 'elements/selector.c', not gst_registry ],
   [ 'elements/streamiddemux.c', not gst_registry ],
@@ -111,7 +113,7 @@ core_tests = [
 ]
 
 # Make sure our headers are C++ clean
-if add_languages('cpp', required : false)
+if add_languages('cpp', native: false, required: false)
   core_tests += [
     [ 'gst/gstcpp.cc', not gst_registry ],
     [ 'libs/gstlibscpp.cc', false ],

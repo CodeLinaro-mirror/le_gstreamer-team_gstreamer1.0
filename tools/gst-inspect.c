@@ -225,7 +225,7 @@ print_factory_details_info (GstElementFactory * factory)
 {
   gchar **keys, **k;
   GstRank rank;
-  char s[20];
+  char s[40];
 
   rank = gst_plugin_feature_get_rank (GST_PLUGIN_FEATURE (factory));
   n_print ("%sFactory Details:%s\n", HEADING_COLOR, RESET_COLOR);
@@ -340,7 +340,8 @@ flags_to_string (GFlagsValue * vals, guint flags)
   G_PARAM_LAX_VALIDATION |  G_PARAM_STATIC_STRINGS | \
   G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_DEPRECATED | \
   GST_PARAM_CONTROLLABLE | GST_PARAM_MUTABLE_PLAYING | \
-  GST_PARAM_MUTABLE_PAUSED | GST_PARAM_MUTABLE_READY)
+  GST_PARAM_MUTABLE_PAUSED | GST_PARAM_MUTABLE_READY | \
+  GST_PARAM_CONDITIONALLY_AVAILABLE)
 
 static int
 sort_gparamspecs (GParamSpec ** a, GParamSpec ** b)
@@ -412,6 +413,11 @@ print_object_properties_info (GObject * obj, GObjectClass * obj_class,
     }
     if (param->flags & GST_PARAM_CONTROLLABLE) {
       g_print (", %s%s%s", PROP_ATTR_VALUE_COLOR, _("controllable"),
+          RESET_COLOR);
+      first_flag = FALSE;
+    }
+    if (param->flags & GST_PARAM_CONDITIONALLY_AVAILABLE) {
+      g_print (", %s%s%s", PROP_ATTR_VALUE_COLOR, _("conditionally available"),
           RESET_COLOR);
       first_flag = FALSE;
     }
@@ -1610,7 +1616,7 @@ print_typefind_info (GstPluginFeature * feature, gboolean print_names)
   GstPlugin *plugin;
   GstCaps *caps;
   GstRank rank;
-  char s[20];
+  char s[40];
   const gchar *const *extensions;
 
   factory = GST_TYPE_FIND_FACTORY (gst_plugin_feature_load (feature));
@@ -2077,11 +2083,16 @@ main (int argc, char *argv[])
   }
 #elif defined(G_OS_WIN32)
   {
+    /* g_log_writer_supports_color is available since 2.50.0 */
+#if GLIB_CHECK_VERSION(2,50,0)
     gint fd = _fileno (stdout);
     /* On Windows 10, g_log_writer_supports_color will also setup the console
      * so that it correctly interprets ANSI VT sequences if it's supported */
     if (!_isatty (fd) || !g_log_writer_supports_color (fd))
       colored_output = FALSE;
+#else
+    colored_output = FALSE;
+#endif
   }
 #endif
 

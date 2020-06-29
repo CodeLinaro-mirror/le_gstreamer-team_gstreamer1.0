@@ -112,6 +112,7 @@ static GstMessageQuarks message_quarks[] = {
   {GST_MESSAGE_STREAM_COLLECTION, "stream-collection", 0},
   {GST_MESSAGE_STREAMS_SELECTED, "streams-selected", 0},
   {GST_MESSAGE_REDIRECT, "redirect", 0},
+  {GST_MESSAGE_INSTANT_RATE_REQUEST, "instant-rate-request", 0},
   {0, NULL, 0}
 };
 
@@ -2435,6 +2436,7 @@ gst_message_set_group_id (GstMessage * message, guint group_id)
   g_return_if_fail (GST_IS_MESSAGE (message));
   g_return_if_fail (GST_MESSAGE_TYPE (message) == GST_MESSAGE_STREAM_START);
   g_return_if_fail (gst_message_is_writable (message));
+  g_return_if_fail (group_id != GST_GROUP_ID_INVALID);
 
   structure = GST_MESSAGE_STRUCTURE (message);
   gst_structure_id_set (structure, GST_QUARK (GROUP_ID), G_TYPE_UINT, group_id,
@@ -3050,8 +3052,8 @@ gst_message_parse_streams_selected (GstMessage * message,
  * such as bitrate statistics for the given location.
  *
  * By default, message recipients should treat entries in the order they are
- * stored. The recipient should therefore try entry #0 first, and if this
- * entry is not acceptable or working, try entry #1 etc. Senders must make
+ * stored. The recipient should therefore try entry \#0 first, and if this
+ * entry is not acceptable or working, try entry \#1 etc. Senders must make
  * sure that they add entries in this order. However, recipients are free to
  * ignore the order and pick an entry that is "best" for them. One example
  * would be a recipient that scans the entries for the one with the highest
@@ -3265,4 +3267,60 @@ gst_message_get_num_redirect_entries (GstMessage * message)
       && (size == gst_value_list_get_size (entry_taglists_gvalue)), 0);
 
   return size;
+}
+
+/**
+ * gst_message_new_instant_rate_request:
+ * @src: The #GstObject that posted the message
+ * @rate_multiplier: the rate multiplier factor that should be applied
+ *
+ * Creates a new instant-rate-request message. Elements handling the
+ * instant-rate-change event must post this message. The message is
+ * handled at the pipeline, and allows the pipeline to select the
+ * running time when the rate change should happen and to send an
+ * @GST_EVENT_INSTANT_RATE_SYNC_TIME event to notify the elements
+ * in the pipeline.
+ *
+ * Returns: a newly allocated #GstMessage
+ *
+ * Since: 1.18
+ */
+GstMessage *
+gst_message_new_instant_rate_request (GstObject * src, gdouble rate_multiplier)
+{
+  GstStructure *structure;
+  GstMessage *message;
+
+  g_return_val_if_fail (rate_multiplier != 0.0, NULL);
+
+  structure = gst_structure_new_id (GST_QUARK (MESSAGE_INSTANT_RATE_REQUEST),
+      GST_QUARK (RATE), G_TYPE_DOUBLE, rate_multiplier, NULL);
+  message =
+      gst_message_new_custom (GST_MESSAGE_INSTANT_RATE_REQUEST, src, structure);
+
+  return message;
+}
+
+/**
+ * gst_message_parse_instant_rate_request:
+ * @message: a #GstMessage of type %GST_MESSAGE_INSTANT_RATE_REQUEST
+ * @rate_multiplier: (out) (allow-none): return location for the rate, or %NULL
+ *
+ * Parses the rate_multiplier from the instant-rate-request message.
+ *
+ * Since: 1.18
+ */
+void
+gst_message_parse_instant_rate_request (GstMessage * message,
+    gdouble * rate_multiplier)
+{
+  GstStructure *structure;
+
+  g_return_if_fail (GST_IS_MESSAGE (message));
+  g_return_if_fail (GST_MESSAGE_TYPE (message) ==
+      GST_MESSAGE_INSTANT_RATE_REQUEST);
+
+  structure = GST_MESSAGE_STRUCTURE (message);
+  gst_structure_id_get (structure, GST_QUARK (RATE), G_TYPE_DOUBLE,
+      rate_multiplier, NULL);
 }

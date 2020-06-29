@@ -234,71 +234,78 @@ _is_span (GstMemory ** mem, gsize len, gsize * poffset, GstMemory ** parent)
 }
 
 static GstMemory *
-_get_merged_memory (GstBuffer * buffer, guint idx, guint length)
+_actual_merged_memory (GstBuffer * buffer, guint idx, guint length)
 {
   GstMemory **mem, *result = NULL;
-
-  GST_CAT_LOG (GST_CAT_BUFFER, "buffer %p, idx %u, length %u", buffer, idx,
-      length);
+  GstMemory *parent = NULL;
+  gsize size, poffset = 0;
 
   mem = GST_BUFFER_MEM_ARRAY (buffer);
 
-  if (G_UNLIKELY (length == 0)) {
-    result = NULL;
-  } else if (G_LIKELY (length == 1)) {
-    result = gst_memory_ref (mem[idx]);
+  size = gst_buffer_get_sizes_range (buffer, idx, length, NULL, NULL);
+
+  if (G_UNLIKELY (_is_span (mem + idx, length, &poffset, &parent))) {
+    if (!GST_MEMORY_IS_NO_SHARE (parent))
+      result = gst_memory_share (parent, poffset, size);
+    if (!result) {
+      GST_CAT_DEBUG (GST_CAT_PERFORMANCE, "copy for merge %p", parent);
+      result = gst_memory_copy (parent, poffset, size);
+    }
   } else {
-    GstMemory *parent = NULL;
-    gsize size, poffset = 0;
+    gsize i, tocopy, left;
+    GstMapInfo sinfo, dinfo;
+    guint8 *ptr;
 
-    size = gst_buffer_get_sizes_range (buffer, idx, length, NULL, NULL);
+    result = gst_allocator_alloc (NULL, size, NULL);
+    if (result == NULL || !gst_memory_map (result, &dinfo, GST_MAP_WRITE)) {
+      GST_CAT_ERROR (GST_CAT_BUFFER, "Failed to map memory writable");
+      if (result)
+        gst_memory_unref (result);
+      return NULL;
+    }
 
-    if (G_UNLIKELY (_is_span (mem + idx, length, &poffset, &parent))) {
-      if (!GST_MEMORY_IS_NO_SHARE (parent))
-        result = gst_memory_share (parent, poffset, size);
-      if (!result) {
-        GST_CAT_DEBUG (GST_CAT_PERFORMANCE, "copy for merge %p", parent);
-        result = gst_memory_copy (parent, poffset, size);
-      }
-    } else {
-      gsize i, tocopy, left;
-      GstMapInfo sinfo, dinfo;
-      guint8 *ptr;
+    ptr = dinfo.data;
+    left = size;
 
-      result = gst_allocator_alloc (NULL, size, NULL);
-      if (result == NULL || !gst_memory_map (result, &dinfo, GST_MAP_WRITE)) {
-        GST_CAT_ERROR (GST_CAT_BUFFER, "Failed to map memory writable");
-        if (result)
-          gst_memory_unref (result);
+    for (i = idx; i < (idx + length) && left > 0; i++) {
+      if (!gst_memory_map (mem[i], &sinfo, GST_MAP_READ)) {
+        GST_CAT_ERROR (GST_CAT_BUFFER,
+            "buffer %p, idx %u, length %u failed to map readable", buffer,
+            idx, length);
+        gst_memory_unmap (result, &dinfo);
+        gst_memory_unref (result);
         return NULL;
       }
-
-      ptr = dinfo.data;
-      left = size;
-
-      for (i = idx; i < (idx + length) && left > 0; i++) {
-        if (!gst_memory_map (mem[i], &sinfo, GST_MAP_READ)) {
-          GST_CAT_ERROR (GST_CAT_BUFFER,
-              "buffer %p, idx %u, length %u failed to map readable", buffer,
-              idx, length);
-          gst_memory_unmap (result, &dinfo);
-          gst_memory_unref (result);
-          return NULL;
-        }
-        tocopy = MIN (sinfo.size, left);
-        GST_CAT_DEBUG (GST_CAT_PERFORMANCE,
-            "memcpy %" G_GSIZE_FORMAT " bytes for merge %p from memory %p",
-            tocopy, result, mem[i]);
-        memcpy (ptr, (guint8 *) sinfo.data, tocopy);
-        left -= tocopy;
-        ptr += tocopy;
-        gst_memory_unmap (mem[i], &sinfo);
-      }
-      gst_memory_unmap (result, &dinfo);
+      tocopy = MIN (sinfo.size, left);
+      GST_CAT_DEBUG (GST_CAT_PERFORMANCE,
+          "memcpy %" G_GSIZE_FORMAT " bytes for merge %p from memory %p",
+          tocopy, result, mem[i]);
+      memcpy (ptr, (guint8 *) sinfo.data, tocopy);
+      left -= tocopy;
+      ptr += tocopy;
+      gst_memory_unmap (mem[i], &sinfo);
     }
+    gst_memory_unmap (result, &dinfo);
   }
+
   return result;
 }
+
+static inline GstMemory *
+_get_merged_memory (GstBuffer * buffer, guint idx, guint length)
+{
+  GST_CAT_LOG (GST_CAT_BUFFER, "buffer %p, idx %u, length %u", buffer, idx,
+      length);
+
+  if (G_UNLIKELY (length == 0))
+    return NULL;
+
+  if (G_LIKELY (length == 1))
+    return gst_memory_ref (GST_BUFFER_MEM_PTR (buffer, idx));
+
+  return _actual_merged_memory (buffer, idx, length);
+}
+
 
 static void
 _replace_memory (GstBuffer * buffer, guint len, guint idx, guint length,
@@ -357,7 +364,7 @@ gst_buffer_get_flags (GstBuffer * buffer)
 }
 
 /**
- * gst_buffer_flag_is_set:
+ * gst_buffer_has_flags:
  * @buffer: a #GstBuffer
  * @flags: the #GstBufferFlags flag to check.
  *
@@ -596,7 +603,7 @@ gst_buffer_copy_into (GstBuffer * dest, GstBuffer * src,
     for (i = 0; i < len && left > 0; i++) {
       GstMemory *mem = GST_BUFFER_MEM_PTR (src, i);
 
-      bsize = gst_memory_get_sizes (mem, NULL, NULL);
+      bsize = mem->size;
 
       if (bsize <= skip) {
         /* don't copy buffer */
@@ -1158,11 +1165,8 @@ _get_mapped (GstBuffer * buffer, guint idx, GstMapInfo * info,
 GstMemory *
 gst_buffer_peek_memory (GstBuffer * buffer, guint idx)
 {
-  guint len;
-
   g_return_val_if_fail (GST_IS_BUFFER (buffer), NULL);
-  len = GST_BUFFER_MEM_LEN (buffer);
-  g_return_val_if_fail (idx < len, NULL);
+  g_return_val_if_fail (idx < GST_BUFFER_MEM_LEN (buffer), NULL);
 
   return GST_BUFFER_MEM_PTR (buffer, idx);
 }
@@ -1315,7 +1319,8 @@ gst_buffer_remove_memory (GstBuffer * buffer, guint idx)
 void
 gst_buffer_remove_all_memory (GstBuffer * buffer)
 {
-  gst_buffer_remove_memory_range (buffer, 0, -1);
+  if (GST_BUFFER_MEM_LEN (buffer))
+    gst_buffer_remove_memory_range (buffer, 0, -1);
 }
 
 /**
@@ -1390,7 +1395,7 @@ gst_buffer_find_memory (GstBuffer * buffer, gsize offset, gsize size,
     gsize s;
 
     mem = GST_BUFFER_MEM_PTR (buffer, i);
-    s = gst_memory_get_sizes (mem, NULL, NULL);
+    s = mem->size;
 
     if (s <= offset) {
       /* block before offset, or empty block, skip */
@@ -1516,7 +1521,16 @@ gst_buffer_get_sizes (GstBuffer * buffer, gsize * offset, gsize * maxsize)
 gsize
 gst_buffer_get_size (GstBuffer * buffer)
 {
-  return gst_buffer_get_sizes_range (buffer, 0, -1, NULL, NULL);
+  guint i;
+  gsize size, len;
+
+  g_return_val_if_fail (GST_IS_BUFFER (buffer), 0);
+
+  /* FAST PATH */
+  len = GST_BUFFER_MEM_LEN (buffer);
+  for (i = 0, size = 0; i < len; i++)
+    size += GST_BUFFER_MEM_PTR (buffer, i)->size;
+  return size;
 }
 
 /**
@@ -1558,6 +1572,16 @@ gst_buffer_get_sizes_range (GstBuffer * buffer, guint idx, gint length,
     /* common case */
     mem = GST_BUFFER_MEM_PTR (buffer, idx);
     size = gst_memory_get_sizes (mem, offset, maxsize);
+  } else if (offset == NULL && maxsize == NULL) {
+    /* FAST PATH ! */
+    guint i, end;
+
+    size = 0;
+    end = idx + length;
+    for (i = idx; i < end; i++) {
+      mem = GST_BUFFER_MEM_PTR (buffer, i);
+      size += mem->size;
+    }
   } else {
     guint i, end;
     gsize extra, offs;
@@ -1675,7 +1699,7 @@ gst_buffer_resize_range (GstBuffer * buffer, guint idx, gint length,
     gsize left, noffs;
 
     mem = GST_BUFFER_MEM_PTR (buffer, i);
-    bsize = gst_memory_get_sizes (mem, NULL, NULL);
+    bsize = mem->size;
 
     noffs = 0;
     /* last buffer always gets resized to the remaining size */
@@ -2628,6 +2652,9 @@ _gst_parent_buffer_meta_init (GstParentBufferMeta * parent_meta,
   return TRUE;
 }
 
+/**
+ * gst_parent_buffer_meta_api_get_type: (attributes doc.skip=true)
+ */
 GType
 gst_parent_buffer_meta_api_get_type (void)
 {
@@ -2796,6 +2823,9 @@ _gst_reference_timestamp_meta_init (GstReferenceTimestampMeta * meta,
   return TRUE;
 }
 
+/**
+ * gst_reference_timestamp_meta_api_get_type: (attributes doc.skip=true)
+ */
 GType
 gst_reference_timestamp_meta_api_get_type (void)
 {

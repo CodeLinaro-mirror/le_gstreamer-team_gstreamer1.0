@@ -177,12 +177,17 @@ typedef enum { /*< flags >*/
 
 /**
  * GstStackTraceFlags:
- * @GST_STACK_TRACE_SHOW_FULL: Try to retrieve as much information as
- *                             possible when getting the stack trace
+ * @GST_STACK_TRACE_SHOW_NONE: Try to retrieve the minimum information
+ *                             available, which may be none on some platforms
+ *                             (Since: 1.18)
+ * @GST_STACK_TRACE_SHOW_FULL: Try to retrieve as much information as possible,
+ *                             including source information when getting the
+ *                             stack trace
  *
  * Since: 1.12
  */
 typedef enum {
+    GST_STACK_TRACE_SHOW_NONE = 0,
     GST_STACK_TRACE_SHOW_FULL = 1 << 0
 } GstStackTraceFlags;
 
@@ -362,7 +367,9 @@ void _gst_debug_dump_mem (GstDebugCategory * cat, const gchar * file,
     const gchar * func, gint line, GObject * obj, const gchar * msg,
     const guint8 * data, guint length);
 
-/* we define this to avoid a compiler warning regarding a cast from a function
+/**
+ * GstDebugFuncPtr: (attributes doc.skip=true)
+ * we define this to avoid a compiler warning regarding a cast from a function
  * pointer to a void pointer
  * (see https://bugzilla.gnome.org/show_bug.cgi?id=309253)
  */
@@ -382,6 +389,15 @@ GST_API
 const gchar   * gst_debug_message_get    (GstDebugMessage  * message);
 
 GST_API
+gchar         * gst_debug_log_get_line    (GstDebugCategory * category,
+                                           GstDebugLevel      level,
+                                           const gchar      * file,
+                                           const gchar      * function,
+                                           gint               line,
+                                           GObject          * object,
+                                           GstDebugMessage  * message) G_GNUC_NO_INSTRUMENT;
+
+GST_API
 void            gst_debug_log_default    (GstDebugCategory * category,
                                           GstDebugLevel      level,
                                           const gchar      * file,
@@ -390,6 +406,7 @@ void            gst_debug_log_default    (GstDebugCategory * category,
                                           GObject          * object,
                                           GstDebugMessage  * message,
                                           gpointer           user_data) G_GNUC_NO_INSTRUMENT;
+
 GST_API
 const gchar *   gst_debug_level_get_name (GstDebugLevel level);
 
@@ -439,8 +456,7 @@ void            gst_debug_set_threshold_from_string  (const gchar * list, gboole
 GST_API
 void            gst_debug_unset_threshold_for_name   (const gchar * name);
 
-
-GST_API
+GST_DEPRECATED
 void            gst_debug_category_free              (GstDebugCategory *	category);
 
 GST_API
@@ -635,7 +651,8 @@ GST_API GstDebugLevel            _gst_debug_min;
  */
 #ifdef G_HAVE_ISO_VARARGS
 #define GST_CAT_LEVEL_LOG(cat,level,object,...) G_STMT_START{		\
-  if (G_UNLIKELY ((level) <= GST_LEVEL_MAX && (level) <= _gst_debug_min)) {						\
+  if (G_UNLIKELY ((level) <= GST_LEVEL_MAX && (level) <= _gst_debug_min	\
+      && (level) <= gst_debug_category_get_threshold (cat))) {		\
     gst_debug_log ((cat), (level), __FILE__, GST_FUNCTION, __LINE__,	\
         (GObject *) (object), __VA_ARGS__);				\
   }									\
@@ -643,7 +660,8 @@ GST_API GstDebugLevel            _gst_debug_min;
 #else /* G_HAVE_GNUC_VARARGS */
 #ifdef G_HAVE_GNUC_VARARGS
 #define GST_CAT_LEVEL_LOG(cat,level,object,args...) G_STMT_START{	\
-  if (G_UNLIKELY ((level) <= GST_LEVEL_MAX && (level) <= _gst_debug_min)) {						\
+  if (G_UNLIKELY ((level) <= GST_LEVEL_MAX && (level) <= _gst_debug_min 	\
+      && (level) <= gst_debug_category_get_threshold (cat))) {		\
     gst_debug_log ((cat), (level), __FILE__, GST_FUNCTION, __LINE__,	\
         (GObject *) (object), ##args );					\
   }									\
@@ -653,7 +671,8 @@ static inline void
 GST_CAT_LEVEL_LOG_valist (GstDebugCategory * cat,
     GstDebugLevel level, gpointer object, const char *format, va_list varargs)
 {
-  if (G_UNLIKELY ((level) <= GST_LEVEL_MAX && (level) <= _gst_debug_min)) {
+  if (G_UNLIKELY ((level) <= GST_LEVEL_MAX && (level) <= _gst_debug_min
+      && (level) <= gst_debug_category_get_threshold (cat))) {
     gst_debug_log_valist (cat, level, "", "", 0, (GObject *) object, format,
         varargs);
   }
@@ -1485,7 +1504,9 @@ GST_TRACE (const char *format, ...)
 
 #define GST_DEBUG_CATEGORY_INIT(var,name,color,desc)	G_STMT_START{ }G_STMT_END
 #define GST_DEBUG_CATEGORY_GET(var,name)		G_STMT_START{ }G_STMT_END
+#ifndef GST_DISABLE_DEPRECATED
 #define gst_debug_category_free(category)		G_STMT_START{ }G_STMT_END
+#endif
 #define gst_debug_category_set_threshold(category,level) G_STMT_START{ }G_STMT_END
 #define gst_debug_category_reset_threshold(category)	G_STMT_START{ }G_STMT_END
 #define gst_debug_category_get_threshold(category)	(GST_LEVEL_NONE)

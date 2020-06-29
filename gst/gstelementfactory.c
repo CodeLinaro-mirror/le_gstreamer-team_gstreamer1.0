@@ -386,11 +386,14 @@ gst_element_factory_create (GstElementFactory * factory, const gchar * name)
     /* This ref will never be dropped as the class is never destroyed */
     GST_OBJECT_FLAG_SET (factory, GST_OBJECT_FLAG_MAY_BE_LEAKED);
 
-  /* Ensure that the reference is floating. Bindings might have a hard time
-   * making sure that the reference is indeed still floating after returning
-   * here */
-  if (element)
-    g_object_force_floating ((GObject *) element);
+  if (!g_object_is_floating ((GObject *) element)) {
+    /* The reference we receive here should be floating, but we can't force
+     * it at our level. Simply raise a critical to make the issue obvious to bindings
+     * users / developers */
+    g_critical ("The created element should be floating, "
+        "this is probably caused by faulty bindings");
+  }
+
 
   GST_DEBUG ("created element \"%s\"", GST_OBJECT_NAME (factory));
 
@@ -742,6 +745,9 @@ gst_element_factory_list_is_type (GstElementFactory * factory,
 
   if (!res && (type & GST_ELEMENT_FACTORY_TYPE_ENCRYPTOR))
     res = (strstr (klass, "Encryptor") != NULL);
+
+  if (!res && (type & GST_ELEMENT_FACTORY_TYPE_HARDWARE))
+    res = (strstr (klass, "Hardware") != NULL);
 
   /* Filter by media type now, we only test if it
    * matched any of the types above or only checking the media

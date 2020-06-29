@@ -4,14 +4,14 @@
 #
 # Thomas Vander Stichele <thomas@apestaart.org>, 2004.
 # Claude Paroz <claude@2xlibre.net>, 2008-2012.
-# Stéphane Aulery <lkppo@free.fr>, 2015, 2017, 2019.
+# Stéphane Aulery <lkppo@free.fr>, 2015, 2017.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer 1.16.0\n"
+"Project-Id-Version: gstreamer 1.12.0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2019-12-03 10:57+0000\n"
-"PO-Revision-Date: 2019-09-10 20:22+0200\n"
+"POT-Creation-Date: 2019-02-26 11:37+0000\n"
+"PO-Revision-Date: 2017-05-05 22:33+0200\n"
 "Last-Translator: Stéphane Aulery <lkppo@free.fr>\n"
 "Language-Team: French <traduc@traduc.org>\n"
 "Language: fr\n"
@@ -830,7 +830,7 @@ msgid "midi-base-note"
 msgstr "midi-base-note"
 
 msgid "Midi note number of the audio track."
-msgstr "Numéro de note Midi d’une piste audio."
+msgstr "Numèro de note Midi d’une piste audio."
 
 msgid "private-data"
 msgstr "données-privées"
@@ -847,7 +847,7 @@ msgstr "Aucun gestionnaire d’URI trouvé pour le protocole %s"
 
 #, c-format
 msgid "URI scheme '%s' not supported"
-msgstr "schéma URI « %s » non pris en charge"
+msgstr "schèma URI « %s » non pris en charge"
 
 #, c-format
 msgid "ERROR: from element %s: %s\n"
@@ -936,7 +936,7 @@ msgid "empty pipeline not allowed"
 msgstr "pipeline vide non autorisé"
 
 msgid "Pipeline construction is invalid, please add queues."
-msgstr "Construction du pipeline invalide, veuillez ajouter des queues."
+msgstr ""
 
 msgid "A lot of buffers are being dropped."
 msgstr "De nombreux tampons sont éliminés."
@@ -951,7 +951,7 @@ msgid "Internal clock error."
 msgstr "Erreur d’horloge interne."
 
 msgid "Failed to map buffer."
-msgstr "Impossible de mapper les buffers."
+msgstr "Impossible de mapper les buffer."
 
 msgid "Filter caps"
 msgstr "Capacités de filtrage"
@@ -1022,7 +1022,7 @@ msgid "Failed after iterations as requested."
 msgstr "Échec suite aux itérations demandées."
 
 msgid "eos-after and error-after can't both be defined."
-msgstr "eos-after et error-after ne peuvent pas être définis en même temps."
+msgstr ""
 
 msgid "caps"
 msgstr "capacités"
@@ -1045,9 +1045,9 @@ msgstr "Le flux ne contient pas assez de données."
 msgid "Stream contains no data."
 msgstr "Le flux ne contient aucune donnée."
 
-#, c-format
+#, fuzzy, c-format
 msgid "%sImplemented Interfaces%s:\n"
-msgstr "%sinterfaces implémentées%s :\n"
+msgstr "Interfaces implémentées :\n"
 
 msgid "readable"
 msgstr "accès en lecture"
@@ -1073,9 +1073,9 @@ msgstr "modifiable uniquement en l’état NULL ou READY"
 msgid "Blacklisted files:"
 msgstr "Fichiers sur liste noire :"
 
-#, c-format
+#, fuzzy, c-format
 msgid "%sTotal count%s: %s"
-msgstr "%sNombre total%s : %s"
+msgstr "Nombre total :"
 
 #, c-format
 msgid "%d blacklisted file"
@@ -1147,9 +1147,6 @@ msgid ""
 "Disable colors in output. You can also achieve the same by "
 "setting'GST_INSPECT_NO_COLORS' environment variable to any value."
 msgstr ""
-"Désactive les couleurs en sortie. Vous pouvez aussi activer cette option en "
-"donnant une valeur non nulle à la variable d'environnement "
-"GST_INSPECT_NO_COLORS."
 
 #, c-format
 msgid "Could not load plugin file: %s\n"
@@ -1342,7 +1339,7 @@ msgid "EOS received - stopping pipeline...\n"
 msgstr "EOS reçu - arrêt du pipeline…\n"
 
 msgid "Interrupt while waiting for EOS - stopping pipeline...\n"
-msgstr "Interruption lors de l’attente d’EOS - arrêt du pipeline…\n"
+msgstr "Interruption lors de l’attende d’EOS - arrêt du pipeline…\n"
 
 msgid "An error happened while waiting for EOS\n"
 msgstr "Une erreur s’est produite lors de l’attente de l’EOS\n"
@@ -1359,17 +1356,17 @@ msgstr "Définition du pipeline à NULL…\n"
 msgid "Freeing pipeline ...\n"
 msgstr "Libération du pipeline…\n"
 
+#, fuzzy
 #~ msgid "Error creating pipe: %s\n"
-#~ msgstr "Erreur lors de la création du tube : %s\n"
+#~ msgstr "Erreur lors de la fermeture du fichier « %s »."
 
+#, fuzzy
 #~ msgid "Error forking: %s\n"
-#~ msgstr "Erreur lors du fork : %s\n"
+#~ msgstr "Erreur lors de la fermeture du fichier « %s »."
 
-#~ msgid "Error reading from console: %s\n"
-#~ msgstr "Erreur lors de la lecture depuis la console : %s\n"
-
+#, fuzzy
 #~ msgid "Error writing to console: %s\n"
-#~ msgstr "Erreur d’écriture vers la console : %s\n"
+#~ msgstr "Erreur d’écriture dans le fichier « %s »."
 
 #~ msgid "bin"
 #~ msgstr "bin"

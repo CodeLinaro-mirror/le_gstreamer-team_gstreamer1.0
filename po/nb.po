@@ -2,14 +2,14 @@
 # This file is put in the public domain.
 #
 # Kjartan Maraas <kmaraas@gnome.org>, 2004-2010.
-# Johnny A. Solbu <johnny@solbu.net>, 2015-2019
+# Johnny A. Solbu <johnny@solbu.net>, 2015-2017
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer 1.16.0\n"
+"Project-Id-Version: gstreamer 1.12.0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2019-12-03 10:57+0000\n"
-"PO-Revision-Date: 2019-09-03 09:32+0200\n"
+"POT-Creation-Date: 2019-02-26 11:37+0000\n"
+"PO-Revision-Date: 2017-05-23 22:59+0200\n"
 "Last-Translator: Johnny A. Solbu <johnny@solbu.net>\n"
 "Language-Team: Norwegian Bokmaal <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb_NO\n"
@@ -926,7 +926,7 @@ msgid "empty pipeline not allowed"
 msgstr "Tom rørledning ikke tillatt"
 
 msgid "Pipeline construction is invalid, please add queues."
-msgstr "Datakanal-konstruksjon er ugyldig, vennligst legg til køer."
+msgstr ""
 
 msgid "A lot of buffers are being dropped."
 msgstr "Mange av buffere blir droppet."
@@ -1011,7 +1011,7 @@ msgid "Failed after iterations as requested."
 msgstr "Mislyktes etter iterasjoner som forespurt."
 
 msgid "eos-after and error-after can't both be defined."
-msgstr "eos-after og error-after kan ikke begge være definert."
+msgstr ""
 
 msgid "caps"
 msgstr "caps"
@@ -1034,9 +1034,9 @@ msgstr "Strømmen inneholder ikke nok data."
 msgid "Stream contains no data."
 msgstr "Strømmen inneholder ikke data."
 
-#, c-format
+#, fuzzy, c-format
 msgid "%sImplemented Interfaces%s:\n"
-msgstr "%sImplementerte grensesnitt%s:\n"
+msgstr "Implementerte grensesnitt:\n"
 
 msgid "readable"
 msgstr "lesbar"
@@ -1062,9 +1062,9 @@ msgstr "kan bare endres i NULL-, eller KLAR-tilstand"
 msgid "Blacklisted files:"
 msgstr "Svartelistede filer:"
 
-#, c-format
+#, fuzzy, c-format
 msgid "%sTotal count%s: %s"
-msgstr "%sTotalt antall%s: %s"
+msgstr "Totalt antall: "
 
 #, c-format
 msgid "%d blacklisted file"
@@ -1134,8 +1134,6 @@ msgid ""
 "Disable colors in output. You can also achieve the same by "
 "setting'GST_INSPECT_NO_COLORS' environment variable to any value."
 msgstr ""
-"Deaktiver farger i utdata. Du kan også oppnå det samme ved å stille inn "
-"miljøvariabelen «GST_INSPECT_NO_COLORS» til hvilken som helst verdi."
 
 #, c-format
 msgid "Could not load plugin file: %s\n"
@@ -1344,6 +1342,18 @@ msgstr "Setter rørledning til NULL ...\n"
 
 msgid "Freeing pipeline ...\n"
 msgstr "Frigjør rør ...\n"
+
+#, fuzzy
+#~ msgid "Error creating pipe: %s\n"
+#~ msgstr "Feil ved lukking av fil «%s»."
+
+#, fuzzy
+#~ msgid "Error forking: %s\n"
+#~ msgstr "Feil ved lukking av fil «%s»."
+
+#, fuzzy
+#~ msgid "Error writing to console: %s\n"
+#~ msgstr "Feil ved skriving til fil «%s»."
 
 #~ msgid "bin"
 #~ msgstr "bin"

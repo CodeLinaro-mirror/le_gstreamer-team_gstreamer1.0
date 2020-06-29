@@ -636,7 +636,7 @@ gst_base_transform_query_caps (GstBaseTransform * trans, GstPad * pad,
   templ = gst_pad_get_pad_template_caps (pad);
   otempl = gst_pad_get_pad_template_caps (otherpad);
 
-  /* first prepare the filter to be send onwards. We need to filter and
+  /* first prepare the filter to be sent onwards. We need to filter and
    * transform it to valid caps for the otherpad. */
   if (filter) {
     GST_DEBUG_OBJECT (pad, "filter caps  %" GST_PTR_FORMAT, filter);
@@ -652,27 +652,30 @@ gst_base_transform_query_caps (GstBaseTransform * trans, GstPad * pad,
     GST_DEBUG_OBJECT (pad, "transformed  %" GST_PTR_FORMAT, peerfilter);
     gst_caps_unref (temp);
 
-    if (peerfilter && !gst_caps_is_empty (peerfilter)) {
-      /* and filter against the template of the other pad */
-      GST_DEBUG_OBJECT (pad, "our template  %" GST_PTR_FORMAT, otempl);
-      /* We keep the caps sorted like the returned caps */
-      temp =
-          gst_caps_intersect_full (peerfilter, otempl,
-          GST_CAPS_INTERSECT_FIRST);
-      GST_DEBUG_OBJECT (pad, "intersected %" GST_PTR_FORMAT, temp);
-      gst_caps_unref (peerfilter);
-      peerfilter = temp;
+    if (peerfilter) {
+      if (!gst_caps_is_empty (peerfilter)) {
+        /* and filter against the template of the other pad */
+        GST_DEBUG_OBJECT (pad, "our template  %" GST_PTR_FORMAT, otempl);
+        /* We keep the caps sorted like the returned caps */
+        temp =
+            gst_caps_intersect_full (peerfilter, otempl,
+            GST_CAPS_INTERSECT_FIRST);
+        GST_DEBUG_OBJECT (pad, "intersected %" GST_PTR_FORMAT, temp);
+        gst_caps_unref (peerfilter);
+        peerfilter = temp;
+      }
+
+      /* If we filter out everything, bail out */
+      if (peerfilter && gst_caps_is_empty (peerfilter)) {
+        GST_DEBUG_OBJECT (pad, "peer filter caps are empty");
+        caps = peerfilter;
+        peerfilter = NULL;
+        goto done;
+      }
     }
   }
 
   GST_DEBUG_OBJECT (pad, "peer filter caps %" GST_PTR_FORMAT, peerfilter);
-
-  if (peerfilter && gst_caps_is_empty (peerfilter)) {
-    GST_DEBUG_OBJECT (pad, "peer filter caps are empty");
-    caps = peerfilter;
-    peerfilter = NULL;
-    goto done;
-  }
 
   /* query the peer with the transformed filter */
   peercaps = gst_pad_peer_query_caps (otherpad, peerfilter);
@@ -1402,7 +1405,7 @@ gst_base_transform_default_propose_allocation (GstBaseTransform * trans,
 }
 
 static gboolean
-gst_base_transform_reconfigure (GstBaseTransform * trans)
+gst_base_transform_reconfigure_unlocked (GstBaseTransform * trans)
 {
   gboolean reconfigure, ret = TRUE;
 
@@ -1436,6 +1439,45 @@ done:
   return ret;
 }
 
+/**
+ * gst_base_transform_reconfigure:
+ * @trans: the #GstBaseTransform to set
+ *
+ * Negotiates src pad caps with downstream elements if the source pad is
+ * marked as needing reconfiguring. Unmarks GST_PAD_FLAG_NEED_RECONFIGURE in
+ * any case. But marks it again if negotiation fails.
+ *
+ * Do not call this in the #GstBaseTransformClass.transform() or
+ * #GstBaseTransformClass.transform_ip() vmethod. Call this in
+ * #GstBaseTransformClass.submit_input_buffer(),
+ * #GstBaseTransformClass.prepare_output_buffer() or in
+ * #GstBaseTransformClass.generate_output() _before_ any output buffer is
+ * allocated.
+ *
+ * It will be default be called when handling an ALLOCATION query or at the
+ * very beginning of the default #GstBaseTransformClass.submit_input_buffer()
+ * implementation.
+ *
+ * Returns: %TRUE if the negotiation succeeded, else %FALSE.
+ *
+ * Since: 1.18
+ */
+gboolean
+gst_base_transform_reconfigure (GstBaseTransform * trans)
+{
+  gboolean ret;
+
+  g_return_val_if_fail (GST_IS_BASE_TRANSFORM (trans), FALSE);
+
+  GST_PAD_STREAM_LOCK (trans->sinkpad);
+  ret = gst_base_transform_reconfigure_unlocked (trans);
+  if (!ret)
+    gst_pad_mark_reconfigure (trans->srcpad);
+  GST_PAD_STREAM_UNLOCK (trans->sinkpad);
+
+  return ret;
+}
+
 static gboolean
 gst_base_transform_default_query (GstBaseTransform * trans,
     GstPadDirection direction, GstQuery * query)
@@ -1464,7 +1506,7 @@ gst_base_transform_default_query (GstBaseTransform * trans,
       if (direction != GST_PAD_SINK)
         goto done;
 
-      ret = gst_base_transform_reconfigure (trans);
+      ret = gst_base_transform_reconfigure_unlocked (trans);
       if (G_UNLIKELY (!ret))
         goto done;
 
@@ -1984,7 +2026,7 @@ default_submit_input_buffer (GstBaseTransform * trans, gboolean is_discont,
   GstClockTime running_time;
   GstClockTime timestamp;
 
-  if (G_UNLIKELY (!gst_base_transform_reconfigure (trans)))
+  if (G_UNLIKELY (!gst_base_transform_reconfigure_unlocked (trans)))
     goto not_negotiated;
 
   if (GST_BUFFER_OFFSET_IS_VALID (inbuf))
@@ -2515,7 +2557,7 @@ gst_base_transform_src_activate_mode (GstPad * pad, GstObject * parent,
  * useful for filters that do not care about negotiation.
  *
  * Always %TRUE for filters which don't implement either a transform
- * or transform_ip method.
+ * or transform_ip or generate_output method.
  *
  * MT safe.
  */
@@ -2531,7 +2573,8 @@ gst_base_transform_set_passthrough (GstBaseTransform * trans,
 
   GST_OBJECT_LOCK (trans);
   if (!passthrough) {
-    if (bclass->transform_ip || bclass->transform)
+    if (bclass->transform_ip || bclass->transform || (bclass->generate_output
+            && bclass->generate_output != default_generate_output))
       trans->priv->passthrough = FALSE;
   } else {
     trans->priv->passthrough = TRUE;
@@ -2547,7 +2590,7 @@ gst_base_transform_set_passthrough (GstBaseTransform * trans,
  *
  * See if @trans is configured as a passthrough transform.
  *
- * Returns: %TRUE is the transform is configured in passthrough mode.
+ * Returns: %TRUE if the transform is configured in passthrough mode.
  *
  * MT safe.
  */
@@ -2611,7 +2654,7 @@ gst_base_transform_set_in_place (GstBaseTransform * trans, gboolean in_place)
  *
  * See if @trans is configured as a in_place transform.
  *
- * Returns: %TRUE is the transform is configured in in_place mode.
+ * Returns: %TRUE if the transform is configured in in_place mode.
  *
  * MT safe.
  */
@@ -2800,7 +2843,7 @@ gst_base_transform_reconfigure_src (GstBaseTransform * trans)
  * @trans: a #GstBaseTransform
  *
  * Returns: (transfer full): the instance of the #GstBufferPool used
- * by @trans; free it after use it
+ * by @trans; free it after use
  */
 GstBufferPool *
 gst_base_transform_get_buffer_pool (GstBaseTransform * trans)
@@ -2821,10 +2864,10 @@ gst_base_transform_get_buffer_pool (GstBaseTransform * trans)
  * @params: (out) (allow-none) (transfer full): the
  * #GstAllocationParams of @allocator
  *
- * Lets #GstBaseTransform sub-classes to know the memory @allocator
+ * Lets #GstBaseTransform sub-classes know the memory @allocator
  * used by the base class and its @params.
  *
- * Unref the @allocator after use it.
+ * Unref the @allocator after use.
  */
 void
 gst_base_transform_get_allocator (GstBaseTransform * trans,
@@ -2846,13 +2889,13 @@ gst_base_transform_get_allocator (GstBaseTransform * trans,
  * @updated_caps: An updated version of the srcpad caps to be pushed
  * downstream
  *
- * Updates the srcpad caps and send the caps downstream. This function
+ * Updates the srcpad caps and sends the caps downstream. This function
  * can be used by subclasses when they have already negotiated their caps
  * but found a change in them (or computed new information). This way,
  * they can notify downstream about that change without losing any
  * buffer.
  *
- * Returns: %TRUE if the caps could be send downstream %FALSE otherwise
+ * Returns: %TRUE if the caps could be sent downstream %FALSE otherwise
  *
  * Since: 1.6
  */

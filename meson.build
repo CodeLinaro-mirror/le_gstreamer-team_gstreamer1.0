@@ -1,6 +1,6 @@
 project('gstreamer', 'c',
-  version : '1.16.2',
-  meson_version : '>= 0.47',
+  version : '1.17.1',
+  meson_version : '>= 0.48',
   default_options : [ 'warning_level=1',
                       'buildtype=debugoptimized' ])
 
@@ -28,6 +28,7 @@ osxversion = curversion + 1
 
 prefix = get_option('prefix')
 
+datadir = join_paths(prefix, get_option('datadir'))
 libexecdir = get_option('libexecdir')
 helpers_install_dir = join_paths(libexecdir, 'gstreamer-1.0')
 
@@ -97,7 +98,7 @@ if glib_checks.disabled() or (glib_checks.auto() and not gst_version_is_dev)
 endif
 
 cdata.set_quoted('GST_API_VERSION', apiversion)
-cdata.set_quoted('GST_DATADIR', join_paths(prefix, get_option('datadir')))
+cdata.set_quoted('GST_DATADIR', datadir)
 cdata.set_quoted('LOCALEDIR', join_paths(prefix, get_option('localedir')))
 cdata.set_quoted('LIBDIR', join_paths(prefix, get_option('libdir')))
 cdata.set_quoted('GST_API_VERSION', '1.0')
@@ -107,7 +108,7 @@ cdata.set_quoted('PACKAGE', 'gstreamer')
 cdata.set_quoted('PACKAGE_NAME', 'GStreamer')
 cdata.set_quoted('PACKAGE_STRING', 'GStreamer @0@'.format(gst_version))
 cdata.set_quoted('PACKAGE_TARNAME', 'gstreamer')
-cdata.set_quoted('PACKAGE_BUGREPORT', 'http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer')
+cdata.set_quoted('PACKAGE_BUGREPORT', 'https://gitlab.freedesktop.org/gstreamer/gstreamer/issues/new')
 cdata.set_quoted('PACKAGE_URL', '')
 cdata.set_quoted('PACKAGE_VERSION', gst_version)
 cdata.set_quoted('PLUGINDIR', join_paths(get_option('prefix'), get_option('libdir'), 'gstreamer-1.0'))
@@ -201,6 +202,7 @@ check_headers = [
   'unistd.h',
   'valgrind/valgrind.h',
   'sys/resource.h',
+  'sys/uio.h',
 ]
 
 if host_system == 'windows'
@@ -229,6 +231,7 @@ check_functions = [
   'pselect',
   'getpagesize',
   'clock_gettime',
+  'strnlen',
   # These are needed by libcheck
   'getline',
   'mkstemp',
@@ -255,8 +258,25 @@ if cc.links('''#include <pthread.h>
                }''', name : 'pthread_setname_np(const char*)')
   cdata.set('HAVE_PTHREAD_SETNAME_NP_WITHOUT_TID', 1)
 endif
+if cc.has_header_symbol('pthread.h', 'pthread_condattr_setclock')
+  cdata.set('HAVE_PTHREAD_CONDATTR_SETCLOCK', 1)
+endif
+if cc.has_header_symbol('pthread.h', 'pthread_cond_timedwait_relative_np')
+  cdata.set('HAVE_PTHREAD_COND_TIMEDWAIT_RELATIVE_NP', 1)
+endif
 
-# Check for posix timers and the monotonic clock
+# Check for futex(2)
+if cc.links('''#include <linux/futex.h>
+               #include <sys/syscall.h>
+               #include <unistd.h>
+               int main (int argc, char ** argv) {
+                 syscall (__NR_futex, NULL, FUTEX_WAKE, FUTEX_WAIT);
+                 return 0;
+               }''', name : 'futex(2) system call')
+  cdata.set('HAVE_FUTEX', 1)
+endif
+
+# Check for posix timers and monotonic clock
 time_prefix = '#include <time.h>\n'
 if cdata.has('HAVE_UNISTD_H')
   time_prefix += '#include <unistd.h>'
@@ -352,19 +372,32 @@ unwind_dep = dependency('libunwind', required : get_option('libunwind'))
 dw_dep = dependency('libdw', required: get_option('libdw'))
 dbghelp_dep = dependency('DbgHelp', required : get_option('dbghelp'))
 backtrace_deps = [unwind_dep, dw_dep, dbghelp_dep]
-if unwind_dep.found()
+backtrace_source_info = false
+backtrace_minimal = false
+# MSVC debug stack trace support
+if host_system == 'windows' and dbghelp_dep.found()
+  cdata.set('HAVE_DBGHELP', 1)
+  backtrace_source_info = true
+# DWARF stack trace support with libunwind and elf-utils
+elif unwind_dep.found()
   cdata.set('HAVE_UNWIND', 1)
   if dw_dep.found()
     cdata.set('HAVE_DW', 1)
-  else
-    message('Support for backtraces is partial only.')
+    backtrace_source_info = true
   endif
+  backtrace_minimal = true
+# Basic backtrace() stack trace support
 elif cc.has_function('backtrace')
   cdata.set('HAVE_BACKTRACE', 1)
-elif dbghelp_dep.found()
-  cdata.set('HAVE_DBGHELP', 1)
-else
-  message('NO backtraces support.')
+  backtrace_minimal = true
+endif
+# Print messages about what was enabled
+if not backtrace_source_info
+  if not backtrace_minimal
+    message('NO support for stack traces.')
+  else
+    message('Minimal support for stack traces, no source info.')
+  endif
 endif
 
 if cc.has_header('execinfo.h')
@@ -421,7 +454,7 @@ test_deps = [gmp_dep, gsl_dep, gslcblas_dep]
 # Used by gstinfo.c
 dl_dep = cc.find_library('dl', required : false)
 cdata.set('HAVE_DLADDR', cc.has_function('dladdr', dependencies : dl_dep))
-cdata.set('GST_ENABLE_EXTRA_CHECKS', get_option('extra-checks'))
+cdata.set('GST_ENABLE_EXTRA_CHECKS', not get_option('extra-checks').disabled())
 cdata.set('USE_POISONING', get_option('poisoning'))
 
 configinc = include_directories('.')
@@ -429,7 +462,7 @@ libsinc = include_directories('libs')
 privinc = include_directories('gst')
 
 # Find dependencies
-glib_dep = dependency('glib-2.0', version : '>=2.40.0',
+glib_dep = dependency('glib-2.0', version : '>=2.44.0',
   fallback: ['glib', 'libglib_dep'])
 gobject_dep = dependency('gobject-2.0',
   fallback: ['glib', 'libgobject_dep'])
@@ -453,7 +486,7 @@ rt_lib = cc.find_library('rt', required : false)
 gir = find_program('g-ir-scanner', required : get_option('introspection'))
 gnome = import('gnome')
 
-build_gir = gir.found() and not meson.is_cross_build()
+build_gir = gir.found() and (not meson.is_cross_build() or get_option('introspection').enabled())
 
 gir_init_section = [ '--add-init-section=extern void gst_init(gint*,gchar**);' + \
     'g_setenv("GST_REGISTRY_DISABLE", "yes", TRUE);' + \
@@ -482,7 +515,8 @@ bash_helpers_dir = ''
 bashcomp_found = false
 if bashcomp_dep.found()
   bashcomp_found = true
-  bash_completions_dir = bashcomp_dep.get_pkgconfig_variable('completionsdir', define_variable: ['prefix', '.'])
+  bashcomp_dir_override = bashcomp_dep.version().version_compare('>= 2.10') ? ['datadir', datadir] : ['prefix', prefix]
+  bash_completions_dir = bashcomp_dep.get_pkgconfig_variable('completionsdir', define_variable: bashcomp_dir_override)
   if bash_completions_dir == ''
     msg = 'Found bash-completion but the .pc file did not set \'completionsdir\'.'
     if bashcomp_option.enabled()
@@ -493,7 +527,7 @@ if bashcomp_dep.found()
     bashcomp_found = false
   endif
 
-  bash_helpers_dir = bashcomp_dep.get_pkgconfig_variable('helpersdir', define_variable: ['prefix', '.'])
+  bash_helpers_dir = bashcomp_dep.get_pkgconfig_variable('helpersdir', define_variable: bashcomp_dir_override)
   if bash_helpers_dir == ''
     msg = 'Found bash-completion, but the .pc file did not set \'helpersdir\'.'
     if bashcomp_option.enabled()
@@ -523,6 +557,7 @@ endif
 subdir('pkgconfig')
 subdir('tests')
 subdir('data')
+subdir('docs')
 
 # xgettext is optional (on Windows for instance)
 if find_program('xgettext', required : get_option('nls')).found()
@@ -531,17 +566,5 @@ if find_program('xgettext', required : get_option('nls')).found()
 endif
 
 configure_file(output : 'config.h', configuration : cdata)
-
-if build_machine.system() == 'windows'
-  message('Disabling gtk-doc while building on Windows')
-else
-  if find_program('gtkdoc-scan', required : get_option('gtk_doc')).found()
-    subdir('docs')
-  else
-    message('Not building documentation as gtk-doc was not found')
-  endif
-endif
-
 run_command(python3, '-c', 'import shutil; shutil.copy("hooks/pre-commit.hook", ".git/hooks/pre-commit")')
-
 install_data('gst-element-check-1.0.m4', install_dir : join_paths(get_option('datadir'), 'aclocal'))

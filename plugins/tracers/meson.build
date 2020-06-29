@@ -1,3 +1,10 @@
+if not tracer_hooks
+  if get_option('coretracers').enabled()
+    error('coretracers plugin enabled but not tracer_hooks')
+  endif
+  subdir_done()
+endif
+
 gst_tracers_sources = [
   'gstlatency.c',
   'gstleaks.c',
@@ -24,3 +31,4 @@ gst_tracers = library('gstcoretracers',
   install_dir : plugins_install_dir,
 )
 pkgconfig.generate(gst_tracers, install_dir : plugins_pkgconfig_install_dir)
+plugins += [gst_tracers]

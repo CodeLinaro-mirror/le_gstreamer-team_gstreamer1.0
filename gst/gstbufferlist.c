@@ -307,8 +307,11 @@ gst_buffer_list_foreach (GstBufferList * list, GstBufferListFunc func,
         gst_buffer_list_remove_range_internal (list, i, 1, !was_writable);
         --len;
       } else {
-        if (!was_writable)
+        if (!was_writable) {
+          gst_mini_object_remove_parent (GST_MINI_OBJECT_CAST (buf),
+              GST_MINI_OBJECT_CAST (list));
           gst_buffer_unref (buf);
+        }
 
         list->buffers[i] = buf_ret;
         gst_mini_object_add_parent (GST_MINI_OBJECT_CAST (buf_ret),
@@ -436,6 +439,9 @@ gst_buffer_list_insert (GstBufferList * list, gint idx, GstBuffer * buffer)
   want_alloc = list->n_buffers + 1;
 
   if (want_alloc > list->n_allocated) {
+    if (G_UNLIKELY (list->n_allocated > (G_MAXUINT / 2)))
+      g_error ("Growing GstBufferList would result in overflow");
+
     want_alloc = MAX (GST_ROUND_UP_16 (want_alloc), list->n_allocated * 2);
 
     if (GST_BUFFER_LIST_IS_USING_DYNAMIC_ARRAY (list)) {

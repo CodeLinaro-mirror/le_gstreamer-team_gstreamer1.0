@@ -1020,6 +1020,15 @@ GST_START_TEST (test_value_compare)
   g_value_unset (&value2);
   g_value_unset (&tmp);
 
+  g_value_init (&value1, G_TYPE_VALUE_ARRAY);
+  g_value_init (&value2, G_TYPE_VALUE_ARRAY);
+
+  fail_unless (gst_value_compare (&value1, &value2) == GST_VALUE_EQUAL,
+      "Empty Value arrays aren't equals when they should");
+
+  g_value_unset (&value1);
+  g_value_unset (&value2);
+
   g_value_init (&value1, GST_TYPE_BITMASK);
   gst_value_set_bitmask (&value1, 0x123);
   g_value_init (&value2, GST_TYPE_BITMASK);
@@ -2668,9 +2677,9 @@ GST_START_TEST (test_serialize_deserialize_format_enum)
   str = gst_structure_to_string (s);
   GST_LOG ("Got structure string '%s'", GST_STR_NULL (str));
   fail_unless (str != NULL);
-  fail_unless (strstr (str, "TIME") != NULL);
-  fail_unless (strstr (str, "BYTE") != NULL);
-  fail_unless (strstr (str, "DEFAULT") != NULL);
+  fail_unless (strstr (str, "time") != NULL);
+  fail_unless (strstr (str, "byte") != NULL);
+  fail_unless (strstr (str, "default") != NULL);
   fail_unless (strstr (str, "FOOBAR") != NULL);
 
   s2 = gst_structure_from_string (str, &end);
@@ -2720,6 +2729,31 @@ GST_START_TEST (test_serialize_deserialize_value_array)
 
 GST_END_TEST;
 
+GST_START_TEST (test_compare_caps)
+{
+  GValue value = { 0 }
+  , value2 = {
+  0};
+
+  g_value_init (&value, GST_TYPE_CAPS);
+  g_value_init (&value2, GST_TYPE_CAPS);
+  g_value_take_boxed (&value, NULL);
+  g_value_take_boxed (&value2, NULL);
+
+  fail_unless_equals_int (gst_value_compare (&value, &value2), GST_VALUE_EQUAL);
+
+  g_value_take_boxed (&value, gst_caps_new_empty_simple ("something"));
+
+  fail_unless_equals_int (gst_value_compare (&value, &value2),
+      GST_VALUE_UNORDERED);
+
+  g_value_unset (&value);
+  g_value_unset (&value2);
+
+}
+
+GST_END_TEST;
+
 GST_START_TEST (test_serialize_deserialize_caps)
 {
   GValue value = { 0 }
@@ -2753,7 +2787,7 @@ GST_START_TEST (test_serialize_deserialize_caps)
 
   /* now deserialize again */
   g_value_init (&value2, GST_TYPE_CAPS);
-  gst_value_deserialize (&value2, serialized);
+  fail_unless (gst_value_deserialize (&value2, serialized));
 
   caps2 = g_value_get_boxed (&value2);
   fail_if (GST_CAPS_REFCOUNT_VALUE (caps2) != 1);
@@ -3063,6 +3097,9 @@ GST_START_TEST (test_stepped_int_range_parsing)
     "[1, 2, 2]",
     "[2, 3, 2]",
     "[0, 0, 0]",
+    "[0, 0, 1]",
+    "[1, 2, 0]",
+    "[1, 1, 1]",
   };
 
   /* check we can parse good ranges */
@@ -3435,6 +3472,42 @@ GST_START_TEST (test_serialize_null_aray)
 
 GST_END_TEST;
 
+GST_START_TEST (test_deserialize_array)
+{
+  GValue value = { 0 };
+  const gchar *strings[] = {
+    "{ test, }",
+    "{ , }",
+    "{ test,, }",
+    "{ , , }",
+  };
+  gint results_size[] = { 1, 0, -1, -1 };       /* -1 means deserialization should fail */
+  int i;
+
+  for (i = 0; i < G_N_ELEMENTS (strings); ++i) {
+    /* Workaround a bug in our parser that would lead to segfaults
+     * when deserializing container types using static strings */
+    gchar *str = g_strdup (strings[i]);
+    g_value_init (&value, GST_TYPE_LIST);
+
+    if (results_size[i] == -1) {
+      fail_if (gst_value_deserialize (&value, str),
+          "Should not be able to deserialize %s (%d) as list", str, i);
+    } else {
+      fail_unless (gst_value_deserialize (&value, str),
+          "could not deserialize %s (%d)", str, i);
+      fail_unless (gst_value_list_get_size (&value) == results_size[i],
+          "Wrong array size: %d. expected %d",
+          gst_value_array_get_size (&value), results_size[i]);
+    }
+
+    g_value_unset (&value);
+    g_free (str);
+  }
+}
+
+GST_END_TEST;
+
 static Suite *
 gst_value_suite (void)
 {
@@ -3455,6 +3528,7 @@ gst_value_suite (void)
   tcase_add_test (tc_chain, test_deserialize_gtype);
   tcase_add_test (tc_chain, test_deserialize_gtype_failures);
   tcase_add_test (tc_chain, test_deserialize_bitmask);
+  tcase_add_test (tc_chain, test_deserialize_array);
   tcase_add_test (tc_chain, test_serialize_flags);
   tcase_add_test (tc_chain, test_deserialize_flags);
   tcase_add_test (tc_chain, test_serialize_deserialize_format_enum);
@@ -3473,6 +3547,7 @@ gst_value_suite (void)
   tcase_add_test (tc_chain, test_date_time);
   tcase_add_test (tc_chain, test_fraction_range);
   tcase_add_test (tc_chain, test_serialize_deserialize_caps);
+  tcase_add_test (tc_chain, test_compare_caps);
   tcase_add_test (tc_chain, test_int_range);
   tcase_add_test (tc_chain, test_int64_range);
   tcase_add_test (tc_chain, test_serialize_int64_range);

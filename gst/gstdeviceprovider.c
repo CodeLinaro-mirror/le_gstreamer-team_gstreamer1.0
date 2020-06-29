@@ -151,13 +151,11 @@ gst_device_provider_class_init (GstDeviceProviderClass * klass)
 
   gst_device_provider_signals[PROVIDER_HIDDEN] =
       g_signal_new ("provider-hidden", G_TYPE_FROM_CLASS (klass),
-      G_SIGNAL_RUN_FIRST, 0, NULL,
-      NULL, g_cclosure_marshal_generic, G_TYPE_NONE, 1, G_TYPE_STRING);
+      G_SIGNAL_RUN_FIRST, 0, NULL, NULL, NULL, G_TYPE_NONE, 1, G_TYPE_STRING);
 
   gst_device_provider_signals[PROVIDER_UNHIDDEN] =
       g_signal_new ("provider-unhidden", G_TYPE_FROM_CLASS (klass),
-      G_SIGNAL_RUN_FIRST, 0, NULL,
-      NULL, g_cclosure_marshal_generic, G_TYPE_NONE, 1, G_TYPE_STRING);
+      G_SIGNAL_RUN_FIRST, 0, NULL, NULL, NULL, G_TYPE_NONE, 1, G_TYPE_STRING);
 }
 
 static void
@@ -459,12 +457,15 @@ gst_device_provider_start (GstDeviceProvider * provider)
     goto started;
   }
 
+  gst_bus_set_flushing (provider->priv->bus, FALSE);
+
   if (klass->start)
     ret = klass->start (provider);
 
   if (ret) {
     provider->priv->started_count++;
-    gst_bus_set_flushing (provider->priv->bus, FALSE);
+  } else if (provider->priv->started_count == 0) {
+    gst_bus_set_flushing (provider->priv->bus, TRUE);
   }
 
 started:
@@ -776,7 +777,7 @@ gst_device_provider_unhide_provider (GstDeviceProvider * provider,
 /**
  * gst_device_provider_device_changed:
  * @device: (transfer none): the new version of @changed_device
- * @changed_device: (transfer floating): the old version of the device that has been udpated
+ * @changed_device: (transfer floating): the old version of the device that has been updated
  *
  * This function is used when @changed_device was modified into its new form
  * @device. This will post a `DEVICE_CHANGED` message on the bus to let
