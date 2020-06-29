@@ -1,3 +1,19 @@
+gstreamer1.0 (1.17.1-2) experimental; urgency=medium
+
+  * debian/rules:
+    + Remove remaining usages of $(gst_abi) variable.
+  * debian/control:
+    + Depend on GLib >= 2.44.
+    + Add libdw-dev / libunwind-dev to dependencies of the -dev package
+      as they're listed in the Requires.private of the pkg-config file.
+  * debian/rules,
+    debian/control:
+    + Remove manual, legacy dbg package.
+  * debian/*.install:
+    + Remove accidental hardcoding of x86_64-linux-gnu in some paths.
+
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 29 Jun 2020 20:29:17 +0300
+
 gstreamer1.0 (1.17.1-1) experimental; urgency=medium
 
   [ Sebastian Dröge ]
