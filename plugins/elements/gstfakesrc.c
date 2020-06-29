@@ -28,7 +28,7 @@
  * a wide range of buffers and can operate in various scheduling modes.
  *
  * It is mostly used as a testing element, one trivial example for testing
- * basic <application>GStreamer</application> core functionality is:
+ * basic GStreamer core functionality is:
  *
  * ## Example launch line
  * |[
@@ -332,8 +332,8 @@ gst_fake_src_class_init (GstFakeSrcClass * klass)
   gst_fake_src_signals[SIGNAL_HANDOFF] =
       g_signal_new ("handoff", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
       G_STRUCT_OFFSET (GstFakeSrcClass, handoff), NULL, NULL,
-      g_cclosure_marshal_generic, G_TYPE_NONE, 2,
-      GST_TYPE_BUFFER | G_SIGNAL_TYPE_STATIC_SCOPE, GST_TYPE_PAD);
+      NULL, G_TYPE_NONE, 2, GST_TYPE_BUFFER | G_SIGNAL_TYPE_STATIC_SCOPE,
+      GST_TYPE_PAD);
 
   gst_element_class_set_static_metadata (gstelement_class,
       "Fake Source",
@@ -348,6 +348,10 @@ gst_fake_src_class_init (GstFakeSrcClass * klass)
   gstbase_src_class->event = GST_DEBUG_FUNCPTR (gst_fake_src_event_handler);
   gstbase_src_class->get_times = GST_DEBUG_FUNCPTR (gst_fake_src_get_times);
   gstbase_src_class->create = GST_DEBUG_FUNCPTR (gst_fake_src_create);
+
+  gst_type_mark_as_plugin_api (GST_TYPE_FAKE_SRC_DATA, 0);
+  gst_type_mark_as_plugin_api (GST_TYPE_FAKE_SRC_SIZETYPE, 0);
+  gst_type_mark_as_plugin_api (GST_TYPE_FAKE_SRC_FILLTYPE, 0);
 }
 
 static void

@@ -1304,6 +1304,9 @@ gst_input_selector_class_init (GstInputSelectorClass * klass)
   gstelement_class->request_new_pad = gst_input_selector_request_new_pad;
   gstelement_class->release_pad = gst_input_selector_release_pad;
   gstelement_class->change_state = gst_input_selector_change_state;
+
+  gst_type_mark_as_plugin_api (GST_TYPE_SELECTOR_PAD, 0);
+  gst_type_mark_as_plugin_api (GST_TYPE_INPUT_SELECTOR_SYNC_MODE, 0);
 }
 
 static void
@@ -1427,6 +1430,7 @@ gst_input_selector_set_property (GObject * object, guint prop_id,
 
       GST_INPUT_SELECTOR_LOCK (sel);
 
+      sel->active_sinkpad_from_user = ! !pad;
 #if DEBUG_CACHED_BUFFERS
       gst_input_selector_debug_cached_buffers (sel);
 #endif
@@ -1542,6 +1546,19 @@ gst_input_selector_event (GstPad * pad, GstObject * parent, GstEvent * event)
   /* Send upstream events to all sinkpads */
   iter = gst_element_iterate_sink_pads (GST_ELEMENT_CAST (sel));
 
+  GST_INPUT_SELECTOR_LOCK (sel);
+  if (sel->active_sinkpad) {
+    eventpad = gst_object_ref (sel->active_sinkpad);
+    GST_INPUT_SELECTOR_UNLOCK (sel);
+
+    gst_event_ref (event);
+    result |= gst_pad_push_event (eventpad, event);
+    pushed_pads = g_list_append (pushed_pads, eventpad);
+    gst_object_unref (eventpad);
+  } else {
+    GST_INPUT_SELECTOR_UNLOCK (sel);
+  }
+
   /* This is now essentially a copy of gst_pad_event_default_dispatch
    * with a different iterator */
   while (!done) {
@@ -1557,6 +1574,7 @@ gst_input_selector_event (GstPad * pad, GstObject * parent, GstEvent * event)
 
         gst_event_ref (event);
         result |= gst_pad_push_event (eventpad, event);
+        pushed_pads = g_list_append (pushed_pads, eventpad);
 
         g_value_reset (&item);
         break;
@@ -1794,8 +1812,8 @@ gst_input_selector_request_new_pad (GstElement * element,
   GST_OBJECT_FLAG_SET (sinkpad, GST_PAD_FLAG_PROXY_CAPS);
   GST_OBJECT_FLAG_SET (sinkpad, GST_PAD_FLAG_PROXY_ALLOCATION);
   gst_pad_set_active (sinkpad, TRUE);
-  gst_element_add_pad (GST_ELEMENT (sel), sinkpad);
   GST_INPUT_SELECTOR_UNLOCK (sel);
+  gst_element_add_pad (GST_ELEMENT (sel), sinkpad);
 
   return sinkpad;
 }
@@ -1814,6 +1832,7 @@ gst_input_selector_release_pad (GstElement * element, GstPad * pad)
     GST_DEBUG_OBJECT (sel, "Deactivating pad %s:%s", GST_DEBUG_PAD_NAME (pad));
     gst_object_unref (sel->active_sinkpad);
     sel->active_sinkpad = NULL;
+    sel->active_sinkpad_from_user = FALSE;
   }
   sel->n_pads--;
   GST_INPUT_SELECTOR_UNLOCK (sel);
@@ -1829,7 +1848,7 @@ gst_input_selector_reset (GstInputSelector * sel)
 
   GST_INPUT_SELECTOR_LOCK (sel);
   /* clear active pad */
-  if (sel->active_sinkpad) {
+  if (sel->active_sinkpad && !sel->active_sinkpad_from_user) {
     gst_object_unref (sel->active_sinkpad);
     sel->active_sinkpad = NULL;
   }

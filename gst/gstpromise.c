@@ -32,18 +32,19 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
  * SECTION:gstpromise
  * @title: GstPromise
  * @short_description: a miniobject for future/promise-like functionality
- * @see_also:
  *
  * The #GstPromise object implements the container for values that may
  * be available later. i.e. a Future or a Promise in
- * <ulink url="https://en.wikipedia.org/wiki/Futures_and_promises">https://en.wikipedia.org/wiki/Futures_and_promises</ulink>
+ * <https://en.wikipedia.org/wiki/Futures_and_promises>.
  * As with all Future/Promise-like functionality, there is the concept of the
  * producer of the value and the consumer of the value.
  *
  * A #GstPromise is created with gst_promise_new() by the consumer and passed
  * to the producer to avoid thread safety issues with the change callback.
  * A #GstPromise can be replied to with a value (or an error) by the producer
- * with gst_promise_reply(). gst_promise_interrupt() is for the consumer to
+ * with gst_promise_reply(). The exact value returned is defined by the API
+ * contract of the producer and %NULL may be a valid reply.
+ * gst_promise_interrupt() is for the consumer to
  * indicate to the producer that the value is not needed anymore and producing
  * that value can stop.  The @GST_PROMISE_RESULT_EXPIRED state set by a call
  * to gst_promise_expire() indicates to the consumer that a value will never
@@ -148,7 +149,7 @@ gst_promise_wait (GstPromise * promise)
 /**
  * gst_promise_reply:
  * @promise: (allow-none): a #GstPromise
- * @s: (transfer full): a #GstStructure with the the reply contents
+ * @s: (transfer full) (nullable): a #GstStructure with the the reply contents
  *
  * Set a reply on @promise.  This will wake up any waiters with
  * %GST_PROMISE_RESULT_REPLIED.  Called by the producer of the value to
@@ -219,7 +220,7 @@ gst_promise_reply (GstPromise * promise, GstStructure * s)
  * Retrieve the reply set on @promise.  @promise must be in
  * %GST_PROMISE_RESULT_REPLIED and the returned structure is owned by @promise
  *
- * Returns: (transfer none): The reply set on @promise
+ * Returns: (transfer none) (nullable): The reply set on @promise
  *
  * Since: 1.14
  */

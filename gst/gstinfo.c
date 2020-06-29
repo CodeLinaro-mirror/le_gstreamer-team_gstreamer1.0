@@ -72,7 +72,7 @@
  * So don't take addresses of these functions or use other tricks.
  * If you must do that for some reason, there is still an option.
  * If the debugging
- * subsystem was compiled out, #GST_DISABLE_GST_DEBUG is defined in
+ * subsystem was compiled out, GST_DISABLE_GST_DEBUG is defined in
  * &lt;gst/gst.h&gt;,
  * so you can check that before doing your trick.
  * Disabling the debugging subsystem will give you a slight (read: unnoticeable)
@@ -1079,6 +1079,7 @@ gst_debug_construct_win_color (guint colorinfo)
 #endif
 #define PID_FMT "%5d"
 #define CAT_FMT "%20s %s:%d:%s:%s"
+#define NOCOLOR_PRINT_FMT " "PID_FMT" "PTR_FMT" %s "CAT_FMT" %s\n"
 
 #ifdef G_OS_WIN32
 static const guchar levelcolormap_w32[GST_LEVEL_COUNT] = {
@@ -1123,6 +1124,81 @@ static const gchar *levelcolormap[GST_LEVEL_COUNT] = {
   "\033[37m"                    /* GST_LEVEL_MEMDUMP */
 };
 
+static void
+_gst_debug_log_preamble (GstDebugMessage * message, GObject * object,
+    const gchar ** file, const gchar ** message_str, gchar ** obj_str,
+    GstClockTime * elapsed)
+{
+  gchar c;
+
+  /* Get message string first because printing it might call into our custom
+   * printf format extension mechanism which in turn might log something, e.g.
+   * from inside gst_structure_to_string() when something can't be serialised.
+   * This means we either need to do this outside of any critical section or
+   * use a recursive lock instead. As we always need the message string in all
+   * code paths, we might just as well get it here first thing and outside of
+   * the win_print_mutex critical section. */
+  *message_str = gst_debug_message_get (message);
+
+  /* __FILE__ might be a file name or an absolute path or a
+   * relative path, irrespective of the exact compiler used,
+   * in which case we want to shorten it to the filename for
+   * readability. */
+  c = (*file)[0];
+  if (c == '.' || c == '/' || c == '\\' || (c != '\0' && (*file)[1] == ':')) {
+    *file = gst_path_basename (*file);
+  }
+
+  if (object) {
+    *obj_str = gst_debug_print_object (object);
+  } else {
+    *obj_str = (gchar *) "";
+  }
+
+  *elapsed = GST_CLOCK_DIFF (_priv_gst_start_time, gst_util_get_timestamp ());
+}
+
+/**
+ * gst_debug_log_get_line:
+ * @category: category to log
+ * @level: level of the message
+ * @file: the file that emitted the message, usually the __FILE__ identifier
+ * @function: the function that emitted the message
+ * @line: the line from that the message was emitted, usually __LINE__
+ * @object: (transfer none) (allow-none): the object this message relates to,
+ *     or %NULL if none
+ * @message: the actual message
+ *
+ * Returns the string representation for the specified debug log message
+ * formatted in the same way as gst_debug_log_default() (the default handler),
+ * without color. The purpose is to make it easy for custom log output
+ * handlers to get a log output that is identical to what the default handler
+ * would write out.
+ *
+ * Since: 1.18
+ */
+gchar *
+gst_debug_log_get_line (GstDebugCategory * category, GstDebugLevel level,
+    const gchar * file, const gchar * function, gint line,
+    GObject * object, GstDebugMessage * message)
+{
+  GstClockTime elapsed;
+  gchar *ret, *obj_str = NULL;
+  const gchar *message_str;
+
+  _gst_debug_log_preamble (message, object, &file, &message_str, &obj_str,
+      &elapsed);
+
+  ret = g_strdup_printf ("%" GST_TIME_FORMAT NOCOLOR_PRINT_FMT,
+      GST_TIME_ARGS (elapsed), getpid (), g_thread_self (),
+      gst_debug_level_get_name (level), gst_debug_category_get_name
+      (category), file, line, function, obj_str, message_str);
+
+  if (object != NULL)
+    g_free (obj_str);
+  return ret;
+}
+
 /**
  * gst_debug_log_default:
  * @category: category to log
@@ -1156,36 +1232,12 @@ gst_debug_log_default (GstDebugCategory * category, GstDebugLevel level,
   GstDebugColorMode color_mode;
   const gchar *message_str;
   FILE *log_file = user_data ? user_data : stderr;
-  gchar c;
 
-  /* Get message string first because printing it might call into our custom
-   * printf format extension mechanism which in turn might log something, e.g.
-   * from inside gst_structure_to_string() when something can't be serialised.
-   * This means we either need to do this outside of any critical section or
-   * use a recursive lock instead. As we always need the message string in all
-   * code paths, we might just as well get it here first thing and outside of
-   * the win_print_mutex critical section. */
-  message_str = gst_debug_message_get (message);
-
-  /* __FILE__ might be a file name or an absolute path or a
-   * relative path, irrespective of the exact compiler used,
-   * in which case we want to shorten it to the filename for
-   * readability. */
-  c = file[0];
-  if (c == '.' || c == '/' || c == '\\' || (c != '\0' && file[1] == ':')) {
-    file = gst_path_basename (file);
-  }
+  _gst_debug_log_preamble (message, object, &file, &message_str, &obj,
+      &elapsed);
 
   pid = getpid ();
   color_mode = gst_debug_get_color_mode ();
-
-  if (object) {
-    obj = gst_debug_print_object (object);
-  } else {
-    obj = (gchar *) "";
-  }
-
-  elapsed = GST_CLOCK_DIFF (_priv_gst_start_time, gst_util_get_timestamp ());
 
   if (color_mode != GST_DEBUG_COLOR_MODE_OFF) {
 #ifdef G_OS_WIN32
@@ -1251,13 +1303,11 @@ gst_debug_log_default (GstDebugCategory * category, GstDebugLevel level,
 #endif
   } else {
     /* no color, all platforms */
-#define PRINT_FMT " "PID_FMT" "PTR_FMT" %s "CAT_FMT" %s\n"
-    fprintf (log_file, "%" GST_TIME_FORMAT PRINT_FMT, GST_TIME_ARGS (elapsed),
-        pid, g_thread_self (), gst_debug_level_get_name (level),
+    fprintf (log_file, "%" GST_TIME_FORMAT NOCOLOR_PRINT_FMT, GST_TIME_ARGS
+        (elapsed), pid, g_thread_self (), gst_debug_level_get_name (level),
         gst_debug_category_get_name (category), file, line, function, obj,
         message_str);
     fflush (log_file);
-#undef PRINT_FMT
   }
 
   if (object != NULL)
@@ -1749,27 +1799,20 @@ _gst_debug_category_new (const gchar * name, guint color,
   return cat;
 }
 
+#ifndef GST_REMOVE_DEPRECATED
 /**
  * gst_debug_category_free:
  * @category: #GstDebugCategory to free.
  *
  * Removes and frees the category and all associated resources.
+ *
+ * Deprecated: This function can easily cause memory corruption, don't use it.
  */
 void
 gst_debug_category_free (GstDebugCategory * category)
 {
-  if (category == NULL)
-    return;
-
-  /* remove from category list */
-  g_mutex_lock (&__cat_mutex);
-  __categories = g_slist_remove (__categories, category);
-  g_mutex_unlock (&__cat_mutex);
-
-  g_free ((gpointer) category->name);
-  g_free ((gpointer) category->description);
-  g_slice_free (GstDebugCategory, category);
 }
+#endif
 
 /**
  * gst_debug_category_set_threshold:
@@ -2111,6 +2154,35 @@ _priv_gst_debug_cleanup (void)
   }
 
   g_mutex_unlock (&__dbg_functions_mutex);
+
+  g_mutex_lock (&__cat_mutex);
+  while (__categories) {
+    GstDebugCategory *cat = __categories->data;
+    g_free ((gpointer) cat->name);
+    g_free ((gpointer) cat->description);
+    g_slice_free (GstDebugCategory, cat);
+    __categories = g_slist_delete_link (__categories, __categories);
+  }
+  g_mutex_unlock (&__cat_mutex);
+
+  g_mutex_lock (&__level_name_mutex);
+  while (__level_name) {
+    LevelNameEntry *level_name_entry = __level_name->data;
+    g_pattern_spec_free (level_name_entry->pat);
+    g_slice_free (LevelNameEntry, level_name_entry);
+    __level_name = g_slist_delete_link (__level_name, __level_name);
+  }
+  g_mutex_unlock (&__level_name_mutex);
+
+  g_mutex_lock (&__log_func_mutex);
+  while (__log_functions) {
+    LogFuncEntry *log_func_entry = __log_functions->data;
+    if (log_func_entry->notify)
+      log_func_entry->notify (log_func_entry->user_data);
+    g_slice_free (LogFuncEntry, log_func_entry);
+    __log_functions = g_slist_delete_link (__log_functions, __log_functions);
+  }
+  g_mutex_unlock (&__log_func_mutex);
 }
 
 static void
@@ -2311,10 +2383,12 @@ gst_debug_unset_threshold_for_name (const gchar * name)
 {
 }
 
+#ifndef GST_REMOVE_DEPRECATED
 void
 gst_debug_category_free (GstDebugCategory * category)
 {
 }
+#endif
 
 void
 gst_debug_category_set_threshold (GstDebugCategory * category,
@@ -2769,7 +2843,7 @@ generate_unwind_trace (GstStackTraceFlags flags)
 
       unret = unw_get_reg (&cursor, UNW_REG_IP, &ip);
       if (unret) {
-        GST_DEBUG ("libunwind could read frame info (%d)", unret);
+        GST_DEBUG ("libunwind could not read frame info (%d)", unret);
 
         goto done;
       }
@@ -2924,8 +2998,8 @@ done:
 
 /**
  * gst_debug_get_stack_trace:
- * @flags: A set of #GstStackTraceFlags to determine how the stack
- * trace should look like. Pass 0 to retrieve a minimal backtrace.
+ * @flags: A set of #GstStackTraceFlags to determine how the stack trace should
+ * look like. Pass #GST_STACK_TRACE_SHOW_NONE to retrieve a minimal backtrace.
  *
  * Returns: (nullable): a stack trace, if libunwind or glibc backtrace are
  * present, else %NULL.
@@ -2945,9 +3019,7 @@ gst_debug_get_stack_trace (GstStackTraceFlags flags)
 #ifdef HAVE_UNWIND
   if ((flags & GST_STACK_TRACE_SHOW_FULL) || !have_backtrace)
     trace = generate_unwind_trace (flags);
-#endif /* HAVE_UNWIND */
-
-#ifdef HAVE_DBGHELP
+#elif defined(HAVE_DBGHELP)
   trace = generate_dbghelp_trace ();
 #endif
 

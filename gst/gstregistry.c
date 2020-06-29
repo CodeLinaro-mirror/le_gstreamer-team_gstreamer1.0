@@ -215,8 +215,7 @@ gst_registry_class_init (GstRegistryClass * klass)
    */
   gst_registry_signals[PLUGIN_ADDED] =
       g_signal_new ("plugin-added", G_TYPE_FROM_CLASS (klass),
-      G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_generic,
-      G_TYPE_NONE, 1, GST_TYPE_PLUGIN);
+      G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL, G_TYPE_NONE, 1, GST_TYPE_PLUGIN);
 
   /**
    * GstRegistry::feature-added:
@@ -228,7 +227,7 @@ gst_registry_class_init (GstRegistryClass * klass)
    */
   gst_registry_signals[FEATURE_ADDED] =
       g_signal_new ("feature-added", G_TYPE_FROM_CLASS (klass),
-      G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_generic,
+      G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL,
       G_TYPE_NONE, 1, GST_TYPE_PLUGIN_FEATURE);
 
   gobject_class->finalize = gst_registry_finalize;
@@ -1198,8 +1197,13 @@ gst_registry_scan_plugin_file (GstRegistryScanContext * context,
 }
 
 static gboolean
-is_blacklisted_hidden_directory (const gchar * dirent)
+is_blacklisted_directory (const gchar * dirent)
 {
+  /* hotdoc private folder can contain many files and it slows down
+   * the discovery for nothing */
+  if (g_str_has_prefix (dirent, "hotdoc-private-"))
+    return TRUE;
+
   if (G_LIKELY (dirent[0] != '.'))
     return FALSE;
 
@@ -1242,7 +1246,7 @@ gst_registry_scan_path_level (GstRegistryScanContext * context,
     }
 
     if (file_status.st_mode & S_IFDIR) {
-      if (G_UNLIKELY (is_blacklisted_hidden_directory (dirent))) {
+      if (G_UNLIKELY (is_blacklisted_directory (dirent))) {
         GST_TRACE_OBJECT (context->registry, "ignoring %s directory", dirent);
         g_free (filename);
         continue;
@@ -1423,6 +1427,24 @@ gst_registry_get_feature_list_by_plugin (GstRegistry * registry,
 
   return gst_registry_feature_filter (registry,
       _gst_plugin_feature_filter_plugin_name, FALSE, (gpointer) name);
+}
+
+/* Private function for getting plugin features directly */
+GList *
+_priv_plugin_get_features (GstRegistry * registry, GstPlugin * plugin)
+{
+  GList *res = NULL;
+  GList *walk;
+
+  GST_OBJECT_LOCK (registry);
+  for (walk = registry->priv->features; walk; walk = walk->next) {
+    GstPluginFeature *feat = (GstPluginFeature *) walk->data;
+    if (feat->plugin == plugin)
+      res = g_list_prepend (res, gst_object_ref (feat));
+  }
+  GST_OBJECT_UNLOCK (registry);
+
+  return res;
 }
 
 /* Unref and delete the default registry */
@@ -1840,10 +1862,12 @@ gst_update_registry (void)
   res = TRUE;
 #endif /* GST_DISABLE_REGISTRY */
 
+#ifndef GST_DISABLE_OPTION_PARSING
   if (_priv_gst_preload_plugins) {
     GST_DEBUG ("Preloading indicated plugins...");
     g_slist_foreach (_priv_gst_preload_plugins, load_plugin_func, NULL);
   }
+#endif
 
   return res;
 }

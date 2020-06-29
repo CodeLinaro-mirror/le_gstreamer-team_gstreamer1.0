@@ -41,13 +41,10 @@
  * allocated filename.
  *
  * When the downloadbuffer has completely downloaded the media, it will
- * post an application message named  <classname>&quot;GstCacheDownloadComplete&quot;</classname>
+ * post an application message named `GstCacheDownloadComplete`
  * with the following information:
  *
- * *
- *   G_TYPE_STRING
- *   <classname>&quot;location&quot;</classname>:
- *   the location of the completely downloaded file.
+ * * G_TYPE_STRING `location`: the location of the completely downloaded file.
  *
  */
 
@@ -235,12 +232,14 @@ gst_download_buffer_class_init (GstDownloadBufferClass * klass)
 
   g_object_class_install_property (gobject_class, PROP_LOW_PERCENT,
       g_param_spec_int ("low-percent", "Low percent",
-          "Low threshold for buffering to start. Only used if use-buffering is True",
+          "Low threshold for buffering to start. "
+          "Emits GST_MESSAGE_BUFFERING with a value of 0%",
           0, 100, DEFAULT_LOW_PERCENT,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_HIGH_PERCENT,
       g_param_spec_int ("high-percent", "High percent",
-          "High threshold for buffering to finish. Only used if use-buffering is True",
+          "High threshold for buffering to finish. "
+          "Emits GST_MESSAGE_BUFFERING with a value of 100%",
           0, 100, DEFAULT_HIGH_PERCENT,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
@@ -1318,6 +1317,10 @@ gst_download_buffer_loop (GstPad * pad)
   /* have to lock for thread-safety */
   GST_DOWNLOAD_BUFFER_MUTEX_LOCK_CHECK (dlbuf, dlbuf->srcresult, out_flushing);
 
+  ret = gst_download_buffer_read_buffer (dlbuf, -1, -1, &buffer);
+  if (ret != GST_FLOW_OK)
+    goto out_flushing;
+
   if (dlbuf->stream_start_event != NULL) {
     gst_pad_push_event (dlbuf->srcpad, dlbuf->stream_start_event);
     dlbuf->stream_start_event = NULL;
@@ -1327,9 +1330,6 @@ gst_download_buffer_loop (GstPad * pad)
     dlbuf->segment_event = NULL;
   }
 
-  ret = gst_download_buffer_read_buffer (dlbuf, -1, -1, &buffer);
-  if (ret != GST_FLOW_OK)
-    goto out_flushing;
 
   /* update the buffering */
   msg = update_buffering (dlbuf);

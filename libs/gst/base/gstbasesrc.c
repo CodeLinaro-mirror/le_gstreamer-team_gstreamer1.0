@@ -360,7 +360,7 @@ static GstFlowReturn gst_base_src_getrange (GstPad * pad, GstObject * parent,
 static GstFlowReturn gst_base_src_get_range (GstBaseSrc * src, guint64 offset,
     guint length, GstBuffer ** buf);
 static gboolean gst_base_src_seekable (GstBaseSrc * src);
-static gboolean gst_base_src_negotiate (GstBaseSrc * basesrc);
+static gboolean gst_base_src_negotiate_unlocked (GstBaseSrc * basesrc);
 static gboolean gst_base_src_update_length (GstBaseSrc * src, guint64 offset,
     guint * length, gboolean force);
 
@@ -659,7 +659,7 @@ gst_base_src_set_dynamic_size (GstBaseSrc * src, gboolean dynamic)
  * When @src operates in %GST_FORMAT_TIME, #GstBaseSrc will send an EOS
  * when a buffer outside of the currently configured segment is pushed if
  * @automatic_eos is %TRUE. Since 1.16, if @automatic_eos is %FALSE an
- * EOS will be pushed only when the #GstBaseSrc.create implementation
+ * EOS will be pushed only when the #GstBaseSrcClass.create() implementation
  * returns %GST_FLOW_EOS.
  *
  * Since: 1.4
@@ -856,7 +856,7 @@ gst_base_src_get_do_timestamp (GstBaseSrc * src)
  * @time: The new time value for the start of the new segment
  *
  * Prepare a new seamless segment for emission downstream. This function must
- * only be called by derived sub-classes, and only from the create() function,
+ * only be called by derived sub-classes, and only from the #GstBaseSrcClass::create function,
  * as the stream-lock needs to be held.
  *
  * The format for the new segment will be the current format of the source, as
@@ -1426,8 +1426,11 @@ gst_base_src_default_prepare_seek_segment (GstBaseSrc * src, GstEvent * event,
   }
 
   /* And finally, configure our output segment in the desired format */
-  gst_segment_do_seek (segment, rate, dest_format, flags, start_type, start,
-      stop_type, stop, &update);
+  if (res) {
+    res =
+        gst_segment_do_seek (segment, rate, dest_format, flags, start_type,
+        start, stop_type, stop, &update);
+  }
 
   if (!res)
     goto no_format;
@@ -2804,7 +2807,7 @@ gst_base_src_loop (GstPad * pad)
 
   /* check if we need to renegotiate */
   if (gst_pad_check_reconfigure (pad)) {
-    if (!gst_base_src_negotiate (src)) {
+    if (!gst_base_src_negotiate_unlocked (src)) {
       gst_pad_mark_reconfigure (pad);
       if (GST_PAD_IS_FLUSHING (pad)) {
         GST_LIVE_LOCK (src);
@@ -2915,10 +2918,6 @@ gst_base_src_loop (GstPad * pad)
       if (GST_CLOCK_TIME_IS_VALID (duration)) {
         if (src->segment.rate >= 0.0)
           position += duration;
-        else if (position > duration)
-          position -= duration;
-        else
-          position = 0;
       }
       break;
     }
@@ -3019,10 +3018,9 @@ flushing:
   }
 pause:
   {
-    const gchar *reason = gst_flow_get_name (ret);
     GstEvent *event;
 
-    GST_DEBUG_OBJECT (src, "pausing task, reason %s", reason);
+    GST_DEBUG_OBJECT (src, "pausing task, reason %s", gst_flow_get_name (ret));
     src->running = FALSE;
     gst_pad_pause_task (pad);
     if (ret == GST_FLOW_EOS) {
@@ -3374,7 +3372,7 @@ no_caps:
 }
 
 static gboolean
-gst_base_src_negotiate (GstBaseSrc * basesrc)
+gst_base_src_negotiate_unlocked (GstBaseSrc * basesrc)
 {
   GstBaseSrcClass *bclass;
   gboolean result;
@@ -3399,6 +3397,39 @@ gst_base_src_negotiate (GstBaseSrc * basesrc)
       gst_caps_unref (caps);
   }
   return result;
+}
+
+/**
+ * gst_base_src_negotiate:
+ * @src: base source instance
+ *
+ * Negotiates src pad caps with downstream elements.
+ * Unmarks GST_PAD_FLAG_NEED_RECONFIGURE in any case. But marks it again
+ * if #GstBaseSrcClass.negotiate() fails.
+ *
+ * Do not call this in the #GstBaseSrcClass.fill() vmethod. Call this in
+ * #GstBaseSrcClass.create() or in #GstBaseSrcClass.alloc(), _before_ any
+ * buffer is allocated.
+ *
+ * Returns: %TRUE if the negotiation succeeded, else %FALSE.
+ *
+ * Since: 1.18
+ */
+gboolean
+gst_base_src_negotiate (GstBaseSrc * src)
+{
+  gboolean ret = TRUE;
+
+  g_return_val_if_fail (GST_IS_BASE_SRC (src), FALSE);
+
+  GST_PAD_STREAM_LOCK (src->srcpad);
+  gst_pad_check_reconfigure (src->srcpad);
+  ret = gst_base_src_negotiate_unlocked (src);
+  if (!ret)
+    gst_pad_mark_reconfigure (src->srcpad);
+  GST_PAD_STREAM_UNLOCK (src->srcpad);
+
+  return ret;
 }
 
 static gboolean

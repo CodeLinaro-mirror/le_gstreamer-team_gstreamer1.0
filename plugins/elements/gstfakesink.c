@@ -207,8 +207,8 @@ gst_fake_sink_class_init (GstFakeSinkClass * klass)
   gst_fake_sink_signals[SIGNAL_HANDOFF] =
       g_signal_new ("handoff", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
       G_STRUCT_OFFSET (GstFakeSinkClass, handoff), NULL, NULL,
-      g_cclosure_marshal_generic, G_TYPE_NONE, 2,
-      GST_TYPE_BUFFER | G_SIGNAL_TYPE_STATIC_SCOPE, GST_TYPE_PAD);
+      NULL, G_TYPE_NONE, 2, GST_TYPE_BUFFER | G_SIGNAL_TYPE_STATIC_SCOPE,
+      GST_TYPE_PAD);
 
   /**
    * GstFakeSink::preroll-handoff:
@@ -221,7 +221,7 @@ gst_fake_sink_class_init (GstFakeSinkClass * klass)
   gst_fake_sink_signals[SIGNAL_PREROLL_HANDOFF] =
       g_signal_new ("preroll-handoff", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (GstFakeSinkClass, preroll_handoff),
-      NULL, NULL, g_cclosure_marshal_generic, G_TYPE_NONE, 2,
+      NULL, NULL, NULL, G_TYPE_NONE, 2,
       GST_TYPE_BUFFER | G_SIGNAL_TYPE_STATIC_SCOPE, GST_TYPE_PAD);
 
   gst_element_class_set_static_metadata (gstelement_class,
@@ -241,6 +241,8 @@ gst_fake_sink_class_init (GstFakeSinkClass * klass)
   gstbase_sink_class->preroll = GST_DEBUG_FUNCPTR (gst_fake_sink_preroll);
   gstbase_sink_class->render = GST_DEBUG_FUNCPTR (gst_fake_sink_render);
   gstbase_sink_class->query = GST_DEBUG_FUNCPTR (gst_fake_sink_query);
+
+  gst_type_mark_as_plugin_api (GST_TYPE_FAKE_SINK_STATE_ERROR, 0);
 }
 
 static void

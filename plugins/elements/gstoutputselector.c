@@ -147,6 +147,9 @@ gst_output_selector_class_init (GstOutputSelectorClass * klass)
       GST_DEBUG_FUNCPTR (gst_output_selector_release_pad);
 
   gstelement_class->change_state = gst_output_selector_change_state;
+
+  gst_type_mark_as_plugin_api (GST_TYPE_OUTPUT_SELECTOR_PAD_NEGOTIATION_MODE,
+      0);
 }
 
 static void
@@ -189,6 +192,7 @@ gst_output_selector_reset (GstOutputSelector * osel)
     gst_buffer_unref (osel->latest_buffer);
     osel->latest_buffer = NULL;
   }
+  osel->segment_seqnum = GST_SEQNUM_INVALID;
   GST_OBJECT_UNLOCK (osel);
   gst_segment_init (&osel->segment, GST_FORMAT_UNDEFINED);
 }
@@ -320,6 +324,38 @@ forward_sticky_events (GstPad * pad, GstEvent ** event, gpointer user_data)
   return TRUE;
 }
 
+static gboolean
+gst_output_selector_srcpad_event_func (GstPad * pad, GstObject * parent,
+    GstEvent * event)
+{
+  GstOutputSelector *osel = GST_OUTPUT_SELECTOR (parent);
+
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_SEEK:
+    {
+      guint32 seqnum = gst_event_get_seqnum (event);
+
+      GST_OBJECT_LOCK (osel);
+      if (seqnum == osel->segment_seqnum) {
+        GST_OBJECT_UNLOCK (osel);
+
+        GST_DEBUG_OBJECT (pad,
+            "Drop duplicated SEEK event seqnum %" G_GUINT32_FORMAT, seqnum);
+        gst_event_unref (event);
+        return TRUE;
+      }
+
+      osel->segment_seqnum = seqnum;
+      GST_OBJECT_UNLOCK (osel);
+      break;
+    }
+    default:
+      break;
+  }
+
+  return gst_pad_event_default (pad, parent, event);
+}
+
 static GstPad *
 gst_output_selector_request_new_pad (GstElement * element,
     GstPadTemplate * templ, const gchar * name, const GstCaps * caps)
@@ -337,6 +373,7 @@ gst_output_selector_request_new_pad (GstElement * element,
   srcpad = gst_pad_new_from_template (templ, padname);
   GST_OBJECT_UNLOCK (osel);
 
+  gst_pad_set_event_function (srcpad, gst_output_selector_srcpad_event_func);
   gst_pad_set_active (srcpad, TRUE);
 
   /* Forward sticky events to the new srcpad */

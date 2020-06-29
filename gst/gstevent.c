@@ -132,6 +132,8 @@ static GstEventQuarks event_quarks[] = {
   {GST_EVENT_CUSTOM_BOTH, "custom-both", 0},
   {GST_EVENT_CUSTOM_BOTH_OOB, "custom-both-oob", 0},
   {GST_EVENT_STREAM_GROUP_DONE, "stream-group-done", 0},
+  {GST_EVENT_INSTANT_RATE_CHANGE, "instant-rate-change", 0},
+  {GST_EVENT_INSTANT_RATE_SYNC_TIME, "instant-rate-sync-time", 0},
 
   {0, NULL, 0}
 };
@@ -403,6 +405,29 @@ gst_event_has_name (GstEvent * event, const gchar * name)
     return FALSE;
 
   return gst_structure_has_name (GST_EVENT_STRUCTURE (event), name);
+}
+
+/**
+ * gst_event_has_name_id:
+ * @event: The #GstEvent.
+ * @name: name to check as a GQuark
+ *
+ * Checks if @event has the given @name. This function is usually used to
+ * check the name of a custom event.
+ *
+ * Returns: %TRUE if @name matches the name of the event structure.
+ *
+ * Since: 1.18
+ */
+gboolean
+gst_event_has_name_id (GstEvent * event, GQuark name)
+{
+  g_return_val_if_fail (GST_IS_EVENT (event), FALSE);
+
+  if (GST_EVENT_STRUCTURE (event) == NULL)
+    return FALSE;
+
+  return (GST_EVENT_STRUCTURE (event)->name == name);
 }
 
 /**
@@ -687,6 +712,8 @@ GstEvent *
 gst_event_new_stream_group_done (guint group_id)
 {
   GstStructure *s;
+
+  g_return_val_if_fail (group_id != GST_GROUP_ID_INVALID, NULL);
 
   s = gst_structure_new_id (GST_QUARK (EVENT_STREAM_GROUP_DONE),
       GST_QUARK (GROUP_ID), G_TYPE_UINT, group_id, NULL);
@@ -1270,6 +1297,10 @@ gst_event_new_seek (gdouble rate, GstFormat format, GstSeekFlags flags,
   GstStructure *structure;
 
   g_return_val_if_fail (rate != 0.0, NULL);
+  g_return_val_if_fail ((flags & GST_SEEK_FLAG_INSTANT_RATE_CHANGE) == 0
+      || (start_type == GST_SEEK_TYPE_NONE
+          && stop_type == GST_SEEK_TYPE_NONE
+          && (flags & GST_SEEK_FLAG_FLUSH) == 0), NULL);
 
   /* SNAP flags only make sense in combination with the KEYUNIT flag. Warn
    * and unset the SNAP flags if they're set without the KEYUNIT flag */
@@ -1804,6 +1835,7 @@ gst_event_set_group_id (GstEvent * event, guint group_id)
   g_return_if_fail (event != NULL);
   g_return_if_fail (GST_EVENT_TYPE (event) == GST_EVENT_STREAM_START);
   g_return_if_fail (gst_event_is_writable (event));
+  g_return_if_fail (group_id != GST_GROUP_ID_INVALID);
 
   gst_structure_id_set (GST_EVENT_STRUCTURE (event),
       GST_QUARK (GROUP_ID), G_TYPE_UINT, group_id, NULL);
@@ -1994,7 +2026,7 @@ gst_event_parse_toc_select (GstEvent * event, gchar ** uid)
   val = gst_structure_id_get_value (structure, GST_QUARK (UID));
 
   if (uid != NULL)
-    *uid = g_strdup (g_value_get_string (val));
+    *uid = g_value_dup_string (val);
 
 }
 
@@ -2166,4 +2198,151 @@ gst_event_parse_segment_done (GstEvent * event, GstFormat * format,
   val = gst_structure_id_get_value (structure, GST_QUARK (POSITION));
   if (position != NULL)
     *position = g_value_get_int64 (val);
+}
+
+/**
+ * gst_event_new_instant_rate_change:
+ * @rate_multiplier: the multiplier to be applied to the playback rate
+ * @new_flags: A new subset of segment flags to replace in segments
+ *
+ * Create a new instant-rate-change event. This event is sent by seek
+ * handlers (e.g. demuxers) when receiving a seek with the
+ * %GST_SEEK_FLAG_INSTANT_RATE_CHANGE and signals to downstream elements that
+ * the playback rate in the existing segment should be immediately multiplied
+ * by the @rate_multiplier factor.
+ *
+ * The flags provided replace any flags in the existing segment, for the
+ * flags within the %GST_SEGMENT_INSTANT_FLAGS set. Other GstSegmentFlags
+ * are ignored and not transferred in the event.
+ *
+ * Returns: (transfer full): the new instant-rate-change event.
+ *
+ * Since: 1.18
+ */
+GstEvent *
+gst_event_new_instant_rate_change (gdouble rate_multiplier,
+    GstSegmentFlags new_flags)
+{
+  GstEvent *event;
+
+  g_return_val_if_fail (rate_multiplier != 0.0, NULL);
+
+  new_flags &= GST_SEGMENT_INSTANT_FLAGS;
+
+  GST_CAT_TRACE (GST_CAT_EVENT, "creating instant-rate-change event %lf %08x",
+      rate_multiplier, new_flags);
+
+  event = gst_event_new_custom (GST_EVENT_INSTANT_RATE_CHANGE,
+      gst_structure_new_id (GST_QUARK (EVENT_INSTANT_RATE_CHANGE),
+          GST_QUARK (RATE), G_TYPE_DOUBLE, rate_multiplier,
+          GST_QUARK (FLAGS), GST_TYPE_SEGMENT_FLAGS, new_flags, NULL));
+
+  return event;
+}
+
+/**
+ * gst_event_parse_instant_rate_change:
+ * @event: a #GstEvent of type #GST_EVENT_INSTANT_RATE_CHANGE
+ * @rate_multiplier: (out) (allow-none): location in which to store the rate
+ *     multiplier of the instant-rate-change event, or %NULL
+ * @new_flags: (out) (allow-none): location in which to store the new
+ *     segment flags of the instant-rate-change event, or %NULL
+ *
+ * Extract rate and flags from an instant-rate-change event.
+ *
+ * Since: 1.18
+ */
+void
+gst_event_parse_instant_rate_change (GstEvent * event,
+    gdouble * rate_multiplier, GstSegmentFlags * new_flags)
+{
+  GstStructure *structure;
+
+  g_return_if_fail (GST_IS_EVENT (event));
+  g_return_if_fail (GST_EVENT_TYPE (event) == GST_EVENT_INSTANT_RATE_CHANGE);
+
+  structure = GST_EVENT_STRUCTURE (event);
+  gst_structure_id_get (structure, GST_QUARK (RATE), G_TYPE_DOUBLE,
+      rate_multiplier, GST_QUARK (FLAGS), GST_TYPE_SEGMENT_FLAGS, new_flags,
+      NULL);
+}
+
+/**
+ * gst_event_new_instant_rate_sync_time:
+ * @rate_multiplier: the new playback rate multiplier to be applied
+ * @running_time: Running time when the rate change should be applied
+ * @upstream_running_time: The upstream-centric running-time when the
+ *    rate change should be applied.
+ *
+ * Create a new instant-rate-sync-time event. This event is sent by the
+ * pipeline to notify elements handling the instant-rate-change event about
+ * the running-time when the new rate should be applied. The running time
+ * may be in the past when elements handle this event, which can lead to
+ * switching artifacts. The magnitude of those depends on the exact timing
+ * of event delivery to each element and the magnitude of the change in
+ * playback rate being applied.
+ *
+ * The @running_time and @upstream_running_time are the same if this
+ * is the first instant-rate adjustment, but will differ for later ones
+ * to compensate for the accumulated offset due to playing at a rate
+ * different to the one indicated in the playback segments.
+ *
+ * Returns: (transfer full): the new instant-rate-sync-time event.
+ *
+ * Since: 1.18
+ */
+GstEvent *
+gst_event_new_instant_rate_sync_time (gdouble rate_multiplier,
+    GstClockTime running_time, GstClockTime upstream_running_time)
+{
+  GstEvent *event;
+
+  g_return_val_if_fail (rate_multiplier != 0.0, NULL);
+  g_return_val_if_fail (GST_CLOCK_TIME_IS_VALID (running_time), NULL);
+  g_return_val_if_fail (GST_CLOCK_TIME_IS_VALID (upstream_running_time), NULL);
+
+  GST_CAT_TRACE (GST_CAT_EVENT,
+      "creating instant-rate-sync-time event %lf %" GST_TIME_FORMAT
+      " %" GST_TIME_FORMAT, rate_multiplier,
+      GST_TIME_ARGS (running_time), GST_TIME_ARGS (upstream_running_time));
+
+  event = gst_event_new_custom (GST_EVENT_INSTANT_RATE_SYNC_TIME,
+      gst_structure_new_id (GST_QUARK (EVENT_INSTANT_RATE_SYNC_TIME),
+          GST_QUARK (RATE), G_TYPE_DOUBLE, rate_multiplier,
+          GST_QUARK (RUNNING_TIME), GST_TYPE_CLOCK_TIME, running_time,
+          GST_QUARK (UPSTREAM_RUNNING_TIME), GST_TYPE_CLOCK_TIME,
+          upstream_running_time, NULL));
+
+  return event;
+}
+
+/**
+ * gst_event_parse_instant_rate_sync_time:
+ * @event: a #GstEvent of type #GST_EVENT_INSTANT_RATE_CHANGE
+ * @rate_multiplier: (out) (allow-none): location where to store the rate of
+ *     the instant-rate-sync-time event, or %NULL
+ * @running_time: (out) (allow-none): location in which to store the running time
+ *     of the instant-rate-sync-time event, or %NULL
+ * @upstream_running_time: (out) (allow-none): location in which to store the
+ *     upstream running time of the instant-rate-sync-time event, or %NULL
+ *
+ * Extract the rate multiplier and running times from an instant-rate-sync-time event.
+ *
+ * Since: 1.18
+ */
+void
+gst_event_parse_instant_rate_sync_time (GstEvent * event,
+    gdouble * rate_multiplier, GstClockTime * running_time,
+    GstClockTime * upstream_running_time)
+{
+  GstStructure *structure;
+
+  g_return_if_fail (GST_IS_EVENT (event));
+  g_return_if_fail (GST_EVENT_TYPE (event) == GST_EVENT_INSTANT_RATE_SYNC_TIME);
+
+  structure = GST_EVENT_STRUCTURE (event);
+  gst_structure_id_get (structure, GST_QUARK (RATE), G_TYPE_DOUBLE,
+      rate_multiplier, GST_QUARK (RUNNING_TIME), GST_TYPE_CLOCK_TIME,
+      running_time, GST_QUARK (UPSTREAM_RUNNING_TIME), GST_TYPE_CLOCK_TIME,
+      upstream_running_time, NULL);
 }

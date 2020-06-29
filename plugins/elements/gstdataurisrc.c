@@ -334,7 +334,7 @@ gst_data_uri_src_set_uri (GstURIHandler * handler, const gchar * uri,
   /* uri must be an URI as defined in RFC 2397
    * data:[<mediatype>][;base64],<data>
    */
-  if (strncmp ("data:", uri, 5) != 0)
+  if (g_ascii_strncasecmp ("data:", uri, 5) != 0)
     goto invalid_uri;
 
   uri += 5;
@@ -343,6 +343,9 @@ gst_data_uri_src_set_uri (GstURIHandler * handler, const gchar * uri,
   data_start = strchr (uri, ',');
   if (data_start == NULL)
     goto invalid_uri;
+
+  if (parameters_start > data_start)
+    parameters_start = NULL;
 
   if (data_start != uri && parameters_start != uri)
     mimetype =
@@ -385,7 +388,7 @@ gst_data_uri_src_set_uri (GstURIHandler * handler, const gchar * uri,
     bdata = g_uri_unescape_string (data_start, NULL);
     if (bdata == NULL)
       goto invalid_uri_encoded_data;
-    bsize = strlen (bdata) + 1;
+    bsize = strlen (bdata);
   }
   /* Convert to UTF8 */
   if (strcmp ("text/plain", mimetype) == 0 &&
@@ -396,7 +399,7 @@ gst_data_uri_src_set_uri (GstURIHandler * handler, const gchar * uri,
     gpointer data;
 
     data =
-        g_convert_with_fallback (bdata, -1, "UTF-8", charset, (char *) "*",
+        g_convert_with_fallback (bdata, bsize, "UTF-8", charset, (char *) "*",
         &read, &written, NULL);
     g_free (bdata);
 
