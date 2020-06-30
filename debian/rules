@@ -35,7 +35,7 @@ ifeq ($(DEB_HOST_ARCH_OS),linux)
 conf_flags += -Dptp-helper-permissions=capabilities
 else
 conf_flags += -Dptp-helper-permissions=setuid-root \
-	-Dptp-helper-setuid-user=nobody -Dtp-helper-setuid-group=nobody
+	-Dptp-helper-setuid-user=nobody -Dptp-helper-setuid-group=nobody
 endif
 
 infiles := \
