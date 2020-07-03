@@ -1,3 +1,171 @@
+=== release 1.17.2 ===
+
+2020-07-03 00:22:34 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* ChangeLog:
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.17.2
+
+2020-07-01 20:20:16 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gststreams.c:
+	  stream: Don't use GST_FIXME_OBJECT() when generating a random stream id if the caller didn't provide one
+	  That would call into gst_info_describe_stream(), which takes the same
+	  mutex a second time and then deadlocks.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/552>
+
+2020-05-11 17:44:43 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* gst/gstutils.c:
+	  gstutils: fix link in parse_bin_from_description_full doc
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/475>
+
+2020-06-26 00:50:44 +1000  Jan Schmidt <jan@centricular.com>
+
+	* gst/gstbin.h:
+	  gstbin: Fix docs typo
+	  element-added-deep -> deep-element-added in the GstBin doc header
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/547>
+
+2020-06-25 02:14:56 +0900  Seungha Yang <seungha@centricular.com>
+
+	* docs/gst-plugins-doc-cache-generator.py:
+	  docs: Specify UTF-8 encoding everywhere
+	  Otherwise some non-English character might be broken depending on
+	  OS and/or locale.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/545>
+
+2020-06-25 01:37:43 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* hooks/pre-commit.hook:
+	  hooks: add opt-in cache update hook
+	  CI now checks that plugin caches are up to date, for example
+	  when adding a new property to an element.
+	  This is something pretty easy to forget, and it can be checked
+	  in a pre-commit hook provided the cache generator generates no
+	  unnecessart diff on the developer's machine. This is now the
+	  case for me in core, -base and -good, and eventually all the
+	  repositories should behave appropriately, at least on my
+	  development machine.
+	  The new check in the pre-commit hook is only performed when
+	  the user is in the development environment (it checks
+	  $MESON_BUILD_ROOT to determine that), and when the developer
+	  has opted-in by setting `GST_CACHE_HOOK=enabled`. That is
+	  because the hook will actually rebuild the cache with ninja,
+	  and modify it in the source directory, that's not a behaviour
+	  we want to enable by default.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/546>
+
+2020-06-24 22:51:48 +0900  Seungha Yang <seungha@centricular.com>
+
+	* tools/gst-inspect.c:
+	  gst-inspect: Use gst_info_strdup_vprintf to print string
+	  g_vprintf() will write a string binary to stdout directly using fwrite().
+	  So, depending on character in the string, fwrite to stdout can
+	  print broken one but printf family might not cause the issue.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/544>
+
+2020-06-24 07:54:42 +0200  Michael Olbrich <m.olbrich@pengutronix.de>
+
+	* gst/gstbus.c:
+	* tests/check/gst/gstbus.c:
+	  bus: clear bus->priv->signal_watch immediately when the source is removed
+	  There is a race-condition that can trigger the assertion in
+	  gst_bus_add_signal_watch_full():
+	  If gst_bus_add_signal_watch_full() is called immediately after
+	  gst_bus_remove_signal_watch() then bus->priv->signal_watch may still be set
+	  because gst_bus_source_dispose() or gst_bus_source_finalize() was not yet
+	  called.
+	  This happens if the corresponding GMainContext has the source queued for
+	  dispatch. In this case, the following dispatch will only unref and delete
+	  the signal_watch because it was already destroyed. Any pending messages
+	  will remain until a new watch is installed.
+	  So bus->priv->signal_watch can be cleared immediately when the watch is
+	  removed. This avoid the race condition.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/543>
+
+2020-06-23 01:54:15 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* docs/gst-hotdoc-plugins-scanner.c:
+	  gst-hotdoc-plugins-scanner: serialize interfaces
+
+2020-06-22 23:41:06 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* docs/gst-hotdoc-plugins-scanner.c:
+	  gst-hotdoc-plugins-scanner: don't instantiate base classes
+
+2020-06-21 02:00:54 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* docs/gst-hotdoc-plugins-scanner.c:
+	  gst-hotdoc-plugins-scanner: serialize parents in hierarchy when needed
+
+2020-06-22 09:11:07 -0400  Thibault Saunier <tsaunier@igalia.com>
+
+	* docs/gst-hotdoc-plugins-scanner.c:
+	* docs/meson.build:
+	  docs: Document signals and properties only for current type
+
+2020-06-19 22:52:01 -0400  Thibault Saunier <tsaunier@igalia.com>
+
+	* docs/plugins/gst_plugins_cache.json:
+	  doc: Stop documenting properties from parents
+
+2020-06-23 05:18:11 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gstregistrychunks.c:
+	  registry: Print the pointer when printing features
+	  This is what we do everywhere else too, useful for debugging.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/542>
+
+2020-06-23 03:43:53 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gstregistry.c:
+	  registry: Use a toolchain-specific registry file on Windows
+	  If we load a plugin registry for MinGW plugins when running with MSVC,
+	  we will have to write out the whole cache again, and vice-versa. Just
+	  use separate cache files so that the cache is actually useful.
+	  Closes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/427
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/542>
+
+2020-06-22 12:26:46 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstghostpad.c:
+	* gst/gstghostpad.h:
+	  ghostpad: Deprecate gst_ghost_pad_construct()
+	  Instead do everything it did as part of GObject::constructed() and
+	  change the function to always return TRUE.
+	  gst_ghost_pad_construct() was meant to be called by subclasses right
+	  after construction of the object to finish construction as it can fail
+	  in theory. In practice it's impossible for it to fail, even more so if
+	  called directly from GObject::constructed(): The only failure condition
+	  is if the newly created proxy pad already has a parent, which is
+	  impossible at this point as nothing else can have a reference to it.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/540>
+
+2020-05-19 22:54:20 +0200  Thor Andreassen <ta@toggle.be>
+
+	* tools/gst-inspect-1.0.1:
+	* tools/gst-inspect.c:
+	  tools: gst-inspect, add option '--color' with short option '-C'
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/498>
+
+2020-06-18 13:46:29 -0400  Thibault Saunier <tsaunier@igalia.com>
+
+	* gst/gstinfo.c:
+	* gst/gstinfo.h:
+	  info: Add a printf extension for ClockTime/ClockTimeDiff pointers
+	  Using both GST_TIME_FORMAT+GST_TIME_ARGS and friend is cumbersome, this
+	  makes it sensibly more user friendly.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/535>
+
+2020-06-20 00:27:57 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+
 === release 1.17.1 ===
 
 2020-06-19 19:13:36 +0100  Tim-Philipp Müller <tim@centricular.com>
