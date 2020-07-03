@@ -1,3 +1,11 @@
+gstreamer1.0 (1.17.2-1) experimental; urgency=medium
+
+  * New upstream development release.
+  * debian/rules:
+    + Fix typo in ptp-helper-setuid-group=nobody meson option.
+
+ -- Sebastian Dröge <slomo@debian.org>  Fri, 03 Jul 2020 09:11:08 +0300
+
 gstreamer1.0 (1.17.1-2) experimental; urgency=medium
 
   * debian/rules:
