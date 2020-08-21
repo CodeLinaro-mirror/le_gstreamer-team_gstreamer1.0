@@ -1,3 +1,518 @@
+=== release 1.17.90 ===
+
+2020-08-20 16:08:25 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* ChangeLog:
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.17.90
+
+2020-08-10 22:42:54 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: fix documentation for samples-selected and buffer-consumed
+	  GI expects the instance parameter to be documented, omitting it
+	  leads to a msismatched output in the gir.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/592>
+
+2020-08-07 09:30:55 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	* libs/gst/base/gstaggregator.h:
+	  aggregator: Add optional GstStructure info parameter to "samples-selected" signal
+	  Subclasses can use this to provide more information, for example
+	  audioaggregator could provide the offset into the output buffer where
+	  the next data is going to be filled.
+	  See https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/-/issues/805
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/590>
+
+2020-08-05 16:54:44 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	* libs/gst/base/gstaggregator.h:
+	  aggregator: add segment, pts, dts and duration to samples-selected
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/588>
+
+2020-08-04 07:10:03 -0400  Xavier Claessens <xavier.claessens@collabora.com>
+
+	* tests/validate/meson.build:
+	  Meson: Override gst-tester-1.0 program to find it in other modules
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/586>
+
+2020-08-03 16:26:58 +0300  Jordan Petridis <jordan@centricular.com>
+
+	* gst/gstcaps.c:
+	* gst/gstdeviceproviderfactory.c:
+	* gst/gstelementfactory.c:
+	* gst/gstminiobject.c:
+	* gst/gstobject.c:
+	* gst/gststructure.c:
+	  fix clang 10 warnings
+	  the typesystem checks in g_atomic_pointer_compare_and_exchange
+	  seem to trigger some false positives with clang 10
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/584>
+
+2020-08-04 11:13:51 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: fix iteration direction in skip_buffers
+	  Subclasses use the pad segment to determine whether a buffer
+	  should be skipped, we thus don't want to check if a buffer
+	  needs to be skipped before processing the segment it's part
+	  of.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/585>
+
+2020-07-30 19:31:55 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gsturi.c:
+	* gst/gsturi.h:
+	* tests/check/gst/gsturi.c:
+	  gsturi: Add new API for storing unmodified userinfo / fragment
+	  New API: gst_uri_from_string_escaped()
+	  Identical to gst_uri_from_string() except that the userinfo and
+	  fragment components of the URI will not be unescaped while parsing.
+	  This is needed for correctly parsing usernames or passwords with `:`
+	  in them such as reported at:
+	  https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/831
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/583>
+
+2020-08-01 01:57:06 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* tests/check/gst/gsturi.c:
+	  tests: Add more tests for gsturi
+	  Add tests that exercise unescaping of userinfo and fragments.
+	  Also convert to a modular macro-based definition so that we can reuse
+	  the list of tests in the next commit.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/583>
+
+2020-07-30 19:53:10 -0400  Thibault Saunier <tsaunier@igalia.com>
+
+	* tools/gst-inspect.c:
+	  inspect: Print preset description when available
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/582>
+
+2020-06-30 21:10:05 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	* libs/gst/base/gstaggregator.h:
+	  aggregator: expose sample selection API
+	  See https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/-/issues/771
+	  for context.
+	  This exposes new API that subclasses must call from their
+	  aggregate() implementation to signal that they have selected
+	  the next samples they will aggregate: gst_aggregator_selected_samples()
+	  GstAggregator will emit a new signal there, `samples-selected`,
+	  handlers can then look up samples per pad with the newly-added
+	  gst_aggregator_peek_next_sample.
+	  In addition, a new FIXME is logged when subclasses haven't actually
+	  called `selected_samples` from their aggregate() implementation.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/549>
+
+2020-07-28 10:59:35 +0900  Hosang Lee <hosang10.lee@lge.com>
+
+	* gst/gsturi.c:
+	* tests/check/gst/gsturi.c:
+	  gsturi: unescape '=' in http query
+	  Don't use percent-encoding for '=' in http queries.
+	  '=' in the following kind of http query should be maintained.
+	  example:
+	  ?token=exp=123~acl=/QualityLevels(*~hmac=0cb ...
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/580>
+
+2020-07-24 13:31:47 +0200  Camilo Celis Guzman <camilo@pexip.com>
+
+	* libs/gst/base/gstbasetransform.c:
+	* tests/check/libs/test_transform.c:
+	* tests/check/libs/transform1.c:
+	  basetransform: handle invalid subclass implementation for fixate_caps
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/575>
+
+2020-07-24 17:53:00 -0400  Olivier Crête <olivier.crete@collabora.com>
+
+	* libs/gst/base/gstbaseparse.c:
+	  baseparse: Don't push pointless new segment events
+	  In 1.0, there is no concept of segment update, so don't push new
+	  identical segments.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/578>
+
+2020-07-24 11:38:28 -0400  Thibault Saunier <tsaunier@igalia.com>
+
+	* libs/gst/base/gstbaseparse.c:
+	  baseparse: Fix seqnum handling in pull mode
+	  After a seek in pull mode, we should use the seek seqnum for all
+	  following operations, not some random seqnums
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/577>
+
+2020-07-26 15:30:26 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* libs/gst/check/gstcheck.h:
+	  check: suppress g-ir-scanner warnings
+	  Make g-ir-scanner skip all those check macros that are
+	  not useful for or usable from bindings.
+	  gstcheck.h:209: Warning: GstCheck: Unknown namespace for symbol 'fail_unless_message_error'
+	  gstcheck.h:212: Warning: GstCheck: Unknown namespace for symbol 'assert_message_error'
+	  gstcheck.h:251: Warning: GstCheck: Unknown namespace for symbol 'fail_unless_equals_int'
+	  gstcheck.h:267: Warning: GstCheck: Unknown namespace for symbol 'assert_equals_int'
+	  gstcheck.h:280: Warning: GstCheck: Unknown namespace for symbol 'fail_unless_equals_int_hex'
+	  gstcheck.h:299: Warning: GstCheck: Unknown namespace for symbol 'assert_equals_int_hex'
+	  gstcheck.h:310: Warning: GstCheck: Unknown namespace for symbol 'fail_unless_equals_int64'
+	  gstcheck.h:327: Warning: GstCheck: Unknown namespace for symbol 'assert_equals_int64'
+	  gstcheck.h:340: Warning: GstCheck: Unknown namespace for symbol 'fail_unless_equals_int64_hex'
+	  gstcheck.h:358: Warning: GstCheck: Unknown namespace for symbol 'assert_equals_int64_hex'
+	  gstcheck.h:369: Warning: GstCheck: Unknown namespace for symbol 'fail_unless_equals_uint64'
+	  gstcheck.h:386: Warning: GstCheck: Unknown namespace for symbol 'assert_equals_uint64'
+	  gstcheck.h:399: Warning: GstCheck: Unknown namespace for symbol 'fail_unless_equals_uint64_hex'
+	  gstcheck.h:417: Warning: GstCheck: Unknown namespace for symbol 'assert_equals_uint64_hex'
+	  gstcheck.h:428: Warning: GstCheck: Unknown namespace for symbol 'fail_unless_equals_string'
+	  gstcheck.h:444: Warning: GstCheck: Unknown namespace for symbol 'assert_equals_string'
+	  gstcheck.h:455: Warning: GstCheck: Unknown namespace for symbol 'fail_unless_equals_float'
+	  gstcheck.h:474: Warning: GstCheck: Unknown namespace for symbol 'assert_equals_float'
+	  gstcheck.h:487: Warning: GstCheck: Unknown namespace for symbol 'fail_unless_equals_pointer'
+	  gstcheck.h:506: Warning: GstCheck: Unknown namespace for symbol 'assert_equals_pointer'
+	  gstcheck.h:517: Warning: GstCheck: Unknown namespace for symbol 'fail_unless_equals_clocktime'
+	  gstcheck.h:534: Warning: GstCheck: Unknown namespace for symbol 'MAIN_START_THREADS'
+	  gstcheck.h:547: Warning: GstCheck: Unknown namespace for symbol 'MAIN_START_THREAD_FUNCTIONS'
+	  gstcheck.h:555: Warning: GstCheck: Unknown namespace for symbol 'MAIN_START_THREAD_FUNCTION'
+	  gstcheck.h:626: Warning: GstCheck: Unknown namespace for symbol 'ASSERT_CRITICAL'
+	  gstcheck.h:628: Warning: GstCheck: Unknown namespace for symbol 'ASSERT_CRITICAL'
+	  gstcheck.h:640: Warning: GstCheck: Unknown namespace for symbol 'ASSERT_WARNING'
+	  gstcheck.h:652: Warning: GstCheck: Unknown namespace for symbol 'ASSERT_OBJECT_REFCOUNT'
+	  gstcheck.h:661: Warning: GstCheck: Unknown namespace for symbol 'ASSERT_OBJECT_REFCOUNT_BETWEEN'
+	  gstcheck.h:676: Warning: GstCheck: Unknown namespace for symbol 'ASSERT_CAPS_REFCOUNT'
+	  gstcheck.h:679: Warning: GstCheck: Unknown namespace for symbol 'ASSERT_BUFFER_REFCOUNT'
+	  gstcheck.h:682: Warning: GstCheck: Unknown namespace for symbol 'ASSERT_MINI_OBJECT_REFCOUNT'
+	  gstcheck.h:690: Warning: GstCheck: Unknown namespace for symbol 'ASSERT_SET_STATE'
+	  gstcheck.h:729: Warning: GstCheck: Unknown namespace for symbol 'tcase_skip_broken_test'
+	  gstcheck.h:740: Warning: GstCheck: Unknown namespace for symbol 'tcase_skip_broken_loop_test'
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/579>
+
+2020-07-26 14:52:30 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* gst/gstutils.h:
+	  utils: silence g-ir-scanner warnings about float conversion macros
+	  663: Warning: Gst: symbol='GFLOAT_TO_LE': Unknown namespace for symbol 'GFLOAT_TO_LE'
+	  664: Warning: Gst: symbol='GFLOAT_TO_BE': Unknown namespace for symbol 'GFLOAT_TO_BE'
+	  665: Warning: Gst: symbol='GDOUBLE_TO_LE': Unknown namespace for symbol 'GDOUBLE_TO_LE'
+	  666: Warning: Gst: symbol='GDOUBLE_TO_BE': Unknown namespace for symbol 'GDOUBLE_TO_BE'
+	  669: Warning: Gst: symbol='GFLOAT_TO_LE': Unknown namespace for symbol 'GFLOAT_TO_LE'
+	  670: Warning: Gst: symbol='GFLOAT_TO_BE': Unknown namespace for symbol 'GFLOAT_TO_BE'
+	  671: Warning: Gst: symbol='GDOUBLE_TO_LE': Unknown namespace for symbol 'GDOUBLE_TO_LE'
+	  672: Warning: Gst: symbol='GDOUBLE_TO_BE': Unknown namespace for symbol 'GDOUBLE_TO_BE'
+	  678: Warning: Gst: symbol='GFLOAT_FROM_LE': Unknown namespace for symbol 'GFLOAT_FROM_LE'
+	  679: Warning: Gst: symbol='GFLOAT_FROM_BE': Unknown namespace for symbol 'GFLOAT_FROM_BE'
+	  680: Warning: Gst: symbol='GDOUBLE_FROM_LE': Unknown namespace for symbol 'GDOUBLE_FROM_LE'
+	  681: Warning: Gst: symbol='GDOUBLE_FROM_BE': Unknown namespace for symbol 'GDOUBLE_FROM_BE'
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/579>
+
+2020-07-26 14:48:52 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* gst/math-compat.h:
+	  math-compat.h: silence g-ir-scanner warnings
+	  Easier to just make g-ir-scanner skip this header via #ifndef __GI_SCANNER__
+	  than maintain different sets of headers in the meson.build file.
+	  Warning: Gst: symbol="rint": Unknown namespace for symbol "rint"
+	  Warning: Gst: symbol="rintf": Unknown namespace for symbol "rintf"
+	  Warning: Gst: symbol="isnan": Unknown namespace for symbol "isnan"
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/579>
+
+2020-07-26 14:42:39 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* gst/gstevent.h:
+	* gst/gstquery.h:
+	  event, query: fix g-ir-scanner warnings
+	  gstevent.h:72: Warning: Gst: symbol='FLAG': Unknown namespace for symbol 'FLAG'
+	  gstquery.h:76: Warning: Gst: symbol='FLAG': Unknown namespace for symbol 'FLAG'
+	  Use _FLAG(xyz) instead of FLAG(xyz) to silence g-ir-scanner
+	  warnings about this internal helper define.
+	  It's also slightly more hygienic.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/579>
+
+2020-07-24 13:30:39 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* gst/gsttracer.c:
+	* gst/gsttracer.h:
+	* gst/gsttracerrecord.c:
+	* gst/gsttracerrecord.h:
+	* gst/gsttracerutils.c:
+	* gst/meson.build:
+	* plugins/tracers/meson.build:
+	* tests/check/meson.build:
+	  tracer: declare GstTracer API stable
+	  It's been around for more than 4 years and people have built
+	  lots of stuff on top of it, doesn't really make sense to keep
+	  it marked as unstable. We're unlikely to change it now, and
+	  we can always deprecate it and make a new one if needed.
+	  This stabilises the following API:
+	  - gst_tracer_register()
+	  - gst_tracing_get_active_tracers()
+	  - gst_tracing_register_hook()
+	  - gst_tracer_record_new()
+	  - gst_tracer_record_log()
+	  Might also help a bit with #424
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/576>
+
+2020-07-23 14:51:51 +1000  Matthew Waters <matthew@centricular.com>
+
+	* libs/gst/check/gstharness.c:
+	  harness: unref sink/src caps after deactivating pads
+	  Otherwise, access to the harness' sink/src caps is racy between any caps
+	  query performed by an element and gst_harness_teardown().
+	  Fixes: https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/-/issues/794
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/574>
+
+2020-07-22 12:44:02 +0200  Jan Alexander Steffens (heftig) <jan.steffens@ltnglobal.com>
+
+	* libs/gst/check/libcheck/check.c:
+	* libs/gst/check/libcheck/check.h.in:
+	  check: Always mark _ck_assert_failed as noreturn
+	  So that we can use `fail` like `g_assert_not_reached`.
+	  The comment is apparently wrong or outdated, as GCC considers it legal
+	  for noreturn-marked functions to return using longjmp.
+	  See the thread at
+	  https://gitlab.freedesktop.org/gstreamer/gst-plugins-ugly/-/merge_requests/59#note_576422
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/573>
+
+2020-07-14 12:15:34 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* gst/gstbuffer.c:
+	  buffer: improve seqnum fallback warning message
+	  Print target CPU we're building for.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/565>
+
+2020-07-14 12:11:57 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* gst/gstbuffer.c:
+	  buffer: fix meta sequence number fallback on rpi
+	  The global seqnum variable wasn't actually increased in
+	  the fallback code path, leading to all buffers getting
+	  a seqnum of 0. Which also made the unit test fail.
+	  This affects platforms/toolchains that don't have
+	  64-bit atomic ops such as when compiling for armv7 rpi.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/565>
+
+2020-07-09 09:46:07 +0200  Stéphane Cerveau <scerveau@collabora.com>
+
+	* meson.build:
+	  meson: add a plugin summary
+	  This summary displays a list of plugins which
+	  have been enabled.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/560>
+
+2020-07-22 10:51:54 +0300  Eero Nurkkala <eero.nurkkala@offcode.fi>
+
+	* tools/gst-inspect.c:
+	  gst-inspect: fix memory leak
+	  With meson configure option: -Db_sanitize=address, the following
+	  issue is seen while running the test "tools_gstinspect":
+	  Running suite(s): gst-inspect
+	  =================================================================
+	  ==20880==ERROR: LeakSanitizer: detected memory leaks
+	  Direct leak of 51 byte(s) in 9 object(s) allocated from:
+	  #0 0x7ffb4dbb0b40 in __interceptor_malloc (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xdeb40)
+	  #1 0x7ffb4cdf1ab8 in g_malloc (/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0+0x51ab8)
+	  SUMMARY: AddressSanitizer: 51 byte(s) leaked in 9 allocation(s).
+	  0%: Checks: 1, Failures: 0, Errors: 1
+	  GOptionEntry man page states that: "Please note that parsed arguments need to be freed separately (see GOptionEntry)."
+	  Thus, free the 'min_version' string that has been allocated but never freed.
+	  Signed-off-by: Eero Nurkkala <eero.nurkkala@offcode.fi>
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/572>
+
+2020-07-20 17:08:32 +1000  Matthew Waters <matthew@centricular.com>
+
+	* gst/gstbufferpool.c:
+	  gst/bufferpool: only resize in reset when maxsize is larger
+	  Only resize the buffer if the maxsize is larger then the configued pool
+	  size.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/570>
+
+2020-07-16 23:03:35 +1000  Matthew Waters <matthew@centricular.com>
+
+	* plugins/tracers/meson.build:
+	  build/coretracers: add dep on threads
+	  Fixes the following build error and missing '-pthread' argument when
+	  linking:
+	  subprojects/gstreamer/plugins/tracers/libgstcoretracers.so.p/gstleaks.c.o: In function `gst_leaks_tracer_setup_signals':
+	  /work/build32/../subprojects/gstreamer/plugins/tracers/gstleaks.c:919: undefined reference to `pthread_atfork'
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/571>
+
+2020-07-14 00:03:18 -0400  Thibault Saunier <tsaunier@igalia.com>
+
+	* libs/gst/controller/gstdirectcontrolbinding.c:
+	* tests/check/libs/controller.c:
+	  directcontrolbinding: Properly initialize default `last_value`
+	  It was zero and in some condition it means that the control binding
+	  values where ignored (as shown in the test). Setting it to MAXDOUBLE
+	  so that the first time we sync the values from a a timestamp in the
+	  right range the proper value is computed.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/564>
+
+2020-07-16 18:55:22 +0900  Seungha Yang <seungha@centricular.com>
+
+	* gst/gstinfo.c:
+	  info: Fix possible broken debug output on Windows
+	  Depending on Windows codepage setting, some characters could
+	  be broken when printing on terminal. Fortunatly g_print* family will
+	  take care Windows codepage.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/566>
+
+2020-07-16 16:34:05 -0400  Olivier Crête <olivier.crete@collabora.com>
+
+	* gst/gstpad.h:
+	  pad: More explicitly explain how to post errors on GST_FLOW_ERROR
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/568>
+
+2020-07-15 16:12:02 -0400  Nicolas Dufresne <nicolas.dufresne@collabora.com>
+
+	* plugins/tracers/gstlatency.c:
+	  latency tracer: Fix leaks in the reported latency trace
+	  The stack item was not freed as it was supposed, causing leaks.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/269>
+
+2019-08-30 23:59:42 +1000  Jan Schmidt <jan@centricular.com>
+
+	* plugins/tracers/gstlatency.c:
+	  latency tracer: Fix unsafe and NULL pointer accesses
+	  Use thread-safe accesses to pad peers and parent objects. This
+	  fixes some crashers and all the non-safe access patterns I could
+	  spot. There's still some weirdness when using the latency
+	  tracer on pipeline chains that aren't yet linked, but this
+	  at least stops it segfaulting.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/269>
+
+2020-07-13 08:00:15 +0200  Edward Hervey <edward@centricular.com>
+
+	* gst/gstinfo.h:
+	  Revert "gstinfo: Check threshold for category from macro"
+	  This reverts commit dcece2a878b88335fd1990dbeeb88bdeacba0f06.
+	  This increased the code size and number of branches for all debug statements.
+	  Fixes #564
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/563>
+
+2020-07-10 17:11:08 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	* libs/gst/base/gstaggregator.h:
+	  aggregator: expose gst_aggregator_finish_buffer_list API
+	  See https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1276
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/562>
+
+2020-07-06 11:55:38 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* tests/check/elements/leaks.c:
+	  tests/elements/leaks.c: check get_tracer_by_name return value
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/557>
+
+2020-05-18 19:45:35 +0900  Seungha Yang <seungha@centricular.com>
+
+	* libs/gst/base/gstbasesrc.c:
+	  basesrc: Deprecate gst_base_src_new_seamless_segment()
+	  It can be replaced by gst_base_src_new_segment()
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/490>
+
+2020-05-17 00:08:56 +0900  Seungha Yang <seungha@centricular.com>
+
+	* libs/gst/base/gstbasesrc.c:
+	* libs/gst/base/gstbasesrc.h:
+	  basesrc: Add new API for handling GstSegment update by subclass
+	  Add API gst_base_src_new_segment() for subclass to be able to
+	  signalling new GstSegment which should be applied to following
+	  buffers.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/490>
+
+2020-07-09 07:57:01 -0400  Thibault Saunier <tsaunier@igalia.com>
+
+	* gst/gsttaglist.c:
+	* gst/gsttaglist.h:
+	  taglist: Stop inlining gst_tag_list_copy
+	  This way it gets exposed to bindings through GObject Introspection.
+	  Same logic as with d1b2d3429c66d80b8d38f9afc6a8dfca49f3a71a
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/561>
+
+2020-07-08 05:15:28 +0900  Seungha Yang <seungha@centricular.com>
+
+	* libs/gst/check/gstcheck.h:
+	  check: Use g_thread_yield instead of g_usleep(1)
+	  Since the commit
+	  https://gitlab.gnome.org/GNOME/glib/-/commit/01c02ac08b682de622930b1278c9c14d0ffe6c49,
+	  g_usleep(1) will be translated to Sleep(1) on Windows which means
+	  sleep in 1 millisecond. But GLib provides g_thread_yield() API
+	  which is exactly what we required here for thread context switching.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/559>
+
+2020-01-08 19:38:45 -0500  Olivier Crête <olivier.crete@collabora.com>
+
+	* gst/gstdevicemonitor.c:
+	* gst/gstdeviceprovider.c:
+	* tests/check/gst/gstdevice.c:
+	  deviceprovider: Do static probe on start as fallback
+	  For providers that don't support dynamic probing, just fall back to doing
+	  a static one on start() to make the UI developers life easier.
+	  This also means that the monitor doesn't need to call _can_monitor() before
+	  calling start.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/353>
+
+2018-05-02 13:05:21 +0200  Christoph Reiter <reiter.christoph@gmail.com>
+
+	* gst/gstelementfactory.c:
+	  gstelementfactory: Fix missing features in case a feature moves to another filename
+	  In case a plugin filename was renamed with the plugin being in the registry cache
+	  the features were not loaded after the rename:
+	  1) Cache of old/gone filename was loaded, features added
+	  2) New filename was loaded, features where not added because
+	  they were already found in the registry.
+	  3) In the end stale cache entries for files which are no longer there
+	  are removed, including the wanted features.
+	  4) The cache gets updated without the features.
+	  Fix this by also checking at (2) that the found feature is from the loaded plugin
+	  and not from some stale cache entry.
+	  This affected directsoundsink where libgstdirectsoundsink.dll was renamed
+	  to libgstdirectsound.dll, losing the directsoundsink element in the process.
+	  Fixes #290
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/102>
+
+2020-07-04 16:59:23 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	* scripts/extract-release-date-from-doap-file.py:
+	  meson: set release date from .doap file for releases
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/555>
+
+2020-07-05 18:17:48 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* po/POTFILES:
+	  po: update POTFILES
+	  xgettext: error while opening "gst/parse/grammar.y" for reading: No such file or directory
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/586
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/556>
+
+2020-07-03 11:45:36 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/helpers/meson.build:
+	  ptp: Add GNU Hurd to the list of supported platforms and fix the Solaris name
+	  https://mesonbuild.com/Reference-tables.html#operating-system-names has
+	  the table of all supported names right now.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/583
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/554>
+
+2020-07-02 11:21:27 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstelement.c:
+	  element: When removing a ghost pad also unset its target
+	  Otherwise the proxy pad of the ghost pad still stays linked to some
+	  element inside the bin, which is not allowed anymore according to the
+	  topology.
+	  In 2.0 this should be fixed more generically from inside GstGhostPad but
+	  currently there is no way to get notified that the ghost pad is
+	  unparented.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/553>
+
+2020-07-03 02:03:15 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+
 === release 1.17.2 ===
 
 2020-07-03 00:22:34 +0100  Tim-Philipp Müller <tim@centricular.com>
