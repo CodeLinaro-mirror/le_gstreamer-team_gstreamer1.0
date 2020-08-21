@@ -219,7 +219,7 @@ gst_element_register (GstPlugin * plugin, const gchar * name, guint rank,
    * features are removed and readded.
    */
   existing_feature = gst_registry_lookup_feature (registry, name);
-  if (existing_feature) {
+  if (existing_feature && existing_feature->plugin == plugin) {
     GST_DEBUG_OBJECT (registry, "update existing feature %p (%s)",
         existing_feature, name);
     factory = GST_ELEMENT_FACTORY_CAST (existing_feature);
@@ -228,6 +228,8 @@ gst_element_register (GstPlugin * plugin, const gchar * name, guint rank,
     g_type_set_qdata (type, __gst_elementclass_factory, factory);
     gst_object_unref (existing_feature);
     return TRUE;
+  } else if (existing_feature) {
+    gst_object_unref (existing_feature);
   }
 
   factory = g_object_new (GST_TYPE_ELEMENT_FACTORY, NULL);
@@ -379,8 +381,8 @@ gst_element_factory_create (GstElementFactory * factory, const gchar * name)
    * an element at the same moment
    */
   oclass = GST_ELEMENT_GET_CLASS (element);
-  if (!g_atomic_pointer_compare_and_exchange (&oclass->elementfactory, NULL,
-          factory))
+  if (!g_atomic_pointer_compare_and_exchange (&oclass->elementfactory,
+          (GstElementFactory *) NULL, factory))
     gst_object_unref (factory);
   else
     /* This ref will never be dropped as the class is never destroyed */

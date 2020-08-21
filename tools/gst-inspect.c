@@ -1129,7 +1129,14 @@ print_preset_list (GstElement * element)
     n_print ("\n");
     n_print ("%sPresets%s:\n", HEADING_COLOR, RESET_COLOR);
     for (preset = presets; *preset; preset++) {
-      n_print ("  \"%s\"\n", *preset);
+      gchar *comment = NULL;
+      n_print ("  \"%s\"", *preset);
+
+      if (gst_preset_get_meta (GST_PRESET (element), *preset, "comment",
+              &comment) && comment)
+        g_print (": %s", comment);
+      g_free (comment);
+      g_print ("\n");
     }
     g_strfreev (presets);
   }
@@ -2049,8 +2056,10 @@ main (int argc, char *argv[])
             &minver_micro) < 2) {
       g_printerr ("Can't parse version '%s' passed to --atleast-version\n",
           min_version);
+      g_free (min_version);
       return -1;
     }
+    g_free (min_version);
     check_exists = TRUE;
   }
 
