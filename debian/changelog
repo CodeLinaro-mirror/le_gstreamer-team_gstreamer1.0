@@ -1,3 +1,10 @@
+gstreamer1.0 (1.18.0-3) unstable; urgency=medium
+
+  * debian/rules:
+    + Add `--with gir` to generate correct dependencies. Thanks to Ken VanDine.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 08 Sep 2020 15:00:49 +0300
+
 gstreamer1.0 (1.18.0-2) unstable; urgency=medium
 
   * debian/patches/0001-ptp-Also-handle-gnu-kfreebsd.patch:
