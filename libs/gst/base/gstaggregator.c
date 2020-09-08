@@ -3611,6 +3611,9 @@ gst_aggregator_update_segment (GstAggregator * self, const GstSegment * segment)
   GST_OBJECT_LOCK (self);
   GST_AGGREGATOR_PAD (self->srcpad)->segment = *segment;
   self->priv->send_segment = TRUE;
+  /* we have a segment from the subclass now and really shouldn't override
+   * anything in that segment anymore, like the segment.position */
+  self->priv->first_buffer = FALSE;
   GST_OBJECT_UNLOCK (self);
 }
 
@@ -3629,6 +3632,9 @@ gst_aggregator_update_segment (GstAggregator * self, const GstSegment * segment)
  *
  * If gst_aggregator_update_segment() is used by the subclass,
  * it MUST be called before gst_aggregator_selected_samples().
+ *
+ * This function MUST only be called from the #GstAggregatorClass::aggregate()
+ * function.
  *
  * Since: 1.18
  */
