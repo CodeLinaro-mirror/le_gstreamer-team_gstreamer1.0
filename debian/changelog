@@ -1,3 +1,10 @@
+gstreamer1.0 (1.18.0-2) unstable; urgency=medium
+
+  * debian/patches/0001-ptp-Also-handle-gnu-kfreebsd.patch:
+    + Fix build on kfreebsd or how meson likes to call it now: gnu/kfreebsd.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 08 Sep 2020 13:50:55 +0300
+
 gstreamer1.0 (1.18.0-1) unstable; urgency=medium
 
   * New upstream stable release.

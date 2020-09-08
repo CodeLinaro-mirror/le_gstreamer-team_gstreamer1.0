@@ -1,0 +1,25 @@
+From f2299abd0a7c20cbcd9ebc08b3de7223edff6754 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Sebastian=20Dr=C3=B6ge?= <sebastian@centricular.com>
+Date: Tue, 8 Sep 2020 13:40:25 +0300
+Subject: [PATCH] ptp: Also handle gnu/kfreebsd
+
+---
+ libs/gst/helpers/meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libs/gst/helpers/meson.build b/libs/gst/helpers/meson.build
+index 9e5a4ae68..b34423f9c 100644
+--- a/libs/gst/helpers/meson.build
++++ b/libs/gst/helpers/meson.build
+@@ -29,7 +29,7 @@ elif host_system == 'windows'
+   message('PTP not supported on Windows, not ported yet.')
+ elif host_system == 'ios'
+   message('PTP not supported on iOS because of permissions.')
+-elif ['linux', 'darwin', 'netbsd', 'freebsd', 'openbsd', 'kfreebsd', 'dragonfly', 'sunos', 'gnu'].contains(host_system)
++elif ['linux', 'darwin', 'netbsd', 'freebsd', 'openbsd', 'kfreebsd', 'dragonfly', 'sunos', 'gnu', 'gnu/kfreebsd'].contains(host_system)
+   message('PTP supported on ' + host_system + '.')
+   have_ptp = true
+ else
+-- 
+2.28.0
+
