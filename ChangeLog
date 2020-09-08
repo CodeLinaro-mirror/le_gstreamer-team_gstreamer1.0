@@ -1,3 +1,39 @@
+=== release 1.18.0 ===
+
+2020-09-08 00:01:33 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* ChangeLog:
+	* NEWS:
+	* README:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.18.0
+
+2020-09-07 20:22:38 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	* scripts/dist-translations.py:
+	* scripts/meson.build:
+	  meson: dist pot file in tarballs
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/618>
+
+2020-08-21 11:06:57 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Document that samples_selected() must only be called from the aggregate() function
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/607>
+
+2020-08-20 10:54:12 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Don't automatically adjust segment if subclass provided one
+	  On the first buffer the base class would update the segment position
+	  based on the start-time-selection. If the subclass provides its own
+	  segment this will caused unexpected behaviour and override segment
+	  information that was explicitly set by the subclass.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/600>
+
 === release 1.17.90 ===
 
 2020-08-20 16:08:25 +0100  Tim-Philipp Müller <tim@centricular.com>
