@@ -1,7 +1,167 @@
+=== release 1.18.1 ===
+
+2020-10-26 11:08:36 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* ChangeLog:
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.18.1
+
+2020-09-01 00:26:31 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	* tests/check/libs/aggregator.c:
+	  aggregator: make peek() has() pop() drop() buffer API threadsafe
+	  Enforce that the last buffer that was peeked (or had its existence
+	  checked) on a pad is the one that gets popped / dropped, resetting
+	  at the end of each aggregation cycle.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/603
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/675>
+
+2020-10-13 01:19:47 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* gst/gstvalue.c:
+	  gstvalue: don't write to const char *
+	  Our various deserializing functions require NULL terminators
+	  to not over consume substrings (eg fields of an array). Instead
+	  of writing a NULL terminator to the passed-in string, which may
+	  result in segfaults, make a copy of the substring we're interested
+	  in.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/446
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/673>
+
+2020-10-10 00:53:42 +0900  Seungha Yang <seungha@centricular.com>
+
+	* meson.build:
+	  meson: Disallow DbgHelp for UWP build
+	  Most symbols in DbgHelp.h are not allowed for UWP
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/670>
+
+2020-10-07 03:49:33 +0900  Seungha Yang <seungha@centricular.com>
+
+	* gst/gstinfo.c:
+	  info: Fix build on Windows ARM64 device
+	  gstinfo.c(3086): error C2094: label 'done' was undefined
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/668>
+
+2020-10-09 12:13:15 +1100  Matthew Waters <matthew@centricular.com>
+
+	* meson.build:
+	  build: use cpu_family for arch checks
+	  e.g. on 32-bit arm, we may have armv6, armv7l, armv7hf, etc which all
+	  generally have the same layouts.  cpu_family() groups all of these into
+	  just 'arm' that the ABI check table is expecting.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/667>
+
+2020-10-08 13:37:41 +0200  Jan Alexander Steffens (heftig) <jan.steffens@ltnglobal.com>
+
+	* libs/gst/base/gstbasetransform.c:
+	  basetransform: Fix in/outbuf confusion of _default_transform_meta
+	  The default implementation doesn't actually use its buffer parameters,
+	  but this error might have been the cause of some actual confusion in
+	  the plugins code.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/666>
+
+2020-09-26 09:11:40 +0200  Víctor Manuel Jáquez Leal <vjaquez@igalia.com>
+
+	* gst/gstpadtemplate.c:
+	  padtemplate: add missing annotation
+	  Adds missing "transfer full" annotation for caps parameter in
+	  gst_pad_template_set_documentation_caps()
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/660>
+
+2020-09-16 02:16:52 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* gst/gstmeta.c:
+	  gstmeta: intern registered impl string
+	  Subsequent lookups in the hashtable are probably better done
+	  on memory we're confident is allocated to us :)
+	  It was easy to trigger invalid reads by calling gst_meta_register
+	  with dynamically allocated memory, freeing that memory, then
+	  calling gst_meta_get_info()
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/657>
+
+2020-09-15 21:07:27 +0900  Seungha Yang <seungha@centricular.com>
+
+	* gst/gstinfo.c:
+	* meson.build:
+	  info: Load DbgHelp.dll using g_module_open()
+	  ... and update meson file so that enable it only using required headers.
+	  "dependency(...)" is unlikely successful for Windows SDK libraries
+	  since it doesn't ship pkg-config file. So it needs to be changed
+	  to "find_library()" to link corresponding .lib file. That would
+	  result to most MSVC build system will link dbghelp.dll. However,
+	  one drawback of the change is that gstreamer-1.0.dll will mandate
+	  dbghelp.dll although it should be optional. So g_module_open() way
+	  can be the most safe way in this case.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/659>
+
+2020-09-30 11:56:40 +1000  Matthew Waters <matthew@centricular.com>
+
+	* gst/gstpadtemplate.c:
+	  padtemplate: mark documentation caps as may be leaked
+	  The template itself is already marked as such and the caps, the
+	  documentation caps are a logical extension of those two.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/658>
+
+2020-09-18 09:59:03 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Hold SRC_LOCK while unblocking via SRC_BROADCAST()
+	  Otherwise the clock id we access might not be a valid pointer anymore.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/656>
+
+2020-09-08 12:45:42 +0100  Tom Schoonjans <Tom.Schoonjans@rfi.ac.uk>
+
+	* libs/gst/helpers/ptp_helper_post_install.sh:
+	  ptp_helper_post_install.sh: deal with none
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/655>
+
+2020-09-09 01:23:11 +0800  Xℹ Ruoyao <xry111@mengyan1223.wang>
+
+	* tests/check/meson.build:
+	  skip elements/leak.c if tracer is not available
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/654>
+
+2020-08-20 11:09:11 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Wake up source pad in PAUSED<->PLAYING transitions
+	  When going to PLAYING we will now have a clock and can stop waiting on
+	  the condition variable and instead start waiting on the clock if
+	  necessary for the current configuration.
+	  In the other direction when going to PAUSED the clock might have
+	  disappeared and we might need to wait on the condition variable again
+	  instead.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/653>
+
+2020-08-24 11:59:51 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* plugins/elements/gstinputselector.c:
+	  input-selector: Wake up blocking pads when releasing them
+	  Otherwise deactivating them will cause a deadlock as they're blocking
+	  inside the streaming thread.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/601
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/652>
+
+2020-09-08 13:40:25 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/helpers/meson.build:
+	  ptp: Also handle gnu/kfreebsd
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/651>
+
+2020-09-08 17:44:00 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+
 === release 1.18.0 ===
 
 2020-09-08 00:01:33 +0100  Tim-Philipp Müller <tim@centricular.com>
 
+	* .gitlab-ci.yml:
 	* ChangeLog:
 	* NEWS:
 	* README:
