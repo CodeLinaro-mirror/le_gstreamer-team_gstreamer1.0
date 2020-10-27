@@ -1,3 +1,9 @@
+gstreamer1.0 (1.18.1-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 27 Oct 2020 17:07:37 +0200
+
 gstreamer1.0 (1.18.0-3) unstable; urgency=medium
 
   * debian/rules:
