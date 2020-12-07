@@ -324,7 +324,7 @@ gst_aggregator_pad_flush (GstAggregatorPad * aggpad, GstAggregator * agg)
  * a #GstAggregator::samples-selected handler, and can be used to precisely
  * control aggregating parameters for a given set of input samples.
  *
- * Returns: The sample that is about to be aggregated. It may hold a #GstBuffer
+ * Returns: (nullable) (transfer full): The sample that is about to be aggregated. It may hold a #GstBuffer
  *   or a #GstBufferList. The contents of its info structure is subclass-dependent,
  *   and documented on a subclass basis. The buffers held by the sample are
  *   not writable.
@@ -2908,6 +2908,8 @@ gst_aggregator_get_type (void)
 static gboolean
 gst_aggregator_pad_has_space (GstAggregator * self, GstAggregatorPad * aggpad)
 {
+  guint64 max_time_level;
+
   /* Empty queue always has space */
   if (aggpad->priv->num_buffers == 0 && aggpad->priv->clipped_buffer == NULL)
     return TRUE;
@@ -2921,8 +2923,13 @@ gst_aggregator_pad_has_space (GstAggregator * self, GstAggregatorPad * aggpad)
   if (self->priv->latency == 0)
     return FALSE;
 
+  /* On top of our latency, we also want to allow buffering up to the
+   * minimum upstream latency to allow queue free sources with lower then
+   * upstream latency. */
+  max_time_level = self->priv->latency + self->priv->upstream_latency_min;
+
   /* Allow no more buffers than the latency */
-  return (aggpad->priv->time_level <= self->priv->latency);
+  return (aggpad->priv->time_level <= max_time_level);
 }
 
 /* Must be called with the PAD_LOCK held */
@@ -3355,7 +3362,7 @@ gst_aggregator_pad_clip_buffer_unlocked (GstAggregatorPad * pad)
  *
  * Steal the ref to the buffer currently queued in @pad.
  *
- * Returns: (transfer full): The buffer in @pad or NULL if no buffer was
+ * Returns: (nullable) (transfer full): The buffer in @pad or NULL if no buffer was
  *   queued. You should unref the buffer after usage.
  */
 GstBuffer *
@@ -3433,7 +3440,7 @@ gst_aggregator_pad_drop_buffer (GstAggregatorPad * pad)
  * gst_aggregator_pad_peek_buffer:
  * @pad: the pad to get buffer from
  *
- * Returns: (transfer full): A reference to the buffer in @pad or
+ * Returns: (nullable) (transfer full): A reference to the buffer in @pad or
  * NULL if no buffer was queued. You should unref the buffer after
  * usage.
  */
@@ -3597,7 +3604,7 @@ gst_aggregator_set_latency (GstAggregator * self,
  * gst_aggregator_get_buffer_pool:
  * @self: a #GstAggregator
  *
- * Returns: (transfer full): the instance of the #GstBufferPool used
+ * Returns: (transfer full) (nullable): the instance of the #GstBufferPool used
  * by @trans; free it after use it
  */
 GstBufferPool *
@@ -3619,9 +3626,9 @@ gst_aggregator_get_buffer_pool (GstAggregator * self)
 /**
  * gst_aggregator_get_allocator:
  * @self: a #GstAggregator
- * @allocator: (out) (allow-none) (transfer full): the #GstAllocator
+ * @allocator: (out) (optional) (nullable) (transfer full): the #GstAllocator
  * used
- * @params: (out) (allow-none) (transfer full): the
+ * @params: (out caller-allocates) (optional): the
  * #GstAllocationParams of @allocator
  *
  * Lets #GstAggregator sub-classes get the memory @allocator

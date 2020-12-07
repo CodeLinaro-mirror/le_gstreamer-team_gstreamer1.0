@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gstreamer-1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-26 11:08+0000\n"
+"POT-Creation-Date: 2020-12-06 13:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1259,11 +1259,11 @@ msgstr ""
 msgid "File \"%s\" is a socket."
 msgstr ""
 
-#: plugins/elements/gstidentity.c:795
+#: plugins/elements/gstidentity.c:794
 msgid "Failed after iterations as requested."
 msgstr ""
 
-#: plugins/elements/gstidentity.c:976
+#: plugins/elements/gstidentity.c:995
 msgid "eos-after and error-after can't both be defined."
 msgstr ""
 
@@ -1287,12 +1287,12 @@ msgstr ""
 msgid "force caps without doing a typefind"
 msgstr ""
 
-#: plugins/elements/gsttypefindelement.c:987
-#: plugins/elements/gsttypefindelement.c:1009
+#: plugins/elements/gsttypefindelement.c:988
+#: plugins/elements/gsttypefindelement.c:1010
 msgid "Stream doesn't contain enough data."
 msgstr ""
 
-#: plugins/elements/gsttypefindelement.c:1129
+#: plugins/elements/gsttypefindelement.c:1130
 msgid "Stream contains no data."
 msgstr ""
 
