@@ -1,3 +1,140 @@
+=== release 1.18.2 ===
+
+2020-12-06 13:21:19 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* ChangeLog:
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.18.2
+
+2020-12-03 19:22:43 +0100  Marijn Suijten <marijns95@gmail.com>
+
+	* libs/gst/check/gsttestclock.c:
+	  check: gst_test_clock_process_next_clock_id returns nullable
+	  It is possible there are no more pending clocks in the chain, in which
+	  case this function returns null.
+	  See also tests like test_single_shot_async_future that validate NULL
+	  returns.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/716>
+
+2020-12-02 09:22:35 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gststreams.c:
+	  streams: gst_stream_type_get_name() is not nullable
+	  It takes an enum and only the defined values are valid to pass in here
+	  as it's not extensible from the outside.
+	  Add a g_return_val_if_reached() for the unreachable case and return
+	  "invalid".
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/713>
+
+2020-11-03 22:58:26 -0800  Khem Raj <raj.khem@gmail.com>
+
+	* gst/gst_private.h:
+	  gst_private.h: increse padding in struct _GstClockEntryImpl
+	  When compiling for 32bit architectures with 64bit time_t e.g. riscv32,
+	  the static assert that the GstClockEntryImpl smaller or
+	  equal to the struct _GstClockEntryImpl triggered.
+	  (they were 12bytes off).
+	  To fix this, the padding is increased by 8 bytes (on 32bit).
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/695>
+
+2020-11-02 17:43:42 +0800  Bing Song <bing.song@nxp.com>
+
+	* plugins/elements/gstclocksync.c:
+	* plugins/elements/gstidentity.c:
+	  identity/clocksync: Also provide system clock if sync=false
+	  identity should provide when sync=true. Don't provide when sync=false.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/630
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/697>
+
+2020-11-10 21:39:13 +1000  Jonathan Matthew <jonathan@d14n.org>
+
+	* plugins/elements/gsttypefindelement.c:
+	* plugins/elements/gsttypefindelement.h:
+	  typefind: copy seqnum to new segment event
+	  Fixes: #635
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/701>
+
+2020-10-17 12:34:20 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstbufferpool.c:
+	* gst/gstdatetime.c:
+	* gst/gstdeviceprovider.c:
+	* gst/gstelement.c:
+	* gst/gstparse.c:
+	* gst/gstplugin.c:
+	* gst/gstregistry.c:
+	* gst/gststreamcollection.c:
+	* gst/gsttypefind.c:
+	* gst/gsttypefindfactory.c:
+	* gst/gsturi.c:
+	* gst/gstutils.c:
+	* libs/gst/base/gstaggregator.c:
+	* libs/gst/base/gstbasesrc.c:
+	* libs/gst/base/gstbasetransform.c:
+	  Add some missing nullable annotations
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/699>
+
+2020-11-03 22:39:54 +1000  Jonathan Matthew <jonathan@d14n.org>
+
+	* plugins/elements/gstqueue2.c:
+	  queue2: Fix modes in scheduling query handling
+	  Create a new query to send upstream and copy the flags across from it,
+	  rather than reusing the same query, as this allows us to prevent use
+	  of pull mode when we don't have a download file.
+	  Fixes: #629
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/696>
+
+2020-10-31 15:10:23 -0400  Chris White <cxwembedded@gmail.com>
+
+	* gst/gstinfo.c:
+	  gstinfo: colorize PIDs in log messages
+	  The PIDs on log lines were supposed to be colorized before, but the
+	  escape sequence was incorrect.  With this change, the code uses the
+	  correct sequence to colorize those PIDs.  E.g., instead of `\033[334m`
+	  (incorrect), use `\033[34m` (correct).
+	  This makes the log messages easier to read.  It also reduces the chance
+	  that a buggy terminal will choke on the invalid escape sequence.
+	  https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/624
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/691>
+
+2020-10-30 23:46:07 +1100  Jan Schmidt <jan@centricular.com>
+
+	* libs/gst/check/gstharness.c:
+	* tests/check/libs/gstharness.c:
+	  harness: Handle element not being set cleanly.
+	  If a harness is created with gst_harness_new_empty(), there
+	  might not be an internal element to unref on cleanup.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/687>
+
+2020-10-30 00:45:42 +1100  Jan Schmidt <jan@centricular.com>
+
+	* gst/gstbin.c:
+	* tests/check/gst/gstbin.c:
+	  bin: When removing a sink, check if the EOS status changed.
+	  Removing a sink that hasn't posted EOS might change the bin itself
+	  to EOS if it's the last remaining non-EOSed sink.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/685>
+
+2020-10-16 10:39:08 -0400  Nicolas Dufresne <nicolas.dufresne@collabora.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Include min-upstream-latency in buffering time
+	  While we can fixe the upstream latency using the min-upstream-latency, we
+	  are now forced to use queues (hence more thread) in order to store the pending
+	  data whenever we have an upstream source that has lower latency.
+	  This fixes the issue by allowing to buffer the fixed upstream latency. This is
+	  particularly handy on single core systems were having too many threads can
+	  cause serious performance issues.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/684>
+
+2020-10-27 12:33:56 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+
 === release 1.18.1 ===
 
 2020-10-26 11:08:36 +0000  Tim-Philipp Müller <tim@centricular.com>
