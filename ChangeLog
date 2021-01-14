@@ -1,3 +1,67 @@
+=== release 1.18.3 ===
+
+2021-01-13 21:05:12 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* ChangeLog:
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.18.3
+
+2021-01-13 03:01:57 +0900  Seungha Yang <seungha@centricular.com>
+
+	* gst/gsturi.h:
+	  uri: Remove leftover documentation
+	  Follow-up from https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/728
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/731>
+
+2021-01-08 20:23:23 +0900  Seungha Yang <seungha@centricular.com>
+
+	* gst/gstbuffer.c:
+	* gst/gstbuffer.h:
+	* gst/gstbufferlist.c:
+	* gst/gstbufferlist.h:
+	* gst/gstcaps.c:
+	* gst/gstcaps.h:
+	* gst/gstcontext.c:
+	* gst/gstcontext.h:
+	* gst/gstevent.c:
+	* gst/gstevent.h:
+	* gst/gstmemory.c:
+	* gst/gstmemory.h:
+	* gst/gstmessage.c:
+	* gst/gstmessage.h:
+	* gst/gstpromise.c:
+	* gst/gstpromise.h:
+	* gst/gstquery.c:
+	* gst/gstquery.h:
+	* gst/gstsample.c:
+	* gst/gstsample.h:
+	* gst/gsttaglist.c:
+	* gst/gsttaglist.h:
+	* gst/gsturi.c:
+	* gst/gsturi.h:
+	* gst/meson.build:
+	  gst: Add non-inline methods for bindings to able to use core APIs
+	  Provide non-inline version of refcounting APIs so that it can be
+	  consumed by bindings
+	  Fixes: https://gitlab.freedesktop.org/gstreamer/gstreamer-sharp/-/issues/46
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/731>
+
+2020-12-11 16:01:27 +0100  Jakub Adam <jakub.adam@collabora.com>
+
+	* libs/gst/check/gstharness.c:
+	  harness: don't use GST_DEBUG_OBJECT with GstHarness
+	  GstHarness is not a GObject. Fixes assert on recently added check in
+	  gst_debug_log_valist() if GST_ENABLE_EXTRA_CHECKS is enabled.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/721>
+
+2020-12-06 23:56:34 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+
 === release 1.18.2 ===
 
 2020-12-06 13:21:19 +0000  Tim-Philipp Müller <tim@centricular.com>
