@@ -1,9 +1,5 @@
 gstreamer1.0 (1.18.4-1) experimental; urgency=medium
 
-  [ Helmut Grohne ]
-  * Annotate Build-Depends libgmp-dev and libgsl-dev
-    <!nocheck> (Closes: #981203).
-
   [ Marc Leeman ]
   * New upstream version 1.18.4
 
@@ -11,6 +7,18 @@ gstreamer1.0 (1.18.4-1) experimental; urgency=medium
   * Upload to experimental.
 
  -- Sebastian Dröge <slomo@debian.org>  Mon, 05 Apr 2021 11:13:34 +0300
+gstreamer1.0 (1.18.3-2) unstable; urgency=medium
+
+  [ Helmut Grohne ]
+  * Annotate Build-Depends libgmp-dev and libgsl-dev <!nocheck> (Closes: #981203).
+
+  [ Andreas Beckmann ]
+  * Remove obsolete diversions on upgrades from buster (Closes: #984579).
+
+  [ Sebastian Dröge ]
+  * Upload to unstable.
+
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 05 Apr 2021 11:39:20 +0300
 
 gstreamer1.0 (1.18.3-1) unstable; urgency=medium
 
