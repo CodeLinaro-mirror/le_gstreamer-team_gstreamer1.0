@@ -65,7 +65,7 @@ Depends: libgstreamer1.0-0 (= ${binary:Version}),
          ${shlibs:Depends},
          ${misc:Depends},
          gir1.2-gstreamer-1.0 (= ${binary:Version})
-Conflicts: libgstreamer-plugins-bad1.0-dev (<< 1.13.1)
+Conflicts: libgstreamer-plugins-bad1.0-dev (<< 1.13.1), libgstreamer0.10-dev
 Replaces: libgstreamer-plugins-bad1.0-dev (<< 1.13.1)
 Suggests: gstreamer1.0-doc
 Description: GStreamer core development files
