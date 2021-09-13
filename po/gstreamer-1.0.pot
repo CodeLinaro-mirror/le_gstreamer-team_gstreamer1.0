@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gstreamer-1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-15 17:47+0000\n"
+"POT-Creation-Date: 2021-09-08 20:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1061,95 +1061,95 @@ msgstr ""
 msgid "link has no sink [source=%s@%p]"
 msgstr ""
 
-#: gst/parse/grammar.y.in:413
+#: gst/parse/grammar.y.in:419
 #, c-format
 msgid "no property \"%s\" in element \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:454
+#: gst/parse/grammar.y.in:460
 #, c-format
 msgid "could not set property \"%s\" in element \"%s\" to \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:482
+#: gst/parse/grammar.y.in:488
 #, c-format
 msgid "Element \"%s\" is not a GstPreset"
 msgstr ""
 
-#: gst/parse/grammar.y.in:488
+#: gst/parse/grammar.y.in:494
 #, c-format
 msgid "could not set preset \"%s\" in element \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:541
+#: gst/parse/grammar.y.in:547
 msgid "Delayed linking failed."
 msgstr ""
 
-#: gst/parse/grammar.y.in:753 gst/parse/grammar.y.in:758
+#: gst/parse/grammar.y.in:760 gst/parse/grammar.y.in:765
 #, c-format
 msgid "could not link %s to %s, %s can't handle caps %s"
 msgstr ""
 
-#: gst/parse/grammar.y.in:763
+#: gst/parse/grammar.y.in:770
 #, c-format
 msgid "could not link %s to %s, neither element can handle caps %s"
 msgstr ""
 
-#: gst/parse/grammar.y.in:767
+#: gst/parse/grammar.y.in:774
 #, c-format
 msgid "could not link %s to %s with caps %s"
 msgstr ""
 
-#: gst/parse/grammar.y.in:773
+#: gst/parse/grammar.y.in:780
 #, c-format
 msgid "could not link %s to %s"
 msgstr ""
 
-#: gst/parse/grammar.y.in:850
+#: gst/parse/grammar.y.in:857
 #, c-format
 msgid "no element \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:914
+#: gst/parse/grammar.y.in:921
 #, c-format
 msgid "unexpected reference \"%s\" - ignoring"
 msgstr ""
 
-#: gst/parse/grammar.y.in:920
+#: gst/parse/grammar.y.in:927
 #, c-format
 msgid "unexpected pad-reference \"%s\" - ignoring"
 msgstr ""
 
-#: gst/parse/grammar.y.in:952 gst/parse/grammar.y.in:961
+#: gst/parse/grammar.y.in:959 gst/parse/grammar.y.in:968
 #, c-format
 msgid "could not parse caps \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:989
+#: gst/parse/grammar.y.in:996
 #, c-format
 msgid "no sink element for URI \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:1008
+#: gst/parse/grammar.y.in:1015
 #, c-format
 msgid "no source element for URI \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:1098
+#: gst/parse/grammar.y.in:1105
 msgid "syntax error"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1121
+#: gst/parse/grammar.y.in:1128
 #, c-format
 msgid "specified empty bin \"%s\", not allowed"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1131
+#: gst/parse/grammar.y.in:1138
 #, c-format
 msgid "no bin \"%s\", unpacking elements"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1162
+#: gst/parse/grammar.y.in:1169
 msgid "empty pipeline not allowed"
 msgstr ""
 
@@ -1157,15 +1157,15 @@ msgstr ""
 msgid "Pipeline construction is invalid, please add queues."
 msgstr ""
 
-#: libs/gst/base/gstbasesink.c:3133
+#: libs/gst/base/gstbasesink.c:3137
 msgid "A lot of buffers are being dropped."
 msgstr ""
 
-#: libs/gst/base/gstbasesink.c:3788
+#: libs/gst/base/gstbasesink.c:3792
 msgid "Internal data flow problem."
 msgstr ""
 
-#: libs/gst/base/gstbasesink.c:4622 libs/gst/base/gstbasesrc.c:2768
+#: libs/gst/base/gstbasesink.c:4626 libs/gst/base/gstbasesrc.c:2768
 msgid "Internal data flow error."
 msgstr ""
 
@@ -1174,7 +1174,7 @@ msgid "Internal clock error."
 msgstr ""
 
 #: libs/gst/base/gstbasesrc.c:2726 plugins/elements/gstdownloadbuffer.c:847
-#: plugins/elements/gstdownloadbuffer.c:1270
+#: plugins/elements/gstdownloadbuffer.c:1272
 msgid "Failed to map buffer."
 msgstr ""
 
@@ -1211,7 +1211,7 @@ msgstr ""
 msgid "Could not open file \"%s\" for reading."
 msgstr ""
 
-#: plugins/elements/gstdownloadbuffer.c:1279 plugins/elements/gstqueue2.c:2262
+#: plugins/elements/gstdownloadbuffer.c:1281 plugins/elements/gstqueue2.c:2262
 msgid "Error while writing to download file."
 msgstr ""
 

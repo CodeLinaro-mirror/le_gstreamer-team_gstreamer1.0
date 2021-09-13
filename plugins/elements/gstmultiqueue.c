@@ -110,7 +110,7 @@ typedef struct _GstSingleQueue GstSingleQueue;
 
 struct _GstSingleQueue
 {
-  volatile gint refcount;
+  gint refcount;
 
   /* unique identifier of the queue */
   guint id;
@@ -1140,11 +1140,11 @@ gst_multi_queue_iterate_internal_links (GstPad * pad, GstObject * parent)
 
   srcpad = g_weak_ref_get (&squeue->srcpad);
   sinkpad = g_weak_ref_get (&squeue->sinkpad);
-  if (sinkpad == pad) {
+  if (sinkpad == pad && srcpad) {
     opad = srcpad;
     gst_clear_object (&sinkpad);
 
-  } else if (srcpad == pad) {
+  } else if (srcpad == pad && sinkpad) {
     opad = sinkpad;
     gst_clear_object (&srcpad);
 
@@ -1818,6 +1818,10 @@ apply_gap (GstMultiQueue * mq, GstSingleQueue * sq, GstEvent * event,
       timestamp += duration;
     }
 
+    GST_DEBUG_OBJECT (mq, "queue %d, %s position updated to %" GST_TIME_FORMAT,
+        sq->id, segment == &sq->sink_segment ? "sink" : "src",
+        GST_TIME_ARGS (timestamp));
+
     segment->position = timestamp;
 
     if (segment == &sq->sink_segment)
@@ -1879,6 +1883,14 @@ get_running_time (GstSegment * segment, GstMiniObject * object, gboolean end)
         time =
             my_segment_to_running_time ((GstSegment *) new_segment,
             new_segment->start);
+      }
+    } else if (GST_EVENT_TYPE (event) == GST_EVENT_GAP) {
+      GstClockTime ts, dur;
+      gst_event_parse_gap (event, &ts, &dur);
+      if (GST_CLOCK_TIME_IS_VALID (ts)) {
+        if (GST_CLOCK_TIME_IS_VALID (dur))
+          ts += dur;
+        time = my_segment_to_running_time (segment, ts);
       }
     }
   }
@@ -3379,7 +3391,7 @@ gst_single_queue_new (GstMultiQueue * mqueue, guint id)
   }
 
   sq = g_new0 (GstSingleQueue, 1);
-  sq->refcount = 1;
+  g_atomic_int_set (&sq->refcount, 1);
 
   mqueue->nbqueues++;
   sq->id = temp_id;

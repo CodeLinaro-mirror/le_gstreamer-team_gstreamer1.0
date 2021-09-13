@@ -272,10 +272,14 @@ gst_child_proxy_get_property (GstChildProxy * object, const gchar * name,
 
   g_return_if_fail (GST_IS_CHILD_PROXY (object));
   g_return_if_fail (name != NULL);
-  g_return_if_fail (G_IS_VALUE (value));
+  g_return_if_fail (value != NULL);
 
   if (!gst_child_proxy_lookup (object, name, &target, &pspec))
     goto not_found;
+
+  if (!G_IS_VALUE (value)) {
+    g_value_init (value, pspec->value_type);
+  }
 
   g_object_get_property (target, pspec->name, value);
   gst_object_unref (target);
@@ -560,7 +564,7 @@ gst_child_proxy_base_init (gpointer g_class)
 GType
 gst_child_proxy_get_type (void)
 {
-  static volatile gsize type = 0;
+  static gsize type = 0;
 
   if (g_once_init_enter (&type)) {
     GType _type;
