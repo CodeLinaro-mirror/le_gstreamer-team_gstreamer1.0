@@ -1936,6 +1936,7 @@ gst_aggregator_release_pad (GstElement * element, GstPad * pad)
 
   SRC_LOCK (self);
   gst_aggregator_pad_set_flushing (aggpad, GST_FLOW_FLUSHING, TRUE);
+  gst_buffer_replace (&aggpad->priv->peeked_buffer, NULL);
   gst_element_remove_pad (element, pad);
 
   self->priv->has_peer_latency = FALSE;
@@ -2032,7 +2033,7 @@ gst_aggregator_request_new_pad (GstElement * element,
   return GST_PAD (agg_pad);
 }
 
-/* Must be called with SRC_LOCK held */
+/* Must be called with SRC_LOCK held, temporarily releases it! */
 
 static gboolean
 gst_aggregator_query_latency_unlocked (GstAggregator * self, GstQuery * query)
@@ -2040,7 +2041,10 @@ gst_aggregator_query_latency_unlocked (GstAggregator * self, GstQuery * query)
   gboolean query_ret, live;
   GstClockTime our_latency, min, max;
 
+  /* Temporarily release the lock to do the query. */
+  SRC_UNLOCK (self);
   query_ret = gst_pad_query_default (self->srcpad, GST_OBJECT (self), query);
+  SRC_LOCK (self);
 
   if (!query_ret) {
     GST_WARNING_OBJECT (self, "Latency query failed");
@@ -2066,10 +2070,12 @@ gst_aggregator_query_latency_unlocked (GstAggregator * self, GstQuery * query)
   }
 
   if (min > max && GST_CLOCK_TIME_IS_VALID (max)) {
+    SRC_UNLOCK (self);
     GST_ELEMENT_WARNING (self, CORE, CLOCK, (NULL),
         ("Impossible to configure latency: max %" GST_TIME_FORMAT " < min %"
             GST_TIME_FORMAT ". Add queues or other buffering elements.",
             GST_TIME_ARGS (max), GST_TIME_ARGS (min)));
+    SRC_LOCK (self);
     return FALSE;
   }
 
@@ -2100,7 +2106,8 @@ gst_aggregator_query_latency_unlocked (GstAggregator * self, GstQuery * query)
 }
 
 /*
- * MUST be called with the src_lock held.
+ * MUST be called with the src_lock held. Temporarily releases the lock inside
+ * gst_aggregator_query_latency_unlocked() to do the actual query!
  *
  * See  gst_aggregator_get_latency() for doc
  */
@@ -2877,7 +2884,7 @@ gst_aggregator_init (GstAggregator * self, GstAggregatorClass * klass)
 GType
 gst_aggregator_get_type (void)
 {
-  static volatile gsize type = 0;
+  static gsize type = 0;
 
   if (g_once_init_enter (&type)) {
     GType _type;
@@ -3191,6 +3198,7 @@ gst_aggregator_pad_finalize (GObject * object)
 {
   GstAggregatorPad *pad = (GstAggregatorPad *) object;
 
+  gst_buffer_replace (&pad->priv->peeked_buffer, NULL);
   g_cond_clear (&pad->priv->event_cond);
   g_mutex_clear (&pad->priv->flush_lock);
   g_mutex_clear (&pad->priv->lock);
