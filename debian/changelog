@@ -6,6 +6,7 @@ gstreamer1.0 (1.20.3-1) unstable; urgency=medium
   [ Debian Janitor ]
   * Use secure URI in debian/watch.
   * Update standards version to 4.5.1, no changes needed.
+  * Remove Section on libgstreamer1.0-0 that duplicates source.
 
  -- Sebastian Dröge <slomo@debian.org>  Thu, 16 Jun 2022 09:08:40 +0300
 
