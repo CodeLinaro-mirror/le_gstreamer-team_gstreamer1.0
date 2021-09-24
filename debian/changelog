@@ -1,6 +1,10 @@
 gstreamer1.0 (1.20.3-1) unstable; urgency=medium
 
+  [ Sebastian Dröge ]
   * New upstream bugfix release.
+
+  [ Debian Janitor ]
+  * Use secure URI in debian/watch.
 
  -- Sebastian Dröge <slomo@debian.org>  Thu, 16 Jun 2022 09:08:40 +0300
 
