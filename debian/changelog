@@ -1,3 +1,9 @@
+gstreamer1.0 (1.19.90-1) experimental; urgency=medium
+
+  * New upstream release candidate.
+
+ -- Sebastian Dröge <slomo@debian.org>  Fri, 28 Jan 2022 16:49:31 +0200
+
 gstreamer1.0 (1.18.5-1) unstable; urgency=medium
 
   * New upstream bugfix release.
