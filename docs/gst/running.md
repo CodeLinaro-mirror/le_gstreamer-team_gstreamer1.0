@@ -131,6 +131,12 @@ hand.
 Since GStreamer 1.2 it is also possible to specify debug levels by name,
 e.g. `GST_DEBUG=*:WARNING,*audio*:LOG`
 
+The categories and log levels are evaluated from left to right, with later
+entries overriding any previously-set levels for categories, e.g.
+`GST_DEBUG=decodebin:LOG,*:INFO` will set the decodebin category back to
+INFO level whereas `GST_DEBUG=*:INFO,decodebin:LOG` will log everything at
+INFO level apart from decodebin which will be logged at LOG level.
+
 **`GST_DEBUG_NO_COLOR`.**
 
 Set this environment variable to any value ("1" typically) to switch
@@ -227,6 +233,13 @@ Set this environment variable to "no" to prevent GStreamer from
 updating the plugin registry. This is useful for embedded device which
 is not updating the plugins frequently, it will save time when doing
 `gst_init()`.
+
+**`GST_REGISTRY_MODE`. (Since: 1.20)**
+
+Set this environment variable to make Gstreamer change the file
+permissions of the plugin cache / registry. If not set, default is to
+limit read / write permissions to current user only. Set mode shall
+be from one to four octal digits as used in chmod.
 
 **`GST_TRACE`.**
 
