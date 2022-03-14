@@ -1,7 +1,130 @@
+=== release 1.20.1 ===
+
+2022-03-14 11:33:33 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.20.1
+
+2022-03-14 11:33:25 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* ChangeLog:
+	  Update ChangeLogs for 1.20.1
+
+2021-11-02 15:58:49 -0400  Nicolas Dufresne <nicolas.dufresne@collabora.com>
+
+	  doc: Fix doc comment for GstChildProxy
+	  This removes warning like:
+	  ../subprojects/gstreamer/gst/gstchildproxy.h:57: Error: Gst: identifier not found on the first line:
+	  * #GstChildProxyInterface::get_child_by_name:
+	  ^
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1951>
+
+2022-02-21 10:49:15 +0100  Sebastian Fricke <sebastian.fricke@collabora.com>
+
+	* docs/gst/running.md:
+	* docs/index.md:
+	* gst/gstregistry.c:
+	  Remove the uninstalled term
+	  Remove the symbolic link `gst-uninstalled` which points to `gst-env`.
+	  The `uninstalled` is the old name and the project should stick to a
+	  single name for the procedure.
+	  Remove the term from all the files, exceptions are variables from
+	  dependencies like `uninstalled_variables` from pkgconfig and
+	  `meson-uninstalled`.
+	  Adjust mentions of the script in the documentation and README.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1829>
+
+2022-02-23 11:10:11 +0100  Sebastian Fricke <sebastian.fricke@collabora.com>
+
+	* README.md:
+	  Maintain build instructions at a single location
+	  Do not maintain similar build instructions within each gst-plugins-*
+	  subproject and the subproject/gstreamer subproject. Use the build
+	  instructions from the mono-repository and link to them via hyperlink.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1829>
+
+2021-12-08 22:13:15 +0000  Jose Quaresma <quaresma.jose@gmail.com>
+
+	* gst/gstpluginloader.c:
+	  gstpluginloader: show the reason when spawning of gst-plugin-scanner fail
+	  This fix helps in cross compiling when the meson tests runs using a qemu wraper
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1701>
+
+2022-02-08 16:24:13 +1100  Sebastian Mueller <sebastian.mueller@nirovision.com>
+
+	* gst/gstcontext.c:
+	  context: fix transfer annotation
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1698>
+
+2020-02-17 21:50:54 -0600  Zebediah Figura <zfigura@codeweavers.com>
+
+	* libs/gst/base/gstbaseparse.c:
+	* tests/check/libs/baseparse.c:
+	  baseparse: Don't truncate the duration to milliseconds in gst_base_parse_convert_default().
+	  There's no need to do this, and it can make seeking far less accurate.
+	  For a specific use case: I am working with a long (45-minute) MPEG-1 layer 3 file, which has a constant bit rate but no seeking tables. Trying to seek the pipeline immediately after pausing it, without the ACCURATE flag, to a location 41 minutes in, yields a location that is potentially over ten seconds ahead of where it should be. This patch improves that drastically.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1695>
+
+2022-02-07 19:33:31 -0600  Zebediah Figura <zfigura@codeweavers.com>
+
+	* libs/gst/base/gstbaseparse.c:
+	  baseparse: Trace time with GST_TIME_FORMAT in gst_base_parse_convert_default().
+	  Be consistent with how we trace time in general.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1695>
+
+2022-02-07 09:46:46 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstbufferpool.c:
+	  bufferpool: Deactivate pool and get rid of references to other objects from dispose instead of finalize
+	  During dispose the pool will still have a reference count of 1 and all
+	  API on it can still be safely called.
+	  Subclasses will have already freed their own data before finalize is
+	  called but would nonetheless be called into again via the pool
+	  deactivation.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1661>
+
+2022-02-07 16:51:25 +1100  Matthew Waters <matthew@centricular.com>
+
+	* gst/gstpluginloader.c:
+	* meson.build:
+	  pluginloader: support multiple subdirectories for GST_PLUGIN_SUBDIR (libdir)
+	  i.e. if GST_PLUGIN_SUBDIR is 'some/lib/path', then the default plugin
+	  loading assumed that there was only 'lib' as it only went up a single
+	  directory to then find the plugin scanner.
+	  Fix to support multiple subdirectories for GST_PLUGIN_SUBDIR (libdir).
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/995
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1659>
+
+2022-02-07 16:36:13 +1100  Matthew Waters <matthew@centricular.com>
+
+	* gst/gstregistry.c:
+	  registry: check the value of dladdr()
+	  info.dli_fname could be NULL.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/994
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1659>
+
+2022-02-07 16:33:03 +1100  Matthew Waters <matthew@centricular.com>
+
+	* gst/gstregistry.c:
+	  registry: check the return value of g_win32_get_package_installation_directory_of_module()
+	  g_win32_get_package_installation_directory_of_module() may return NULL
+	  in some circumstances and we need to deal with that.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/996
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1659>
+
+2022-02-07 16:17:28 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+
 === release 1.20.0 ===
 
 2022-02-03 19:53:25 +0000  Tim-Philipp Müller <tim@centricular.com>
 
+	* ChangeLog:
 	* NEWS:
 	* README:
 	* RELEASE:

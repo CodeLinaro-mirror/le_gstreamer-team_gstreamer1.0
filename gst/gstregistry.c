@@ -1189,7 +1189,7 @@ gst_registry_scan_plugin_file (GstRegistryScanContext * context,
     /* Load plugin the old fashioned way... */
 
     /* We don't use a GError here because a failure to load some shared
-     * objects as plugins is normal (particularly in the uninstalled case)
+     * objects as plugins is normal (particularly in the development environment case)
      */
     newplugin = _priv_gst_plugin_load_file_for_registry (filename,
         context->registry, NULL);
@@ -1229,7 +1229,7 @@ is_blacklisted_directory (const gchar * dirent)
     return TRUE;
 
   /* can also skip .git and .deps dirs, those won't contain useful files.
-   * This speeds up scanning a bit in uninstalled setups. */
+   * This speeds up scanning a bit in development environment setups. */
   if (strcmp (dirent, ".git") == 0 || strcmp (dirent, ".deps") == 0)
     return TRUE;
 
@@ -1555,9 +1555,14 @@ priv_gst_get_relocated_libgstreamer (void)
   {
     char *base_dir;
 
+    GST_DEBUG ("attempting to retrieve libgstreamer-1.0 location using "
+        "Win32-specific method");
+
     base_dir =
         g_win32_get_package_installation_directory_of_module
         (_priv_gst_dll_handle);
+    if (!base_dir)
+      return NULL;
 
     dir = g_build_filename (base_dir, GST_PLUGIN_SUBDIR, NULL);
     GST_DEBUG ("using DLL dir %s", dir);
@@ -1568,9 +1573,19 @@ priv_gst_get_relocated_libgstreamer (void)
   {
     Dl_info info;
 
+    GST_DEBUG ("attempting to retrieve libgstreamer-1.0 location using "
+        "dladdr()");
+
     if (dladdr (&gst_init, &info)) {
+      GST_LOG ("dli_fname: %s", info.dli_fname);
+
+      if (!info.dli_fname) {
+        return NULL;
+      }
+
       dir = g_path_get_dirname (info.dli_fname);
     } else {
+      GST_LOG ("dladdr() failed");
       return NULL;
     }
   }
