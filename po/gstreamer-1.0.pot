@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gstreamer-1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-03 19:53+0000\n"
+"POT-Creation-Date: 2022-03-14 11:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -311,7 +311,7 @@ msgstr ""
 msgid "Selected clock cannot be used in pipeline."
 msgstr ""
 
-#: gst/gstregistry.c:1755
+#: gst/gstregistry.c:1770
 #, c-format
 msgid "Error writing registry cache to %s: %s"
 msgstr ""
