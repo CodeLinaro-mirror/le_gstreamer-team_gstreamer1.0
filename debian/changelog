@@ -1,3 +1,9 @@
+gstreamer1.0 (1.20.1-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+
+ -- Sebastian Dröge <slomo@debian.org>  Mon, 14 Mar 2022 16:40:29 +0200
+
 gstreamer1.0 (1.20.0-1) unstable; urgency=medium
 
   * New upstream release.
