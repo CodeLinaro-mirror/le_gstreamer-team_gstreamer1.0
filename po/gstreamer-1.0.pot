@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gstreamer-1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-14 11:34+0000\n"
+"POT-Creation-Date: 2022-05-02 23:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -311,7 +311,7 @@ msgstr ""
 msgid "Selected clock cannot be used in pipeline."
 msgstr ""
 
-#: gst/gstregistry.c:1770
+#: gst/gstregistry.c:1798
 #, c-format
 msgid "Error writing registry cache to %s: %s"
 msgstr ""
@@ -1220,27 +1220,27 @@ msgstr ""
 msgid "Error while writing to download file."
 msgstr ""
 
-#: plugins/elements/gstfilesink.c:450
+#: plugins/elements/gstfilesink.c:453
 msgid "No file name specified for writing."
 msgstr ""
 
-#: plugins/elements/gstfilesink.c:456
+#: plugins/elements/gstfilesink.c:459
 #, c-format
 msgid "Could not open file \"%s\" for writing."
 msgstr ""
 
-#: plugins/elements/gstfilesink.c:468 plugins/elements/gstfilesink.c:472
+#: plugins/elements/gstfilesink.c:471 plugins/elements/gstfilesink.c:475
 #, c-format
 msgid "Error closing file \"%s\"."
 msgstr ""
 
-#: plugins/elements/gstfilesink.c:657
+#: plugins/elements/gstfilesink.c:660
 #, c-format
 msgid "Error while seeking in file \"%s\"."
 msgstr ""
 
-#: plugins/elements/gstfilesink.c:665 plugins/elements/gstfilesink.c:672
-#: plugins/elements/gstfilesink.c:925 plugins/elements/gstfilesink.c:1009
+#: plugins/elements/gstfilesink.c:668 plugins/elements/gstfilesink.c:675
+#: plugins/elements/gstfilesink.c:928 plugins/elements/gstfilesink.c:1012
 #, c-format
 msgid "Error while writing to file \"%s\"."
 msgstr ""
@@ -1292,12 +1292,12 @@ msgstr ""
 msgid "force caps without doing a typefind"
 msgstr ""
 
-#: plugins/elements/gsttypefindelement.c:1006
-#: plugins/elements/gsttypefindelement.c:1028
+#: plugins/elements/gsttypefindelement.c:1013
+#: plugins/elements/gsttypefindelement.c:1035
 msgid "Stream doesn't contain enough data."
 msgstr ""
 
-#: plugins/elements/gsttypefindelement.c:1148
+#: plugins/elements/gsttypefindelement.c:1155
 msgid "Stream contains no data."
 msgstr ""
 
