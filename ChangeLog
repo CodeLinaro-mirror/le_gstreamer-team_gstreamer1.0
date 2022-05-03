@@ -1,7 +1,132 @@
+=== release 1.20.2 ===
+
+2022-05-02 23:29:25 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.20.2
+
+2022-05-02 23:29:19 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* ChangeLog:
+	  Update ChangeLogs for 1.20.2
+
+2022-05-02 11:41:52 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* plugins/elements/gstfilesink.c:
+	  filesink: fix handling of non-existing paths with musl
+	  Fixes #1194
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2345>
+
+2022-04-09 21:07:43 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* gst/gstregistry.c:
+	  registry: skip Rust dep builddirs when searching for plugins recursively
+	  These artefacts confuse the plugin scanner and may cause noisy warnings
+	  (and slow down things).
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gst-build/-/issues/68
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2338>
+
+2022-04-18 15:44:47 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/meson.build:
+	* meson.build:
+	  meson: Add -Wl,-rpath,${libdir} on macOS
+	  We made the gstreamer installation prefix relocatable by picking up
+	  plugins relative to the location of libgstreamer-1.0.dylib, similar to
+	  how it's done for Windows:
+	  https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1627
+	  This had a lot of side-effects:
+	  https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1051
+	  https://gitlab.freedesktop.org/gstreamer/cerbero/-/issues/363
+	  https://gitlab.freedesktop.org/gstreamer/cerbero/-/issues/371
+	  https://gitlab.freedesktop.org/gstreamer/cerbero/-/issues/362
+	  A partial fix for the cerbero side of these was:
+	  https://gitlab.freedesktop.org/gstreamer/cerbero/-/merge_requests/807
+	  However, this relied on the consumers knowing that they need to add
+	  `LC_RPATH` entries to the libdir of the prefix. This is done
+	  automatically by build systems like Meson, but not by others, such as
+	  Autotools, CMake, Cargo, XCode, etc. For those, we need to add the
+	  RPATH entries to the gstreamer-1.0.pc file.
+	  This also has the side-effect of fixing the loading of gstreamer rust
+	  plugins on macOS:
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1159
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1149
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2237>
+
+2020-05-29 11:29:56 -0300  Tulio Beloqui <tulio.beloqui@pexip.com>
+
+	* gst/gstdevicemonitor.c:
+	  gstdevicemonitor: added cleanup of signal handlers and hidden providers list
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2221>
+
+2022-04-15 17:00:24 +0200  Guillaume Desmottes <guillaume.desmottes@onestream.live>
+
+	* plugins/tracers/gstleaks.c:
+	  gstleaks: fix pthread_atfork return value check
+	  pthread_atfork() returns 0 on success.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2210>
+
+2022-04-12 01:01:23 +0900  Seungha Yang <seungha@centricular.com>
+
+	* tools/gst-launch.c:
+	* tools/meson.build:
+	  win32: Enable high-resolution timer for MinGW build
+	  timeapi.h is missing in our MinGW toolchain. Include mmsystem.h
+	  header instead, which defines struct and APIs in case of our MinGW
+	  toolchain. Note that in case of native Windows10 SDK (MSVC build),
+	  mmsystem.h will include timeapi.h
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2167>
+
+2022-04-13 16:59:50 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/net/gstptpclock.c:
+	  ptpclock: Fix wrong condition order from last commit
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2173>
+
+2022-04-12 19:22:51 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/net/gstptpclock.c:
+	  ptpclock: Allow at least 100ms delay between Sync/Follow_Up and Delay_Req/Delay_Resp messages
+	  It doesn't matter for measurement purposes whether receiving them takes
+	  a while and various PTP servers are not prioritizing to send them,
+	  causing them to be dropped unnecessarily and preventing proper
+	  synchronization with such servers.
+	  This is especially a problem if the RTTs in the network are very low
+	  compared to the additional delay imposed by the server.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2168>
+
+2022-03-10 18:22:49 +0000  Philippe Normand <philn@igalia.com>
+
+	* gst/gsturi.c:
+	  uri: Build doubly-linked list by prepending items
+	  As outlined in the API documentation, g_list_append() iterates over the whole
+	  list, which can quickly introduce performance issues when the list becomes very
+	  big, such as for data URIs for instance.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1983>
+
+2022-03-08 12:04:41 +0000  Philippe Normand <philn@igalia.com>
+
+	* plugins/elements/gsttypefindelement.c:
+	  typefind: Skip parsing of data URIs
+	  Commit a46ab2ced20d757e0e770d4de1edc3a152cc4f2f introduced a regression,
+	  breaking typefinding for media content muxed in mp4 container and serialized to
+	  data URIs. For this case it doesn't make sense to look for a file extension, so
+	  skip URI parsing.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1983>
+
+2022-03-14 14:48:01 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+
 === release 1.20.1 ===
 
 2022-03-14 11:33:33 +0000  Tim-Philipp Müller <tim@centricular.com>
 
+	* ChangeLog:
 	* NEWS:
 	* RELEASE:
 	* gstreamer.doap:

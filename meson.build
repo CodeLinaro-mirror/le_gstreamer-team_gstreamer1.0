@@ -1,5 +1,5 @@
 project('gstreamer', 'c',
-  version : '1.20.1',
+  version : '1.20.2',
   meson_version : '>= 0.59',
   default_options : [ 'warning_level=1',
                       'buildtype=debugoptimized' ])
@@ -584,6 +584,10 @@ pkgconfig_uninstalled_variables = ['exec_prefix=${prefix}',
     'bashhelpersdir=${gstreamerdir}/data/bash-completion/helpers',
     'helpersdir=${gstreamerdir}/libs/gst/helpers']
 pkgconfig_subdirs = ['gstreamer-1.0']
+pkgconfig_libs = []
+if host_system == 'darwin'
+  pkgconfig_libs = ['-Wl,-rpath,${libdir}']
+endif
 
 static_build = get_option('default_library') == 'static'
 libraries = []
