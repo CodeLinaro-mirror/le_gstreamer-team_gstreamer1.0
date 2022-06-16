@@ -1,7 +1,150 @@
+=== release 1.20.3 ===
+
+2022-06-15 23:36:18 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.20.3
+
+2022-06-15 23:36:10 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* ChangeLog:
+	  Update ChangeLogs for 1.20.3
+
+2022-05-19 04:59:58 +0000  Adam Doupe <adamdoupe@gmail.com>
+
+	* libs/gst/base/gstqueuearray.c:
+	  queuearray: Fix potential heap overflow when expanding GstQueueArray
+	  Check that elt_size*newsize doesn't overflow when expanding a
+	  GstQueueArray, which has the potential for a heap overwrite.
+	  Co-authored-by: Sebastian Dröge <sebastian@centricular.com>
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1232
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2607>
+
+2022-06-14 17:29:31 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* plugins/elements/gstmultiqueue.c:
+	  multiqueue: fix potential crash on shutdown
+	  The mq we get out of the weak ref might be NULL if we're
+	  shutting down, which could cause assertion failures or
+	  crashes.
+	  It might also cause miscompilations where the compiler just
+	  optimises away the NULL check because it jumps to a code path
+	  that then dereferences the pointer which clearly isn't going
+	  to work. Seems like something like this happens with gcc 11.
+	  Fixes #1262
+	  Co-authored-by: Doug Nazar <nazard@nazar.ca>
+	  Co-authored-by: Sebastian Dröge <sebastian@centricular.com>
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2600>
+
+2022-06-14 03:29:41 -0600  James Hilliard <james.hilliard1@gmail.com>
+
+	* plugins/elements/gstmultiqueue.c:
+	  multiqueue: fix warning: ‘is_query’ may be used uninitialized in this function
+	  Fixes:
+	  ../plugins/elements/gstmultiqueue.c: In function ‘gst_multi_queue_loop’:
+	  ../plugins/elements/gstmultiqueue.c:2394:19: warning: ‘is_query’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+	  2394 |     if (object && !is_query)
+	  |                   ^~~~~~~~~
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2596>
+
+2022-06-01 09:25:29 +0200  Guillaume Desmottes <guillaume.desmottes@onestream.live>
+
+	* libs/gst/base/gstbasetransform.c:
+	  basetransform: handle gst_base_transform_query_caps() returning NULL
+	  If gst_base_transform_transform_caps() returns NULL, gst_base_transform_query_caps()
+	  will return NULL as well.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2538>
+
+2022-05-31 14:27:51 +0200  Guillaume Desmottes <guillaume.desmottes@onestream.live>
+
+	* libs/gst/base/gstbasetransform.c:
+	  basetransform: fix critical if transform_caps() returned NULL
+	  klass->transform_caps() may return NULL, which was raising this
+	  critical:
+	  GStreamer-CRITICAL **: 12:23:56.243: gst_caps_is_subset: assertion 'subset != NULL' failed
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2537>
+
+2022-05-18 17:03:27 +0200  Jan Alexander Steffens (heftig) <jan.steffens@ltnglobal.com>
+
+	* gst/gst_private.h:
+	* gst/gstclock.c:
+	  clock: Avoid creating a weakref with every entry
+	  Creating and destroying weakrefs takes a write lock on a global
+	  `GRWLock`. This makes for a very contended lock when the pipeline has
+	  many synchronizing elements.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2533>
+
+2022-05-29 20:38:38 +1000  tom schuring <tomschuring@gmail.com>
+
+	* gst/gstplugin.c:
+	  plugin: add Apache 2 license to known licenses
+	  the licence in gstreamer/subprojects/gstreamer/gst/gstplugin.c
+	  currently is defined to be one of:
+	  LGPL GPL QPL GPL/QPL MPL BSD MIT/X11 0BSD Proprietary
+	  The open source project for the kinesis plugin is using an
+	  Apache 2.0 license. Because "Apache 2.0" is not one of the
+	  supported licenses it automatically falls back to Proprietary.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2524>
+
+2022-05-18 10:04:08 +0800  WANG Xuerui <xen0n@gentoo.org>
+
+	* gst/gstconfig.h.in:
+	  gstreamer/gst/gstconfig.h.in: Add support for LoongArch
+	  While current and future LoongArch machines that are supposed to run
+	  GStreamer all support unaligned accesses, there might be future
+	  lower-end cores (e.g. the embedded product line) without such support,
+	  and we may not want to penalize these use cases.
+	  So, mark LoongArch as not supporting unaligned accesses for now, and
+	  hope the compilers do a good job optimizing them. We can always flip
+	  switch later.
+	  Suggested-by: CHEN Tao <redeast_cn@outlook.com>
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2450>
+
+2022-05-05 20:39:52 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Don't send multiple caps events with the same caps
+	  Every time aggregator is reconfiguring it will try to negotiate new
+	  caps. If these resulting caps are the same as the previously negotiated
+	  caps then don't send a new caps event with the same caps again.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2381>
+
+2022-05-05 15:05:43 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Only send events up to CAPS event from gst_aggregator_set_src_caps()
+	  Otherwise setting the srcpad caps based on the sinkpad caps event will
+	  already push a segment event downstream before the upstream segment is
+	  known.
+	  If the upstream segments are just forwarded when the upstream segment
+	  event arrives this would result in two segment events being sent
+	  downstream, of which the first one will usually be simply wrong.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2381>
+
+2021-11-12 20:13:10 +0100  Ruben Gonzalez <rgonzalez@fluendo.com>
+
+	* gst/gstplugin.c:
+	  gst_plugin_load_file: force plugin reload if diff filename
+	  If a file includes a new version of a plugin that exits in the
+	  registry, the output of gst-inspect is incorrect. The output has the
+	  correct version but incorrect filename, and element description.
+	  This seems to have also fixed some documentation issues.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2357>
+
+2022-05-03 00:39:09 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2347>
+
 === release 1.20.2 ===
 
 2022-05-02 23:29:25 +0100  Tim-Philipp Müller <tim@centricular.com>
 
+	* ChangeLog:
 	* NEWS:
 	* RELEASE:
 	* gstreamer.doap:
