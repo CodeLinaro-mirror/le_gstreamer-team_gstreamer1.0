@@ -1,5 +1,5 @@
 project('gstreamer', 'c',
-  version : '1.20.3',
+  version : '1.20.4',
   meson_version : '>= 0.59',
   default_options : [ 'warning_level=1',
                       'buildtype=debugoptimized' ])
@@ -455,7 +455,6 @@ warning_flags = [
   '-Waddress',
   '-Waggregate-return',
   '-Wno-multichar',
-  '-Wdeclaration-after-statement',
   '-Wvla',
   '-Wpointer-arith',
 ]

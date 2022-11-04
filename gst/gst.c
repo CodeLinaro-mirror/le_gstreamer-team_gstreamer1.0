@@ -131,7 +131,7 @@
 
 static gboolean gst_initialized = FALSE;
 static gboolean gst_deinitialized = FALSE;
-static GMutex init_lock;
+static GRecMutex init_lock;
 
 GstClockTime _priv_gst_start_time;
 
@@ -415,11 +415,10 @@ gst_init_check (int *argc, char **argv[], GError ** error)
 #endif
   gboolean res;
 
-  g_mutex_lock (&init_lock);
-
+  g_rec_mutex_lock (&init_lock);
   if (gst_initialized) {
     GST_DEBUG ("already initialized gst");
-    g_mutex_unlock (&init_lock);
+    g_rec_mutex_unlock (&init_lock);
     return TRUE;
   }
 #ifndef GST_DISABLE_OPTION_PARSING
@@ -438,7 +437,7 @@ gst_init_check (int *argc, char **argv[], GError ** error)
 
   gst_initialized = res;
 
-  g_mutex_unlock (&init_lock);
+  g_rec_mutex_unlock (&init_lock);
 
   return res;
 }
@@ -814,21 +813,15 @@ init_post (GOptionContext * context, GOptionGroup * group, gpointer data,
       gst_register_core_elements, VERSION, GST_LICENSE, PACKAGE,
       GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);
 
-  init_static_plugins ();
-
   /*
    * Any errors happening below this point are non-fatal, we therefore mark
    * gstreamer as being initialized, since it is the case from a plugin point of
    * view.
-   *
-   * If anything fails, it will be put back to %FALSE in gst_init_check().
-   * This allows some special plugins that would call gst_init() to not cause a
-   * looping effect (i.e. initializing GStreamer twice).
    */
   gst_initialized = TRUE;
 
-  if (!gst_update_registry ())
-    return FALSE;
+  init_static_plugins ();
+  gst_update_registry ();
 
   GST_INFO ("GLib runtime version: %d.%d.%d", glib_major_version,
       glib_minor_version, glib_micro_version);
@@ -1108,12 +1101,11 @@ void
 gst_deinit (void)
 {
   GstBinClass *bin_class;
-  GstClock *clock;
 
-  g_mutex_lock (&init_lock);
+  g_rec_mutex_lock (&init_lock);
 
   if (!gst_initialized) {
-    g_mutex_unlock (&init_lock);
+    g_rec_mutex_unlock (&init_lock);
     return;
   }
   if (gst_deinitialized) {
@@ -1145,9 +1137,9 @@ gst_deinit (void)
     _gst_executable_path = NULL;
   }
 
-  clock = gst_system_clock_obtain ();
+  GstClock *clock = gst_system_clock_obtain ();
   gst_object_unref (clock);
-  gst_object_unref (clock);
+  gst_clear_object (&clock);
 
   _priv_gst_registry_cleanup ();
   _priv_gst_allocator_cleanup ();
@@ -1266,12 +1258,14 @@ gst_deinit (void)
 
   gst_deinitialized = TRUE;
   GST_INFO ("deinitialized GStreamer");
-  g_mutex_unlock (&init_lock);
+  g_rec_mutex_unlock (&init_lock);
 
+#ifndef GST_DISABLE_GST_DEBUG
   /* Doing this as the very last step to allow the above GST_INFO() to work
    * correctly. It's of course making the above statement a lie: for a short
    * while we're not deinitialized yet */
   _priv_gst_debug_cleanup ();
+#endif
 }
 
 /**

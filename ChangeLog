@@ -1,7 +1,269 @@
+=== release 1.20.4 ===
+
+2022-10-12 16:39:47 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.20.4
+
+2022-10-12 16:39:40 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* ChangeLog:
+	  Update ChangeLogs for 1.20.4
+
+2022-10-07 14:39:47 +0200  Guillaume Desmottes <guillaume.desmottes@onestream.live>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: fix input buffering
+	  We need to be able to buffer at least the aggregator latency +
+	  upstream latency, which is the value used to compute the aggregator
+	  deadline.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3142>
+
+2022-10-03 11:16:25 +0200  Edward Hervey <edward@centricular.com>
+
+	* plugins/elements/gstqueue2.c:
+	  queue2: Hold the lock when modifying sinkresult
+	  As it's done elsewhere. Avoids a potential race of the field being modified in
+	  the meantime.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3111>
+
+2018-03-28 17:54:15 +0200  Philipp Zabel <p.zabel@pengutronix.de>
+
+	* gst/gstbuffer.c:
+	* gst/gstmeta.c:
+	* gst/gstmeta.h:
+	* libs/gst/base/gstadapter.c:
+	* libs/gst/base/gstbasetransform.c:
+	  buffer: drop parent meta in deep copy/foreach_metadata
+	  The purpose of a deep buffer copy is to be able to release the source
+	  buffer and all its dependencies. Attaching the parent buffer meta to
+	  the newly created deep copy needlessly keeps holding a reference to the
+	  parent buffer.
+	  The issue this solves is the fact you need to allocate more
+	  buffers, as you have free buffers being held for no reason. In the good
+	  cases it will use more memory, in the bad case it will stall your
+	  pipeline (since codecs often need a minimum number of buffers to
+	  actually work).
+	  Fixes #283
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3090>
+
+2022-09-26 14:17:18 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gsturi.c:
+	  gsturi: When setting the same string again do nothing
+	  Otherwise code like gst_uri_set_host(uri, gst_uri_get_host(uri)) would
+	  first free the string, then create a copy of the freed string and then
+	  assigned that.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3081>
+
+2022-08-31 18:08:08 +0200  Paweł Stawicki <stawel+gstreamer@gmail.com>
+
+	* plugins/elements/gstqueue2.c:
+	  queue2: Fix deadlock when deactivate is called in pull mode
+	  check is flush was called before waiting on condition
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3058>
+
+2022-08-31 14:23:59 +0200  Martin Dørum <martid0311@gmail.com>
+
+	* gst/gstpluginloader.c:
+	  gstpluginloader: Don't hang on short reads/writes
+	  If read_one or write_one was called but the stream closed before it could
+	  read/write a whole packet, read_one/write_one would hang indefinitely,
+	  consuming 100% CPU. This commit fixes that by treating a short read/write
+	  as an error.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2994>
+
+2022-08-31 09:15:08 -0400  Xavier Claessens <xavier.claessens@collabora.com>
+
+	* gst/gst.c:
+	  gst_init: Initialize static plugins just before dynamic plugins
+	  All plugins needs to be initialized after `gst_initialized = TRUE;`
+	  otherwise they could complain that gst_init() has not been called.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2991>
+
+2022-08-24 12:42:12 -0400  Olivier Crête <olivier.crete@collabora.com>
+
+	* gst/gstvalue.c:
+	  value: Use g_critical() when trying to serialize things that can't be
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2986>
+
+2022-08-01 14:00:20 -0400  Olivier Crête <olivier.crete@collabora.com>
+
+	* gst/gstvalue.c:
+	* tests/check/gst/gstvalue.c:
+	  gstvalue: Don't loop forever when serializing invalid flag
+	  The serialization code would loop forever if an invalid flag was sent into it.
+	  With unit test for this corner case.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2986>
+
+2022-08-15 20:07:09 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gstmeta.c:
+	* gst/gstmeta.h:
+	* tests/check/gst/gstmeta.c:
+	  meta: Set the parent refcount of the GstStructure correctly
+	  The parent refcount is of the *transformed* buffer, not the input
+	  buffer.
+	  Also update the docs to clarify that @transbuf is the transformed
+	  buffer, and not the buffer on which a transformation is being
+	  performed.
+	  Due to this bug, modifying the structure of a meta that has been
+	  copied to another buffer fails with:
+	  gst_structure_set: assertion 'IS_MUTABLE (structure) || field == NULL' failed
+	  Add a test for the same.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2894>
+
+2022-07-09 17:04:07 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gst.c:
+	  gst: Protect initialization state with a recursive mutex.
+	  Otherwise a gst_init() call from a plugin would deadlock if the plugin
+	  is loaded as part of registry updating.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/940
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2858>
+
+2022-07-09 17:02:26 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstregistry.c:
+	  registry: Remove dead code
+	  Initialization/updating of the registry can't possible fail and all code
+	  paths always returned TRUE.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2858>
+
+2022-07-09 16:50:54 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gst.c:
+	  gst: Don't fail gst_init() if updating the registry fails
+	  Everything is already marked as initialized at that point and by failing
+	  no tracers would be loaded or plugin feature rank overrides would be
+	  applied.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2858>
+
+2022-08-03 12:32:24 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* plugins/tracers/gstleaks.c:
+	  tracers: leaks: delay type name lookup
+	  Micro optimisation: Store the quark of the type name when tracking
+	  objects and only do the quark to string conversion (hashtable lookup)
+	  later when we actually need the string.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2846>
+
+2022-08-03 12:10:02 +0100  Corentin Damman <c.damman@intopix.com>
+
+	* plugins/tracers/gstleaks.c:
+	  tracers: leaks: fix potentially invalid memory access when trying to detect object type
+	  The is_gst_mini_object_check would sometimes detect a proper GObject
+	  as a mini object, and then bad things happen.
+	  We know whether a pointer is a proper GObject or a MiniObject here
+	  though, so just pass that information to the right code paths and
+	  avoid the heuristics altogether.
+	  Eliminates all remaining uses of object_is_gst_mini_object().
+	  Fixes #1334
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2846>
+
+2022-08-03 12:10:02 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* plugins/tracers/gstleaks.c:
+	  tracers: leaks: fix potentially invalid memory access when trying to detect object type
+	  The is_gst_mini_object_check would sometimes detect a proper GObject
+	  as a mini object, and then bad things happen.
+	  We know whether a pointer is a proper GObject or a MiniObject here
+	  though, so just pass that information to the right code paths and
+	  avoid the heuristics altogether.
+	  There are probably more cases where the check should be eliminated.
+	  Fixes #1334, maybe
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2846>
+
+2022-07-28 19:44:20 +0000  Rafael Sobral <rafaelsobral@pm.me>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: fix reversed active/flushing arguments in debug log output
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2826>
+
+2022-07-08 16:37:51 +0200  Jan Alexander Steffens (heftig) <jan.steffens@ltnglobal.com>
+
+	* gst/gstinfo.c:
+	  gstinfo: Parse "NONE" as a valid level name
+	  This allows using `NONE` in `GST_DEBUG`,
+	  `gst_debug_set_threshold_from_string`, etc. It was accessible before,
+	  but only via the integer `0`.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2775>
+
+2022-07-18 15:46:21 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Reset EOS flag after receiving a stream-start event
+	  And also don't assert that there are no buffers queued up when handling
+	  an EOS event. The pad's streaming thread might've already received a new
+	  stream-start event and queued up a buffer in the meantime.
+	  This still leaves a race condition where the srcpad task sees all pads
+	  in EOS state and finishes the stream, while shortly afterwards a pad
+	  might receive a stream-start event again, but this doesn't seem to be
+	  solveable with the current aggregator design.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2772>
+
+2022-07-12 10:49:27 +0000  Corentin Damman <c.damman@intopix.com>
+
+	* plugins/tracers/gstleaks.c:
+	  tracers: leaks: fix object-refings.class flags
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2756>
+
+2022-07-09 18:05:58 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstdevicemonitor.c:
+	  devicemonitor: Use a sync bus handler for the provider to avoid accumulating all messages until the provider is stopped
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gst-plugins-good/-/issues/981
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2755>
+
+2022-06-29 10:55:13 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* gst/gst.c:
+	* meson.build:
+	  coding style: allow declarations after statement
+	  See https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1243/
+	  and https://gitlab.freedesktop.org/gstreamer/gstreamer-project/-/issues/78
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2702>
+
+2022-06-22 09:43:02 +0200  Jonas Danielsson <jonas.danielsson@spiideo.com>
+
+	* gst/gst.c:
+	  gst: add missing define guard
+	  If compiled with -Dgstreamer:gst_debug=false and we have
+	  GST_REMOVE_DISABLED defined we will get the following compiler error:
+	  ```
+	  [...]/libgstreamer-1.0.so.0.2100.0.p/gst.c.o: in function `gst_deinit':
+	  [...]/gst/gst.c:1258: undefined reference to `_priv_gst_debug_cleanup'
+	  [...] hidden symbol `_priv_gst_debug_cleanup' isn't defined
+	  ```
+	  Add the missing define guard to avoid this.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2649>
+
+2022-06-20 16:45:19 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstelement.c:
+	* tests/check/gst/gstelement.c:
+	  element: Fix requesting of pads with string templates
+	  Previously it was only possible to request them with the exact template
+	  name, e.g. 'src_%s', but not with "instantiated" names that would match
+	  this template, e.g.'src_foo_bar'.
+	  This is now possible and a test was added for this, in addition to
+	  fixing a previously invalid test.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2645>
+
+2022-06-16 00:59:00 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/2619>
+
 === release 1.20.3 ===
 
 2022-06-15 23:36:18 +0100  Tim-Philipp Müller <tim@centricular.com>
 
+	* ChangeLog:
 	* NEWS:
 	* RELEASE:
 	* gstreamer.doap:
