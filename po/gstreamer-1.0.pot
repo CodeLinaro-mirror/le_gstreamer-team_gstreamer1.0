@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gstreamer-1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-15 23:36+0100\n"
+"POT-Creation-Date: 2022-10-12 16:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -105,7 +105,7 @@ msgstr ""
 msgid "Show GStreamer Options"
 msgstr ""
 
-#: gst/gst.c:1043
+#: gst/gst.c:1036
 #, c-format
 msgid "Unknown option"
 msgstr ""
@@ -1201,22 +1201,22 @@ msgstr ""
 msgid "Filter caps change behaviour"
 msgstr ""
 
-#: plugins/elements/gstdownloadbuffer.c:935 plugins/elements/gstqueue2.c:1812
+#: plugins/elements/gstdownloadbuffer.c:935 plugins/elements/gstqueue2.c:1818
 msgid "No Temp directory specified."
 msgstr ""
 
-#: plugins/elements/gstdownloadbuffer.c:941 plugins/elements/gstqueue2.c:1818
+#: plugins/elements/gstdownloadbuffer.c:941 plugins/elements/gstqueue2.c:1824
 #, c-format
 msgid "Could not create temp file \"%s\"."
 msgstr ""
 
 #: plugins/elements/gstdownloadbuffer.c:949 plugins/elements/gstfilesrc.c:558
-#: plugins/elements/gstqueue2.c:1826
+#: plugins/elements/gstqueue2.c:1832
 #, c-format
 msgid "Could not open file \"%s\" for reading."
 msgstr ""
 
-#: plugins/elements/gstdownloadbuffer.c:1284 plugins/elements/gstqueue2.c:2264
+#: plugins/elements/gstdownloadbuffer.c:1284 plugins/elements/gstqueue2.c:2270
 msgid "Error while writing to download file."
 msgstr ""
 

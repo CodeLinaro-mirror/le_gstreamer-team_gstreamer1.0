@@ -702,7 +702,7 @@ gst_aggregator_default_finish_buffer (GstAggregator * self, GstBuffer * buffer)
     return gst_pad_push (self->srcpad, buffer);
   } else {
     GST_INFO_OBJECT (self, "Not pushing (active: %i, flushing: %i)",
-        self->priv->flushing, gst_pad_is_active (self->srcpad));
+        gst_pad_is_active (self->srcpad), self->priv->flushing);
     GST_OBJECT_UNLOCK (self);
     gst_buffer_unref (buffer);
     return GST_FLOW_OK;
@@ -741,7 +741,7 @@ gst_aggregator_default_finish_buffer_list (GstAggregator * self,
     return gst_pad_push_list (self->srcpad, bufferlist);
   } else {
     GST_INFO_OBJECT (self, "Not pushing (active: %i, flushing: %i)",
-        self->priv->flushing, gst_pad_is_active (self->srcpad));
+        gst_pad_is_active (self->srcpad), self->priv->flushing);
     GST_OBJECT_UNLOCK (self);
     gst_buffer_list_unref (bufferlist);
     return GST_FLOW_OK;
@@ -1705,7 +1705,6 @@ gst_aggregator_default_sink_event (GstAggregator * self,
     {
       SRC_LOCK (self);
       PAD_LOCK (aggpad);
-      g_assert (aggpad->priv->num_buffers == 0);
       aggpad->priv->eos = TRUE;
       PAD_UNLOCK (aggpad);
       SRC_BROADCAST (self);
@@ -1732,6 +1731,9 @@ gst_aggregator_default_sink_event (GstAggregator * self,
     }
     case GST_EVENT_STREAM_START:
     {
+      PAD_LOCK (aggpad);
+      aggpad->priv->eos = FALSE;
+      PAD_UNLOCK (aggpad);
       goto eat;
     }
     case GST_EVENT_GAP:
@@ -2981,14 +2983,14 @@ gst_aggregator_pad_has_space (GstAggregator * self, GstAggregatorPad * aggpad)
   if (self->priv->peer_latency_live && aggpad->priv->num_buffers < 2)
     return TRUE;
 
-  /* zero latency, if there is a buffer, it's full */
-  if (self->priv->latency == 0)
-    return FALSE;
-
   /* On top of our latency, we also want to allow buffering up to the
    * minimum upstream latency to allow queue free sources with lower then
    * upstream latency. */
-  max_time_level = self->priv->latency + self->priv->upstream_latency_min;
+  max_time_level = self->priv->latency + self->priv->peer_latency_min;
+
+  /* zero latency, if there is a buffer, it's full */
+  if (max_time_level == 0)
+    return FALSE;
 
   /* Allow no more buffers than the latency */
   return (aggpad->priv->time_level <= max_time_level);
