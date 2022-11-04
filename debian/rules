@@ -42,7 +42,7 @@ infiles := \
 	libgstreamer1.0-0.postinst
 
 %:
-	dh $@ --with gir --buildsystem=meson
+	dh $@
 
 override_dh_auto_configure:
 	dh_auto_configure -- --default-library shared $(conf_flags)
