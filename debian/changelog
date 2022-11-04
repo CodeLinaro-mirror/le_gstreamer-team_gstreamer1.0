@@ -1,9 +1,11 @@
-gstreamer1.0 (1.20.4-1) UNRELEASED; urgency=medium
+gstreamer1.0 (1.20.4-1) unstable; urgency=medium
 
   * Team upload
   * New upstream bugfix release
+  * debian/libgstreamer1.0-0.symbols: Add new symbol
+  * Build-Depend on dh-sequence-gir
 
- -- Jeremy Bicha <jbicha@ubuntu.com>  Fri, 04 Nov 2022 12:06:37 +0100
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Fri, 04 Nov 2022 12:12:31 +0100
 
 gstreamer1.0 (1.20.3-1) unstable; urgency=medium
 
