@@ -701,6 +701,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  _gst_memory_type@Base 1.4.0
  _gst_message_type@Base 1.4.0
  _gst_meta_tag_memory@Base 1.0.0
+ _gst_meta_tag_memory_reference@Base 1.20.4
  _gst_meta_transform_copy@Base 1.0.0
  _gst_mini_object_type@Base 1.20.0
  _gst_plugin_loader_client_run@Base 1.0.0
