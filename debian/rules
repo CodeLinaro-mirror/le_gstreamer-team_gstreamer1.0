@@ -11,7 +11,7 @@ gst_version=$(shell echo $(version) | cut -d '-' -f 1)
 
 CFLAGS += -Wno-error
 CXXFLAGS += -Wno-error
-LDFLAGS += -Wl,-z,defs -Wl,-O1 -Wl,--as-needed
+LDFLAGS += -Wl,-z,defs -Wl,-O1
 
 # Let's decide the package name and url depending on the distribution
 DISTRO = "$(shell dpkg-vendor --query vendor)"
