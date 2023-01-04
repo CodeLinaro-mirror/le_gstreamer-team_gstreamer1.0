@@ -1,12 +1,13 @@
-gstreamer1.0 (1.20.5-1) UNRELEASED; urgency=medium
+gstreamer1.0 (1.20.5-1) unstable; urgency=medium
 
   * Team upload
   * New upstream bugfix release
   * Update debian/upstream/metadata
-  * Update standards version to 4.6.1, no changes needed.
-  * Update watch file format version to 4.
+  * Update standards version to 4.6.1, no changes needed
+  * Update watch file format version to 4
+  * debian/rules: Drop unneeded -Wl,--as-needed
 
- -- Jeremy Bicha <jbicha@ubuntu.com>  Wed, 04 Jan 2023 17:04:35 -0500
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Wed, 04 Jan 2023 17:20:59 -0500
 
 gstreamer1.0 (1.20.4-1) unstable; urgency=medium
 
