@@ -1,2 +1,2 @@
-version=3
-https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-(1\.[\d]+\.[\d]+)\.tar\.xz
+version=4
+https://gstreamer.freedesktop.org/src/gstreamer gstreamer-(1\.[\d]+\.[\d]+)\.tar\.xz

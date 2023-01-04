@@ -4,6 +4,7 @@ gstreamer1.0 (1.20.5-1) UNRELEASED; urgency=medium
   * New upstream bugfix release
   * Update debian/upstream/metadata
   * Update standards version to 4.6.1, no changes needed.
+  * Update watch file format version to 4.
 
  -- Jeremy Bicha <jbicha@ubuntu.com>  Wed, 04 Jan 2023 17:04:35 -0500
 
