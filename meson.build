@@ -1,5 +1,5 @@
 project('gstreamer', 'c',
-  version : '1.20.4',
+  version : '1.20.5',
   meson_version : '>= 0.59',
   default_options : [ 'warning_level=1',
                       'buildtype=debugoptimized' ])
@@ -258,7 +258,8 @@ if cc.has_function('localtime_r', prefix : '#include<time.h>')
   cdata.set('HAVE_DECL_LOCALTIME_R', 1)
 endif
 
-if cc.links('''#include <pthread.h>
+if cc.links('''#define _GNU_SOURCE
+               #include <pthread.h>
                int main() {
                  pthread_setname_np("example"); return 0;
                }''', name : 'pthread_setname_np(const char*)')
@@ -272,7 +273,7 @@ if cc.has_header_symbol('pthread.h', 'pthread_cond_timedwait_relative_np')
 endif
 
 # Check for futex(2)
-if cc.links('''#include <linux/futex.h>
+if cc.compiles('''#include <linux/futex.h>
                #include <sys/syscall.h>
                #include <unistd.h>
                int main (int argc, char ** argv) {
@@ -280,6 +281,15 @@ if cc.links('''#include <linux/futex.h>
                  return 0;
                }''', name : 'futex(2) system call')
   cdata.set('HAVE_FUTEX', 1)
+endif
+if cc.compiles('''#include <linux/futex.h>
+               #include <sys/syscall.h>
+               #include <unistd.h>
+               int main (int argc, char ** argv) {
+                 syscall (__NR_futex_time64, NULL, FUTEX_WAKE, FUTEX_WAIT);
+                 return 0;
+               }''', name : 'futex(2) system call')
+  cdata.set('HAVE_FUTEX_TIME64', 1)
 endif
 
 # Check for posix timers and monotonic clock
