@@ -1,7 +1,125 @@
+=== release 1.20.5 ===
+
+2022-12-19 23:34:42 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.20.5
+
+2022-12-19 23:34:34 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* ChangeLog:
+	  Update ChangeLogs for 1.20.5
+
+2022-12-12 11:34:51 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstsystemclock.c:
+	* meson.build:
+	  systemclock: Use `futex_time64` syscall if available (32-bit systems) and use correct `struct timespec` definition
+	  See also https://gitlab.gnome.org/GNOME/glib/-/issues/2634
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1648
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3572>
+
+2022-11-07 09:27:09 -0500  Xavier Claessens <xavier.claessens@collabora.com>
+
+	* docs/meson.build:
+	  hotdoc: gst-hotdoc-plugins-scanner is not needed for libraries
+	  Meson >= 0.64.0 does not allow any more to add executables into
+	  hotdoc.generate_doc(..., dependencies: ...) and it should not be needed
+	  any way.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3554>
+
+2022-12-07 11:49:40 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  meson: fix check for pthread_setname_np()
+	  Need to define _GNU_SOURCE.
+	  Fixes #1542
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3539>
+
+2022-11-30 09:59:09 +0100  Edward Hervey <edward@centricular.com>
+
+	* tools/gst-inspect.c:
+	  gst-inspect: Don't leak list
+	  Just iterate the list instead of trying to be smart...
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3499>
+
+2022-11-18 16:57:16 +0100  Célestin Marot <c.marot@intopix.com>
+
+	* plugins/elements/gstfakesrc.c:
+	  fakesrc: avoid time overflow with datarate
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3438>
+
+2022-11-08 17:45:37 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstallocator.c:
+	  allocator: Switch `allow-none` annotations to `nullable` / `optional`
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3369>
+
+2022-11-08 17:44:54 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstallocator.c:
+	  allocator: Copy allocator name in gst_allocator_register()
+	  The parameter is not marked as `transfer full` and stays around in the
+	  hash table, so we will have to copy it ourselves.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3369>
+
+2022-10-24 12:13:14 +0200  Edward Hervey <edward@centricular.com>
+
+	* gst/gstpad.c:
+	  gstpad: Fix non-serialized sticky event push
+	  With non-serialized sticky events, such as GST_EVENT_INSTANT_RATE, we both want
+	  to store the event (for later re-linking) *AND* push the event in a non-blocking
+	  way.
+	  We therefore must *not* propagate pending sticky events if the event is "sticky
+	  or serialized" but only if it's "serialized"
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3332>
+
+2022-10-27 15:13:36 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	* libs/gst/base/gstbaseparse.c:
+	  core/base: Only post latency messages if the latency values have actually changed
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1525
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3291>
+
+2022-10-27 11:18:24 +0200  Edward Hervey <edward@centricular.com>
+
+	* plugins/elements/gstconcat.c:
+	  concat: Properly propagate EOS seqnum
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3288>
+
+2022-10-22 22:04:57 +0900  Seungha Yang <seungha@centricular.com>
+
+	* gst/gstpadtemplate.c:
+	  padtemplate: Fix annotations
+	  gst_caps_replace() does not take ownership of the new caps
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3262>
+
+2022-10-18 16:41:36 +0200  Bunio_FH <buniofh@gmail.com>
+
+	* gst/gstminiobject.c:
+	  gstminiobject: shares capacity increase
+	  during the MSE (WebKit) tests from Apple suite:
+	  https://hls-streaming.cdn-apple.com/hls_conformance/dist/v1.1/index.html?pretty=true&whitelist=MSE%20Suite
+	  webkit attempts to add a single audio buffer containing ~35.5k frames.
+	  when corresponding GstSamples are pulled buffer is being referenced
+	  more than object capacity allows: 2^15-1. since the case could be considered
+	  malformed a surgical patch is applied to increase the capacity.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3233>
+
+2022-10-12 18:40:25 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+
 === release 1.20.4 ===
 
 2022-10-12 16:39:47 +0100  Tim-Philipp Müller <tim@centricular.com>
 
+	* ChangeLog:
 	* NEWS:
 	* RELEASE:
 	* gstreamer.doap:
