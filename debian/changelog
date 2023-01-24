@@ -1,11 +1,12 @@
-gstreamer1.0 (1.22.0-1) UNRELEASED; urgency=medium
+gstreamer1.0 (1.22.0-1) experimental; urgency=medium
 
   * Team upload
   * New upstream release
   * Add debian/upstream/signing-key.asc and update debian/watch to use it
-  * Release to experimental because of the Debian 12 Freeze
+  * debian/libgstreamer1.0-0.symbols: Add new symbols
+  * Bump minimum meson and glib2.0
 
- -- Jeremy Bicha <jbicha@ubuntu.com>  Tue, 24 Jan 2023 13:18:09 -0500
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Tue, 24 Jan 2023 13:37:19 -0500
 
 gstreamer1.0 (1.20.5-1) unstable; urgency=medium
 
