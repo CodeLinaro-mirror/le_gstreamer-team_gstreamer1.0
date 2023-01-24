@@ -746,7 +746,7 @@ _gst_buffer_copy (const GstBuffer * buffer)
  * Creates a copy of the given buffer. This will make a newly allocated
  * copy of the data the source buffer contains.
  *
- * Returns: (transfer full): a new copy of @buf.
+ * Returns: (transfer full) (nullable): a new copy of @buf if the copy succeeded, %NULL otherwise.
  *
  * Since: 1.6
  */
@@ -1916,12 +1916,7 @@ gst_buffer_unmap (GstBuffer * buffer, GstMapInfo * info)
   g_return_if_fail (GST_IS_BUFFER (buffer));
   g_return_if_fail (info != NULL);
 
-  /* we need to check for NULL, it is possible that we tried to map a buffer
-   * without memory and we should be able to unmap that fine */
-  if (G_LIKELY (info->memory)) {
-    gst_memory_unmap (info->memory, info);
-    gst_memory_unref (info->memory);
-  }
+  _gst_buffer_map_info_clear ((GstBufferMapInfo *) info);
 }
 
 /**
@@ -2146,8 +2141,8 @@ gst_buffer_memset (GstBuffer * buffer, gsize offset, guint8 val, gsize size)
  * duration and offset end fields are also copied. If not they will be set
  * to #GST_CLOCK_TIME_NONE and #GST_BUFFER_OFFSET_NONE.
  *
- * Returns: (transfer full): the new #GstBuffer or %NULL if the arguments were
- *     invalid.
+ * Returns: (transfer full) (nullable): the new #GstBuffer or %NULL if copying
+ *     failed.
  */
 GstBuffer *
 gst_buffer_copy_region (GstBuffer * buffer, GstBufferCopyFlags flags,
@@ -3014,7 +3009,7 @@ gst_clear_buffer (GstBuffer ** buf_ptr)
  * Check gst_buffer_copy_deep() if you want to force the data
  * to be copied to newly allocated memory.
  *
- * Returns: (transfer full): a new copy of @buf.
+ * Returns: (transfer full) (nullable): a new copy of @buf if the copy succeeded, %NULL otherwise.
  */
 GstBuffer *
 gst_buffer_copy (const GstBuffer * buf)

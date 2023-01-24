@@ -37,7 +37,7 @@
 #define GST_DISABLE_MINIOBJECT_INLINE_FUNCTIONS
 #include "gst_private.h"
 #include "math-compat.h"
-#include "gst-i18n-lib.h"
+#include <glib/gi18n-lib.h>
 #include "gsttaglist.h"
 #include "gstinfo.h"
 #include "gstvalue.h"
@@ -509,7 +509,7 @@ gst_tag_register (const gchar * name, GstTagFlag flag, GType type,
   g_return_if_fail (name != NULL);
   g_return_if_fail (nick != NULL);
   g_return_if_fail (blurb != NULL);
-  g_return_if_fail (type != 0 && type != GST_TYPE_LIST);
+  g_return_if_fail (type != G_TYPE_INVALID && type != GST_TYPE_LIST);
 
   gst_tag_register_static (g_intern_string (name), flag, type,
       g_intern_string (nick), g_intern_string (blurb), func);
@@ -540,7 +540,7 @@ gst_tag_register_static (const gchar * name, GstTagFlag flag, GType type,
   g_return_if_fail (name != NULL);
   g_return_if_fail (nick != NULL);
   g_return_if_fail (blurb != NULL);
-  g_return_if_fail (type != 0 && type != GST_TYPE_LIST);
+  g_return_if_fail (type != G_TYPE_INVALID && type != GST_TYPE_LIST);
 
   info = gst_tag_lookup (name);
 
@@ -605,7 +605,7 @@ gst_tag_get_type (const gchar * tag)
  * Returns the human-readable name of this tag, You must not change or free
  * this string.
  *
- * Returns: (nullable): the human-readable name of this tag
+ * Returns: the human-readable name of this tag
  */
 const gchar *
 gst_tag_get_nick (const gchar * tag)
@@ -630,7 +630,7 @@ gst_tag_get_nick (const gchar * tag)
  * Returns the human-readable description of this tag, You must not change or
  * free this string.
  *
- * Returns: (nullable): the human-readable description of this tag
+ * Returns: the human-readable description of this tag
  */
 const gchar *
 gst_tag_get_description (const gchar * tag)
@@ -863,8 +863,8 @@ gst_tag_list_get_scope (const GstTagList * list)
  *
  * Serializes a tag list to a string.
  *
- * Returns: (nullable): a newly-allocated string, or %NULL in case of
- *     an error. The string must be freed with g_free() when no longer
+ * Returns: (transfer full): a newly-allocated string.
+ *     The string must be freed with g_free() when no longer
  *     needed.
  */
 gchar *
@@ -881,7 +881,7 @@ gst_tag_list_to_string (const GstTagList * list)
  *
  * Deserializes a tag list.
  *
- * Returns: (nullable): a new #GstTagList, or %NULL in case of an
+ * Returns: (transfer full) (nullable): a new #GstTagList, or %NULL in case of an
  * error.
  */
 GstTagList *
@@ -1148,8 +1148,8 @@ gst_tag_list_insert (GstTagList * into, const GstTagList * from,
 
 /**
  * gst_tag_list_merge:
- * @list1: (allow-none): first list to merge
- * @list2: (allow-none): second list to merge
+ * @list1: (nullable): first list to merge
+ * @list2: (nullable): second list to merge
  * @mode: the mode to use
  *
  * Merges the two given lists into a new list. If one of the lists is %NULL, a
@@ -2078,7 +2078,7 @@ gst_tag_list_get_sample_index (const GstTagList * list,
  *
  * When you are finished with the taglist, call gst_tag_list_unref() on it.
  *
- * Returns: the new #GstTagList
+ * Returns: (transfer full): the new #GstTagList
  */
 GstTagList *(gst_tag_list_copy) (const GstTagList * taglist)
 {

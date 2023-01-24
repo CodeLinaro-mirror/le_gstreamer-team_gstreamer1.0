@@ -41,6 +41,14 @@
 #   include <sys/wait.h>
 #endif
 
+#ifdef G_OS_WIN32
+/* _isatty() */
+#include <io.h>
+#endif
+
+#ifdef __APPLE__
+#include <TargetConditionals.h>
+#endif
 
 /* "R" : support color
  * "X" : do not clear the screen when leaving the pager
@@ -113,6 +121,14 @@ GMainLoop *loop = NULL;
 #define FEATURE_DIR_COLOR     (colored_output? BRMAGENTA : "")
 #define FEATURE_RANK_COLOR    (colored_output? CYAN : "")
 #define FEATURE_PROTO_COLOR   (colored_output? BRYELLOW : "")
+
+#define GST_DOC_BASE_URL "https://gstreamer.freedesktop.org/documentation"
+
+static const gchar *gstreamer_modules[] = {
+  "gstreamer", "gst-plugins-base", "gst-plugins-good", "gst-plugins-ugly",
+  "gst-plugins-bad", "gst-editing-services", "gst-libav", "gst-rtsp-server",
+  "gstreamer-vaapi", NULL
+};
 
 static char *_name = NULL;
 static int indent = 0;
@@ -239,9 +255,10 @@ get_rank_name (char *s, gint rank)
 }
 
 static void
-print_factory_details_info (GstElementFactory * factory)
+print_factory_details_info (GstElementFactory * factory, GstPlugin * plugin)
 {
   gchar **keys, **k;
+  gboolean seen_doc_uri = FALSE;
   GstRank rank;
   char s[40];
 
@@ -262,9 +279,42 @@ print_factory_details_info (GstElementFactory * factory)
       key[0] = g_ascii_toupper (key[0]);
       n_print ("%s%-25s%s%s%s\n", PROP_NAME_COLOR, key, PROP_VALUE_COLOR, val,
           RESET_COLOR);
+      seen_doc_uri =
+          seen_doc_uri || g_str_equal (key, GST_ELEMENT_METADATA_DOC_URI);
     }
     g_strfreev (keys);
   }
+
+  if (!seen_doc_uri && plugin != NULL &&
+      !gst_element_factory_get_skip_documentation (factory)) {
+    const gchar *module = gst_plugin_get_source (plugin);
+    const gchar *origin = gst_plugin_get_origin (plugin);
+
+    /* gst-plugins-rs has per-plugin module names so need to check origin there */
+    if (g_strv_contains (gstreamer_modules, module)
+        || (origin != NULL && g_str_has_suffix (origin, "/gst-plugins-rs"))) {
+      GList *features;
+
+      features =
+          gst_registry_get_feature_list_by_plugin (gst_registry_get (),
+          gst_plugin_get_name (plugin));
+
+      /* if the plugin only has a single feature, plugin page == feature page */
+      if (features != NULL && features->next == NULL) {
+        n_print ("%s%-25s%s%s%s/%s/#%s-page%s\n", PROP_NAME_COLOR,
+            "Documentation", RESET_COLOR, PROP_VALUE_COLOR, GST_DOC_BASE_URL,
+            gst_plugin_get_name (plugin), GST_OBJECT_NAME (factory),
+            RESET_COLOR);
+      } else {
+        n_print ("%s%-25s%s%s%s/%s/%s.html%s\n", PROP_NAME_COLOR,
+            "Documentation", RESET_COLOR, PROP_VALUE_COLOR, GST_DOC_BASE_URL,
+            gst_plugin_get_name (plugin), GST_OBJECT_NAME (factory),
+            RESET_COLOR);
+      }
+      gst_plugin_feature_list_free (features);
+    }
+  }
+
   pop_indent ();
   n_print ("\n");
 }
@@ -359,7 +409,7 @@ flags_to_string (GFlagsValue * vals, guint flags)
   G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_DEPRECATED | \
   GST_PARAM_CONTROLLABLE | GST_PARAM_MUTABLE_PLAYING | \
   GST_PARAM_MUTABLE_PAUSED | GST_PARAM_MUTABLE_READY | \
-  GST_PARAM_CONDITIONALLY_AVAILABLE)
+  GST_PARAM_CONDITIONALLY_AVAILABLE | GST_PARAM_DOC_SHOW_DEFAULT)
 
 static int
 sort_gparamspecs (GParamSpec ** a, GParamSpec ** b)
@@ -697,6 +747,15 @@ print_object_properties_info (GObject * obj, GObjectClass * obj_class,
               gst_value_get_fraction_denominator (&value), RESET_COLOR);
         } else if (param->value_type == GST_TYPE_ARRAY) {
           GstParamSpecArray *parray = GST_PARAM_SPEC_ARRAY_LIST (param);
+
+          if (GST_VALUE_HOLDS_ARRAY (&value)) {
+            gchar *def = gst_value_serialize (&value);
+
+            n_print ("%sDefault%s: \"%s\"\n", PROP_ATTR_VALUE_COLOR,
+                RESET_COLOR, def);
+
+            g_free (def);
+          }
 
           if (parray->element_spec) {
             n_print ("%sGstValueArray of GValues of type%s %s\"%s\"%s",
@@ -1439,15 +1498,18 @@ print_all_uri_handlers (void)
 static void
 print_plugin_info (GstPlugin * plugin)
 {
+  const gchar *plugin_name = gst_plugin_get_name (plugin);
   const gchar *release_date = gst_plugin_get_release_date_string (plugin);
   const gchar *filename = gst_plugin_get_filename (plugin);
+  const gchar *module = gst_plugin_get_source (plugin);
+  const gchar *origin = gst_plugin_get_origin (plugin);
 
   n_print ("%sPlugin Details%s:\n", HEADING_COLOR, RESET_COLOR);
 
   push_indent ();
 
   n_print ("%s%-25s%s%s%s%s\n", PROP_NAME_COLOR, "Name", RESET_COLOR,
-      PROP_VALUE_COLOR, gst_plugin_get_name (plugin), RESET_COLOR);
+      PROP_VALUE_COLOR, plugin_name, RESET_COLOR);
   n_print ("%s%-25s%s%s%s%s\n", PROP_NAME_COLOR, "Description", RESET_COLOR,
       PROP_VALUE_COLOR, gst_plugin_get_description (plugin), RESET_COLOR);
   n_print ("%s%-25s%s%s%s%s\n", PROP_NAME_COLOR, "Filename", RESET_COLOR,
@@ -1457,7 +1519,15 @@ print_plugin_info (GstPlugin * plugin)
   n_print ("%s%-25s%s%s%s%s\n", PROP_NAME_COLOR, "License", RESET_COLOR,
       PROP_VALUE_COLOR, gst_plugin_get_license (plugin), RESET_COLOR);
   n_print ("%s%-25s%s%s%s%s\n", PROP_NAME_COLOR, "Source module", RESET_COLOR,
-      PROP_VALUE_COLOR, gst_plugin_get_source (plugin), RESET_COLOR);
+      PROP_VALUE_COLOR, module, RESET_COLOR);
+
+  /* gst-plugins-rs has per-plugin module names so need to check origin there */
+  if (g_strv_contains (gstreamer_modules, module)
+      || (origin != NULL && g_str_has_suffix (origin, "/gst-plugins-rs"))) {
+    n_print ("%s%-25s%s%s%s/%s/%s\n", PROP_NAME_COLOR, "Documentation",
+        RESET_COLOR, PROP_VALUE_COLOR, GST_DOC_BASE_URL, plugin_name,
+        RESET_COLOR);
+  }
 
   if (release_date != NULL) {
     const gchar *tz = "(UTC)";
@@ -1645,9 +1715,10 @@ print_element_info (GstPluginFeature * feature, gboolean print_names)
   else
     _name = NULL;
 
-  print_factory_details_info (factory);
-
   plugin = gst_plugin_feature_get_plugin (GST_PLUGIN_FEATURE (factory));
+
+  print_factory_details_info (factory, plugin);
+
   if (plugin) {
     print_plugin_info (plugin);
     gst_object_unref (plugin);
@@ -2020,8 +2091,8 @@ _parse_sort_type (const gchar * option_name, const gchar * optarg,
   return FALSE;
 }
 
-int
-main (int argc, char *argv[])
+static int
+real_main (int argc, char *argv[])
 {
   gboolean print_all = FALSE;
   gboolean do_print_blacklist = FALSE;
@@ -2262,4 +2333,14 @@ done:
 #endif
 
   return exit_code;
+}
+
+int
+main (int argc, char *argv[])
+{
+#if defined(__APPLE__) && TARGET_OS_MAC && !TARGET_OS_IPHONE
+  return gst_macos_main ((GstMainFunc) real_main, argc, argv, NULL);
+#else
+  return real_main (argc, argv);
+#endif
 }
