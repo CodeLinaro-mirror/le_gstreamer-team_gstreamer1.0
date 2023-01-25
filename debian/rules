@@ -31,6 +31,7 @@ endif
 
 conf_flags = --libexecdir=lib/$(DEB_HOST_MULTIARCH)/gstreamer1.0
 conf_flags += -Dpackage-name=$(GST_PACKAGE_NAME) -Dpackage-origin=$(GST_PACKAGE_ORIGIN)
+conf_flags += -Dauto_features=enabled -Ddbghelp=disabled -Ddoc=disabled -Dexamples=disabled
 ifeq ($(DEB_HOST_ARCH_OS),linux)
 conf_flags += -Dptp-helper-permissions=capabilities
 else
