@@ -1,3 +1,12 @@
+gstreamer1.0 (1.22.0-2) unstable; urgency=medium
+
+  * debian/rules: Set -Dauto_features=enabled
+  * Set Rules-Requires-Root: no
+  * Bump Standards-Version to 4.6.2
+  * Release to unstable
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Sat, 28 Jan 2023 11:11:15 -0500
+
 gstreamer1.0 (1.22.0-1) experimental; urgency=medium
 
   * Team upload
