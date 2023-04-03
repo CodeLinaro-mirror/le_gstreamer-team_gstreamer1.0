@@ -1636,7 +1636,7 @@ gst_aggregator_flush_start (GstAggregator * self, GstAggregatorPad * aggpad,
   PAD_FLUSH_UNLOCK (aggpad);
 }
 
-/* Must be called with the the PAD_LOCK held */
+/* Must be called with the PAD_LOCK and OBJECT_LOCK held */
 static void
 update_time_level (GstAggregatorPad * aggpad, gboolean head)
 {
@@ -3105,7 +3105,9 @@ apply_buffer (GstAggregatorPad * aggpad, GstBuffer * buffer, gboolean head)
   else
     aggpad->priv->tail_position = timestamp;
 
+  GST_OBJECT_LOCK (aggpad);
   update_time_level (aggpad, head);
+  GST_OBJECT_UNLOCK (aggpad);
 }
 
 /*
@@ -3198,7 +3200,7 @@ gst_aggregator_pad_chain_internal (GstAggregator * self,
           GST_WARNING_OBJECT (aggpad,
               "Ignoring request of selecting the first start time "
               "as the segment is a %s segment instead of a time segment",
-              gst_format_get_name (aggpad->segment.format));
+              gst_format_get_name (aggpad->priv->head_segment.format));
         }
         GST_OBJECT_UNLOCK (aggpad);
         break;

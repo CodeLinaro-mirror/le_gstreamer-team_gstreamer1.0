@@ -1,3 +1,143 @@
+=== release 1.22.1 ===
+
+2023-03-04 13:42:32 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.22.1
+
+2023-03-02 15:51:08 +0200  Vivia Nikolaidou <vivia@ahiru.eu>
+
+	* plugins/elements/gstinputselector.c:
+	* plugins/elements/gstinputselector.h:
+	  inputselector: Avoid deadlock when shutting down
+	  Transition from PLAYING to PAUSED unschedules any pending clock wait,
+	  but there was no guard that prevented another input buffer then waiting
+	  again while in PAUSED before dataflow stops. Use a new `playing` flag to
+	  avoid this, and exit the chain function if instead of playing we're now
+	  flushing. Basically the same as the clocksync element.
+	  Closes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1772
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4099>
+
+2023-01-28 02:32:13 +0900  Seungha Yang <seungha@centricular.com>
+
+	* tools/gst-inspect.c:
+	* tools/gst-launch.c:
+	* tools/gst-stats.c:
+	* tools/gst-typefind.c:
+	  tools: Make sure UTF-8 encoded command line arguments on Windows
+	  On Windows, arguments passed in main() are system codepage
+	  encoded and might not be valid UTF-8 string.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4072>
+
+2023-02-21 20:13:57 -0700  James Hilliard <james.hilliard1@gmail.com>
+
+	* gst/gstbuffer.c:
+	  buffer: fix copy meta reference debug log formatting
+	  Fixes the following valgrind error:
+	  ==616== Conditional jump or move depends on uninitialised value(s)
+	  ==616==    at 0x4900E34: gst_debug_print_object (gstinfo.c:1143)
+	  ==616==    by 0x49010B6: gst_info_printf_pointer_extension_func (gstinfo.c:1215)
+	  ==616==    by 0x4959FDB: __gst_printf_pointer_extension_serialize (printf-extension.c:47)
+	  ==616==    by 0x495A487: printf_postprocess_args (vasnprintf.c:258)
+	  ==616==    by 0x495A52C: __gst_vasnprintf (vasnprintf.c:290)
+	  ==616==    by 0x4959F8F: __gst_vasprintf (printf.c:154)
+	  ==616==    by 0x4901C1F: gst_debug_message_get (gstinfo.c:791)
+	  ==616==    by 0x4901C75: _gst_debug_log_preamble (gstinfo.c:1431)
+	  ==616==    by 0x4903208: gst_debug_log_default (gstinfo.c:1575)
+	  ==616==    by 0x49020BA: gst_debug_log_full_valist (gstinfo.c:624)
+	  ==616==    by 0x490211D: gst_debug_log_valist (gstinfo.c:656)
+	  ==616==    by 0x49021AD: gst_debug_log (gstinfo.c:533)
+	  ==616==    by 0x48DDC11: gst_buffer_copy_into (gstbuffer.c:693)
+	  ==616==    by 0x48DF5F1: gst_buffer_copy_with_flags (gstbuffer.c:727)
+	  ==616==    by 0x48DF640: gst_buffer_copy_deep (gstbuffer.c:756)
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4038>
+
+2023-02-22 11:51:58 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* po/fur.po:
+	  gstreamer: update translations
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4041>
+
+2023-02-09 13:53:48 +0100  Jan Alexander Steffens (heftig) <jan.steffens@ltnglobal.com>
+
+	* gst/gstpad.c:
+	  pad: Don't leak user_data in gst_pad_start_task
+	  When the task already exists, we forgot to free the passed `user_data`.
+	  This wasn't an issue for most C code, which doesn't pass a
+	  `GDestroyNotify`, but bindings such as gstreamer-rs do!
+	  That said, allocating a trampoline in gstreamer-rs just for it to get
+	  thrown away again is awkward. Maybe we need a `gst_pad_resume_task`?
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3925>
+
+2023-02-07 13:43:06 +0000  medithe <medithe@gmx.at>
+
+	* gst/gstbin.c:
+	  gstreamer: bin: Don't unlock unlocked mutex in gst_bin_remove_func()
+	  Calling `g_mutex_unlock(mutex)` leads to an undefined behavior if the
+	  mutex is not locked by the current thread.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3910>
+
+2023-01-27 19:29:24 +0100  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* libs/gst/base/gstbasesrc.h:
+	  BaseSrc: fix transfer annotation for fixate virtual method
+	  The fixate virtual method has the same semantics as gst_caps_fixate(),
+	  so the caps parameter must be marked as (transfer full).
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3839>
+
+2023-01-26 15:42:18 +0100  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* libs/gst/base/gstbasesrc.h:
+	* libs/gst/base/gstpushsrc.h:
+	  BaseSrc, PushSrc: add nullable annotations to virtual methods
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3833>
+
+2023-01-26 10:33:26 +0100  Jan Alexander Steffens (heftig) <jan.steffens@ltnglobal.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Warn about the right segment's format
+	  We were checking the head segment here, not the current segment.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3819>
+
+2020-09-02 17:59:30 +0200  Jan Alexander Steffens (heftig) <jan.steffens@ltnglobal.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Always lock aggpad around update_time_level
+	  `aggpad->segment` is protected by the `aggpad`'s object lock. We need to
+	  take the lock before calling `update_time_level`.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3819>
+
+2023-01-25 13:26:08 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gsttypefind.c:
+	  gst: Fix gst_type_find_peek() return value annotation
+	  It's not possible to annotate a in-parameter for a return value array as
+	  the array length. Both are assumed to have the same direction and the
+	  current annotation causes the size parameter to be considered an out
+	  parameter.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3814>
+
+2023-01-23 17:26:07 +0100  Edward Hervey <edward@centricular.com>
+
+	* plugins/elements/gstmultiqueue.c:
+	  multiqueue: Handle use-interleave latency live pipelines
+	  Due to the dynamic nature of multiqueue, when `use-interleave` is used we can't
+	  report a maximum tolerated latency (when queried) since it is calculated
+	  dynamically.
+	  When in such live pipelines, we need to make sure multiqueue can handle the
+	  lowest global latency (provided by this event). Failure to do that would
+	  result in not providing enough buffering for a realtime pipeline.
+	  Fixes #1732
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3810>
+
+2023-01-25 16:46:42 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+
 === release 1.22.0 ===
 
 2023-01-23 19:29:34 +0000  Tim-Philipp Müller <tim@centricular.com>
