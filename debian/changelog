@@ -1,9 +1,9 @@
-gstreamer1.0 (1.22.2-1) UNRELEASED; urgency=medium
+gstreamer1.0 (1.22.2-1) experimental; urgency=medium
 
   * Team upload
   * New upstream bugfix release (LP: #2015943)
 
- -- Jeremy Bícha <jbicha@ubuntu.com>  Wed, 12 Apr 2023 11:44:46 -0400
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Wed, 12 Apr 2023 11:47:38 -0400
 
 gstreamer1.0 (1.22.1-1) experimental; urgency=medium
 
