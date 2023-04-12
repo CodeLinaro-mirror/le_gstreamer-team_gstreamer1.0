@@ -1,3 +1,53 @@
+=== release 1.22.2 ===
+
+2023-04-11 17:29:28 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.22.2
+
+2023-04-10 13:49:41 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* po/sr.po:
+	  gstreamer: update translations
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4390>
+
+2023-03-31 04:40:58 +0900  Seungha Yang <seungha@centricular.com>
+
+	* tools/gst-inspect.c:
+	* tools/gst-launch.c:
+	* tools/gst-stats.c:
+	* tools/gst-typefind.c:
+	  tools: Count argc after parsing GOption on Windows
+	  Existing codes rely on modified argc value by g_option_context_parse()
+	  but g_option_context_parse_strv() is used in case of Windows.
+	  Count arguments after the option parsing manually.
+	  Fixing command "gst-inspect-1.0.exe -b"
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4322>
+
+2023-03-24 18:34:36 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstdatetime.c:
+	  datetime: Return G_MAXFLOAT instead of G_MAXDOUBLE for no timezone offset
+	  Returning G_MAXDOUBLE from a function returning a float is not going to
+	  work well and MSVC also correctly warns about this.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4285>
+
+2023-03-16 12:38:23 +0200  Vivia Nikolaidou <vivia@ahiru.eu>
+
+	* plugins/elements/gstinputselector.c:
+	  inputselector: Wake up streaming thread before PLAYING_TO_PAUSED transition
+	  Also take object lock before iterating the pads.
+	  https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1772
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4196>
+
+2023-03-04 16:13:04 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+
 === release 1.22.1 ===
 
 2023-03-04 13:42:32 +0000  Tim-Philipp Müller <tim@centricular.com>

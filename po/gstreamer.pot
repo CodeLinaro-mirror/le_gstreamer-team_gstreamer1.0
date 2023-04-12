@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer-1.22.1\n"
+"Project-Id-Version: gstreamer-1.22.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-04 13:42+0000\n"
+"POT-Creation-Date: 2023-04-11 17:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1435,12 +1435,12 @@ msgstr ""
 msgid "Color output, even when not sending to a tty."
 msgstr ""
 
-#: tools/gst-inspect.c:2311
+#: tools/gst-inspect.c:2315
 #, c-format
 msgid "Could not load plugin file: %s\n"
 msgstr ""
 
-#: tools/gst-inspect.c:2317
+#: tools/gst-inspect.c:2321
 #, c-format
 msgid "No such element or plugin '%s'\n"
 msgstr ""
@@ -1666,48 +1666,48 @@ msgid ""
 "This option has no effect if the \"no-position\" option is specified"
 msgstr ""
 
-#: tools/gst-launch.c:1199
+#: tools/gst-launch.c:1203
 #, c-format
 msgid "ERROR: pipeline could not be constructed: %s.\n"
 msgstr ""
 
-#: tools/gst-launch.c:1203
+#: tools/gst-launch.c:1207
 msgid "ERROR: pipeline could not be constructed.\n"
 msgstr ""
 
-#: tools/gst-launch.c:1207
+#: tools/gst-launch.c:1211
 #, c-format
 msgid "WARNING: erroneous pipeline: %s\n"
 msgstr ""
 
-#: tools/gst-launch.c:1224
+#: tools/gst-launch.c:1228
 msgid "ERROR: the 'pipeline' element wasn't found.\n"
 msgstr ""
 
-#: tools/gst-launch.c:1273
+#: tools/gst-launch.c:1277
 msgid "Setting pipeline to PAUSED ...\n"
 msgstr ""
 
-#: tools/gst-launch.c:1278
+#: tools/gst-launch.c:1282
 msgid "Failed to set pipeline to PAUSED.\n"
 msgstr ""
 
-#: tools/gst-launch.c:1282
+#: tools/gst-launch.c:1286
 msgid "Pipeline is live and does not need PREROLL ...\n"
 msgstr ""
 
-#: tools/gst-launch.c:1286
+#: tools/gst-launch.c:1290
 msgid "Pipeline is PREROLLING ...\n"
 msgstr ""
 
-#: tools/gst-launch.c:1330
+#: tools/gst-launch.c:1334
 msgid "Execution ended after %"
 msgstr ""
 
-#: tools/gst-launch.c:1347
+#: tools/gst-launch.c:1351
 msgid "Setting pipeline to NULL ...\n"
 msgstr ""
 
-#: tools/gst-launch.c:1365
+#: tools/gst-launch.c:1369
 msgid "Freeing pipeline ...\n"
 msgstr ""
