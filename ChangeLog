@@ -1,3 +1,41 @@
+=== release 1.22.3 ===
+
+2023-05-19 09:23:19 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* README.md:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.22.3
+
+2023-05-12 18:35:48 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* gst/parse/grammar.y.in:
+	  parse/grammar: fix missing unref of looked up child
+	  the target parameter of gst_child_proxy_lookup() is (transfer full)
+	  Fixes: https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/2560
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4624>
+
+2023-03-28 16:13:51 +0200  Juan Navarro <juan.navarro@gmx.es>
+
+	* gst/gstutils.c:
+	  gstutils: Add category and object to most logging messages
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4615>
+
+2023-04-12 10:58:31 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gst.c:
+	  gst: tracer: Initialize tracing infrastructure even if the debug system is not compiled in
+	  There is a separate #define for the tracing infrastructure.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/2467
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4424>
+
+2023-04-12 00:31:17 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+
 === release 1.22.2 ===
 
 2023-04-11 17:29:28 +0100  Tim-Philipp Müller <tim@centricular.com>
