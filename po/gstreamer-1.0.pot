@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer-1.22.3\n"
+"Project-Id-Version: gstreamer-1.22.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-19 09:23+0100\n"
+"POT-Creation-Date: 2023-06-20 17:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1176,11 +1176,11 @@ msgstr ""
 msgid "A lot of buffers are being dropped."
 msgstr ""
 
-#: libs/gst/base/gstbasesink.c:3799
+#: libs/gst/base/gstbasesink.c:3802
 msgid "Internal data flow problem."
 msgstr ""
 
-#: libs/gst/base/gstbasesink.c:4633 libs/gst/base/gstbasesrc.c:2773
+#: libs/gst/base/gstbasesink.c:4636 libs/gst/base/gstbasesrc.c:2773
 msgid "Internal data flow error."
 msgstr ""
 

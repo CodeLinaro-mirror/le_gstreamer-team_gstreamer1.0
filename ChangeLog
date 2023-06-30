@@ -1,3 +1,75 @@
+=== release 1.22.4 ===
+
+2023-06-20 17:42:25 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.22.4
+
+2023-06-09 17:51:28 +0800  Elliot Chen <elliot.chen@nxp.com>
+
+	* libs/gst/base/gsttypefindhelper.c:
+	  typefindhelper: avoid printing error log
+	  some plugins such as wavparse may need find if type of media
+	  contained in the given data and will print error log if there
+	  is no matching factory.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4859>
+
+2023-06-09 10:28:43 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/helpers/gst-ptp-helper.c:
+	  ptp: Correctly parse clock ID from the commandline parameters in the helper
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/2652
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4813>
+
+2023-06-08 20:52:21 +0900  Seungha Yang <seungha@centricular.com>
+
+	* plugins/elements/gstelements_private.c:
+	* tests/check/elements/filesink.c:
+	  filesink: Fix buffered mode writing
+	  Fixing miscalculated buffer index when a buffer holds multiple
+	  memories and it's not aligned to the vector size 16
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4817>
+
+2023-06-06 20:44:02 +0900  Seungha Yang <seungha@centricular.com>
+
+	* tests/check/libs/basesink.c:
+	  tests: basesink: Add STREAM-START after EOS test
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4797>
+
+2023-06-06 04:42:05 +0900  Seungha Yang <seungha@centricular.com>
+
+	* libs/gst/base/gstbasesink.c:
+	  basesink: Clear EOS flag on STREAM-START event
+	  EOS -> STREAM-START -> new data flow is valid scenario
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4797>
+
+2023-06-01 14:49:06 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gstinfo.c:
+	  docs: Use backticks to escape * in markdown
+	  Otherwise it's interpreted as emphasis.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4763>
+
+2023-05-17 10:01:30 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/net/gstptpclock.c:
+	  ptp: Work around bug in ptpd in default configuration
+	  ptpd is defaulting to the hybrid mode, and was sending invalid multicast
+	  PTP messages in that configuration until ce96c742a88792a8d92deebaf03927e1b367f4a9.
+	  While this commit was made in 2015 there was no release in the meantime.
+	  Work around this by detecting this case and defaulting to the default
+	  values for the given intervals as given by the PTP standard.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4683>
+
+2023-05-19 12:36:19 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4679>
+
 === release 1.22.3 ===
 
 2023-05-19 09:23:19 +0100  Tim-Philipp Müller <tim@centricular.com>
