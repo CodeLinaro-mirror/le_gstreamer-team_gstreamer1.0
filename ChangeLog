@@ -1,3 +1,51 @@
+=== release 1.22.5 ===
+
+2023-07-20 15:22:48 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.22.5
+
+2023-07-17 15:18:39 +0100  Philippe Normand <philn@igalia.com>
+
+	* gst/gstquery.c:
+	  query: Add a quark for SELECTABLE query type
+	  So that `gst_query_type_get_name()` won't return "unknown" for this type.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5067>
+
+2023-03-26 16:40:28 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* gst/gsttaglist.c:
+	  taglist, plugins: fix compiler warnings with GLib >= 2.76
+	  Fix compiler warnings about not using the return value when
+	  freeing the GString segment with g_string_free(.., FALSE):
+	  ignoring return value of ‘g_string_free_and_steal’ declared with attribute ‘warn_unused_result’
+	  which we get with newer GLib versions. These were all harmless.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5015>
+
+2023-07-06 18:08:57 +0200  Théo Maillart <tmaillart@freebox.fr>
+
+	* plugins/elements/gstinputselector.c:
+	  inputselector: fix playing variable is never set
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4988>
+
+2023-02-16 13:44:50 +0100  Guillaume Desmottes <guillaume.desmottes@onestream.live>
+
+	* gst/gsttracerutils.c:
+	  tracerutils: allow casting parameters types
+	  It was impossible to have an u32 parameter such as
+	  'max-buffer-size=(uint)5' because the parentheses were not properly
+	  parsed.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4941>
+
+2023-06-20 19:10:38 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4907>
+
 === release 1.22.4 ===
 
 2023-06-20 17:42:25 +0100  Tim-Philipp Müller <tim@centricular.com>
