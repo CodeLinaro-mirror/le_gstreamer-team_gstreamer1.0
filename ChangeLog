@@ -1,3 +1,56 @@
+=== release 1.22.6 ===
+
+2023-09-20 18:10:57 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.22.6
+
+2023-03-28 19:58:30 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* tools/gst-inspect.c:
+	  tools: gst-inspect: print action signals as emit_by_name() invocations
+	  It's quite confusing to print a function callback signature for
+	  action signals when people need to do a g_signal_by_name() invocation
+	  in order to use this feature. Requires too much background knowledge
+	  about how GObject works under the hood to make sense of that.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5206>
+
+2023-03-29 16:46:43 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* tools/gst-inspect.c:
+	  tools: gst-inspect: prettify type names for strings
+	  'gchararray' and 'GStrv' are not types used anywhere else
+	  and are just confusing. Map that to 'const gchar *' and 'gchar *'
+	  etc. depending on context.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5206>
+
+2023-03-28 19:56:14 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* tools/gst-inspect.c:
+	  tools: gst-inspect: add vertical spacing between properties and signals
+	  Makes it easier to read and less squashed.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5206>
+
+2023-08-15 16:01:28 +0200  Piotr Brzeziński <piotr@centricular.com>
+
+	* tools/gst-launch.c:
+	  tools: Disable fault signal handlers in gst-launch/gst-validate on macOS
+	  By default, macOS attempts to run lldb against a misbehaving process to handle the crash. This does not play well
+	  with the SISEGV/SIGQUIT handler we add in gst-launch/gst-validate. The 'spinning' mechanism causes the lldb
+	  and debugserver processes ran by macOS to misbehave, taking 100% CPU and rendering both themselves and the GStreamer
+	  instance frozen and very hard to effectively kill. macOS's Activity Monitor is also unusable while this is happening.
+	  This patch takes the quickest possible solution of just disabling those signal handlers entirely on macOS.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5201>
+
+2023-07-20 16:57:47 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5082>
+
 === release 1.22.5 ===
 
 2023-07-20 15:22:48 +0100  Tim-Philipp Müller <tim@centricular.com>
