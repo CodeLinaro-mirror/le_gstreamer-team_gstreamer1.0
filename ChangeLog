@@ -1,3 +1,51 @@
+=== release 1.22.7 ===
+
+2023-11-13 11:04:22 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.22.7
+
+2023-10-25 13:58:55 +0100  Philippe Normand <philn@igalia.com>
+
+	* gst/gstdebugutils.c:
+	  debugutils: Ensure we always expose a bin_to_dot_data implementation
+	  Fixes a linking issue when building with `-Dgst_debug=false`.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5563>
+
+2023-10-19 19:44:21 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Allow passing unparented pads to gst_aggregator_pad_is_inactive()
+	  It's very difficult to ensure that a pad is still child of the
+	  aggregator during aggregation, so simply consider unparented pads as
+	  inactive instead of asserting.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5553>
+
+2023-10-19 19:43:26 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Also release clipped buffer when releasing an aggregator pad
+	  Instead of waiting until the pad is actually finalized.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5553>
+
+2023-10-19 19:43:26 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Take pad lock while releasing buffers when removing pads
+	  Accessing the buffers in all other places requires the pad lock and not
+	  taking it here can cause access to already freed buffers if there's
+	  concurrent access from another thread.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5553>
+
+2023-09-20 19:41:00 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5371>
+
 === release 1.22.6 ===
 
 2023-09-20 18:10:57 +0100  Tim-Philipp Müller <tim@centricular.com>

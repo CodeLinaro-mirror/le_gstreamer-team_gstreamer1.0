@@ -2032,7 +2032,10 @@ gst_aggregator_release_pad (GstElement * element, GstPad * pad)
 
   SRC_LOCK (self);
   gst_aggregator_pad_set_flushing (aggpad, GST_FLOW_FLUSHING, TRUE);
+  PAD_LOCK (aggpad);
   gst_buffer_replace (&aggpad->priv->peeked_buffer, NULL);
+  gst_buffer_replace (&aggpad->priv->clipped_buffer, NULL);
+  PAD_UNLOCK (aggpad);
   gst_element_remove_pad (element, pad);
 
   self->priv->has_peer_latency = FALSE;
@@ -3698,8 +3701,8 @@ gst_aggregator_pad_is_inactive (GstAggregatorPad * pad)
   gboolean inactive;
 
   self = GST_AGGREGATOR (gst_pad_get_parent_element (GST_PAD (pad)));
-
-  g_assert_nonnull (self);
+  if (!self)
+    return FALSE;
 
   PAD_LOCK (pad);
   inactive = self->priv->ignore_inactive_pads && is_live_unlocked (self)
