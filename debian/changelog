@@ -1,3 +1,11 @@
+gstreamer1.0 (1.22.7-1) UNRELEASED; urgency=medium
+
+  * New upstream version 1.22.7
+  * d/lintian-overrides: hide warnings
+  * Team upload.
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Tue, 14 Nov 2023 14:01:28 +0100
+
 gstreamer1.0 (1.22.6-1) unstable; urgency=medium
 
   * Team upload
