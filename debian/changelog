@@ -1,8 +1,15 @@
-gstreamer1.0 (1.22.7-1) UNRELEASED; urgency=medium
+gstreamer1.0 (1.22.7-1) unstable; urgency=medium
 
+  [ Marc Leeman ]
   * New upstream version 1.22.7
   * d/lintian-overrides: hide warnings
   * Team upload.
+
+  [ Aurelien Jarno ]
+  * Enable libunwind on riscv64 (Closes: #1057048)
+
+  [ Debian Janitor ]
+  * Remove constraints unnecessary since buster (oldstable)
 
  -- Marc Leeman <marc.leeman@gmail.com>  Tue, 14 Nov 2023 14:01:28 +0100
 
