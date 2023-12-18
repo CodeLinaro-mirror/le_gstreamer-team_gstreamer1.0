@@ -1,3 +1,81 @@
+=== release 1.22.8 ===
+
+2023-12-18 12:09:37 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.22.8
+
+2023-11-27 13:16:47 +0100  Jan Alexander Steffens (heftig) <jan.steffens@ltnglobal.com>
+
+	* libs/gst/base/gstbaseparse.c:
+	  baseparse: Reset metadata for reverse playback fragment buffers
+	  Don't let the adapter leak uncontrollable values.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5720>
+
+2023-11-27 12:29:08 +0100  Jan Alexander Steffens (heftig) <jan.steffens@ltnglobal.com>
+
+	* libs/gst/base/gstbaseparse.c:
+	  baseparse: Add missing gst_buffer_make_writable
+	  When the subclass attempts to finish without an explicit `out_buffer`,
+	  we take a buffer from our adapter. We need to make this buffer writable
+	  before copying the metadata.
+	  This led to data races such as in the following pipeline, which randomly
+	  messed up the buffer PTS:
+	  gst-launch-1.0 -e audiotestsrc timestamp-offset=5555 num-buffers=100 \
+	  ! opusenc ! tee name=t ! queue ! opusparse ! fakesink silent=0 \
+	  t. ! queue ! opusparse ! fakesink silent=0 -v | grep '0000, dur'
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5720>
+
+2023-03-15 09:11:51 -0400  Xavier Claessens <xavier.claessens@collabora.com>
+
+	* gst/gstbuffer.c:
+	* tests/check/gst/gstbufferpool.c:
+	  gstbuffer: Add parent meta when a copy shares memory with parent
+	  When copying a buffer, for example with gst_buffer_make_writable(), the
+	  new buffer might reference the same GstMemory as the src buffer,
+	  making those memories not writable. If the src buffer gets disposed
+	  first it should return to its buffer pool, but since some of its
+	  memories are not writable it gets discarded and new buffer/memory gets
+	  allocated.
+	  Solves this by making the new buffer keep a reference to the src buffer,
+	  that ensures that by the time the src buffer gets disposed no other
+	  buffer are referencing its memories and it can thus return safely to its
+	  pool.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5696>
+
+2023-03-09 22:18:12 -0800  Xavier Claessens <xavier.claessens@collabora.com>
+
+	* gst/gstbuffer.c:
+	* tests/check/gst/gstbufferpool.c:
+	  gstbuffer: Unref memories before metas
+	  gst_buffer_add_parent_buffer_meta() is used when a GstBuffer uses
+	  GstMemory from another buffer that was allocated from a pool. In that
+	  case we want to make sure the buffer returns to the pool when the memory
+	  is writable again, otherwise a copy of the memory is created. That means
+	  the child buffer must drop its ref to the memory first, then drop the
+	  ref to parent buffer so it can return to the pool when it is the only
+	  owner of the memory.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5696>
+
+2023-11-15 10:03:52 +0000  Daniel Moberg <daniemob@axis.com>
+
+	* gst/gstpad.c:
+	  gstpad: Recheck pads when linking after temporary unlock
+	  This commit makes sure that pads are valid for linking
+	  after the pads has been temporarily unlocked in the linking process.
+	  Not doing this opens up for a race condition where
+	  pads potentially can be linked twice.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5678>
+
+2023-11-13 14:57:09 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5650>
+
 === release 1.22.7 ===
 
 2023-11-13 11:04:22 +0000  Tim-Philipp Müller <tim@centricular.com>
