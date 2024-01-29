@@ -1,3 +1,47 @@
+=== release 1.22.9 ===
+
+2024-01-24 18:21:13 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.22.9
+
+2023-12-12 23:55:04 +0100  Alexander Slobodeniuk <aslobodeniuk@fluendo.com>
+
+	* libs/gst/base/gstaggregator.c:
+	* tests/check/libs/aggregator.c:
+	  aggregator: fix use-after-free in queries processing
+	  Test included.
+	  The problem appears when aggregator drops the query while
+	  it's being proccessed by the klass->sink_query handler.
+	  This can happen on FLUSH_START event. If the query is still
+	  in the queue, it can be safely dropped, but if it's already
+	  in the klass->sink_query() handler, then sink pad has no
+	  choice and has to wait for the proccessing to complete.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5958>
+
+2023-12-10 03:25:57 +1100  Jan Schmidt <jan@centricular.com>
+
+	* plugins/elements/gstmultiqueue.c:
+	  multiqueue: Ignore queue fullness for most events
+	  Use gst_data_queue_push_force() for most events so they
+	  are immediately enqueued. Only gap events and actual buffer
+	  data will now block when the queue is full.
+	  This fixes a problem with non-flushing seek handling
+	  where events following a segment-done event would block
+	  if they precede the SEGMENT event, since only SEGMENT
+	  events would clear the 'eos' state of the multiqueue
+	  queue.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5954>
+
+2023-12-18 13:52:12 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5826>
+
 === release 1.22.8 ===
 
 2023-12-18 12:09:37 +0000  Tim-Philipp Müller <tim@centricular.com>
