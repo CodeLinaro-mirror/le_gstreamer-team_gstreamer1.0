@@ -834,7 +834,6 @@ no_handler:
   }
 }
 
-#if GLIB_CHECK_VERSION(2,63,3)
 static void
 gst_bus_source_dispose (GSource * source)
 {
@@ -850,22 +849,11 @@ gst_bus_source_dispose (GSource * source)
     bus->priv->gsource = NULL;
   GST_OBJECT_UNLOCK (bus);
 }
-#endif
 
 static void
 gst_bus_source_finalize (GSource * source)
 {
   GstBusSource *bsource = (GstBusSource *) source;
-#if !GLIB_CHECK_VERSION(2,63,3)
-  GstBus *bus = bsource->bus;
-
-  GST_DEBUG_OBJECT (bus, "finalize source %p", source);
-
-  GST_OBJECT_LOCK (bus);
-  if (bus->priv->gsource == source)
-    bus->priv->gsource = NULL;
-  GST_OBJECT_UNLOCK (bus);
-#endif
 
   gst_clear_object (&bsource->bus);
 }
@@ -894,9 +882,7 @@ gst_bus_create_watch_unlocked (GstBus * bus)
   source = (GstBusSource *) bus->priv->gsource;
 
   g_source_set_name ((GSource *) source, "GStreamer message bus watch");
-#if GLIB_CHECK_VERSION(2,63,3)
   g_source_set_dispose_function ((GSource *) source, gst_bus_source_dispose);
-#endif
 
   source->bus = gst_object_ref (bus);
   g_source_add_poll ((GSource *) source, &bus->priv->pollfd);
@@ -1149,7 +1135,7 @@ poll_destroy (GstBusPollData * poll_data, gpointer unused)
   poll_data->source_running = FALSE;
   if (!poll_data->timeout_id) {
     g_main_loop_unref (poll_data->loop);
-    g_slice_free (GstBusPollData, poll_data);
+    g_free (poll_data);
   }
 }
 
@@ -1159,7 +1145,7 @@ poll_destroy_timeout (GstBusPollData * poll_data)
   poll_data->timeout_id = 0;
   if (!poll_data->source_running) {
     g_main_loop_unref (poll_data->loop);
-    g_slice_free (GstBusPollData, poll_data);
+    g_free (poll_data);
   }
 }
 
@@ -1217,7 +1203,7 @@ gst_bus_poll (GstBus * bus, GstMessageType events, GstClockTime timeout)
 
   g_return_val_if_fail (GST_IS_BUS (bus), NULL);
 
-  poll_data = g_slice_new (GstBusPollData);
+  poll_data = g_new (GstBusPollData, 1);
   poll_data->source_running = TRUE;
   poll_data->loop = g_main_loop_new (NULL, FALSE);
   poll_data->events = events;
