@@ -1,3 +1,54 @@
+=== release 1.22.10 ===
+
+2024-02-13 14:39:08 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.22.10
+
+2024-01-26 19:12:18 +0100  Piotr Brzeziński <piotr@centricular.com>
+
+	* gst/gstmacos.m:
+	  macos: Fix gst_macos_main() terminating whole process before returning a value
+	  Removes the usage of [NSApp terminate] to avoid killing the process and thus never actually returning a value.
+	  The new way is just to use [NSApp stop] and send an event, since stop only happens after an event is processed.
+	  Unlike terminate, stop will only halt the event loop, not the whole process.
+	  This uses an NSApplicationDelegate to listen for NSApp finishing the launch process, and then signals the 'main' thread
+	  to proceed. That makes sure to never call [NSApp stop] before NSApp is actually running, which could happen if the
+	  provided 'main' function finished quickly enough.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6103>
+
+2023-04-03 13:51:38 +0100  Lukas Geiger <lukas.geiger94@gmail.com>
+
+	* gst/gstmacos.m:
+	  macos: Set activation policy in `gst_macos_main`
+	  Setting the policy to NSApplicationActivationPolicyAccessory by default makes
+	  sure that we can activate windows programmatically or by clicking on them.
+	  Without that, windows would disappear if you clicked outside them and there
+	  would be no way to bring them to front again. This change also allows osxvideosink
+	  to receive navigation events correctly.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6103>
+
+2024-02-05 18:37:59 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstpad.c:
+	  pad: Copy over seqnum when creating a new segment event for applying pad offset
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6067>
+
+2023-11-21 19:54:32 -0300  Thibault Saunier <tsaunier@igalia.com>
+
+	* libs/gst/base/gstbasesink.c:
+	  basesink: Preroll on out of segment buffers when not dropping them
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6045>
+
+2024-01-25 00:18:12 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5990>
+
 === release 1.22.9 ===
 
 2024-01-24 18:21:13 +0000  Tim-Philipp Müller <tim@centricular.com>
