@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer-1.22.9\n"
+"Project-Id-Version: gstreamer-1.22.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-24 18:21+0000\n"
+"POT-Creation-Date: 2024-02-13 14:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1172,15 +1172,15 @@ msgstr ""
 msgid "Pipeline construction is invalid, please add queues."
 msgstr ""
 
-#: libs/gst/base/gstbasesink.c:3144
+#: libs/gst/base/gstbasesink.c:3148
 msgid "A lot of buffers are being dropped."
 msgstr ""
 
-#: libs/gst/base/gstbasesink.c:3802
+#: libs/gst/base/gstbasesink.c:3806
 msgid "Internal data flow problem."
 msgstr ""
 
-#: libs/gst/base/gstbasesink.c:4636 libs/gst/base/gstbasesrc.c:2773
+#: libs/gst/base/gstbasesink.c:4640 libs/gst/base/gstbasesrc.c:2773
 msgid "Internal data flow error."
 msgstr ""
 
