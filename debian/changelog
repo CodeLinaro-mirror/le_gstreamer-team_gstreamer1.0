@@ -1,3 +1,11 @@
+gstreamer1.0 (1.23.2-1) experimental; urgency=medium
+
+  * d/control: pkg-config is transitional
+  * New upstream version 1.23.2
+  * d/symbols: update for 1.23.2
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Thu, 15 Feb 2024 20:30:21 +0100
+
 gstreamer1.0 (1.23.1-1) experimental; urgency=medium
 
   * New upstream version 1.23.1
