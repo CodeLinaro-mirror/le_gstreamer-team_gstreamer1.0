@@ -1,3 +1,76 @@
+=== release 1.23.2 ===
+
+2024-02-15 15:37:17 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.23.2
+
+2024-02-14 00:35:55 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* po/LINGUAS:
+	* po/fr.po:
+	* po/lv.po:
+	* po/nl.po:
+	* po/sv.po:
+	* po/tr.po:
+	  gstreamer: update translations
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6113>
+
+2024-02-03 11:51:27 +0000  Philippe Normand <philn@igalia.com>
+
+	* gst/gsttaglist.c:
+	* gst/gsttaglist.h:
+	  taglist: Register new tag for container specific track ID
+	  Unique identifier for the audio, video or text track this tag is associated
+	  with. The mappings for several container formats are defined in the [Sourcing
+	  In-band Media Resource Tracks from Media Containers into HTML
+	  specification](https://dev.w3.org/html5/html-sourcing-inband-tracks).
+	  Based on previous patch by Brendan Long.
+	  Fixes #45
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6041>
+
+2024-02-10 00:34:18 +0900  Seungha Yang <seungha@centricular.com>
+
+	* gst/gstpluginloader-win32.c:
+	  pluginloader-win32: Early terminate if plugin loader binary is not installed
+	  External plugin loader support for Windows is introduced
+	  in this dev cycle. Since helper binary was not required (useless)
+	  before this version, people may not ship the binary
+	  with new GStreamer version, then they will observe warning message.
+	  Instead of displaying the warning at plugin loading time,
+	  checks helper bin earlier and disable external plugin loader
+	  if helper binary is not installed.
+	  Fixes: https://gitlab.freedesktop.org/gstreamer/cerbero/-/issues/448
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6083>
+
+2023-12-18 15:39:07 -0500  Xavier Claessens <xavier.claessens@collabora.com>
+
+	* gst/gstmeta.c:
+	* gst/gststructure.c:
+	* gst/gststructure.h:
+	* gst/gstvalue.c:
+	* tests/check/gst/gststructure.c:
+	  structure: Allow STRICT flag only in _serialize_full()
+	  The STRICT flag makes _serialize() nullable which is an API break for
+	  bindings. Forbid it and add _serialize_full() that accepts it and is
+	  properly annotated.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5829>
+
+2021-11-10 13:26:33 +0100  Guillaume Desmottes <guillaume.desmottes@onestream.live>
+
+	* libs/gst/base/gstbasesrc.c:
+	  basesrc: add FIXME 2.0 about automatic_eos
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1334>
+
+2024-02-06 18:09:02 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6066>
+
 === release 1.23.1 ===
 
 2024-02-06 16:37:19 +0000  Tim-Philipp Müller <tim@centricular.com>
