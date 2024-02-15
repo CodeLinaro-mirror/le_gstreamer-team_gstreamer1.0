@@ -2159,6 +2159,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_structure_remove_fields@Base 1.0.0
  gst_structure_remove_fields_valist@Base 1.0.0
  gst_structure_serialize@Base 1.20.0
+ gst_structure_serialize_full@Base 1.23.2
  gst_structure_set@Base 1.0.0
  gst_structure_set_array@Base 1.12.0
  gst_structure_set_list@Base 1.12.0
