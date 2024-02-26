@@ -1,3 +1,118 @@
+=== release 1.23.90 ===
+
+2024-02-23 18:20:11 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.23.90
+
+2024-02-21 16:56:48 +0100  Jochen Henneberg <jh@henneberg-systemdesign.com>
+
+	* libs/gst/helpers/ptp/main.rs:
+	  ptp-helper: Allow sync to master clock on same host
+	  If we drop all messages with the same clock id as ours we will also
+	  drop all messages coming from a PTP clock on our host since both clock
+	  ids are build from the same MAC address.
+	  At least for Linux we do not see our own messages anyway since the
+	  network stack can well distinguish between multicast send from our
+	  socket or from another socket on the same machine. To make sure that
+	  this works for all supported platforms just drop delay requests since
+	  this is the only message that is sent from the GStreamer PTP clock.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6172>
+
+2023-01-28 01:11:45 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* tools/gst-inspect.c:
+	  gst-inspect: print plugin error/warning/info status messages
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3832>
+
+2023-01-27 19:08:37 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* gst/gst_private.h:
+	* gst/gstplugin.c:
+	* gst/gstplugin.h:
+	* gst/gstregistrybinary.h:
+	* gst/gstregistrychunks.c:
+	* tests/check/gst/gstplugin.c:
+	  plugin: add API for plugins to provide status info messages
+	  This can be used to store informational messages, errors or
+	  warnings which can later be shown to the user in gst-inspect-1.0,
+	  which can be useful for plugins that expose elements dynamically
+	  based on external libraries or hardware capabilities.
+	  Status messages can then provide an indication as to why a
+	  plugin doesn't have any elements listed, for example.
+	  Plus unit test to make sure code paths are exercised a little.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3832>
+
+2024-01-29 19:47:11 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* gst/gstobject.c:
+	* gst/gstobject.h:
+	* tests/check/gst/gstbin.c:
+	  gstobject: add CONSTRUCTED flag
+	  This can be used later by base class APIs to know whether they're
+	  called from a subclass instance init function (where the object
+	  isn't properly constructed yet and one should only really poke
+	  at the instance structure but not much else) or after object
+	  construction has been finished.
+	  Fix up GstBin unit test for CONSTRUCTED flag addition.
+	  See https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/2794
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6150>
+
+2024-02-20 08:54:11 +0100  Edward Hervey <edward@centricular.com>
+
+	* gst/gstmeta.c:
+	  meta: Skip gst_meta_info_new in gir
+	  ```
+	  gstmeta.c:500: Warning: Gst: gst_meta_info_new: return value: Invalid
+	  non-constant return of bare structure or union; register as boxed type or (skip)
+	  ```
+	  Skip this for now
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6147>
+
+2024-02-19 12:25:01 +0000  Philippe Normand <philn@igalia.com>
+
+	* gst/gstprotection.c:
+	  protection: Document `original-media-type` caps field
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6142>
+
+2024-02-16 17:06:52 +0100  Guillaume Desmottes <guillaume.desmottes@onestream.live>
+
+	* docs/gst-hotdoc-plugins-scanner.c:
+	  docs: initialize values when GST_PLUGIN_API_FLAG_IGNORE_ENUM_MEMBERS is set
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5491>
+
+2024-02-15 09:21:15 -0500  Xavier Claessens <xavier.claessens@collabora.com>
+
+	* gst/gstbus.c:
+	  bus: do not leak message on invalid handler return value
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6124>
+
+2024-02-15 09:15:50 -0500  Xavier Claessens <xavier.claessens@collabora.com>
+
+	* gst/gstbus.c:
+	  bus: do not leak messages if there is no async handler
+	  This does not typically happen because "enable-async" property is TRUE
+	  by default. The only place where it is set to FALSE is in GstBin where a
+	  sync handler is used and always returns GST_BUS_DROP.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6124>
+
+2024-02-15 09:18:20 -0500  Xavier Claessens <xavier.claessens@collabora.com>
+
+	* gst/gstbus.c:
+	  bus: warn when message queue grows too much
+	  It usually means application is not handling messages causing memory
+	  consumption to grow infinitely.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/3313>
+
+2024-02-15 16:38:53 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6126>
+
 === release 1.23.2 ===
 
 2024-02-15 15:37:17 +0000  Tim-Philipp Müller <tim@centricular.com>
