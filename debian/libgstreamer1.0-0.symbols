@@ -1793,6 +1793,9 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_pipeline_use_clock@Base 1.0.0
  gst_plugin_add_dependency@Base 1.0.0
  gst_plugin_add_dependency_simple@Base 1.0.0
+ gst_plugin_add_status_error@Base 1.23.90
+ gst_plugin_add_status_info@Base 1.23.90
+ gst_plugin_add_status_warning@Base 1.23.90
  gst_plugin_api_flags_get_type@Base 1.18.0
  gst_plugin_dependency_flags_get_type@Base 1.0.0
  gst_plugin_error_get_type@Base 1.0.0
@@ -1818,6 +1821,9 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_plugin_get_package@Base 1.0.0
  gst_plugin_get_release_date_string@Base 1.0.0
  gst_plugin_get_source@Base 1.0.0
+ gst_plugin_get_status_errors@Base 1.23.90
+ gst_plugin_get_status_infos@Base 1.23.90
+ gst_plugin_get_status_warnings@Base 1.23.90
  gst_plugin_get_type@Base 1.0.0
  gst_plugin_get_version@Base 1.0.0
  gst_plugin_is_loaded@Base 1.0.0
