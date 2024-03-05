@@ -4187,7 +4187,7 @@ gboolean
 gst_pad_query (GstPad * pad, GstQuery * query)
 {
   GstObject *parent;
-  gboolean res, serialized;
+  gboolean res = FALSE, serialized;
   GstPadQueryFunction func;
   GstPadProbeType type;
   GstFlowReturn ret;
@@ -4231,7 +4231,6 @@ gst_pad_query (GstPad * pad, GstQuery * query)
 
   GST_DEBUG_OBJECT (pad, "sent query %p (%s), result %d", query,
       GST_QUERY_TYPE_NAME (query), res);
-  GST_TRACER_PAD_QUERY_POST (pad, query, res);
 
   if (res != TRUE)
     goto query_failed;
@@ -4239,6 +4238,8 @@ gst_pad_query (GstPad * pad, GstQuery * query)
   GST_OBJECT_LOCK (pad);
   PROBE_PUSH (pad, type | GST_PAD_PROBE_TYPE_PULL, query, probe_stopped);
   GST_OBJECT_UNLOCK (pad);
+
+  GST_TRACER_PAD_QUERY_POST (pad, query, res);
 
   if (G_UNLIKELY (serialized))
     GST_PAD_STREAM_UNLOCK (pad);
@@ -4261,6 +4262,7 @@ no_parent:
   {
     GST_DEBUG_OBJECT (pad, "had no parent");
     GST_OBJECT_UNLOCK (pad);
+    GST_TRACER_PAD_QUERY_POST (pad, query, res);
     if (G_UNLIKELY (serialized))
       GST_PAD_STREAM_UNLOCK (pad);
     return FALSE;
@@ -4269,6 +4271,7 @@ no_func:
   {
     GST_DEBUG_OBJECT (pad, "had no query function");
     RELEASE_PARENT (parent);
+    GST_TRACER_PAD_QUERY_POST (pad, query, res);
     if (G_UNLIKELY (serialized))
       GST_PAD_STREAM_UNLOCK (pad);
     return FALSE;
@@ -4276,6 +4279,7 @@ no_func:
 query_failed:
   {
     GST_DEBUG_OBJECT (pad, "query failed");
+    GST_TRACER_PAD_QUERY_POST (pad, query, res);
     if (G_UNLIKELY (serialized))
       GST_PAD_STREAM_UNLOCK (pad);
     return FALSE;
@@ -4284,6 +4288,7 @@ probe_stopped:
   {
     GST_DEBUG_OBJECT (pad, "probe stopped: %s", gst_flow_get_name (ret));
     GST_OBJECT_UNLOCK (pad);
+    GST_TRACER_PAD_QUERY_POST (pad, query, res);
     if (G_UNLIKELY (serialized))
       GST_PAD_STREAM_UNLOCK (pad);
 
@@ -5592,8 +5597,9 @@ gst_pad_push_event_unchecked (GstPad * pad, GstEvent * event,
   pad->priv->using++;
   GST_OBJECT_UNLOCK (pad);
 
-  GST_LOG_OBJECT (pad, "sending event %p (%s) to peerpad %" GST_PTR_FORMAT,
-      event, gst_event_type_get_name (event_type), peerpad);
+  GST_LOG_OBJECT (pad,
+      "sending event %" GST_PTR_FORMAT " to peerpad %" GST_PTR_FORMAT,
+      event, peerpad);
 
   ret = gst_pad_send_event_unchecked (peerpad, event, type);
 
