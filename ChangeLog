@@ -1,3 +1,109 @@
+=== release 1.24.1 ===
+
+2024-03-21 21:47:53 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.24.1
+
+2024-03-19 08:57:43 -0400  Thomas Goodwin <thomas.goodwin@laerdal.com>
+
+	* tests/check/tools/gstinspect.c:
+	* tools/gst-inspect.c:
+	  gst-inspect: fix --atleast-version to be implicitly applied to --exists
+	  The --atleast-version implies --exists, but the implementation in
+	  earlier commits had the version check applied any time the --exists was
+	  checked, and the default value of the major and minor versions were set
+	  to the GStreamer major and minor versions.  The resulting behavior would
+	  have gst-inspect return '1' if the plugin's version didn't match
+	  gstreamer's even when --atleast-version was not specified in the command
+	  line args.  The change in this patch removes that behavior and adds
+	  tests to verify that if --exists is specified WITHOUT --atleast-version
+	  the version check will NOT be applied.  If both arguments are specified
+	  and the version does not match the arg-supplied version number, a new
+	  return code of '2' is used to uniquely identify the failure.
+	  Fixes #3246
+	  Signed-off-by: Thomas Goodwin <thomas.goodwin@laerdal.com>
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6414>
+
+2024-03-13 19:12:48 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/net/gstptpclock.c:
+	  ptp: Initialize expected DELAY_REQ seqnum to an invalid value
+	  This allows distinguishing pending syncs that didn't have a DELAY_REQ
+	  sent from ones that did but used a seqnum of 0, like the very first one.
+	  Specifically, if the first one or more syncs are still pending and we
+	  send the first DELAY_REQ for a later pending sync, then the DELAY_RESP
+	  would've been wrongly associated to the very first pending sync because
+	  of the seqnum.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3383
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6365>
+
+2024-03-11 15:10:25 +0100  Antonio Larrosa <alarrosa@suse.com>
+
+	* gst/gstregistry.c:
+	* libs/gst/net/gstptpclock.c:
+	  registry, ptp: Canonicalize the library path returned by dladdr
+	  On systems using UsrMerge (like openSUSE or Fedora), /lib64 is
+	  a symlink to /usr/lib64. So dladdr is returning the path to
+	  the gstreamer library in /lib64 in priv_gst_get_relocated_libgstreamer.
+	  Later gst_plugin_loader_spawn tries to build the path to the
+	  gst-plugin-scanner helper from /lib64 and ends up trying to use
+	  /lib64/../libexec/gstreamer-1.0/gst-plugin-scanner which doesn't exist.
+	  By canonicalizing the path with a call to realpath, gst-plugin-scanner
+	  is found correctly under
+	  /usr/lib64/../libexec/gstreamer-1.0/gst-plugin-scanner
+	  Similar change applied to gstreamer/libs/gst/net/gstptpclock.c
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6343>
+
+2024-02-27 18:59:41 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gsturi.c:
+	  gsturi: Sort by feature name to break a feature rank tie
+	  This matches autoplug in other places such as decodebin, otherwise we
+	  will pick "randomly" based on the order in which plugins are
+	  registered, which is mostly dependent on the order in which readdir()
+	  returns items.
+	  So let's make it predictable.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6342>
+
+2024-03-08 17:05:34 +1100  Jan Schmidt <jan@centricular.com>
+
+	* plugins/elements/gstidentity.c:
+	  identity: Don't refuse seeks unless single-segment=true
+	  identity only needs to configure the internal seek segment if it's
+	  aggregating upstream segments into 1. If it's not, don't break
+	  other seek behaviour by refusing (for example) instant-rate change
+	  seeks.
+	  Fixes: #3363
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6314>
+
+2024-02-25 04:26:21 +1100  Jan Schmidt <jan@centricular.com>
+
+	* gst/gstsegment.c:
+	  gstsegment: Don't use g_return_val_if_fail()
+	  Don't use g_return_val_if_fail() to catch the
+	  open-ended segment or empty segment cases in
+	  gst_segment_to_running_time_full()
+	  g_return_val_if_fail() is for programmer errors,
+	  and can be compiled out with a flag.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6275>
+
+2024-03-05 15:10:45 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/helpers/ptp/meson.build:
+	  ptp: Don't install test executable
+	  And handle it like all our other test executables.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6268>
+
+2024-03-05 13:45:27 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6264>
+
 === release 1.24.0 ===
 
 2024-03-04 23:51:42 +0000  Tim-Philipp Müller <tim@centricular.com>
