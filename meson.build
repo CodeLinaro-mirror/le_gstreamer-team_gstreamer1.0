@@ -1,5 +1,5 @@
 project('gstreamer', 'c',
-  version : '1.24.1',
+  version : '1.24.2',
   meson_version : '>= 1.1',
   default_options : [ 'warning_level=1',
                       'buildtype=debugoptimized' ])
@@ -313,7 +313,7 @@ if cc.compiles('''#include <linux/futex.h>
                int main (int argc, char ** argv) {
                  syscall (__NR_futex_time64, NULL, FUTEX_WAKE, FUTEX_WAIT);
                  return 0;
-               }''', name : 'futex(2) system call')
+               }''', name : 'futex_time64(2) system call')
   cdata.set('HAVE_FUTEX_TIME64', 1)
 endif
 

@@ -1,3 +1,64 @@
+=== release 1.24.2 ===
+
+2024-04-09 21:48:55 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.24.2
+
+2024-04-02 11:54:52 -0400  Xavier Claessens <xavier.claessens@collabora.com>
+
+	* plugins/elements/gstclocksync.c:
+	  clocksync: Proxy allocation queries
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6525>
+
+2024-03-27 16:55:10 +0000  L. E. Segovia <amy@centricular.com>
+
+	* gst/gstsystemclock.c:
+	* meson.build:
+	  gst: clock: Block futex_time64 usage on Android API level < 30
+	  This syscall is seccomp blocked on all lower API levels:
+	  https://github.com/aosp-mirror/platform_bionic/commit/ee7bc3002dc3127faac110167d28912eb0e86a20
+	  While at it, also fix all direct tests on __NR_futex_time64 and
+	  __NR_futex so that they refer to the results available in
+	  config.h.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6518>
+
+2024-03-26 19:40:04 +0530  Taruntej Kanakamalla <taruntej@asymptotic.io>
+
+	* libs/gst/net/gstptpclock.c:
+	  net/gstptpclock: fix double free of domain data during deinit
+	  The attempt to free the domain data is happeing twice during the ptp deinit.
+	  Once while iterating through the list domain_data and second while iterating
+	  through the list domain_clocks, so this is crashing the application
+	  trying to gst_ptp_deinit
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6457>
+
+2024-03-27 17:05:09 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstbasesrc.c:
+	  basesrc: Clear submitted buffer lists consistently with buffers
+	  And handle the case of a NULL buffer being returned cleanly, which is
+	  valid as long as a buffer list is returned instead. Previously this
+	  would cause an assertion because of calling gst_buffer_unref() with
+	  NULL.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6463>
+
+2024-03-26 14:28:28 +0100  Arnaud Vrac <avrac@freebox.fr>
+
+	* plugins/elements/gstinputselector.c:
+	  inputselector: fix possible clock leak on shutdown
+	  Avoid leaking a GstClock object on shutdown, bail out before taking the ref when
+	  not playing.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6455>
+
+2024-03-22 01:38:06 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development
+
 === release 1.24.1 ===
 
 2024-03-21 21:47:53 +0100  Tim-Philipp Müller <tim@centricular.com>
