@@ -1,3 +1,9 @@
+gstreamer1.0 (1.24.2-1) unstable; urgency=medium
+
+  * New upstream version 1.24.2
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Wed, 10 Apr 2024 08:40:18 +0200
+
 gstreamer1.0 (1.24.1-1) unstable; urgency=medium
 
   * d/postinst.in: add cap_sys_nice on gst-ptp-helper
