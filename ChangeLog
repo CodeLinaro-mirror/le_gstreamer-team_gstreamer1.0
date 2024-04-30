@@ -1,3 +1,26 @@
+=== release 1.24.3 ===
+
+2024-04-30 00:15:23 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.24.3
+
+2024-04-10 16:29:15 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/helpers/ptp/parse.rs:
+	  ptp: Silence warning about some unused trait methods
+	  These are not used yet but will likely be useful in the future.
+	  Rust 1.79 (nightly) is warning about them being unused.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6606>
+
+2024-04-10 00:04:02 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.24.2
+
 === release 1.24.2 ===
 
 2024-04-09 21:48:55 +0100  Tim-Philipp Müller <tim@centricular.com>
