@@ -44,6 +44,10 @@ ifeq (,$(filter $(DEB_HOST_ARCH),i386 amd64 armel armhf arm64 powerpc ppc64 ppc6
 conf_flags += -Dlibunwind=disabled -Dlibdw=disabled
 endif
 
+ifneq (,$(filter $(DEB_HOST_ARCH),alpha hppa m68k sh4))
+conf_flags += -Dptp-helper=disabled
+endif
+
 infiles := \
 	libgstreamer1.0-0.postinst
 
