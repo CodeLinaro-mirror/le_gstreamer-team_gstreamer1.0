@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer-1.24.3\n"
+"Project-Id-Version: gstreamer-1.24.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-30 00:15+0100\n"
+"POT-Creation-Date: 2024-05-29 13:45+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1070,105 +1070,105 @@ msgstr ""
 msgid "link has no sink [source=%s@%p]"
 msgstr ""
 
-#: gst/parse/grammar.y.in:498
+#: gst/parse/grammar.y.in:497
 msgid "No such property."
 msgstr ""
 
-#: gst/parse/grammar.y.in:498 gst/parse/grammar.y.in:684
-#: gst/parse/grammar.y.in:718 gst/parse/grammar.y.in:832
+#: gst/parse/grammar.y.in:497 gst/parse/grammar.y.in:683
+#: gst/parse/grammar.y.in:717 gst/parse/grammar.y.in:831
 #, c-format
 msgid "no property \"%s\" in element \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:593
+#: gst/parse/grammar.y.in:592
 #, c-format
 msgid "Element \"%s\" is not a GstPreset"
 msgstr ""
 
-#: gst/parse/grammar.y.in:599
+#: gst/parse/grammar.y.in:598
 #, c-format
 msgid "could not set preset \"%s\" in element \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:630
+#: gst/parse/grammar.y.in:629
 #, c-format
 msgid "no element \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:673 gst/parse/grammar.y.in:855
+#: gst/parse/grammar.y.in:672 gst/parse/grammar.y.in:854
 #, c-format
 msgid "could not set property \"%s\" in element \"%s\" to \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:727
+#: gst/parse/grammar.y.in:726
 #, c-format
 msgid "could not set property \"%s\" in child of element \"%s\" to \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:916
+#: gst/parse/grammar.y.in:915
 msgid "Delayed linking failed."
 msgstr ""
 
-#: gst/parse/grammar.y.in:1129 gst/parse/grammar.y.in:1134
+#: gst/parse/grammar.y.in:1128 gst/parse/grammar.y.in:1133
 #, c-format
 msgid "could not link %s to %s, %s can't handle caps %s"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1139
+#: gst/parse/grammar.y.in:1138
 #, c-format
 msgid "could not link %s to %s, neither element can handle caps %s"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1143
+#: gst/parse/grammar.y.in:1142
 #, c-format
 msgid "could not link %s to %s with caps %s"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1149
+#: gst/parse/grammar.y.in:1148
 #, c-format
 msgid "could not link %s to %s"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1303
+#: gst/parse/grammar.y.in:1302
 #, c-format
 msgid "unexpected reference \"%s\" - ignoring"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1309
+#: gst/parse/grammar.y.in:1308
 #, c-format
 msgid "unexpected pad-reference \"%s\" - ignoring"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1343 gst/parse/grammar.y.in:1354
+#: gst/parse/grammar.y.in:1342 gst/parse/grammar.y.in:1353
 #, c-format
 msgid "could not parse caps \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:1382
+#: gst/parse/grammar.y.in:1381
 #, c-format
 msgid "no sink element for URI \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:1401
+#: gst/parse/grammar.y.in:1400
 #, c-format
 msgid "no source element for URI \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:1491
+#: gst/parse/grammar.y.in:1490
 msgid "syntax error"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1514
+#: gst/parse/grammar.y.in:1513
 #, c-format
 msgid "specified empty bin \"%s\", not allowed"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1524
+#: gst/parse/grammar.y.in:1523
 #, c-format
 msgid "no bin \"%s\", unpacking elements"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1555
+#: gst/parse/grammar.y.in:1554
 msgid "empty pipeline not allowed"
 msgstr ""
 
@@ -1224,7 +1224,7 @@ msgstr ""
 msgid "Could not create temp file \"%s\"."
 msgstr ""
 
-#: plugins/elements/gstdownloadbuffer.c:949 plugins/elements/gstfilesrc.c:558
+#: plugins/elements/gstdownloadbuffer.c:949 plugins/elements/gstfilesrc.c:590
 #: plugins/elements/gstqueue2.c:1856
 #, c-format
 msgid "Could not open file \"%s\" for reading."
@@ -1259,21 +1259,21 @@ msgstr ""
 msgid "Error while writing to file \"%s\"."
 msgstr ""
 
-#: plugins/elements/gstfilesrc.c:546
+#: plugins/elements/gstfilesrc.c:578
 msgid "No file name specified for reading."
 msgstr ""
 
-#: plugins/elements/gstfilesrc.c:567
+#: plugins/elements/gstfilesrc.c:599
 #, c-format
 msgid "Could not get info on \"%s\"."
 msgstr ""
 
-#: plugins/elements/gstfilesrc.c:573
+#: plugins/elements/gstfilesrc.c:605
 #, c-format
 msgid "\"%s\" is a directory."
 msgstr ""
 
-#: plugins/elements/gstfilesrc.c:580
+#: plugins/elements/gstfilesrc.c:612
 #, c-format
 msgid "File \"%s\" is a socket."
 msgstr ""
