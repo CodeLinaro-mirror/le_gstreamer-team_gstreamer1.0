@@ -1,3 +1,122 @@
+=== release 1.24.4 ===
+
+2024-05-29 13:44:50 +0300  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.24.4
+
+2024-05-28 13:17:39 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/parse/grammar.y.in:
+	  gstreamer: parse: Don't assume that child proxy child objects are GstObjects
+	  The name is already passed via the signal parameters so it doesn't have
+	  to be retrieved again via GstObject API, which would crash on other
+	  GObjects. Child proxy child objects can be any kind of GObject and the
+	  code here otherwise handles this correctly already.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6951>
+
+2024-05-28 09:06:57 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/helpers/ptp/ffi.rs:
+	  gstreamer: ptp-helper: Use u64 instead of c_ulong for ifa_flags on Solaris/Illumos
+	  See https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3553#note_2429400
+	  Patch by Marcel Telka <marcel@telka.sk>.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6950>
+
+2024-05-26 12:33:02 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/helpers/ptp/ffi.rs:
+	  gstreamer: ptp-helper: Use `if_nametoindex` and `setsockopt` on Solaris / Illumos too
+	  Patch by Marcel Telka <marcel@telka.sk>.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3552
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6947>
+
+2024-05-26 12:31:33 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/helpers/ptp/net.rs:
+	  gstreamer: ptp-helper: Don't import `Context` trait multiple times unnecessarily
+	  This only affected the Solaris / Illumos code path.
+	  Patch by Marcel Telka <marcel@telka.sk>.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3551
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6947>
+
+2024-05-26 12:27:54 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/helpers/ptp/ffi.rs:
+	* libs/gst/helpers/ptp/net.rs:
+	  gstreamer: ptp-helper: Use `c_ulong` for `ifa_flags` on Solaris/Illumos
+	  Based on a patch by Marcel Telka <marcel@telka.sk>.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3553
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6947>
+
+2024-05-26 12:24:33 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/meson.build:
+	* libs/gst/net/meson.build:
+	* meson.build:
+	* tests/check/meson.build:
+	* tests/misc/meson.build:
+	  gstreamer: Solaris/Illumos require linking to libnsl / libsocket for various socket APIs
+	  Patch by Tim Mooney <Tim.Mooney@ndsu.edu> from OpenIndiana/oi-userland
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6947>
+
+2024-05-17 11:03:51 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstclock.h:
+	  clock: Fix 32 bit assertions in GST_TIME_TO_TIMEVAL and GST_TIME_TO_TIMESPEC
+	  On various 32 bit systems, time_t is actually 64 bits while long is
+	  still only 32 bits. The macro would wrongly trigger its assertion in
+	  this case if a value with more than 68 years worth of seconds is
+	  converted.
+	  Examples are various newer 32 bit platforms and old ones that are
+	  compiled with -D_TIME_BITS=64.
+	  Also statically assert that time_t is either 32 or 64 bits. Other values
+	  might need adjustments in the macro.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6919>
+
+2024-05-21 21:50:47 +0300  Jordan Petridis <jordan@centricular.com>
+
+	* tests/check/gst/gststructure.c:
+	  tests/check: Avoid using "bool" for the variable name
+	  Glib 2.82 will be aliasing [1] TRUE and FALSE to the C99
+	  definitions, which means it will be including stdbool.h
+	  As such, having variables named "bool" causes issues
+	  since it conflicts with the symbol defined in stdbool.h
+	  [1] https://gitlab.gnome.org/GNOME/glib/-/merge_requests/4001
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6896>
+
+2024-05-17 23:03:19 +0900  Seungha Yang <seungha@centricular.com>
+
+	* meson.build:
+	* plugins/elements/gstfilesrc.c:
+	  filesrc: Don't abort on _get_osfhandle()
+	  _get_osfhandle() expects valid fd and CRT will abort program
+	  if given paramerter is invalid. The fd can be invalidated
+	  in various way, file was deleted by other process after
+	  we open a file. To avoid it, our own exception
+	  handler must be installed so that _get_osfhandle() can return
+	  INVALID_HANDLE_VALUE if fd is invalid.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6879>
+
+2024-05-14 23:30:56 +0200  Alexander Slobodeniuk <aslobodeniuk@fluendo.com>
+
+	* gst/gstsystemclock.c:
+	  systemclock: fix usage of __STDC_NO_ATOMICS__
+	  __STDC_NO_ATOMICS doesn't seem to exist. In fact the only compiler
+	  I've found that sets any of those is msvc, but it sets
+	  __STDC_NO_ATOMICS__, not __STDC_NO_ATOMICS.
+	  __STDC_NO_ATOMICS__ is the one documented by C11 standard.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6856>
+
+2024-04-30 00:36:59 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.24.3
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6772>
+
 === release 1.24.3 ===
 
 2024-04-30 00:15:23 +0100  Tim-Philipp Müller <tim@centricular.com>
