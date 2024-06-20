@@ -1,3 +1,46 @@
+=== release 1.24.5 ===
+
+2024-06-20 12:54:15 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.24.5
+
+2024-06-05 10:38:57 +0200  Edward Hervey <edward@centricular.com>
+
+	* gst/gstpromise.c:
+	* tests/check/gst/gstpromise.c:
+	  gstpromise: Don't use g_return_* for internal checks
+	  If assertion/checks are disabled bad things will happen and the function won't
+	  return as expected
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6998>
+
+2024-05-30 12:08:57 +0200  Martin Nordholts <martn@axis.com>
+
+	* gst/gstinfo.c:
+	  gst_debug: Add missing gst_debug_log_id_literal() dummy with gst_debug=false
+	  E.g. gst_debug_log_literal() already has a dummy variant.
+	  gst_debug_log_id_literal() is simply missing, which can
+	  cause link errors for project using gstreamer with
+	  gst_debug=false.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6979>
+
+2024-05-30 01:07:30 +0200  Samuel Thibault <samuel.thibault@ens-lyon.org>
+
+	* libs/gst/helpers/ptp/clock.rs:
+	* libs/gst/helpers/ptp/ffi.rs:
+	* libs/gst/helpers/ptp/meson.build:
+	* libs/gst/helpers/ptp/net.rs:
+	  ptp-helper: Add GNU/Hurd support
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6974>
+
+2024-05-29 13:51:27 +0300  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.24.4
+
 === release 1.24.4 ===
 
 2024-05-29 13:44:50 +0300  Tim-Philipp Müller <tim@centricular.com>
