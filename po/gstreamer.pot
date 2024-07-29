@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer-1.24.5\n"
+"Project-Id-Version: gstreamer-1.24.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-20 12:54+0100\n"
+"POT-Creation-Date: 2024-07-29 16:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1193,7 +1193,7 @@ msgid "Internal clock error."
 msgstr ""
 
 #: libs/gst/base/gstbasesrc.c:2776 plugins/elements/gstdownloadbuffer.c:850
-#: plugins/elements/gstdownloadbuffer.c:1275
+#: plugins/elements/gstdownloadbuffer.c:1277
 msgid "Failed to map buffer."
 msgstr ""
 
@@ -1215,22 +1215,22 @@ msgstr ""
 msgid "Filter caps change behaviour"
 msgstr ""
 
-#: plugins/elements/gstdownloadbuffer.c:935 plugins/elements/gstqueue2.c:1842
+#: plugins/elements/gstdownloadbuffer.c:935 plugins/elements/gstqueue2.c:1847
 msgid "No Temp directory specified."
 msgstr ""
 
-#: plugins/elements/gstdownloadbuffer.c:941 plugins/elements/gstqueue2.c:1848
+#: plugins/elements/gstdownloadbuffer.c:941 plugins/elements/gstqueue2.c:1853
 #, c-format
 msgid "Could not create temp file \"%s\"."
 msgstr ""
 
 #: plugins/elements/gstdownloadbuffer.c:949 plugins/elements/gstfilesrc.c:590
-#: plugins/elements/gstqueue2.c:1856
+#: plugins/elements/gstqueue2.c:1861
 #, c-format
 msgid "Could not open file \"%s\" for reading."
 msgstr ""
 
-#: plugins/elements/gstdownloadbuffer.c:1284 plugins/elements/gstqueue2.c:2270
+#: plugins/elements/gstdownloadbuffer.c:1286 plugins/elements/gstqueue2.c:2275
 msgid "Error while writing to download file."
 msgstr ""
 
@@ -1360,7 +1360,7 @@ msgstr ""
 msgid "Blacklisted files:"
 msgstr ""
 
-#: tools/gst-inspect.c:1288 tools/gst-inspect.c:1425
+#: tools/gst-inspect.c:1288 tools/gst-inspect.c:1427
 #, c-format
 msgid "%sTotal count%s: %s"
 msgstr ""
@@ -1372,36 +1372,36 @@ msgid_plural "%d blacklisted files"
 msgstr[0] ""
 msgstr[1] ""
 
-#: tools/gst-inspect.c:1427
+#: tools/gst-inspect.c:1429
 #, c-format
 msgid "%d plugin"
 msgid_plural "%d plugins"
 msgstr[0] ""
 msgstr[1] ""
 
-#: tools/gst-inspect.c:1430
+#: tools/gst-inspect.c:1432
 #, c-format
 msgid "%d blacklist entry"
 msgid_plural "%d blacklist entries"
 msgstr[0] ""
 msgstr[1] ""
 
-#: tools/gst-inspect.c:1435
+#: tools/gst-inspect.c:1437
 #, c-format
 msgid "%d feature"
 msgid_plural "%d features"
 msgstr[0] ""
 msgstr[1] ""
 
-#: tools/gst-inspect.c:2186
+#: tools/gst-inspect.c:2188
 msgid "Print all elements"
 msgstr ""
 
-#: tools/gst-inspect.c:2188
+#: tools/gst-inspect.c:2190
 msgid "Print list of blacklisted files"
 msgstr ""
 
-#: tools/gst-inspect.c:2190
+#: tools/gst-inspect.c:2192
 msgid ""
 "Print a machine-parsable list of features the specified plugin or all "
 "plugins provide.\n"
@@ -1409,46 +1409,46 @@ msgid ""
 "automatic plugin installation mechanisms"
 msgstr ""
 
-#: tools/gst-inspect.c:2195
+#: tools/gst-inspect.c:2197
 msgid "List the plugin contents"
 msgstr ""
 
-#: tools/gst-inspect.c:2197
+#: tools/gst-inspect.c:2199
 msgid ""
 "A slashes ('/') separated list of types of elements (also known as klass) to "
 "list. (unordered)"
 msgstr ""
 
-#: tools/gst-inspect.c:2200
+#: tools/gst-inspect.c:2202
 msgid "Check if the specified element or plugin exists"
 msgstr ""
 
-#: tools/gst-inspect.c:2203
+#: tools/gst-inspect.c:2205
 msgid ""
 "When checking if an element or plugin exists, also check that its version is "
 "at least the version specified"
 msgstr ""
 
-#: tools/gst-inspect.c:2207
+#: tools/gst-inspect.c:2209
 msgid "Print supported URI schemes, with the elements that implement them"
 msgstr ""
 
-#: tools/gst-inspect.c:2212
+#: tools/gst-inspect.c:2214
 msgid ""
 "Disable colors in output. You can also achieve the same by setting "
 "'GST_INSPECT_NO_COLORS' environment variable to any value."
 msgstr ""
 
-#: tools/gst-inspect.c:2220
+#: tools/gst-inspect.c:2222
 msgid "Color output, even when not sending to a tty."
 msgstr ""
 
-#: tools/gst-inspect.c:2394
+#: tools/gst-inspect.c:2396
 #, c-format
 msgid "Could not load plugin file: %s\n"
 msgstr ""
 
-#: tools/gst-inspect.c:2400
+#: tools/gst-inspect.c:2402
 #, c-format
 msgid "No such element or plugin '%s'\n"
 msgstr ""

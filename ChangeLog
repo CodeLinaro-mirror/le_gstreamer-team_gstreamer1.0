@@ -1,3 +1,98 @@
+=== release 1.24.6 ===
+
+2024-07-29 16:41:37 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.24.6
+
+2024-07-03 09:05:06 +0200  Guillaume Desmottes <guillaume.desmottes@onestream.live>
+
+	* plugins/elements/gstdownloadbuffer.c:
+	  downloadbuffer: send EOS in push mode
+	  gst_download_buffer_read_buffer() returns FLOW_EOS but it was not
+	  handled in the 'out_flushing' goto block which uses srcresult,
+	  so EOS was not sent downstream.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7140>
+
+2024-07-03 09:16:47 +0200  Guillaume Desmottes <guillaume.desmottes@onestream.live>
+
+	* plugins/elements/gstdownloadbuffer.c:
+	  downloadbuffer: initialize upstream_size when activated in push mode
+	  Push mode flow relies on upstream_size but it was not initialized when
+	  activated as it is when activated in pull mode.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7140>
+
+2024-07-03 09:13:27 +0200  Guillaume Desmottes <guillaume.desmottes@onestream.live>
+
+	* plugins/elements/gstdownloadbuffer.c:
+	  downloadbuffer: init upstream_size to -1
+	  Code in check_upstream_size() is checking for -1 to check if
+	  upstream_size has been set or not.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7140>
+
+2024-07-03 09:03:59 +0200  Guillaume Desmottes <guillaume.desmottes@onestream.live>
+
+	* plugins/elements/gstdownloadbuffer.c:
+	  downloadbuffer: properly log when receiving events
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7140>
+
+2024-07-02 15:56:12 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* gst/gstinfo.c:
+	  info: remove unused valgrind header include
+	  Follow-up to commit a2cbf75523cdf8a4df1baa7007d86ef455972245.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7129>
+
+2024-07-01 09:24:28 +0200  Edward Hervey <edward@centricular.com>
+
+	* tests/validate/gst-tester.c:
+	  gstreamer/gst-tester: Don't leak thread
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7123>
+
+2024-06-29 17:12:12 +0200  Edward Hervey <edward@centricular.com>
+
+	* tools/gst-inspect.c:
+	  gst-inspect: Fix leak of plugin/feature
+	  Reordering changes the initial list head
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7123>
+
+2024-06-20 15:13:27 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* plugins/elements/gstmultiqueue.c:
+	* plugins/elements/gstqueue.c:
+	* plugins/elements/gstqueue2.c:
+	  queue, queue2, multiqueue: Timestamps of gap events must be valid
+	  This is checked in gst_event_new_gap() so doesn't have to be checked again here,
+	  but simply can be asserted with a g_return_if_fail().
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7075>
+
+2024-06-20 15:10:07 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* plugins/elements/gstmultiqueue.c:
+	* plugins/elements/gstqueue.c:
+	* plugins/elements/gstqueue2.c:
+	  queue: queue2: multiqueue: Don't work with segment.position if buffers have no timestamps
+	  If the first buffers have no timestamp then the sink position would be
+	  initialized to 0. The source pad might output this buffer, which would then
+	  initialize the source position to 0 too.
+	  Afterwards two buffers with a valid but huge timestamp might arrive before any
+	  of them are output on the source pad. The first one would set the sink position
+	  to a huge value, the second one would notice that the difference between the
+	  huge value and 0 is certainly larger than max-size-time and consider the queue
+	  as full.
+	  Instead, simply don't update the times from buffers without timestamps and
+	  assume whatever was set before is still valid, i.e. the buffer has the same
+	  timestamp as the previous one.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7075>
+
+2024-06-20 13:02:19 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.24.5
+
 === release 1.24.5 ===
 
 2024-06-20 12:54:15 +0100  Tim-Philipp Müller <tim@centricular.com>
