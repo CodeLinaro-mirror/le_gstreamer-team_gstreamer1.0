@@ -1,3 +1,34 @@
+=== release 1.24.7 ===
+
+2024-08-21 12:25:15 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.24.7
+
+2024-05-28 16:27:39 +0300  Jan Schmidt <jan@centricular.com>
+
+	* gst/gstutils.c:
+	  core: Log pad name, not just the pointer
+	  Change a debug statement that was just logging a pad pointer where
+	  it could log the pad name more usefully.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7336>
+
+2024-08-05 17:34:15 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstbin.c:
+	  bin: Don't keep the object lock while setting a GstContext when handling NEED_CONTEXT
+	  This can potentially deadlock.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3707
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7310>
+
+2024-07-29 16:48:02 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.24.6
+
 === release 1.24.6 ===
 
 2024-07-29 16:41:37 +0100  Tim-Philipp Müller <tim@centricular.com>
