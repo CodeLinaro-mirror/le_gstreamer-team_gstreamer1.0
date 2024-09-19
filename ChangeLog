@@ -1,3 +1,63 @@
+=== release 1.24.8 ===
+
+2024-09-19 12:01:21 +0200  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.24.8
+
+2024-09-14 04:01:42 +0200  Peter Kjellerstedt <pkj@axis.com>
+
+	* gst/gstmeta.h:
+	  meta: Add missing include of gststructure.h
+	  This avoids the following error when only including gstmeta.h:
+	  /usr/include/gstreamer-1.0/gst/gstmeta.h:146:3: error: unknown type
+	  name 'GstStructure'
+	  146 |   GstStructure *structure;
+	  |   ^~~~~~~~~~~~
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7525>
+
+2024-09-13 10:58:27 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Immediately return NONE from simple_get_next_time() on non-TIME segments
+	  Otherwise this gives critical warnings.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7514>
+
+2024-09-10 16:03:05 -0400  Arun Raghavan <arun@asymptotic.io>
+
+	* gst/gstpad.c:
+	  pad: Check data NULL-ness when probes are stopped
+	  We were correctly handling this for buffers, but not events and queries.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7506>
+
+2024-08-26 19:13:11 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstutils.c:
+	  clock: Fix calculation for number of bits needed to store a 64 bit value
+	  It was using log2(n) but what actually is needed is log2(n) + 1. Also add a
+	  fast-path that uses __builtin_clzll() on gcc/clang.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7431>
+
+2024-08-23 15:56:41 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstutils.c:
+	* tests/check/gst/gstutils.c:
+	  clock: Fix unchecked overflows in linear regression code
+	  The initial calculation for the precision shift was wrong and would allow for
+	  overflows during the calculations which were not detected and lead to wrong
+	  results.
+	  Also add a test for a case where overflows where previously not detected and
+	  caused a completely wrong result.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7431>
+
+2024-08-21 12:33:28 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.24.7
+
 === release 1.24.7 ===
 
 2024-08-21 12:25:15 +0100  Tim-Philipp Müller <tim@centricular.com>
