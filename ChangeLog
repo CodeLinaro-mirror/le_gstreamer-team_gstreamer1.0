@@ -1,3 +1,85 @@
+=== release 1.24.9 ===
+
+2024-10-30 20:33:30 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.24.9
+
+2024-10-28 10:41:08 -0300  Thibault Saunier <tsaunier@igalia.com>
+
+	* plugins/elements/gstmultiqueue.c:
+	  multiqueue: Do not unref the query we get in pad->query
+	  We do not own any ref to queries when running them.
+	  If we end up processing the query from the streaming thread, it means that it was
+	  a serialized query, and the query is being waited to be processed on the sinkpad
+	  streaming thread, thread which owns the reference.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7796>
+
+2024-10-25 19:12:17 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: fix start time selection first with force-live
+	  When force-live is true, we don't want to wait for a first buffer
+	  to select a start time.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1783
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7778>
+
+2024-10-23 16:14:45 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: fix live query when force-live is TRUE
+	  When force-live is TRUE, aggregator will correctly change its state with
+	  NO_PREROLL, but unless something upstream is live did not previously set
+	  live to TRUE on the latency query.
+	  Fix this by or'ing force_live into the result.
+	  Also improve debug
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7723>
+
+2024-10-01 12:26:40 +0000  Corentin Damman <c.damman@intopix.com>
+
+	* gst/gstmacos.m:
+	  macos: Fix race conditions
+	  This commit fixes two issues:
+	  - The event must be posted *after* calling stop, otherwise a race condition can occur and the app never stops
+	  - isFinishedLaunching and applicationDidFinishLaunching are not always synchronized, causing sometimes
+	  a deadlock on the g_cond_wait never catching the g_cond_signal
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7608>
+
+2024-09-16 08:48:47 -0400  Arun Raghavan <arun@asymptotic.io>
+
+	* gst/parse/grammar.y.in:
+	  gstreamer: parse: Use child proxy for deferred property setting
+	  We use that mechanism for the non-deferred path, and this makes sure we are
+	  consistent for deferred set too.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7561>
+
+2024-09-15 06:39:40 -0400  Arun Raghavan <arun@asymptotic.io>
+
+	* gst/parse/grammar.y.in:
+	  gstreamer: parse: Minor whitespace fixups
+	  Mostly replacing some tabs with spaces.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7561>
+
+2024-09-13 13:55:27 -0400  Arun Raghavan <arun@asymptotic.io>
+
+	* gst/parse/grammar.y.in:
+	  gstreamer: parse: Make sure children are bins before recursing in
+	  A deferred set of the form parentbin::childelement::pad works in the
+	  non-deferred property setting path, but the deferred path assumes that all
+	  non-root non-leaf children specify bins. We already have a bin check on the
+	  root, so let's add one for other non-leaves to avoid a critical.
+	  Fixes: https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3806
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7561>
+
+2024-09-19 12:12:53 +0200  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.24.8
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7549>
+
 === release 1.24.8 ===
 
 2024-09-19 12:01:21 +0200  Tim-Philipp Müller <tim@centricular.com>
