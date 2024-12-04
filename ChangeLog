@@ -1,3 +1,182 @@
+=== release 1.24.10 ===
+
+2024-12-03 23:29:07 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.24.10
+
+2024-08-30 13:21:30 +0200  Stéphane Cerveau <scerveau@igalia.com>
+
+	* gst/gstutils.c:
+	* tests/check/gst/gstutils.c:
+	  utils: improve gst_util_ceil_log2
+	  According to the following comparison of algorithms, the value
+	  for 0 and 1 was giving an incorrect result.
+	  https://gist.github.com/ceyusa/6061b33ac109a68bcd222f6919968c9a
+	  More information here:
+	  https://github.com/rofrol/codeforces/blob/master/ceil_log2.c
+	  Use a different algorithm which offers better result and keep the
+	  performance.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7905>
+
+2024-09-26 22:07:22 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstallocator.c:
+	  allocator: Avoid integer overflow when allocating sysmem
+	  Thanks to Antonio Morales for finding and reporting the issue.
+	  Fixes GHSL-2024-166
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3851
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8044>
+
+2024-11-28 16:06:17 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstsystemclock.c:
+	  systemclock: Don't keep the clock entry locked while getting the time from the clock
+	  gst_clock_get_time() will take the clock mutex, which would then result in a lock
+	  order violation and possible deadlocks. If both mutexes are to be locked, the
+	  clock must always be locked first.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8019>
+
+2024-11-28 15:49:24 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstsystemclock.c:
+	  systemclock: Get rid of conditional unlocking of the clock entries
+	  At every point it is known whether the entry needs to be unlocked or not.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8019>
+
+2024-11-28 15:43:08 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstsystemclock.c:
+	  systemclock: Remove confusing conditional unlock
+	  At this point the entry is always locked and needs to be unlocked.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8019>
+
+2024-11-28 15:25:47 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstsystemclock.c:
+	  systemclock: Use a flag while waiting for the async thread to start
+	  Otherwise there can be spurious wakeups.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8019>
+
+2024-10-09 13:35:33 -0400  Alicia Boya García <aboya@igalia.com>
+
+	* gst/gstpad.c:
+	  pad: Never push sticky events in response to a FLUSH_STOP
+	  FLUSH_STOP is meant to clear the flushing state of pads and elements
+	  downstream, not to process data. Hence, a FLUSH_STOP should not
+	  propagate sticky events. This is also consistent with how flushes are a
+	  special case for probes.
+	  Currently this is almost always the case, since a FLUSH_STOP is
+	  __usually__ preceded by a FLUSH_START, and events (sticky or not) are
+	  discarded while a pad has the FLUSHING flag active (set by FLUSH_START).
+	  However, it is currently assumed that a FLUSH_STOP not preceded by a
+	  FLUSH_START is correct behavior, and this will occur while autoplugging
+	  pipelines are constructed. This leaves us with an unhandled edge case!
+	  This patch explicitly disables sending sticky events when pushing a
+	  FLUSH_STOP, instead of relying on the flushing flag of the pad, which
+	  will break in the edge case of a FLUSH_STOP not preceded by a
+	  FLUSH_START.
+	  If sticky events are propagated in response to a FLUSH_STOP, the
+	  flushing thread can end up deadlocked in blocking code of a downstream
+	  pad, such as a blocking probe. Instead, those events should be
+	  propagated from the streaming thread of the pad when handling a
+	  non-flushing synchronized event or buffer.
+	  This fixes a deadlock found in WebKit with playbin3 when seeks occur
+	  before preroll, where the seeking thread ended up stuck in the blocking
+	  probe of playsink:
+	  https://github.com/WebPlatformForEmbedded/WPEWebKit/issues/1367
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8003>
+
+2024-11-27 11:19:02 +0100  wbartel <wilhelm.bartel@streamonkey.de>
+
+	* gst/gstdebugutils.c:
+	  gstreamer: prefix debug dot node names to prevent splitting
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7998>
+
+2024-11-25 16:28:51 +0100  wbartel <wilhelm.bartel@streamonkey.de>
+
+	* plugins/tracers/gstleaks.c:
+	  tracers: unlock leaks tracer if already tracking
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7960>
+
+2024-11-18 08:47:12 +0100  Robert Rosengren <robertr@axis.com>
+
+	* gst/gstdeviceprovider.c:
+	  gstdeviceprovider: fix leaking hidden providers
+	  Free list of hidden providers upon stop and dispose.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7915>
+
+2024-11-07 15:44:25 +0530  Taruntej Kanakamalla <taruntej@asymptotic.io>
+
+	* libs/gst/helpers/ptp/ffi.rs:
+	* libs/gst/helpers/ptp/net.rs:
+	  ptp: use ip_mreq instead of ip_mreqn for macOS
+	  To join a multicast the macOS still uses the interface address
+	  from the ip_mreq instead of the ip_mreqn unlike other Linux systems.
+	  So add a new conditional block for macOS to use ip_mreq for IP_ADD_MEMBERSHIP
+	  and ip_mreqn for IP_MULTICAST_IF
+	  This is similar to the fix in the glib for multicast join/leave
+	  operation on macOS
+	  https://gitlab.gnome.org/GNOME/glib/-/merge_requests/4333
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7864>
+
+2024-11-03 17:36:22 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* po/af.po:
+	* po/ast.po:
+	* po/az.po:
+	* po/be.po:
+	* po/bg.po:
+	* po/ca.po:
+	* po/cs.po:
+	* po/da.po:
+	* po/de.po:
+	* po/el.po:
+	* po/en_GB.po:
+	* po/eo.po:
+	* po/es.po:
+	* po/eu.po:
+	* po/fi.po:
+	* po/fr.po:
+	* po/fur.po:
+	* po/gl.po:
+	* po/hr.po:
+	* po/hu.po:
+	* po/id.po:
+	* po/it.po:
+	* po/ja.po:
+	* po/ka.po:
+	* po/ko.po:
+	* po/lt.po:
+	* po/lv.po:
+	* po/nb.po:
+	* po/nl.po:
+	* po/pl.po:
+	* po/pt_BR.po:
+	* po/ro.po:
+	* po/ru.po:
+	* po/rw.po:
+	* po/sk.po:
+	* po/sl.po:
+	* po/sq.po:
+	* po/sr.po:
+	* po/sv.po:
+	* po/tr.po:
+	* po/uk.po:
+	* po/vi.po:
+	* po/zh_CN.po:
+	* po/zh_TW.po:
+	  gstreamer: update translations
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/7820>
+
+2024-10-30 20:40:12 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.24.9
+
 === release 1.24.9 ===
 
 2024-10-30 20:33:30 +0000  Tim-Philipp Müller <tim@centricular.com>
