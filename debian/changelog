@@ -1,3 +1,17 @@
+gstreamer1.0 (1.18.4-2.1+deb11u1) bullseye-security; urgency=medium
+
+  * Non-maintainer upload by LTS team
+  * Fix CVE-2024-47606:  An integer underflow has been detected
+    in the function qtdemux_parse_theora_extension within qtdemux.c.
+    The vulnerability occurs due to an underflow of the
+    gint size variable, which causes size to hold a large unintended
+    value when cast to an unsigned integer. This 32-bit
+    negative value is then cast to a 64-bit unsigned integer
+    (0xfffffffffffffffa) in a subsequent call to
+    gst_buffer_new_and_alloc.
+
+ -- Bastien Roucariès <rouca@debian.org>  Sun, 15 Dec 2024 20:08:20 +0000
+
 gstreamer1.0 (1.18.4-2.1) unstable; urgency=medium
 
   * Non-maintainer upload.

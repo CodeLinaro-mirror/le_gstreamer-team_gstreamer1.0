@@ -1,1 +1,2 @@
 0001-registrybinary-Update-magic-version-string.patch
+0002-CVE-2024-47606-allocator-Avoid-integer-overflow-when.patch
