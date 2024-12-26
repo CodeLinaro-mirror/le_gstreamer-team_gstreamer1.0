@@ -1,3 +1,17 @@
+gstreamer1.0 (1.4.4-2+deb8u2) jessie-security; urgency=medium
+
+  * Non-maintainer upload by ELTS team
+  * Fix CVE-2024-47606:  An integer underflow has been detected
+    in the function qtdemux_parse_theora_extension within qtdemux.c.
+    The vulnerability occurs due to an underflow of the
+    gint size variable, which causes size to hold a large unintended
+    value when cast to an unsigned integer. This 32-bit
+    negative value is then cast to a 64-bit unsigned integer
+    (0xfffffffffffffffa) in a subsequent call to
+    gst_buffer_new_and_alloc.
+
+ -- Bastien Roucariès <rouca@debian.org>  Thu, 26 Dec 2024 23:10:39 +0000
+
 gstreamer1.0 (1.4.4-2+deb8u1) jessie-security; urgency=high
 
   * debian/patches/0001-datetime-fix-potential-out-of-bound-read-on-malforme.patch:
