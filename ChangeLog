@@ -1,3 +1,18 @@
+=== release 1.24.11 ===
+
+2025-01-06 19:48:08 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.24.11
+
+2024-12-03 23:39:54 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.24.10
+
 === release 1.24.10 ===
 
 2024-12-03 23:29:07 +0000  Tim-Philipp Müller <tim@centricular.com>
