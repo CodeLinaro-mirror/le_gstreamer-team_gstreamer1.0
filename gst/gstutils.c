@@ -44,7 +44,6 @@
 #include "gstinfo.h"
 #include "gstparse.h"
 #include "gstvalue.h"
-#include "gstquark.h"
 #include <glib/gi18n-lib.h>
 #include "glib-compat-private.h"
 #include <math.h>
@@ -3542,10 +3541,11 @@ gst_util_get_timestamp (void)
  * @array: the sorted input array
  * @num_elements: number of elements in the array
  * @element_size: size of every element in bytes
- * @search_func: (scope call): function to compare two elements, @search_data will always be passed as second argument
+ * @search_func: (scope call) (closure user_data): function to compare two
+ *    elements, @search_data will always be passed as second argument
  * @mode: search mode that should be used
  * @search_data: element that should be found
- * @user_data: (closure): data to pass to @search_func
+ * @user_data: data to pass to @search_func
  *
  * Searches inside @array for @search_data by using the comparison function
  * @search_func. @array must be sorted ascending.
@@ -4519,6 +4519,51 @@ gst_util_ceil_log2 (guint32 v)
 }
 
 /**
+ * gst_util_floor_log2:
+ * @v: a #guint32 value.
+ *
+ * Returns smallest integral value not bigger than log2(v).
+ *
+ * Returns: a computed #guint val.
+ *
+ * Since: 1.26
+ */
+guint
+gst_util_floor_log2 (guint32 v)
+{
+  guint32 result = 0;
+
+  g_return_val_if_fail (v != 0, -1);
+
+  if (v & 0xffff0000) {
+    v >>= 16;
+    result += 16;
+  }
+
+  if (v & 0xff00) {
+    v >>= 8;
+    result += 8;
+  }
+
+  if (v & 0xf0) {
+    v >>= 4;
+    result += 4;
+  }
+
+  if (v & 0xc) {
+    v >>= 2;
+    result += 2;
+  }
+
+  if (v & 0x2) {
+    v >>= 1;
+    result += 1;
+  }
+
+  return result;
+}
+
+/**
  * gst_calculate_linear_regression: (skip)
  * @xy: Pairs of (x,y) values
  * @temp: Temporary scratch space used by the function
@@ -4771,6 +4816,10 @@ invalid:
   }
 }
 
+/* Initialized in _priv_gst_plugin_initialize(). */
+GQuark _priv_gst_plugin_api_quark;
+GQuark _priv_gst_plugin_api_flags_quark;
+
 /**
  * gst_type_mark_as_plugin_api:
  * @type: a GType
@@ -4792,8 +4841,8 @@ invalid:
 void
 gst_type_mark_as_plugin_api (GType type, GstPluginAPIFlags flags)
 {
-  g_type_set_qdata (type, GST_QUARK (PLUGIN_API), GINT_TO_POINTER (TRUE));
-  g_type_set_qdata (type, GST_QUARK (PLUGIN_API_FLAGS),
+  g_type_set_qdata (type, _priv_gst_plugin_api_quark, GINT_TO_POINTER (TRUE));
+  g_type_set_qdata (type, _priv_gst_plugin_api_flags_quark,
       GINT_TO_POINTER (flags));
 }
 
@@ -4813,11 +4862,12 @@ gboolean
 gst_type_is_plugin_api (GType type, GstPluginAPIFlags * flags)
 {
   gboolean ret =
-      !!GPOINTER_TO_INT (g_type_get_qdata (type, GST_QUARK (PLUGIN_API)));
+      !!GPOINTER_TO_INT (g_type_get_qdata (type, _priv_gst_plugin_api_quark));
 
   if (ret && flags) {
     *flags =
-        GPOINTER_TO_INT (g_type_get_qdata (type, GST_QUARK (PLUGIN_API_FLAGS)));
+        GPOINTER_TO_INT (g_type_get_qdata (type,
+            _priv_gst_plugin_api_flags_quark));
   }
 
   return ret;

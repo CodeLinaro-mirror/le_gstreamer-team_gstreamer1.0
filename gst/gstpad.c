@@ -195,6 +195,15 @@ static GstFlowReturn gst_pad_push_event_unchecked (GstPad * pad,
 static gboolean activate_mode_internal (GstPad * pad, GstObject * parent,
     GstPadMode mode, gboolean active);
 
+typedef struct
+{
+  GstPad *pad;
+  GstFlowReturn flow_res;
+} PadChainListData;
+
+static gboolean list_process_buffer_writable (GstBuffer ** buffer, guint idx,
+    gpointer userdata);
+
 static guint gst_pad_signals[LAST_SIGNAL] = { 0 };
 
 static GParamSpec *pspec_caps = NULL;
@@ -1408,9 +1417,9 @@ cleanup_hook (GstPad * pad, GHook * hook)
  * gst_pad_add_probe:
  * @pad: the #GstPad to add the probe to
  * @mask: the probe mask
- * @callback: #GstPadProbeCallback that will be called with notifications of
- *           the pad state
- * @user_data: (closure): user data passed to the callback
+ * @callback: (closure user_data): #GstPadProbeCallback that will be called with
+ *           notifications of the pad state
+ * @user_data: user data passed to the callback
  * @destroy_data: #GDestroyNotify for user_data
  *
  * Be notified of different states of pads. The provided callback is called for
@@ -4014,12 +4023,23 @@ mark_event_not_received (GstPad * pad, PadEvent * ev, gpointer user_data)
  * @pad: a #GstPad
  * @offset: the offset
  *
- * Set the offset that will be applied to the running time of @pad.
+ * Set the offset that will be applied to the running time of @pad. Upon next
+ * buffer, every sticky events (notably segment) will be pushed again with
+ * their running time adjusted. For that reason this is only reliable on
+ * source pads.
  */
 void
 gst_pad_set_offset (GstPad * pad, gint64 offset)
 {
   g_return_if_fail (GST_IS_PAD (pad));
+
+  /* Setting pad offset on a sink pad does not work reliably:
+   * https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6464 */
+  if (GST_PAD_IS_SINK (pad)) {
+    /* Make it non fatal warning for backward compatibility. */
+    GST_WARNING_OBJECT (pad,
+        "Setting pad offset only works reliably on source pads");
+  }
 
   GST_OBJECT_LOCK (pad);
   /* if nothing changed, do nothing */
@@ -4645,6 +4665,16 @@ gst_pad_chain (GstPad * pad, GstBuffer * buffer)
       GST_PAD_PROBE_TYPE_BUFFER | GST_PAD_PROBE_TYPE_PUSH, buffer);
 }
 
+static gboolean
+list_process_buffer_writable (GstBuffer ** buffer, guint idx, gpointer userdata)
+{
+  PadChainListData *data = (PadChainListData *) (userdata);
+  data->flow_res = gst_pad_chain_data_unchecked (data->pad,
+      GST_PAD_PROBE_TYPE_BUFFER | GST_PAD_PROBE_TYPE_PUSH, *buffer);
+  *buffer = NULL;
+  return data->flow_res == GST_FLOW_OK;
+}
+
 static GstFlowReturn
 gst_pad_chain_list_default (GstPad * pad, GstObject * parent,
     GstBufferList * list)
@@ -4655,18 +4685,25 @@ gst_pad_chain_list_default (GstPad * pad, GstObject * parent,
 
   GST_LOG_OBJECT (pad, "chaining each buffer in list individually");
 
-  len = gst_buffer_list_length (list);
-
   ret = GST_FLOW_OK;
-  for (i = 0; i < len; i++) {
-    buffer = gst_buffer_list_get (list, i);
-    ret =
-        gst_pad_chain_data_unchecked (pad,
-        GST_PAD_PROBE_TYPE_BUFFER | GST_PAD_PROBE_TYPE_PUSH,
-        gst_buffer_ref (buffer));
-    if (ret != GST_FLOW_OK)
-      break;
+
+  if (gst_buffer_list_is_writable (list)) {
+    PadChainListData data = {.pad = pad,.flow_res = GST_FLOW_OK };
+    gst_buffer_list_foreach (list, list_process_buffer_writable, &data);
+    ret = data.flow_res;
+  } else {
+    len = gst_buffer_list_length (list);
+    for (i = 0; i < len; i++) {
+      buffer = gst_buffer_list_get (list, i);
+      ret =
+          gst_pad_chain_data_unchecked (pad,
+          GST_PAD_PROBE_TYPE_BUFFER | GST_PAD_PROBE_TYPE_PUSH,
+          gst_buffer_ref (buffer));
+      if (ret != GST_FLOW_OK)
+        break;
+    }
   }
+
   gst_buffer_list_unref (list);
 
   return ret;
@@ -5335,8 +5372,9 @@ store_sticky_event (GstPad * pad, GstEvent * event)
   GstEventType type;
   GArray *events;
   gboolean res = FALSE;
-  GQuark name_id = 0;
+  const gchar *name = NULL;
   gboolean insert = TRUE;
+  gboolean changed_stream_id = FALSE;
 
   type = GST_EVENT_TYPE (event);
   guint sticky_order = _to_sticky_order (type);
@@ -5353,10 +5391,9 @@ store_sticky_event (GstPad * pad, GstEvent * event)
   /* Unset the EOS flag when received STREAM_START event, so pad can
    * store sticky event and then push it later */
   if (type == GST_EVENT_STREAM_START) {
-    GST_LOG_OBJECT (pad, "Removing pending EOS, StreamGroupDone, TAG events");
+    GST_LOG_OBJECT (pad, "Removing pending EOS, StreamGroupDone events");
     remove_event_by_type (pad, GST_EVENT_EOS);
     remove_event_by_type (pad, GST_EVENT_STREAM_GROUP_DONE);
-    remove_event_by_type (pad, GST_EVENT_TAG);
     GST_OBJECT_FLAG_UNSET (pad, GST_PAD_FLAG_EOS);
   }
 
@@ -5364,7 +5401,7 @@ store_sticky_event (GstPad * pad, GstEvent * event)
     goto eos;
 
   if (type & GST_EVENT_TYPE_STICKY_MULTI)
-    name_id = gst_structure_get_name_id (gst_event_get_structure (event));
+    name = gst_structure_get_name (gst_event_get_structure (event));
 
   events = pad->priv->events;
   len = events->len;
@@ -5377,8 +5414,17 @@ store_sticky_event (GstPad * pad, GstEvent * event)
 
     if (type == GST_EVENT_TYPE (ev->event)) {
       /* matching types, check matching name if needed */
-      if (name_id && !gst_event_has_name_id (ev->event, name_id))
+      if (name && !gst_event_has_name (ev->event, name))
         continue;
+
+      if (type == GST_EVENT_STREAM_START && event != ev->event) {
+        const gchar *old_stream_id, *new_stream_id;
+
+        gst_event_parse_stream_start (ev->event, &old_stream_id);
+        gst_event_parse_stream_start (event, &new_stream_id);
+
+        changed_stream_id = !g_str_equal (old_stream_id, new_stream_id);
+      }
 
       /* overwrite */
       if ((res = gst_event_replace (&ev->event, event)))
@@ -5409,6 +5455,12 @@ store_sticky_event (GstPad * pad, GstEvent * event)
     ev.received = FALSE;
     g_array_insert_val (events, i, ev);
     res = TRUE;
+    changed_stream_id = type == GST_EVENT_STREAM_START;
+  }
+
+  if (changed_stream_id) {
+    GST_LOG_OBJECT (pad, "Removing pending TAG events");
+    remove_event_by_type (pad, GST_EVENT_TAG);
   }
 
   if (res) {
@@ -5545,6 +5597,8 @@ gst_pad_push_event_unchecked (GstPad * pad, GstEvent * event,
         case GST_EVENT_RECONFIGURE:
           if (GST_PAD_IS_SINK (pad))
             GST_OBJECT_FLAG_SET (pad, GST_PAD_FLAG_NEED_RECONFIGURE);
+          if (pad->ABI.abi.last_flowret == GST_FLOW_NOT_LINKED)
+            pad->ABI.abi.last_flowret = GST_FLOW_OK;
           break;
         default:
           break;
@@ -5896,9 +5950,6 @@ gst_pad_send_event_unchecked (GstPad * pad, GstEvent * event,
       if (G_UNLIKELY (GST_PAD_IS_FLUSHING (pad)))
         goto flushing;
       break;
-    case GST_EVENT_RECONFIGURE:
-      if (GST_PAD_IS_SRC (pad))
-        GST_OBJECT_FLAG_SET (pad, GST_PAD_FLAG_NEED_RECONFIGURE);
     default:
       GST_CAT_DEBUG_OBJECT (GST_CAT_EVENT, pad,
           "have event type %" GST_PTR_FORMAT, event);
@@ -5925,6 +5976,12 @@ gst_pad_send_event_unchecked (GstPad * pad, GstEvent * event,
           remove_event_by_type (pad, GST_EVENT_STREAM_GROUP_DONE);
           remove_event_by_type (pad, GST_EVENT_TAG);
           GST_OBJECT_FLAG_UNSET (pad, GST_PAD_FLAG_EOS);
+          break;
+        case GST_EVENT_RECONFIGURE:
+          if (GST_PAD_IS_SRC (pad))
+            GST_OBJECT_FLAG_SET (pad, GST_PAD_FLAG_NEED_RECONFIGURE);
+          if (pad->ABI.abi.last_flowret == GST_FLOW_NOT_LINKED)
+            pad->ABI.abi.last_flowret = GST_FLOW_OK;
           break;
         default:
           if (serialized) {
@@ -6259,9 +6316,9 @@ foreach_dispatch_function (GstPad * pad, PadEvent * ev, gpointer user_data)
 /**
  * gst_pad_sticky_events_foreach:
  * @pad: the #GstPad that should be used for iteration.
- * @foreach_func: (scope call): the #GstPadStickyEventsForeachFunction that
- *                should be called for every event.
- * @user_data: (closure): the optional user data.
+ * @foreach_func: (scope call) (closure user_data): the
+ *    #GstPadStickyEventsForeachFunction that should be called for every event.
+ * @user_data: the optional user data.
  *
  * Iterates all sticky events on @pad and calls @foreach_func for every
  * event. If @foreach_func returns %FALSE the iteration is immediately stopped.
