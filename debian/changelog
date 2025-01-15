@@ -1,3 +1,12 @@
+gstreamer1.0 (1.25.1-1) experimental; urgency=medium
+
+  * d/gbp.conf: adjust for experimental
+  * New upstream version 1.25.1
+  * d/libgstreamer1.0-dev.install:  install FindGStreamer.cmake
+  * d/symbols: add 1.25.1 symbols
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Wed, 15 Jan 2025 09:56:04 +0100
+
 gstreamer1.0 (1.24.11-1) unstable; urgency=medium
 
   * New upstream version 1.24.11
