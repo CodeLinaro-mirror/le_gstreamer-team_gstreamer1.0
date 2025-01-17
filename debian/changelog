@@ -1,3 +1,9 @@
+gstreamer1.0 (1.25.1-2) experimental; urgency=medium
+
+  * d/patches: revert C11 atomics
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Fri, 17 Jan 2025 09:53:50 +0100
+
 gstreamer1.0 (1.25.1-1) experimental; urgency=medium
 
   * d/gbp.conf: adjust for experimental
