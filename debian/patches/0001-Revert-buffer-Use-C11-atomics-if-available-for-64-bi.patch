@@ -1,0 +1,34 @@
+From dc51a077770e70476963953abcf43f7ba0016798 Mon Sep 17 00:00:00 2001
+From: Marc Leeman <marc.leeman@gmail.com>
+Date: Fri, 17 Jan 2025 09:32:24 +0100
+Subject: [PATCH] Revert "buffer: Use C11 atomics if available for 64 bit
+ atomic operations"
+
+This reverts commit 0a2e0a4f64cc877c845a4c68cba81fc4d5757553.
+---
+ subprojects/gstreamer/gst/gstbuffer.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/gst/gstbuffer.c b/gst/gstbuffer.c
+index 75b6220ba1..dc4902a5f7 100644
+--- a/gst/gstbuffer.c
++++ b/gst/gstbuffer.c
+@@ -172,14 +172,7 @@ typedef struct
+ static gint64 meta_seq;         /* 0 *//* ATOMIC */
+
+ /* TODO: use GLib's once https://gitlab.gnome.org/GNOME/glib/issues/1076 lands */
+-#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L && !defined(__STDC_NO_ATOMICS__)
+-#include <stdatomic.h>
+-static inline gint64
+-gst_atomic_int64_inc (gint64 * atomic)
+-{
+-  return atomic_fetch_add ((_Atomic gint64 *) atomic, 1);
+-}
+-#elif defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8)
++#if defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8)
+ static inline gint64
+ gst_atomic_int64_inc (gint64 * atomic)
+ {
+--
+2.47.1
+
