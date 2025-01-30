@@ -1,3 +1,128 @@
+=== release 1.24.12 ===
+
+2025-01-29 20:12:29 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.24.12
+
+2025-01-27 07:45:22 -0700  Jordan Yelloz <jordan.yelloz@collabora.com>
+
+	* gst/gstiterator.c:
+	* tests/check/gst/gstiterator.c:
+	  gstiterator: Added error handling to filtered iterators
+	  Otherwise, if the underlying iterator returns GST_ITERATOR_ERROR, the filtered
+	  iterator will crash.
+	  With this change, the filtered iterator propagates the error back to the caller.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8370>
+
+2025-01-22 12:34:31 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/net/gstnetclientclock.c:
+	  netclientclock: Don't stop searching the clock cache when the first corrupted clock is found
+	  The clock we're looking for might be working fine and be available afterwards.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8364>
+
+2025-01-22 12:32:24 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/net/gstnetclientclock.c:
+	  netclientclock: Don't ever store failed internal clocks in the cache
+	  If starting the internal clock fails we would still store a broken clock in the
+	  cache despite it being unusable and never recovering.
+	  Not storing it allows the application to simply create a new one at a later time
+	  and have starting it retried.
+	  Also signal to the application that such a clock is not synced.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8364>
+
+2025-01-23 19:48:28 +0000  Rares Branici <rares.branici@senstar.com>
+
+	* gst/gstpluginloader-win32.c:
+	  pluginloader-win32: create no window
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8357>
+
+2025-01-23 16:52:30 +0100  Silvio Lazzeretti <silviola@amazon.it>
+
+	* gst/gstpluginloader-win32.c:
+	  gstpluginloader-win32: fix use after free in find_helper_bin_location
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8356>
+
+2025-01-20 10:48:04 +0100  Guillaume Desmottes <guillaume.desmottes@onestream.live>
+
+	* plugins/elements/gstsparsefile.c:
+	  sparsefile: ensure error is set when read_buffer() returns 0
+	  gst_sparse_file_read() is supposed to set @error when returning 0 but
+	  in some cases was not.
+	  Hopefully fix a crash in gst_download_buffer_read_buffer() which is
+	  checking error->code when 0 is returned.
+	  I'm not totally sure when this happens as I debugged this from a post
+	  mortem crash but returning a generic error here seems the safe thing to
+	  do.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8331>
+
+2025-01-20 10:47:34 +0100  Guillaume Desmottes <guillaume.desmottes@onestream.live>
+
+	* plugins/elements/gstsparsefile.c:
+	  sparsefile: fix typo in doc
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8331>
+
+2025-01-15 03:36:07 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gstdevicemonitor.c:
+	  gstdevice: Fetch device provider from message source
+	  The GstDevice removed may not have a parent anymore when we check
+	  whether the provider is hidden. Let's fetch the provider from the
+	  message source, which is more reliable.
+	  Fixes a racy nullptr deref on macOS when a device is unplugged:
+	  ```
+	  libgstreamer-1.0.0.dylib!is_provider_hidden (gstreamer/subprojects/gstreamer/gst/gstdevicemonitor.c:240)
+	  libgstreamer-1.0.0.dylib!bus_sync_message (gstreamer/subprojects/gstreamer/gst/gstdevicemonitor.c:286)
+	  libgstreamer-1.0.0.dylib!gst_bus_post (gstreamer/subprojects/gstreamer/gst/gstbus.c:358)
+	  libgstreamer-1.0.0.dylib!gst_device_provider_device_remove (gstreamer/subprojects/gstreamer/gst/gstdeviceprovider.c:685)
+	  libgstosxaudio.dylib!gst_osx_audio_device_provider_update_devices ([...]/sys/osxaudio/gstosxaudiodeviceprovider.c:539)
+	  libgstosxaudio.dylib!_audio_devices_changed_cb ([...]/sys/osxaudio/gstosxaudiodeviceprovider.c:313)
+	  CoreAudio!HALObject::PropertiesChanged(unsigned int, AudioObjectPropertyAddress const*) (Unknown Source:0)
+	  CoreAudio!HALSystem::PropertiesChanged(unsigned int, AudioObjectPropertyAddress const*) (Unknown Source:0)
+	  CoreAudio!HALSystem::ObjectsPublishedAndDied(...) (Unknown Source:0)
+	  CoreAudio!HALSystem::AudioObjectsPublishedAndDied(...) (Unknown Source:0)
+	  CoreAudio!HALC_ShellPlugIn::ReconcileDeviceList(bool, bool) (Unknown Source:0)
+	  CoreAudio!HALC_ShellPlugIn::CreateAggregateDevice(__CFDictionary const*, unsigned int&) (Unknown Source:0)
+	  CoreAudio!AudioHardwareCreateAggregateDevice_mac_imp (Unknown Source:0)
+	  AudioDSP!___lldb_unnamed_symbol15046 (Unknown Source:0)
+	  AudioDSP!___lldb_unnamed_symbol15038 (Unknown Source:0)
+	  AudioDSP!___lldb_unnamed_symbol33307 (Unknown Source:0)
+	  AudioToolboxCore!APComponent::newInstance(...) (Unknown Source:0)
+	  AudioToolboxCore!instantiate(...) (Unknown Source:0)
+	  AudioToolboxCore!__AudioComponentInstanceNew_block_invoke (Unknown Source:0)
+	  AudioToolboxCore!Synchronously (Unknown Source:0)
+	  ```
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8323>
+
+2024-08-20 00:40:06 +0900  Andrew Yooeun Chun <aychun00@gmail.com>
+
+	* libs/gst/base/gstbasetransform.c:
+	  basetransform: fix incorrect logging inside gst_base_transform_query_caps
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8289>
+
+2024-09-19 14:06:51 -0700  Alan Coopersmith <alan.coopersmith@oracle.com>
+
+	* tests/misc/meson.build:
+	  gstreamer: netclock-replay: use gst_c_args when building
+	  Need HAVE_CONFIG_H to avoid build failure on Solaris 11.4 with gcc 14.1:
+	  ../subprojects/gstreamer/tests/misc/../../libs/gst/net/gstnetutils.c:71:7:
+	  error: implicit declaration of function ‘setsockopt’
+	  [-Wimplicit-function-declaration]
+	  71 |   if (setsockopt (fd, IPPROTO_IP, IP_TOS, &tos, sizeof (tos)) < 0) {
+	  |       ^~~~~~~~~~
+	  Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8264>
+
+2025-01-06 20:11:58 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.24.11
+
 === release 1.24.11 ===
 
 2025-01-06 19:48:08 +0000  Tim-Philipp Müller <tim@centricular.com>
