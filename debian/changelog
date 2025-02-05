@@ -1,3 +1,10 @@
+gstreamer1.0 (1.25.1-4) experimental; urgency=medium
+
+  * Revert "d/patches: revert C11 atomics"
+  * d/patches: test for latomic
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Wed, 05 Feb 2025 12:54:17 +0100
+
 gstreamer1.0 (1.25.1-3) experimental; urgency=medium
 
   * d/rules: disable libunwind (Closes: #1093376)
