@@ -2496,6 +2496,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_util_fraction_add@Base 1.0.0
  gst_util_fraction_compare@Base 1.0.0
  gst_util_fraction_multiply@Base 1.0.0
+ gst_util_fraction_multiply_int64@Base 1.25.50
  gst_util_fraction_to_double@Base 1.0.0
  gst_util_gdouble_to_guint64@Base 1.0.0
  gst_util_get_object_array@Base 1.12.0
