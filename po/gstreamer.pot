@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer-1.25.1\n"
+"Project-Id-Version: gstreamer-1.25.50\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-14 14:53+0000\n"
+"POT-Creation-Date: 2025-02-09 17:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1109,66 +1109,66 @@ msgstr ""
 msgid "Delayed linking failed."
 msgstr ""
 
-#: gst/parse/grammar.y.in:1132 gst/parse/grammar.y.in:1137
+#: gst/parse/grammar.y.in:1155 gst/parse/grammar.y.in:1160
 #, c-format
 msgid "could not link %s to %s, %s can't handle caps %s"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1142
+#: gst/parse/grammar.y.in:1165
 #, c-format
 msgid "could not link %s to %s, neither element can handle caps %s"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1146
+#: gst/parse/grammar.y.in:1169
 #, c-format
 msgid "could not link %s to %s with caps %s"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1152
+#: gst/parse/grammar.y.in:1175
 #, c-format
 msgid "could not link %s to %s"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1306
+#: gst/parse/grammar.y.in:1329
 #, c-format
 msgid "unexpected reference \"%s\" - ignoring"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1312
+#: gst/parse/grammar.y.in:1335
 #, c-format
 msgid "unexpected pad-reference \"%s\" - ignoring"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1346 gst/parse/grammar.y.in:1357
+#: gst/parse/grammar.y.in:1369 gst/parse/grammar.y.in:1380
 #, c-format
 msgid "could not parse caps \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:1385
+#: gst/parse/grammar.y.in:1408
 #, c-format
 msgid "no sink element for URI \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:1404
+#: gst/parse/grammar.y.in:1427
 #, c-format
 msgid "no source element for URI \"%s\""
 msgstr ""
 
-#: gst/parse/grammar.y.in:1494
+#: gst/parse/grammar.y.in:1517
 msgid "syntax error"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1517
+#: gst/parse/grammar.y.in:1540
 #, c-format
 msgid "specified empty bin \"%s\", not allowed"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1527
+#: gst/parse/grammar.y.in:1550
 #, c-format
 msgid "no bin \"%s\", unpacking elements"
 msgstr ""
 
-#: gst/parse/grammar.y.in:1558
+#: gst/parse/grammar.y.in:1581
 msgid "empty pipeline not allowed"
 msgstr ""
 

@@ -4100,8 +4100,10 @@ push_sticky (GstPad * pad, PadEvent * ev, gpointer user_data)
       data_sticky_order < ev->sticky_order) {
     data->ret = GST_FLOW_CUSTOM_SUCCESS_1;
   } else {
+    GST_TRACER_PAD_PUSH_EVENT_PRE (pad, event);
     data->ret = gst_pad_push_event_unchecked (pad, gst_event_ref (event),
         GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM);
+    GST_TRACER_PAD_PUSH_EVENT_POST (pad, data->ret >= GST_FLOW_OK);
     if (data->ret == GST_FLOW_CUSTOM_SUCCESS_1)
       data->ret = GST_FLOW_OK;
   }
@@ -4172,8 +4174,10 @@ check_sticky (GstPad * pad, GstEvent * event)
       PadEvent *ev = find_event_by_type (pad, GST_EVENT_EOS, 0);
 
       if (ev && !ev->received) {
+        GST_TRACER_PAD_PUSH_EVENT_PRE (pad, event);
         data.ret = gst_pad_push_event_unchecked (pad, gst_event_ref (ev->event),
             GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM);
+        GST_TRACER_PAD_PUSH_EVENT_POST (pad, data.ret >= GST_FLOW_OK);
         /* the event could have been dropped. Because this can only
          * happen if the user asked for it, it's not an error */
         if (data.ret == GST_FLOW_CUSTOM_SUCCESS)
@@ -5899,6 +5903,7 @@ gst_pad_send_event_unchecked (GstPad * pad, GstEvent * event,
   GstObject *parent;
   gint64 old_pad_offset;
 
+  GST_TRACER_PAD_SEND_EVENT_PRE (pad, event);
   GST_OBJECT_LOCK (pad);
 
   old_pad_offset = pad->offset;
@@ -6074,7 +6079,7 @@ gst_pad_send_event_unchecked (GstPad * pad, GstEvent * event,
   if (need_unlock)
     GST_PAD_STREAM_UNLOCK (pad);
 
-  return ret;
+  goto done;
 
   /* ERROR handling */
 flushing:
@@ -6085,7 +6090,8 @@ flushing:
     GST_CAT_INFO_OBJECT (GST_CAT_EVENT, pad,
         "Received event on flushing pad. Discarding");
     gst_event_unref (event);
-    return GST_FLOW_FLUSHING;
+    ret = GST_FLOW_FLUSHING;
+    goto done;
   }
 inactive:
   {
@@ -6095,7 +6101,8 @@ inactive:
     GST_CAT_INFO_OBJECT (GST_CAT_EVENT, pad,
         "Received flush-stop on inactive pad. Discarding");
     gst_event_unref (event);
-    return GST_FLOW_FLUSHING;
+    ret = GST_FLOW_FLUSHING;
+    goto done;
   }
 eos:
   {
@@ -6105,7 +6112,8 @@ eos:
     GST_CAT_INFO_OBJECT (GST_CAT_EVENT, pad,
         "Received event on EOS pad. Discarding");
     gst_event_unref (event);
-    return GST_FLOW_EOS;
+    ret = GST_FLOW_EOS;
+    goto done;
   }
 probe_stopped:
   {
@@ -6126,7 +6134,7 @@ probe_stopped:
         GST_DEBUG_OBJECT (pad, "an error occurred %s", gst_flow_get_name (ret));
         break;
     }
-    return ret;
+    goto done;
   }
 no_function:
   {
@@ -6136,7 +6144,8 @@ no_function:
     if (need_unlock)
       GST_PAD_STREAM_UNLOCK (pad);
     gst_event_unref (event);
-    return GST_FLOW_NOT_SUPPORTED;
+    ret = GST_FLOW_NOT_SUPPORTED;
+    goto done;
   }
 no_parent:
   {
@@ -6145,7 +6154,8 @@ no_parent:
     if (need_unlock)
       GST_PAD_STREAM_UNLOCK (pad);
     gst_event_unref (event);
-    return GST_FLOW_FLUSHING;
+    ret = GST_FLOW_FLUSHING;
+    goto done;
   }
 precheck_failed:
   {
@@ -6154,8 +6164,11 @@ precheck_failed:
     if (need_unlock)
       GST_PAD_STREAM_UNLOCK (pad);
     gst_event_unref (event);
-    return ret;
+    goto done;
   }
+done:
+  GST_TRACER_PAD_SEND_EVENT_POST (pad, ret);
+  return ret;
 }
 
 /**
