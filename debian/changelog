@@ -2,7 +2,7 @@ gstreamer1.0 (1.25.90-1) experimental; urgency=medium
 
   * New upstream version 1.25.90
 
- -- Marc Leeman <marc.leeman@gmail.com>  Mon, 24 Feb 2025 15:03:34 +0100
+ -- Marc Leeman <marc.leeman@gmail.com>  Fri, 07 Mar 2025 16:12:57 +0100
 
 gstreamer1.0 (1.25.50-1) experimental; urgency=medium
 
