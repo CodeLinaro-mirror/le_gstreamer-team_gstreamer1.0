@@ -1,3 +1,114 @@
+=== release 1.26.1 ===
+
+2025-04-24 20:20:14 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.26.1
+
+2025-04-16 11:06:07 -0400  Thibault Saunier <tsaunier@igalia.com>
+
+	* gst/gstmacos.h:
+	* gst/gstmacos.m:
+	  macos: Move macos function documentation to the .h so the introspection has the information
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8886>
+
+2025-04-01 11:02:58 +0800  Shengqi Yu (喻盛琪) <shengqi.yu@mediatek.com>
+
+	* gst/gstpluginloader.c:
+	  pluginloader: fix pending_plugins Glist use-after-free issue
+	  When plugin_loader_load_and_sync returns false in plugin_loader_replay_pending,
+	  the cur Glist l->pending_plugins will be added to the blacklist.
+	  However, the l->pending_plugins might have already been loaded and freed in handle_rx_packet,
+	  so causing a use-after-free issue.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8849>
+
+2025-04-03 09:13:31 -0300  L. E. Segovia <amy@centricular.com>
+
+	* cmake/FindGStreamer.cmake:
+	  cmake: Fix using pkgconf for Windows cross builds
+	  pkgconf has its own default logic on Windows for setting up a prefix,
+	  which does not match the default behaviour of pkg-config (blindly
+	  respecting modules' ${prefix} variable).
+	  See
+	  https://github.com/pkgconf/pkgconf/commit/dcf529b83d621ed09e99e41fc35fdffd068bd87a
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8779>
+
+2025-04-03 09:02:59 -0300  L. E. Segovia <amy@centricular.com>
+
+	* cmake/FindGStreamer.cmake:
+	  cmake: Fix PKG_CONFIG_PATH formatting for Windows cross-builds
+	  The PKG_CONFIG_PATH use of semicolons must match the host system, not
+	  the build system. This fixes calling pkg-config for Windows to Android
+	  cross builds.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8779>
+
+2025-04-01 02:04:48 +0900  Seungha Yang <seungha@centricular.com>
+
+	* gst/gstpluginloader-win32.c:
+	  pluginloader-win32: Fix helper executable path under devenv
+	  lpApplicationName argument of CreateProcessW should be complete path
+	  of executable.
+	  Fixing regression introduced by
+	  https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8614
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8761>
+
+2025-03-14 22:15:38 -0400  Doug Nazar <nazard@nazar.ca>
+
+	* gst/gsttracer.c:
+	  tracer: Free various props before being set
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8714>
+
+2025-03-14 19:14:43 -0400  Doug Nazar <nazard@nazar.ca>
+
+	* gst/gstcontrolbinding.c:
+	* gst/gstdevice.c:
+	* gst/gstpadtemplate.c:
+	  all: Annotate *_set_property() contructor only props without free
+	  Properties that are marked constructor only aren't required to be freed
+	  before g_value_dup_string() as they can only be called once during construction.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8714>
+
+2025-03-26 15:38:20 +0100  Guillaume Desmottes <guillaume.desmottes@onestream.live>
+
+	* plugins/tracers/gstdots.c:
+	  tracers: dots: fix debug log
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8712>
+
+2025-03-06 17:16:20 +0100  David Smitmanis <davidsm@axis.com>
+
+	* gst/gstpluginloader-win32.c:
+	  pluginloader-win32: Correctly handle whitespace paths when executing gst-plugin-scanner
+	  On Windows, if the path to gst-plugin-scanner.exe contained
+	  whitespace, gstreamer would via CreateProcessW attempt to execute
+	  several files "up" the path tree; e.g. if the scanner path was
+	  "C:\Program Files\gstreamer app\gst-plugin-scanner.exe", it would try
+	  to execute C:\Program, C:\Program.exe, C:\Program Files\gstreamer.exe"
+	  and so on.
+	  This is how CreateProcessW behaves with unquoted whitespace arguments
+	  in lpCommandLine if lpApplicationName is NULL.
+	  By passing the binary path as lpApplicationName instead, the problem
+	  is avoided.
+	  Also quote arguments to gst-plugin-scanner.exe as they are paths as well.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8686>
+
+2025-01-22 15:02:03 +0100  Marc Leeman <marc.leeman@gmail.com>
+
+	* meson.build:
+	  meson.build: test for and link against libatomic if it exists
+	  It's needed on some platforms for some subset (or all) atomic operations and
+	  checking for the cases when it's actually needed is quite complex.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/4300
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8647>
+
+2025-03-11 20:23:16 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.26.0
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8618>
+
 === release 1.26.0 ===
 
 2025-03-11 20:14:44 +0000  Tim-Philipp Müller <tim@centricular.com>
