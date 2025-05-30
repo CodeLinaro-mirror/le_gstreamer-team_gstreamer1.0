@@ -1,3 +1,14 @@
+gstreamer1.0 (1.26.2-1) unstable; urgency=medium
+
+  * d/patches: remove applied 0002-test-latomic.patch
+  * d/copyright: review with licenserecon
+  * d/copyright: remove old FSF address
+  * New upstream version 1.26.2
+  * d/symbols: add gst_structure_is_writable@Base 1.26.2
+  * d/copyright: correct continuation
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Fri, 30 May 2025 12:52:22 +0200
+
 gstreamer1.0 (1.26.1-1) unstable; urgency=medium
 
   * d/copyright: add default license, support lrc
