@@ -366,6 +366,8 @@ struct _GstAggregatorPrivate
 
   /* Our state is >= PAUSED */
   gboolean running;             /* protected by src_lock */
+  /* Our state is >= PAUSED but < PLAYING */
+  gboolean blocked;             /* protected by src_lock */
 
   /* seqnum from last seek or common seqnum to flush start events received
    * on all pads, for flushing without a seek */
@@ -908,7 +910,8 @@ gst_aggregator_wait_and_check (GstAggregator * self, gboolean * timeout)
    * that pad.
    */
   GST_OBJECT_LOCK (self);
-  if (!GST_CLOCK_TIME_IS_VALID (latency) ||
+  if (!GST_CLOCK_TIME_IS_VALID (latency) ||     /* not live */
+      self->priv->blocked ||    /* live but not PLAYING yet */
       !GST_IS_CLOCK (GST_ELEMENT_CLOCK (self)) ||
       !GST_CLOCK_TIME_IS_VALID (start) ||
       (self->priv->first_buffer
@@ -920,6 +923,13 @@ gst_aggregator_wait_and_check (GstAggregator * self, gboolean * timeout)
      */
     GST_OBJECT_UNLOCK (self);
     SRC_WAIT (self);
+
+    /* After waiting, check if we're actually still running */
+    if (!self->priv->running || !self->priv->send_eos) {
+      SRC_UNLOCK (self);
+
+      return FALSE;
+    }
   } else {
     GstClockTime base_time, time;
     GstClock *clock;
@@ -960,6 +970,13 @@ gst_aggregator_wait_and_check (GstAggregator * self, gboolean * timeout)
     GST_DEBUG_OBJECT (self,
         "clock returned %d (jitter: %" GST_STIME_FORMAT ")",
         status, GST_STIME_ARGS (jitter));
+
+    /* After waiting, check if we're actually still running */
+    if (!self->priv->running || !self->priv->send_eos || self->priv->blocked) {
+      SRC_UNLOCK (self);
+
+      return FALSE;
+    }
 
     /* we timed out */
     if (status == GST_CLOCK_OK || status == GST_CLOCK_EARLY) {
@@ -1609,6 +1626,8 @@ gst_aggregator_start (GstAggregator * self)
   self->priv->peer_latency_live = FALSE;
   self->priv->peer_latency_min = self->priv->peer_latency_max = 0;
 
+  self->priv->blocked = TRUE;
+
   gst_aggregator_set_allocation (self, NULL, NULL, NULL, NULL);
 
   klass = GST_AGGREGATOR_GET_CLASS (self);
@@ -2065,6 +2084,7 @@ gst_aggregator_stop (GstAggregator * agg)
   agg->priv->peer_latency_live = FALSE;
   agg->priv->peer_latency_min = agg->priv->peer_latency_max = 0;
   agg->priv->posted_latency_msg = FALSE;
+  agg->priv->blocked = FALSE;
 
   gst_aggregator_set_allocation (agg, NULL, NULL, NULL, NULL);
 
@@ -2095,6 +2115,7 @@ gst_aggregator_change_state (GstElement * element, GstStateChange transition)
       /* Wake up any waiting as now we have a clock and can do
        * proper waiting on the clock if necessary */
       SRC_LOCK (self);
+      self->priv->blocked = FALSE;
       SRC_BROADCAST (self);
       SRC_UNLOCK (self);
       break;
@@ -2119,6 +2140,7 @@ gst_aggregator_change_state (GstElement * element, GstStateChange transition)
       /* Wake up any waiting as now clock might be gone and we might
        * need to wait on the condition variable again */
       SRC_LOCK (self);
+      self->priv->blocked = TRUE;
       SRC_BROADCAST (self);
       SRC_UNLOCK (self);
       if (self->priv->force_live) {
