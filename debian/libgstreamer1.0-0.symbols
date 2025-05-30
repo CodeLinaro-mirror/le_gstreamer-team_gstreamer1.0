@@ -2216,6 +2216,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_structure_intersect@Base 1.0.0
  gst_structure_is_equal@Base 1.0.0
  gst_structure_is_subset@Base 1.0.0
+ gst_structure_is_writable@Base 1.26.2
  gst_structure_map_in_place@Base 1.0.0
  gst_structure_map_in_place_id_str@Base 1.25.1
  gst_structure_n_fields@Base 1.0.0
