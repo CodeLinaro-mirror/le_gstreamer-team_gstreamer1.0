@@ -1,3 +1,109 @@
+=== release 1.26.2 ===
+
+2025-05-29 23:56:43 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.26.2
+
+2025-05-23 13:07:34 +0200  Thibault Saunier <tsaunier@igalia.com>
+
+	* gst/gststructure.c:
+	* gst/gststructure.h:
+	  gst: Add a gst_structure_is_writable method
+	  There are cases (in the gst-python bindings for example) where
+	  it is interesting to know that the structure is not writable
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9071>
+
+2025-05-13 19:47:37 -0400  Doug Nazar <nazard@nazar.ca>
+
+	* tests/check/gst/gstcontroller.c:
+	  controller: Free various props before being set
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9088>
+
+2025-05-13 19:46:34 -0400  Doug Nazar <nazard@nazar.ca>
+
+	* libs/gst/controller/gstdirectcontrolbinding.c:
+	  directcontrolbinding: Free various props before being set
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9088>
+
+2025-05-13 19:15:21 -0400  Doug Nazar <nazard@nazar.ca>
+
+	* gst/gstpadtemplate.c:
+	  all: Annotate *_set_property() contructor only props without free
+	  Properties that are marked constructor only aren't required to be freed
+	  before g_value_dup_*() as they can only be called once during construction.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9088>
+
+2025-05-18 16:02:52 +0300  Jordan Petridis <jordan@centricular.com>
+
+	* gst/gsttracerutils.c:
+	  gsttracerutils: Fix leak in gst_tracer_utils_create_tracer()
+	  Co-authored-by: Alicia Boya García <aboya@igalia.com>
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9065>
+
+2025-05-13 09:54:07 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstpipeline.c:
+	  pipeline: Store the actual latency even if no static latency was configured
+	  Previously the latency was only stored if a static latency was configured on the
+	  pipeline, which caused gst_pipeline_get_configured_latency() to always return
+	  GST_CLOCK_TIME_NONE in that case.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/4429
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9008>
+
+2025-05-16 13:11:33 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstelement.c:
+	  element: ref-sink the correct pad template when replacing an existing one
+	  templ is the new one that is being stored and that needs to be ref-sinked,
+	  padtempl is the old one that just needs to be unreffed.
+	  Fixes leaking the old template, and also makes sure that the new template is not
+	  floating which can cause use-after-frees with bindings as they might wrongly
+	  take ownership of a still floating template.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8999>
+
+2025-04-01 18:22:18 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* libs/gst/helpers/ptp/meson.build:
+	  gst-ptp-helper: Fix meson warning about rust_crate_type
+	  WARNING: Project targets '>= 1.4' but uses feature deprecated since
+	  '1.3.0': rust_crate_type arg in static_library. Use rust_abi or
+	  rust.proc_macro() instead.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8919>
+
+2025-04-25 12:18:19 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Don't produce buffers when live but not in PLAYING yet
+	  Especially in force-live=true mode it was possible to produce buffers before the
+	  element was set to PLAYING as long as a clock was available already.
+	  This could easily lead to outputting buffers too early, and e.g. before the
+	  correct base time is set and available.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8902>
+
+2025-04-25 12:15:17 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Check after waiting if we're still running and otherwise stop
+	  Previously we might've produced a buffer needlessly.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8902>
+
+2025-04-09 12:10:33 -0400  Thibault Saunier <tsaunier@igalia.com>
+
+	* gst/gsttracerutils.c:
+	  tracerutils: Do not warn on empty string as tracername
+	  It doesn't matter if there is an "empty tracer" specified.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8892>
+
+2025-04-24 20:26:57 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.26.1
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/8890>
+
 === release 1.26.1 ===
 
 2025-04-24 20:20:14 +0100  Tim-Philipp Müller <tim@centricular.com>
