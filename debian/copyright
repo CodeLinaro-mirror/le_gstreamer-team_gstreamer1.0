@@ -55,8 +55,6 @@ Files: gst/gst.c
  gst/gstsystemclock.c
  gst/gstsystemclock.h
  gst/gsttask.c
- gst/gsttrace.c
- gst/gsttrace.h
  gst/gsturi.h
  gst/gstutils.c
  gst/gstutils.h
@@ -70,7 +68,6 @@ Files: gst/gst.c
  libs/gst/base/gstpushsrc.h
  plugins/elements/gstcapsfilter.c
  plugins/elements/gstcapsfilter.h
- plugins/elements/gstelements.c
  plugins/elements/gstfakesink.c
  plugins/elements/gstfakesink.h
  plugins/elements/gstfakesrc.c
@@ -93,13 +90,10 @@ Files: gst/gst.c
  plugins/elements/gsttee.h
  tools/gst-inspect.c
  tools/gst-launch.c
- win32/common/gstconfig.h
- win32/common/gstversion.h
 Copyright: 1999-2000, Erik Walthinsen <omega@cse.ogi.edu>
 License: LGPL-2+
 
 Files: libs/gst/check/libcheck/check.c
- libs/gst/check/libcheck/check.h
  libs/gst/check/libcheck/check_error.c
  libs/gst/check/libcheck/check_error.h
  libs/gst/check/libcheck/check_impl.h
@@ -295,19 +289,10 @@ Copyright: 2004, Benjamin Otte <otte@gnome.org>
   2005, Benjamin Otte <otte@gnome.org>
 License: LGPL-2+
 
-Files: gst/gst-i18n-app.h
- gst/gst-i18n-lib.h
- tests/examples/metadata/read-metadata.c
- tools/gst-typefind.c
+Files: tools/gst-typefind.c
 Copyright: 2003, Thomas Vander Stichele <thomas@apestaart.org>
   2004, Thomas Vander Stichele <thomas@apestaart.org>
 License: LGPL-2+
-
-Files: common/coverage/coverage-report-entry.pl
- common/coverage/coverage-report.pl
- common/coverage/coverage-report.xsl
-Copyright: 2006, Daniel Berrange
-License: GPL-2+
 
 Files: gst/gstmacros.h
  gst/gsttask.h
@@ -345,9 +330,7 @@ Files: gst/glib-compat-private.h
 Copyright: 2005, David Schleef <ds@schleef.org>
 License: LGPL-2+
 
-Files: plugins/elements/gstdataqueue.c
- plugins/elements/gstdataqueue.h
- plugins/elements/gstmultiqueue.h
+Files: plugins/elements/gstmultiqueue.h
 Copyright: 2006, Edward Hervey <edward@fluendo.com>
 License: LGPL-2+
 
@@ -434,11 +417,6 @@ Files: tests/check/gst/gstevent.c
 Copyright: 2005, Jan Schmidt <thaytan@mad.scientist.com>
 License: LGPL-2+
 
-Files: gst/gstquark.c
- gst/gstquark.h
-Copyright: 2006, Jan Schmidt <thaytan@noraisin.net>
-License: LGPL-2+
-
 Files: gst/gstregistrybinary.c
  gst/gstregistrychunks.c
 Copyright: 2006, Josep Torra <josep@fluendo.com>
@@ -474,14 +452,6 @@ Copyright: 2007, Collabora Ltd
   2007, Nokia Corp
 License: LGPL-2.1+
 
-Files: ltmain.sh
-Copyright: 1996-2001, 2003-2006
-License: GPL-2+
-
-Files: gst/parse/grammar.tab.h
-Copyright: 1984, 1989-1990, 2000-2011, Free Software Foundation, Inc
-License: GPL-3+
-
 Files: tests/check/gst/gstquery.c
 Copyright: *No copyright*
 License: LGPL-2+
@@ -500,18 +470,8 @@ Files: tests/check/gst/gstobject.c
 Copyright: <2004> Thomas Vander Stichele <thomas at apestaart dot org>
 License: LGPL-2+
 
-Files: libs/gst/check/gstcheck.h
-Copyright: <2004> Thomas Vander Stichele <thomas at apestaart dot org>
-  <2008> Thijs Vermeir <thijsvermeir@gmail.com>
-License: LGPL-2+
-
 Files: tests/check/elements/fdsrc.c
 Copyright: <2005> Jan Schmidt <thaytan at mad dot scientist dot com>
-License: LGPL-2+
-
-Files: tests/examples/typefind/typefind.c
-Copyright: <2005> Stefan Kost
-  <2006> Tim-Philipp Müller
 License: LGPL-2+
 
 Files: tests/check/gst/gstminiobject.c
@@ -570,10 +530,6 @@ License: LGPL-2+
 
 Files: tests/check/gst/gstmemory.c
 Copyright: <2012> Wim Taymans <wim.taymans at gmail.com>
-License: LGPL-2+
-
-Files: tests/check/libs/collectpads2.c
-Copyright: 2006, Alessandro Decina <alessandro@nnva.org>
 License: LGPL-2+
 
 Files: tests/benchmarks/complexity.c
@@ -656,10 +612,6 @@ Copyright: 1999, Erik Walthinsen <omega@cse.ogi.edu>
   2007, Peter Kjellerstedt <pkj@axis.com>
 License: LGPL-2+
 
-Files: gst/gettext.h
-Copyright: 1995-1998, 2000-2002, Free Software Foundation, Inc
-License: LGPL-2+
-
 Files: libs/gst/base/gstbaseparse.c
 Copyright: 2008, Nokia Corporation.
   2008, Sebastian Dröge <sebastian.droege@collabora.co.uk>
@@ -675,17 +627,6 @@ License: LGPL-2+
 Files: tests/check/pipelines/queue-error.c
 Copyright: 2007, Tim-Philipp Müller <tim centricular net>
   2009, Mark Nauwelaerts <mnauw users sourceforge net>
-License: LGPL-2+
-
-Files: libs/gst/base/gstcollectpads2.c
-Copyright: 2005, Wim Taymans <wim@fluendo.com>
-  2008, Mark Nauwelaerts <mnauw@users.sourceforge.net>
-  2010, Sebastian Dröge <sebastian.droege@collabora.co.uk>
-License: LGPL-2+
-
-Files: libs/gst/base/gstcollectpads2.h
-Copyright: 2005, Wim Taymans <wim@fluendo.com>
-  2008, Mark Nauwelaerts <mnauw@users.sourceforge.net>
 License: LGPL-2+
 
 Files: tests/check/gst/gstpreset.c
