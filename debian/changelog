@@ -1,3 +1,12 @@
+gstreamer1.0 (1.26.3-1) experimental; urgency=medium
+
+  * d/control: bump Standards-Version to 4.7.2
+  * d/copyright: superfluous-file-pattern
+  * d/copyright: remove now unused GPL-2+ and GPL-3+
+  * New upstream version 1.26.3
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Fri, 27 Jun 2025 08:48:46 +0200
+
 gstreamer1.0 (1.26.2-1) unstable; urgency=medium
 
   * d/patches: remove applied 0002-test-latomic.patch
