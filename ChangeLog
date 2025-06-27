@@ -1,3 +1,57 @@
+=== release 1.26.3 ===
+
+2025-06-26 21:25:24 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.26.3
+
+2025-06-26 10:27:33 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* tests/check/gst/gstutils.c:
+	  gstutils: Mark times array as static to avoid symbol conflict with the POSIX function
+	  It works fine but there can be linker warnings, e.g. with mold.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9291>
+
+2025-06-23 12:44:52 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstpad.c:
+	  pad: Only remove TAG events on STREAM_START if the stream-id actually changes
+	  Missing part from 88a36b53c5064d186acb317b0b72633ef5d886e3
+	  See also https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/4097
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9275>
+
+2025-06-19 09:47:32 -0400  Doug Nazar <nazard@nazar.ca>
+
+	* tests/check/libs/baseparse.c:
+	  baseparse: test: Fix race on test start
+	  It's possible that the sink pad is still flushing when the first buffer
+	  is processed causing the test to timeout when we activate the sink after
+	  starting the pipeline.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9261>
+
+2025-06-03 22:11:59 +0100  James Cowgill <james.cowgill@blaize.com>
+
+	* gst/gstvecdeque.c:
+	  vecdeque: Use correct index type in gst_vec_deque_drop_struct
+	  Fixes some `-Wsign-compare` warnings. These two indices should be
+	  `gsize` like the other variables in this function.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9182>
+
+2024-09-23 10:31:13 -0300  Thibault Saunier <tsaunier@igalia.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Do not set event seqnum to INVALID
+	  This might happen when we get EOS without any data flow
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9152>
+
+2025-05-30 00:03:12 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.26.2
+
 === release 1.26.2 ===
 
 2025-05-29 23:56:43 +0100  Tim-Philipp Müller <tim@centricular.com>
