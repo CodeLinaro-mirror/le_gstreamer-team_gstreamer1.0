@@ -7,6 +7,14 @@ gstreamer1.0 (1.26.3-1) experimental; urgency=medium
 
  -- Marc Leeman <marc.leeman@gmail.com>  Fri, 27 Jun 2025 08:48:46 +0200
 
+gstreamer1.0 (1.26.2-2) unstable; urgency=medium
+
+  * Team upload
+  * Stop marking libgstreamer1.0-dev as Multi-Arch: same because Gst-1.0.gir
+    is not identical across architectures (Closes: #1108412) (LP: #2115325)
+
+ -- Jeremy Bícha <jbicha@ubuntu.com>  Sat, 28 Jun 2025 08:30:40 -0400
+
 gstreamer1.0 (1.26.2-1) unstable; urgency=medium
 
   * d/patches: remove applied 0002-test-latomic.patch
