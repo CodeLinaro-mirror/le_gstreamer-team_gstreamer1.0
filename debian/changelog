@@ -1,3 +1,11 @@
+gstreamer1.0 (1.26.3-2) experimental; urgency=medium
+
+  * Team upload
+  * Stop marking libgstreamer1.0-dev as Multi-Arch: same because Gst-1.0.gir
+    is not identical across architectures (Closes: #1108412) (LP: #2115325)
+
+ -- Jeremy Bícha <jbicha@ubuntu.com>  Mon, 30 Jun 2025 15:18:52 -0400
+
 gstreamer1.0 (1.26.3-1) experimental; urgency=medium
 
   * d/control: bump Standards-Version to 4.7.2
