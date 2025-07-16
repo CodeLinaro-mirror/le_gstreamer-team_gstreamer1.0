@@ -1,3 +1,10 @@
+gstreamer1.0 (1.26.4-1) experimental; urgency=medium
+
+  * d/watch: pin to 1.26.x
+  * New upstream version 1.26.4
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Wed, 16 Jul 2025 19:51:03 +0200
+
 gstreamer1.0 (1.26.3-2) experimental; urgency=medium
 
   * Team upload
