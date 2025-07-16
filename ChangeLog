@@ -1,3 +1,96 @@
+=== release 1.26.4 ===
+
+2025-07-16 15:26:21 +0200  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.26.4
+
+2025-07-08 17:06:15 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* po/hr.po:
+	* po/ka.po:
+	  gstreamer: update translations
+
+2025-05-30 15:05:30 -0400  Doug Nazar <nazard@nazar.ca>
+
+	* gst/gsttracerutils.c:
+	  tracerutils: Fix a few memory leaks
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9347>
+
+2025-05-28 08:25:45 -0400  Doug Nazar <nazard@nazar.ca>
+
+	* tests/check/libs/gstnetclientclock.c:
+	* tests/check/meson.build:
+	  netclientclock: test: add delay under valgrind to free clock from cache
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9343>
+
+2025-05-28 08:23:25 -0400  Doug Nazar <nazard@nazar.ca>
+
+	* gst/gstinfo.c:
+	  info: free dwarf cache during shutdown
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9343>
+
+2025-05-28 08:22:05 -0400  Doug Nazar <nazard@nazar.ca>
+
+	* plugins/elements/gstidentity.c:
+	  identity: unref clock after usage
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9343>
+
+2025-06-22 03:07:58 -0400  Doug Nazar <nazard@nazar.ca>
+
+	* tests/check/elements/selector.c:
+	  selector: tests: Fix initialization of segment
+	  If GST_DEBUG is enabled and it dumps the segment, valgrind will warn about
+	  uninitialized memory.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9314>
+
+2025-06-22 03:05:20 -0400  Doug Nazar <nazard@nazar.ca>
+
+	* tests/check/gst/gstinfo.c:
+	  gstinfo: tests: Ensure that the target msg is one of the ones seen
+	  If GST_DEBUG is enabled we will get multiple log messages. Signal
+	  success if one of messages is correct.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9314>
+
+2025-06-22 03:01:52 -0400  Doug Nazar <nazard@nazar.ca>
+
+	* tests/check/gst/gstmemory.c:
+	  memory: tests: Fix test to ensure all logs are less severe than WARN
+	  If GST_DEBUG is enabled the existing test will fail as it gets INFO
+	  log messages.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9314>
+
+2025-06-22 02:59:06 -0400  Doug Nazar <nazard@nazar.ca>
+
+	* tests/check/libs/transform1.c:
+	* tests/check/libs/transform2.c:
+	  transform: test: TestTransData is not an object
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9314>
+
+2025-05-02 10:23:18 +0200  Alicia Boya García <aboya@igalia.com>
+
+	* gst/gstpad.c:
+	  tracers: Fix deadlock in latency tracer
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/4317
+	  This patch fixes a regression in
+	  a35bf1e3847351703542869755b6b9e536b9d2fd.
+	  The new calls to tracers in the affected change were being done while
+	  holding the pad object lock, which wasn't the case in the old ones,
+	  leading to the latency tracer deadlocking in gst_object_get_parent().
+	  The dependency on the pad lock for those calls was accidental. This
+	  patch removes it by temporarily unlocking during the affected calls,
+	  not unlike how it's done when calling a probe callback or the
+	  send_event() function of the downstream element.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9254>
+
+2025-06-26 21:29:34 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.26.3
+
 === release 1.26.3 ===
 
 2025-06-26 21:25:24 +0100  Tim-Philipp Müller <tim@centricular.com>
