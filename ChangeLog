@@ -1,3 +1,41 @@
+=== release 1.26.5 ===
+
+2025-08-07 19:06:46 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.26.5
+
+2025-07-01 20:53:47 +0200  Mathieu Duponchelle <mathieu@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: add sub_latency_min to pad queue size
+	  It should be possible for a subclass to let data accumulate on any of its input
+	  pads for as long as it has introduced latency.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9490>
+
+2025-07-13 17:30:20 +0100  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gstevent.h:
+	* gst/gstquery.h:
+	* gst/gstsegment.h:
+	  gstreamer: Disable C5287 warning on MSVC
+	  ```
+	  ../subprojects/gstreamer/gst/gstpad.c(3866): warning C5287:
+	  operands are different enum types 'GstQueryType' and 'GstQueryTypeFlags';
+	  use an explicit cast to silence this warning
+	  ```
+	  We abuse these enums, and MSVC emits a warning for this specific case:
+	  https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warnings-c5200-through-c5399
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9450>
+
+2025-07-16 15:33:19 +0200  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.26.4
+
 === release 1.26.4 ===
 
 2025-07-16 15:26:21 +0200  Tim-Philipp Müller <tim@centricular.com>
