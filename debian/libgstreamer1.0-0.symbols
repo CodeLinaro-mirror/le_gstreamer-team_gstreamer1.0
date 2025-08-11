@@ -622,6 +622,7 @@ libgstnet-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_buffer_get_net_address_meta@Base 1.8.0
  gst_net_address_meta_api_get_type@Base 1.0.0
  gst_net_address_meta_get_info@Base 1.0.0
+ gst_net_client_clock_deinit@Base 1.27.1
  gst_net_client_clock_get_type@Base 1.0.0
  gst_net_client_clock_new@Base 1.0.0
  gst_net_control_message_meta_api_get_type@Base 1.6.0
@@ -1150,9 +1151,15 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_debug_log_get_line@Base 1.18.0
  gst_debug_log_id@Base 1.22.0
  gst_debug_log_id_literal@Base 1.22.0
+ gst_debug_log_id_literal_with_context@Base 1.27.1
  gst_debug_log_id_valist@Base 1.22.0
+ gst_debug_log_id_with_context@Base 1.27.1
+ gst_debug_log_id_with_context_valist@Base 1.27.1
  gst_debug_log_literal@Base 1.20.0
+ gst_debug_log_literal_with_context@Base 1.27.1
  gst_debug_log_valist@Base 1.0.0
+ gst_debug_log_with_context@Base 1.27.1
+ gst_debug_log_with_context_valist@Base 1.27.1
  gst_debug_message_get@Base 1.0.0
  gst_debug_message_get_id@Base 1.22.0
  gst_debug_print_object@Base 1.25.1
@@ -1494,6 +1501,16 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_library_error_get_type@Base 1.0.0
  gst_library_error_quark@Base 1.0.0
  gst_lock_flags_get_type@Base 1.0.0
+ gst_log_context_builder_build@Base 1.27.1
+ gst_log_context_builder_new@Base 1.27.1
+ gst_log_context_builder_set_category@Base 1.27.1
+ gst_log_context_builder_set_hash_flags@Base 1.27.1
+ gst_log_context_builder_set_interval@Base 1.27.1
+ gst_log_context_flags_get_type@Base 1.27.1
+ gst_log_context_free@Base 1.27.1
+ gst_log_context_get_category@Base 1.27.1
+ gst_log_context_hash_flags_get_type@Base 1.27.1
+ gst_log_context_reset@Base 1.27.1
  gst_make_element_message_details@Base 1.10.0
  gst_map_flags_get_type@Base 1.0.0
  gst_memory_alignment@Base 1.0.0
@@ -1629,6 +1646,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_meta_api_type_has_tag@Base 1.0.0
  gst_meta_api_type_register@Base 1.0.0
  gst_meta_api_type_set_params_aggregator@Base 1.25.1
+ gst_meta_api_type_tags_contain_only@Base 1.27.1
  gst_meta_compare_seqnum@Base 1.16.0
  gst_meta_deserialize@Base 1.23.1
  gst_meta_flags_get_type@Base 1.0.0
@@ -2166,6 +2184,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_structure_get@Base 1.0.0
  gst_structure_get_array@Base 1.12.0
  gst_structure_get_boolean@Base 1.0.0
+ gst_structure_get_caps@Base 1.27.1
  gst_structure_get_clock_time@Base 1.0.0
  gst_structure_get_date@Base 1.0.0
  gst_structure_get_date_time@Base 1.0.0
@@ -2553,6 +2572,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_value_get_int_range_min@Base 1.0.0
  gst_value_get_int_range_step@Base 1.0.0
  gst_value_get_structure@Base 1.0.0
+ gst_value_hash@Base 1.27.1
  gst_value_init_and_copy@Base 1.0.0
  gst_value_intersect@Base 1.0.0
  gst_value_is_fixed@Base 1.0.0
