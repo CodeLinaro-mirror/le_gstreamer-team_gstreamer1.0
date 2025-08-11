@@ -1,3 +1,12 @@
+gstreamer1.0 (1.27.1-1) experimental; urgency=medium
+
+  * Revert "d/watch: pin to 1.26.x"
+  * d/gbp.conf: use experimental branches
+  * New upstream version 1.27.1
+  * d/symbols: add new symbols
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Mon, 11 Aug 2025 15:08:29 +0200
+
 gstreamer1.0 (1.26.5-2) unstable; urgency=medium
 
   * d/patches: add requested gir patch
