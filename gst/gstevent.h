@@ -25,10 +25,6 @@
 #ifndef __GST_EVENT_H__
 #define __GST_EVENT_H__
 
-#ifdef _MSC_VER
-#pragma warning(disable: 5287)
-#endif
-
 typedef struct _GstEvent GstEvent;
 
 /**
