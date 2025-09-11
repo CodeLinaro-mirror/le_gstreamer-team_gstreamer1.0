@@ -1,3 +1,11 @@
+gstreamer1.0 (1.27.2-1) experimental; urgency=medium
+
+  * New upstream version 1.27.2
+  * d/patches: remove 0001-gstreamer-Disable-miniobject-inline-functions-for-go.patch
+  * d/symbols: add new
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Thu, 11 Sep 2025 10:13:27 +0200
+
 gstreamer1.0 (1.27.1-1) experimental; urgency=medium
 
   * Revert "d/watch: pin to 1.26.x"
