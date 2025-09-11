@@ -661,9 +661,9 @@ gst_structure_new_static_str_valist (const gchar * name,
 }
 
 /**
- * gst_structure_set_parent_refcount:
+ * gst_structure_set_parent_refcount: (skip):
  * @structure: a #GstStructure
- * @refcount: (in): a pointer to the parent's refcount
+ * @refcount: (type gpointer) (nullable): a pointer to the parent's refcount
  *
  * Sets the parent_refcount field of #GstStructure. This field is used to
  * determine whether a structure is mutable or not. This function should only be
@@ -1232,6 +1232,8 @@ gst_structure_set_valist_internal (GstStructure * structure,
   while (fieldname) {
     GstStructureField field = { GST_ID_STR_INIT, G_VALUE_INIT };
 
+    memset (&field.value, 0, sizeof (field.value));
+
     if (static_string)
       gst_id_str_set_static_str (&field.name, fieldname);
     else
@@ -1356,6 +1358,8 @@ gst_structure_id_set_valist_internal (GstStructure * structure,
   while (fieldname) {
     GstStructureField field = { GST_ID_STR_INIT, G_VALUE_INIT };
 
+    memset (&field.value, 0, sizeof (field.value));
+
     gst_id_str_set_static_str (&field.name, g_quark_to_string (fieldname));
     type = va_arg (varargs, GType);
 
@@ -1427,6 +1431,8 @@ gst_structure_id_str_set_valist_internal (GstStructure * structure,
 
   while (fieldname) {
     GstStructureField field = { GST_ID_STR_INIT, G_VALUE_INIT };
+
+    memset (&field.value, 0, sizeof (field.value));
 
     gst_id_str_copy_into (&field.name, fieldname);
     type = va_arg (varargs, GType);
@@ -4708,7 +4714,7 @@ gst_structure_is_writable (const GstStructure * structure)
  * gst_structure_get_caps:
  * @structure: a #GstStructure
  * @fieldname: the name of the field
- * @caps: (out): a pointer to a pointer on caps
+ * @caps: (out) (transfer none): a pointer to a pointer on caps
  *
  * Set pointer pointed by @caps to the address of the value of type caps
  * correspondind to field with fieldname @fieldname. Caller is responsible
