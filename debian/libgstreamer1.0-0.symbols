@@ -805,6 +805,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_buffer_insert_memory@Base 1.0.0
  gst_buffer_is_all_memory_writable@Base 1.4.0
  gst_buffer_is_memory_range_writable@Base 1.4.0
+ gst_buffer_is_writable@Base 1.27.2
  gst_buffer_iterate_meta@Base 1.0.0
  gst_buffer_iterate_meta_filtered@Base 1.12.0
  gst_buffer_list_calculate_size@Base 1.14.0
@@ -815,14 +816,18 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_buffer_list_get_type@Base 1.0.0
  gst_buffer_list_get_writable@Base 1.14.0
  gst_buffer_list_insert@Base 1.0.0
+ gst_buffer_list_is_writable@Base 1.27.2
  gst_buffer_list_length@Base 1.0.0
+ gst_buffer_list_make_writable@Base 1.27.2
  gst_buffer_list_new@Base 1.0.0
  gst_buffer_list_new_sized@Base 1.0.0
  gst_buffer_list_ref@Base 1.18.3
  gst_buffer_list_remove@Base 1.0.0
  gst_buffer_list_replace@Base 1.18.3
+ gst_buffer_list_steal@Base 1.27.2
  gst_buffer_list_take@Base 1.18.3
  gst_buffer_list_unref@Base 1.18.3
+ gst_buffer_make_writable@Base 1.27.2
  gst_buffer_map@Base 1.0.0
  gst_buffer_map_range@Base 1.0.0
  gst_buffer_memcmp@Base 1.0.0
@@ -870,6 +875,8 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_buffer_resize_range@Base 1.0.0
  gst_buffer_set_flags@Base 1.10.0
  gst_buffer_set_size@Base 1.0.0
+ gst_buffer_steal@Base 1.27.2
+ gst_buffer_take@Base 1.27.2
  gst_buffer_unmap@Base 1.0.0
  gst_buffer_unref@Base 1.18.3
  gst_buffer_unset_flags@Base 1.10.0
@@ -966,6 +973,8 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_caps_is_subset@Base 1.0.0
  gst_caps_is_subset_structure@Base 1.0.0
  gst_caps_is_subset_structure_full@Base 1.2.0
+ gst_caps_is_writable@Base 1.27.2
+ gst_caps_make_writable@Base 1.27.2
  gst_caps_map_in_place@Base 1.6.0
  gst_caps_merge@Base 1.0.0
  gst_caps_merge_structure@Base 1.0.0
@@ -994,6 +1003,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_caps_set_value@Base 1.0.0
  gst_caps_set_value_static_str@Base 1.25.1
  gst_caps_simplify@Base 1.0.0
+ gst_caps_steal@Base 1.27.2
  gst_caps_steal_structure@Base 1.0.0
  gst_caps_subtract@Base 1.0.0
  gst_caps_take@Base 1.18.3
@@ -1071,6 +1081,8 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_context_get_type@Base 1.2.0
  gst_context_has_context_type@Base 1.2.0
  gst_context_is_persistent@Base 1.2.0
+ gst_context_is_writable@Base 1.27.2
+ gst_context_make_writable@Base 1.27.2
  gst_context_new@Base 1.2.0
  gst_context_ref@Base 1.18.3
  gst_context_replace@Base 1.18.3
@@ -1356,6 +1368,8 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_event_get_type@Base 1.0.0
  gst_event_has_name@Base 1.0.0
  gst_event_has_name_id@Base 1.18.0
+ gst_event_is_writable@Base 1.27.2
+ gst_event_make_writable@Base 1.27.2
  gst_event_new_buffer_size@Base 1.0.0
  gst_event_new_caps@Base 1.0.0
  gst_event_new_custom@Base 1.0.0
@@ -1521,12 +1535,17 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_memory_init@Base 1.0.0
  gst_memory_is_span@Base 1.0.0
  gst_memory_is_type@Base 1.2.0
+ gst_memory_is_writable@Base 1.27.2
  gst_memory_make_mapped@Base 1.0.0
+ gst_memory_make_writable@Base 1.27.2
  gst_memory_map@Base 1.0.0
  gst_memory_new_wrapped@Base 1.0.0
  gst_memory_ref@Base 1.18.3
+ gst_memory_replace@Base 1.27.2
  gst_memory_resize@Base 1.0.0
  gst_memory_share@Base 1.0.0
+ gst_memory_steal@Base 1.27.2
+ gst_memory_take@Base 1.27.2
  gst_memory_unmap@Base 1.0.0
  gst_memory_unref@Base 1.18.3
  gst_message_add_redirect_entry@Base 1.10.0
@@ -1538,6 +1557,8 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_message_get_structure@Base 1.0.0
  gst_message_get_type@Base 1.0.0
  gst_message_has_name@Base 1.0.0
+ gst_message_is_writable@Base 1.27.2
+ gst_message_make_writable@Base 1.27.2
  gst_message_new_application@Base 1.0.0
  gst_message_new_async_done@Base 1.0.0
  gst_message_new_async_start@Base 1.0.0
@@ -1631,6 +1652,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_message_set_qos_values@Base 1.0.0
  gst_message_set_seqnum@Base 1.0.0
  gst_message_set_stream_status_object@Base 1.0.0
+ gst_message_steal@Base 1.27.2
  gst_message_streams_selected_add@Base 1.10.0
  gst_message_streams_selected_get_size@Base 1.10.0
  gst_message_streams_selected_get_stream@Base 1.10.0
@@ -1649,6 +1671,9 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_meta_api_type_tags_contain_only@Base 1.27.1
  gst_meta_compare_seqnum@Base 1.16.0
  gst_meta_deserialize@Base 1.23.1
+ gst_meta_factory_get_type@Base 1.27.2
+ gst_meta_factory_load@Base 1.27.2
+ gst_meta_factory_register@Base 1.27.2
  gst_meta_flags_get_type@Base 1.0.0
  gst_meta_get_info@Base 1.0.0
  gst_meta_get_seqnum@Base 1.16.0
@@ -1977,6 +2002,8 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_query_get_type@Base 1.0.0
  gst_query_has_scheduling_mode@Base 1.0.0
  gst_query_has_scheduling_mode_with_flags@Base 1.0.0
+ gst_query_is_writable@Base 1.27.2
+ gst_query_make_writable@Base 1.27.2
  gst_query_new_accept_caps@Base 1.0.0
  gst_query_new_allocation@Base 1.0.0
  gst_query_new_bitrate@Base 1.16.0
@@ -2051,6 +2078,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_query_set_uri@Base 1.0.0
  gst_query_set_uri_redirection@Base 1.2.0
  gst_query_set_uri_redirection_permanent@Base 1.4.0
+ gst_query_steal@Base 1.27.2
  gst_query_take@Base 1.18.3
  gst_query_type_flags_get_type@Base 1.0.0
  gst_query_type_get_flags@Base 1.0.0
@@ -2091,6 +2119,8 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_sample_get_info@Base 1.0.0
  gst_sample_get_segment@Base 1.0.0
  gst_sample_get_type@Base 1.0.0
+ gst_sample_is_writable@Base 1.27.2
+ gst_sample_make_writable@Base 1.27.2
  gst_sample_new@Base 1.0.0
  gst_sample_ref@Base 1.18.3
  gst_sample_set_buffer@Base 1.16.0
@@ -2134,7 +2164,9 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_stack_trace_flags_get_type@Base 1.12.0
  gst_state_change_get_name@Base 1.14.0
  gst_state_change_get_type@Base 1.0.0
+ gst_state_change_return_get_name@Base 1.27.2
  gst_state_change_return_get_type@Base 1.0.0
+ gst_state_get_name@Base 1.27.2
  gst_state_get_type@Base 1.0.0
  gst_static_caps_cleanup@Base 1.0.0
  gst_static_caps_get@Base 1.0.0
@@ -2323,6 +2355,8 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_tag_list_insert@Base 1.0.0
  gst_tag_list_is_empty@Base 1.0.0
  gst_tag_list_is_equal@Base 1.0.0
+ gst_tag_list_is_writable@Base 1.27.2
+ gst_tag_list_make_writable@Base 1.27.2
  gst_tag_list_merge@Base 1.0.0
  gst_tag_list_n_tags@Base 1.0.0
  gst_tag_list_new@Base 1.0.0
