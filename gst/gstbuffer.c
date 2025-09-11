@@ -501,6 +501,8 @@ _priv_gst_buffer_initialize (void)
 {
   _gst_buffer_type = gst_buffer_get_type ();
 
+  gst_reference_timestamp_meta_get_info ();
+
 #ifdef NO_64BIT_ATOMIC_INT_FOR_PLATFORM
   GST_CAT_WARNING (GST_CAT_PERFORMANCE,
       "No 64-bit atomic int defined for this platform/toolchain!");
@@ -1932,6 +1934,26 @@ gst_buffer_unmap (GstBuffer * buffer, GstMapInfo * info)
   _gst_buffer_map_info_clear ((GstBufferMapInfo *) info);
 }
 
+static gsize
+_find_mapping (GstBuffer * buffer, gsize * offset)
+{
+  gsize i, len;
+
+  len = GST_BUFFER_MEM_LEN (buffer);
+  for (i = 0; i < len; i++) {
+    gsize size = GST_BUFFER_MEM_PTR (buffer, i)->size;
+    if (size > *offset) {
+      /* we have enough */
+      break;
+    }
+
+    /* offset past buffer, skip */
+    *offset -= size;
+  }
+
+  return i;
+}
+
 /**
  * gst_buffer_fill:
  * @buffer: a #GstBuffer.
@@ -1961,24 +1983,22 @@ gst_buffer_fill (GstBuffer * buffer, gsize offset, gconstpointer src,
 
   len = GST_BUFFER_MEM_LEN (buffer);
   left = size;
+  i = 0;
 
-  for (i = 0; i < len && left > 0; i++) {
+  if (offset)
+    i = _find_mapping (buffer, &offset);
+
+  for (; i < len && left > 0; i++) {
     GstMapInfo info;
     gsize tocopy;
     GstMemory *mem;
 
     mem = _get_mapped (buffer, i, &info, GST_MAP_WRITE);
-    if (info.size > offset) {
-      /* we have enough */
-      tocopy = MIN (info.size - offset, left);
-      memcpy ((guint8 *) info.data + offset, ptr, tocopy);
-      left -= tocopy;
-      ptr += tocopy;
-      offset = 0;
-    } else {
-      /* offset past buffer, skip */
-      offset -= info.size;
-    }
+    tocopy = MIN (info.size - offset, left);
+    memcpy ((guint8 *) info.data + offset, ptr, tocopy);
+    left -= tocopy;
+    ptr += tocopy;
+    offset = 0;
     gst_memory_unmap (mem, &info);
   }
   return size - left;
@@ -2012,24 +2032,22 @@ gst_buffer_extract (GstBuffer * buffer, gsize offset, gpointer dest, gsize size)
 
   len = GST_BUFFER_MEM_LEN (buffer);
   left = size;
+  i = 0;
 
-  for (i = 0; i < len && left > 0; i++) {
+  if (offset)
+    i = _find_mapping (buffer, &offset);
+
+  for (; i < len && left > 0; i++) {
     GstMapInfo info;
     gsize tocopy;
     GstMemory *mem;
 
     mem = _get_mapped (buffer, i, &info, GST_MAP_READ);
-    if (info.size > offset) {
-      /* we have enough */
-      tocopy = MIN (info.size - offset, left);
-      memcpy (ptr, (guint8 *) info.data + offset, tocopy);
-      left -= tocopy;
-      ptr += tocopy;
-      offset = 0;
-    } else {
-      /* offset past buffer, skip */
-      offset -= info.size;
-    }
+    tocopy = MIN (info.size - offset, left);
+    memcpy (ptr, (guint8 *) info.data + offset, tocopy);
+    left -= tocopy;
+    ptr += tocopy;
+    offset = 0;
     gst_memory_unmap (mem, &info);
   }
   return size - left;
@@ -2065,24 +2083,22 @@ gst_buffer_memcmp (GstBuffer * buffer, gsize offset, gconstpointer mem,
     return -1;
 
   len = GST_BUFFER_MEM_LEN (buffer);
+  i = 0;
 
-  for (i = 0; i < len && size > 0 && res == 0; i++) {
+  if (offset)
+    i = _find_mapping (buffer, &offset);
+
+  for (; i < len && size > 0 && res == 0; i++) {
     GstMapInfo info;
     gsize tocmp;
     GstMemory *mem;
 
     mem = _get_mapped (buffer, i, &info, GST_MAP_READ);
-    if (info.size > offset) {
-      /* we have enough */
-      tocmp = MIN (info.size - offset, size);
-      res = memcmp (ptr, (guint8 *) info.data + offset, tocmp);
-      size -= tocmp;
-      ptr += tocmp;
-      offset = 0;
-    } else {
-      /* offset past buffer, skip */
-      offset -= info.size;
-    }
+    tocmp = MIN (info.size - offset, size);
+    res = memcmp (ptr, (guint8 *) info.data + offset, tocmp);
+    size -= tocmp;
+    ptr += tocmp;
+    offset = 0;
     gst_memory_unmap (mem, &info);
   }
   return res;
@@ -2114,23 +2130,21 @@ gst_buffer_memset (GstBuffer * buffer, gsize offset, guint8 val, gsize size)
 
   len = GST_BUFFER_MEM_LEN (buffer);
   left = size;
+  i = 0;
 
-  for (i = 0; i < len && left > 0; i++) {
+  if (offset)
+    i = _find_mapping (buffer, &offset);
+
+  for (; i < len && left > 0; i++) {
     GstMapInfo info;
     gsize toset;
     GstMemory *mem;
 
     mem = _get_mapped (buffer, i, &info, GST_MAP_WRITE);
-    if (info.size > offset) {
-      /* we have enough */
-      toset = MIN (info.size - offset, left);
-      memset ((guint8 *) info.data + offset, val, toset);
-      left -= toset;
-      offset = 0;
-    } else {
-      /* offset past buffer, skip */
-      offset -= info.size;
-    }
+    toset = MIN (info.size - offset, left);
+    memset ((guint8 *) info.data + offset, val, toset);
+    left -= toset;
+    offset = 0;
     gst_memory_unmap (mem, &info);
   }
   return size - left;
@@ -3149,4 +3163,91 @@ gst_buffer_replace (GstBuffer ** obuf, GstBuffer * nbuf)
 {
   return gst_mini_object_replace ((GstMiniObject **) obuf,
       (GstMiniObject *) nbuf);
+}
+
+/**
+ * gst_buffer_is_writable: (skip)
+ * @buf: a #GstBuffer
+ *
+ * Tests if you can safely write to a buffer's metadata or its memory array.
+ * It is only safe to change buffer metadata when the current reference is
+ * writable, i.e. nobody can see the modifications you will make.
+ */
+gboolean
+gst_buffer_is_writable (const GstBuffer * buf)
+{
+  return gst_mini_object_is_writable (GST_MINI_OBJECT_CONST_CAST (buf));
+}
+
+/**
+ * gst_buffer_make_writable: (skip)
+ * @buf: (transfer full): a #GstBuffer
+ *
+ * Returns a writable copy of @buf. If the source buffer is
+ * already writable, this will simply return the same buffer.
+ *
+ * Use this function to ensure that a buffer can be safely modified before
+ * making changes to it, including changing the metadata such as PTS/DTS.
+ *
+ * If the reference count of the source buffer @buf is exactly one, the caller
+ * is the sole owner and this function will return the buffer object unchanged.
+ *
+ * If there is more than one reference on the object, a copy will be made using
+ * gst_buffer_copy(). The passed-in @buf will be unreffed in that case, and the
+ * caller will now own a reference to the new returned buffer object. Note
+ * that this just copies the buffer structure itself, the underlying memory is
+ * not copied if it can be shared amongst multiple buffers.
+ *
+ * In short, this function unrefs the buf in the argument and refs the buffer
+ * that it returns. Don't access the argument after calling this function unless
+ * you have an additional reference to it.
+ *
+ * Returns: (transfer full) (nullable): a writable buffer (which may or may not be the
+ *     same as @buf) or %NULL if copying is required but not possible.
+ */
+GstBuffer *
+gst_buffer_make_writable (GstBuffer * buf)
+{
+  return
+      GST_BUFFER_CAST (gst_mini_object_make_writable (GST_MINI_OBJECT_CAST
+          (buf)));
+}
+
+/**
+ * gst_buffer_steal: (skip)
+ * @old_buffer: (inout) (transfer full) (nullable): pointer to a
+ *     pointer to a #GstBuffer to be stolen.
+ *
+ * Atomically replace the #GstBuffer pointed to by @old_buffer with %NULL and
+ * return the original buffer.
+ * Since: 1.28
+ */
+GstBuffer *
+gst_buffer_steal (GstBuffer ** old_buffer)
+{
+  return GST_BUFFER_CAST (gst_mini_object_steal ((GstMiniObject **)
+          old_buffer));
+}
+
+/**
+ * gst_buffer_take: (skip)
+ * @old_buffer: (inout) (transfer full) (nullable): pointer to a
+ *     pointer to a #GstBuffer to be stolen.
+ * @new_buffer: (nullable) (transfer full): pointer to a #GstBuffer that will
+ *     replace the buffer pointed to by @old_buffer.
+ *
+ * Modifies a pointer to a #GstBuffer to point to a different #GstBuffer. This
+ * function is similar to gst_buffer_replace() except that it takes ownership of
+ * @new_buffer.
+ *
+ * Either @new_buffer or the #GstBuffer pointed to by @old_buffer may be %NULL.
+ *
+ * Returns: %TRUE if @new_buffer was different from @old_buffer
+ * Since: 1.28
+ */
+gboolean
+gst_buffer_take (GstBuffer ** old_buffer, GstBuffer * new_buffer)
+{
+  return gst_mini_object_take ((GstMiniObject **) old_buffer,
+      (GstMiniObject *) new_buffer);
 }

@@ -1,5 +1,5 @@
 project('gstreamer', 'c',
-  version : '1.27.1',
+  version : '1.27.2',
   meson_version : '>= 1.4',
   default_options : [ 'warning_level=1',
                       'buildtype=debugoptimized' ])
@@ -569,7 +569,7 @@ glib_req = '>= 2.64.0'
 
 # Find dependencies
 glib_dep = dependency('glib-2.0', version: glib_req,
-  fallback: ['glib', 'libglib_dep'])
+    default_options: {'sysprof': 'disabled'})
 gobject_dep = dependency('gobject-2.0')
 gmodule_dep = dependency('gmodule-no-export-2.0')
 if host_system == 'windows'
@@ -726,7 +726,7 @@ endif
 configure_file(output : 'config.h', configuration : cdata)
 install_data('gst-element-check-1.0.m4', install_dir : join_paths(get_option('datadir'), 'aclocal'))
 
-meson.add_dist_script('scripts/gen-changelog.py', meson.project_name(), '1.24.0', meson.project_version())
+meson.add_dist_script('scripts/gen-changelog.py', meson.project_name(), '1.26.0', meson.project_version())
 
 plugin_names = []
 gst_plugins = []

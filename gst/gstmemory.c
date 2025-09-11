@@ -494,3 +494,107 @@ gst_memory_unref (GstMemory * memory)
 {
   gst_mini_object_unref (GST_MINI_OBJECT_CAST (memory));
 }
+
+/**
+ * gst_memory_is_writable:
+ * @memory: a #GstMemory
+ *
+ * Tests if you can safely modify @memory. It is only safe to modify memory when
+ * there is only one owner of the memory - ie, the object is writable.
+ */
+gboolean
+gst_memory_is_writable (const GstMemory * memory)
+{
+  return gst_mini_object_is_writable (GST_MINI_OBJECT_CONST_CAST (memory));
+}
+
+/**
+ * gst_memory_make_writable:
+ * @memory: (transfer full): a #GstMemory
+ *
+ * Returns a writable copy of @memory.
+ *
+ * If there is only one reference count on @memory, the caller must be the owner,
+ * and so this function will return the memory object unchanged. If on the other
+ * hand there is more than one reference on the object, a new memory object will
+ * be returned. The caller's reference on @memory will be removed, and instead the
+ * caller will own a reference to the returned object.
+ *
+ * In short, this function unrefs the memory in the argument and refs the memory
+ * that it returns. Don't access the argument after calling this function. See
+ * also: gst_memory_ref().
+ *
+ * Returns: (transfer full): a writable memory which may or may not be the
+ *     same as @memory
+ */
+GstMemory *
+gst_memory_make_writable (GstMemory * memory)
+{
+  return
+      GST_MEMORY_CAST (gst_mini_object_make_writable (GST_MINI_OBJECT_CAST
+          (memory)));
+}
+
+/**
+ * gst_memory_replace: (skip)
+ * @old_memory: (inout) (transfer full) (nullable): pointer to a pointer to
+ *     a #GstMemory to be replaced.
+ * @new_memory: (transfer none) (allow-none): pointer to a #GstMemory that will
+ *     replace the memory pointed to by @old_memory.
+ *
+ * Modifies a pointer to a #GstMemory to point to a different #GstMemory. The
+ * modification is done atomically (so this is useful for ensuring thread safety
+ * in some cases), and the reference counts are updated appropriately (the old
+ * memory is unreffed, the new is reffed).
+ *
+ * Either @new_memory or the #GstMemory pointed to by @old_memory may be %NULL.
+ *
+ * Returns: %TRUE when @old_memory was different from @new_memory.
+ *
+ * Since: 1.28
+ */
+gboolean
+gst_memory_replace (GstMemory ** old_memory, GstMemory * new_memory)
+{
+  return gst_mini_object_replace ((GstMiniObject **) old_memory,
+      (GstMiniObject *) new_memory);
+}
+
+/**
+ * gst_memory_steal: (skip)
+ * @old_memory: (inout) (transfer full) (nullable): pointer to a
+ *     pointer to a #GstMemory to be stolen.
+ *
+ * Atomically replace the #GstMemory pointed to by @old_memory with %NULL and
+ * return the original memory.
+ * Since: 1.28
+ */
+GstMemory *
+gst_memory_steal (GstMemory ** old_memory)
+{
+  return GST_MEMORY_CAST (gst_mini_object_steal ((GstMiniObject **)
+          old_memory));
+}
+
+/**
+ * gst_memory_take: (skip)
+ * @old_memory: (inout) (transfer full) (nullable): pointer to a
+ *     pointer to a #GstMemory to be stolen.
+ * @new_memory: (nullable) (transfer full): pointer to a #GstMemory that will
+ *     replace the memory pointed to by @old_memory.
+ *
+ * Modifies a pointer to a #GstMemory to point to a different #GstMemory. This
+ * function is similar to gst_memory_replace() except that it takes ownership of
+ * @new_memory.
+ *
+ * Either @new_memory or the #GstMemory pointed to by @old_memory may be %NULL.
+ *
+ * Returns: %TRUE if @new_memory was different from @old_memory
+ * Since: 1.28
+ */
+gboolean
+gst_memory_take (GstMemory ** old_memory, GstMemory * new_memory)
+{
+  return gst_mini_object_take ((GstMiniObject **) old_memory,
+      (GstMiniObject *) new_memory);
+}
