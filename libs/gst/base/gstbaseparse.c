@@ -482,7 +482,7 @@ static gboolean gst_base_parse_is_seekable (GstBaseParse * parse);
 static void gst_base_parse_push_pending_events (GstBaseParse * parse);
 
 static void
-gst_base_parse_clear_queues (GstBaseParse * parse)
+gst_base_parse_clear_queues (GstBaseParse * parse, gboolean clear_sticky_events)
 {
   g_slist_foreach (parse->priv->buffers_queued, (GFunc) gst_buffer_unref, NULL);
   g_slist_free (parse->priv->buffers_queued);
@@ -509,9 +509,30 @@ gst_base_parse_clear_queues (GstBaseParse * parse)
 
   gst_buffer_replace (&parse->priv->cache, NULL);
 
-  g_list_foreach (parse->priv->pending_events, (GFunc) gst_event_unref, NULL);
-  g_list_free (parse->priv->pending_events);
-  parse->priv->pending_events = NULL;
+  if (clear_sticky_events) {
+    g_list_foreach (parse->priv->pending_events, (GFunc) gst_event_unref, NULL);
+    g_list_free (parse->priv->pending_events);
+    parse->priv->pending_events = NULL;
+  } else {
+    GList *cur = g_list_first (parse->priv->pending_events);
+    GList *next;
+
+    while (cur != NULL) {
+      GstEvent *event = GST_EVENT (cur->data);
+      GstEventType type = GST_EVENT_TYPE (event);
+
+      next = g_list_next (cur);
+
+      if (!GST_EVENT_IS_STICKY (event) || type == GST_EVENT_EOS
+          || type == GST_EVENT_STREAM_GROUP_DONE || type == GST_EVENT_SEGMENT) {
+        gst_event_unref (event);
+        parse->priv->pending_events =
+            g_list_delete_link (parse->priv->pending_events, cur);
+      }
+
+      cur = next;
+    }
+  }
 
   parse->priv->checked_media = FALSE;
 }
@@ -529,7 +550,7 @@ gst_base_parse_finalize (GObject * object)
   }
   g_mutex_clear (&parse->priv->index_lock);
 
-  gst_base_parse_clear_queues (parse);
+  gst_base_parse_clear_queues (parse, TRUE);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -1123,9 +1144,16 @@ update_upstream_provided (const GstIdStr * field, const GValue * value,
     GstStructure *structure = gst_caps_get_structure (default_caps, i);
     if (!gst_structure_has_field (structure, gst_id_str_as_str (field))) {
       gst_structure_id_str_set_value (structure, field, value);
+    } else {
+      const GValue *v = gst_structure_id_str_get_value (structure, field);
+
+      // If a downstream caps field is not fixed and the upstream value is a
+      // subset, take over the value from the upstream caps.
+      // Otherwise let gst_caps_fixate() take care of it later.
+      if (!gst_value_is_fixed (v) && gst_value_is_subset (value, v)) {
+        gst_structure_id_str_set_value (structure, field, value);
+      }
     }
-    /* XXX: maybe try to fixate better than gst_caps_fixate() the
-     * downstream caps based on upstream values if possible */
   }
 
   return TRUE;
@@ -1401,7 +1429,7 @@ gst_base_parse_sink_event_default (GstBaseParse * parse, GstEvent * event)
 
     case GST_EVENT_FLUSH_STOP:
       gst_adapter_clear (parse->priv->adapter);
-      gst_base_parse_clear_queues (parse);
+      gst_base_parse_clear_queues (parse, FALSE);
       parse->priv->flushing = FALSE;
       parse->priv->discont = TRUE;
       parse->priv->last_pts = GST_CLOCK_TIME_NONE;
@@ -4759,7 +4787,7 @@ gst_base_parse_handle_seek (GstBaseParse * parse, GstEvent * event)
       gst_event_set_seqnum (fevent, seqnum);
       gst_pad_push_event (parse->srcpad, gst_event_ref (fevent));
       gst_pad_push_event (parse->sinkpad, fevent);
-      gst_base_parse_clear_queues (parse);
+      gst_base_parse_clear_queues (parse, FALSE);
     }
 
     memcpy (&parse->segment, &seeksegment, sizeof (GstSegment));
