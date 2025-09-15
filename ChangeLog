@@ -1,3 +1,74 @@
+=== release 1.26.6 ===
+
+2025-09-14 13:13:58 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.26.6
+
+2025-08-21 09:02:45 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstbaseparse.c:
+	  baseparse: Try harder to fixate caps based on upstream in default negotiation
+	  Upstream might provide a width/height while downstream has the field but accepts
+	  a range. gst_caps_fixate() would select the minimum value of that range later
+	  but it would be more accurate to take the upstream value, at least if it's a
+	  subset of what downstream accepts.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/4608
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9603>
+
+2025-08-07 17:09:22 +0200  Vivienne Watermeier <vwatermeier@igalia.com>
+
+	* libs/gst/base/gstbaseparse.c:
+	* tests/check/libs/baseparse.c:
+	  baseparse: don't clear most sticky events after a FLUSH_STOP event
+	  Clearing sticky events - besides EOS, STREAM_GROUP_DONE, and SEGMENT -
+	  risks losing them if a flush occurs before we get another buffer.
+	  Also adds a unit test: parser_sticky_events_after_flush
+	  Fixes #4193
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9594>
+
+2025-08-09 19:00:00 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstcaps.c:
+	* gst/gstchildproxy.c:
+	* gst/gstelementfactory.c:
+	* gst/gststructure.c:
+	* gst/gsttaglist.c:
+	* gst/gsttracerrecord.c:
+	  gstreamer: Make sure to zero-initialize the GValue before G_VALUE_COLLECT_INIT
+	  G_VALUE_INIT does not zero-initialize the data member as automatic
+	  zero-initialization only happens for non-union types. For union types the
+	  initialized value is undefined.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/4595
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9529>
+
+2025-08-11 10:42:06 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/helpers/ptp/net.rs:
+	  ptp: Fix a new Rust 1.89 compiler warning on Windows
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9528>
+
+2025-08-08 17:50:03 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/meson.build:
+	  gstreamer: Disable miniobject inline functions for gobject-introspection for non-subprojects too
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9519>
+
+2025-08-08 10:13:55 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/helpers/ptp/net.rs:
+	  ptp: Fix new compiler warning with Rust 1.89
+	  This still compiles with Rust 1.48 and newer.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9516>
+
+2025-08-07 19:15:29 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.26.5
+
 === release 1.26.5 ===
 
 2025-08-07 19:06:46 +0100  Tim-Philipp Müller <tim@centricular.com>
