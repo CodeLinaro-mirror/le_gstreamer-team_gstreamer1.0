@@ -25,7 +25,6 @@ Build-Depends: debhelper-compat (= 13),
                flex,
                rustc [!alpha !hppa !m68k !sh4],
                gir1.2-glib-2.0,
-               gir1.2-freedesktop,
                bash-completion,
                libcap2-bin [linux-any],
                libcap-dev [linux-any]
