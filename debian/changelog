@@ -1,3 +1,14 @@
+gstreamer1.0 (1.27.2-2) experimental; urgency=medium
+
+  [ Simon McVittie ]
+  * d/control: Explicitly build-depend on the GIR XML that is needed
+  * d/control: Replace libgirepository1.0-dev B-D with gobject-introspection
+    (Closes: #1116569)
+  * d/control: Remove unnecessary B-D on gir1.2-freedesktop
+  * Install Gst-1.0.gir into ${libdir}/gir-1.0
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Tue, 14 Oct 2025 15:49:59 +0200
+
 gstreamer1.0 (1.27.2-1) experimental; urgency=medium
 
   * New upstream version 1.27.2
