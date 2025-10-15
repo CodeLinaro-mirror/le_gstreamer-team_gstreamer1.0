@@ -1,3 +1,55 @@
+=== release 1.26.7 ===
+
+2025-10-14 18:25:43 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.26.7
+
+2025-10-10 20:56:21 -0300  Thibault Saunier <tsaunier@igalia.com>
+
+	* libs/gst/controller/gsttimedvaluecontrolsource.c:
+	  controller: Fix get_all() return type annotation in GIR
+	  The method returns a list of GstControlPoint, not GstTimedValue.
+	  This fixes the type annotation to match the actual return type.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9831>
+
+2025-09-25 09:46:23 +0900  Inbok Kim <inbok.kim@lge.com>
+
+	* libs/gst/net/gstnetclientclock.c:
+	  netclientclock: Fix memory leak in error paths
+	  Add missing g_object_unref() calls for servaddr in error handling
+	  blocks to prevent memory leaks when socket creation, binding, or
+	  address resolution fails.
+	  The servaddr object was not being properly unreferenced in the
+	  no_socket, bind_error, and getsockname_error error paths, leading
+	  to memory leaks in failure scenarios.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9741>
+
+2025-09-24 12:55:28 -0400  Xavier Claessens <xclaessens@netflix.com>
+
+	* tools/gst-launch.c:
+	  gst-launch: Do not assume error messages have a src element
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9739>
+
+2025-09-25 08:19:07 +0900  Inbok Kim <inbok.kim@lge.com>
+
+	* plugins/elements/gstmultiqueue.c:
+	  multiqueue: Fix object reference handling in signal callbacks
+	  Move gst_object_unref() calls after signal emissions in overrun and
+	  underrun callbacks to ensure the multiqueue object remains valid
+	  during signal handler execution.
+	  This prevents potential race conditions where signal handlers might
+	  access a freed object, improving thread safety in multiqueue operations.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9742>
+
+2025-09-14 13:19:28 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.26.6
+
 === release 1.26.6 ===
 
 2025-09-14 13:13:58 +0100  Tim-Philipp Müller <tim@centricular.com>
