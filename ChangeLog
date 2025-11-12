@@ -1,3 +1,79 @@
+=== release 1.26.8 ===
+
+2025-11-10 17:22:05 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.26.8
+
+2025-11-06 17:06:02 +0100  Piotr Brzeziński <piotr@centricular.com>
+
+	* gst/gststructure.c:
+	  structure: Don't crash if GArray has NULL value
+	  NULL can be a valid value in this case and it would previously cause a segfault here.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10038>
+
+2025-11-05 09:43:55 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* tests/check/gst/gstinfo.c:
+	  info: Fix test pattern to check for an expected debug log line
+	  There's not necessarily a `0` between the sub-second `.` and the debug category.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10023>
+
+2025-10-25 08:56:00 +0900  Inbok Kim <inbok.kim@lge.com>
+
+	* gst/printf/vasnprintf.c:
+	  vasnprintf: free dynamic tmp buffer on error to prevent memory leak
+	  If an error occurs and a dynamically allocated tmp buffer is used,
+	  ensure it is properly freed to prevent a memory leak.
+	  Upstream fix reference:
+	  https://cgit.git.savannah.gnu.org/cgit/gnulib.git/commit/?id=4dd9d8a7fa85e9e9223a6c175b4a3fd46d222ff6
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9942>
+
+2025-02-28 19:09:46 +0900  DongJoo Kim <dongjoo.kim@lge.com>
+
+	* gst/gstinfo.h:
+	  gstinfo: Added parentheses to ensure proper evaluation of conditions in logging level checks
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9924>
+
+2025-06-11 16:02:13 +0900  dongjoo.kim <dongjoo.kim@lge.com>
+
+	* gst/parse/grammar.y.in:
+	  parse: Move g_strfreev() a bit later to avoid use-after-free
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9938>
+
+2025-06-10 14:40:16 +0900  dongjoo.kim <dongjoo.kim@lge.com>
+
+	* gst/gstutils.c:
+	  utils: Fix leak in gst_util_filename_compare
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9923>
+
+2025-10-25 12:08:25 +0100  Xavier Claessens <xclaessens@netflix.com>
+
+	* tools/gst-launch.c:
+	  gst-launch: Print details of error msg
+	  It does it already for every message in bus_handler(), which includes
+	  warnings and info, but not for error messages that are instead handled
+	  by bus_sync_handler().
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9908>
+
+2025-10-10 12:39:20 +0200  Havard Graff <havard@pexip.com>
+
+	* gst/gstpad.c:
+	  gstpad: make gst_pad_forward not O(n²)
+	  With many pads, this function grinds to a complete halt.
+	  By instead using a hash-table, and only bother to check if we have
+	  been resynced (because if not, our pads are in order from the iterator),
+	  the algorithm is more like O(n)
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9907>
+
+2025-10-14 18:34:39 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.26.7
+
 === release 1.26.7 ===
 
 2025-10-14 18:25:43 +0100  Tim-Philipp Müller <tim@centricular.com>

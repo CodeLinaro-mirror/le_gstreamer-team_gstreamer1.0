@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer-1.26.7\n"
+"Project-Id-Version: gstreamer-1.26.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-14 18:25+0100\n"
+"POT-Creation-Date: 2025-11-10 17:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1050,7 +1050,7 @@ msgstr ""
 msgid "ERROR: from element %s: %s\n"
 msgstr ""
 
-#: gst/gstutils.c:2684 tools/gst-launch.c:359 tools/gst-launch.c:720
+#: gst/gstutils.c:2684 tools/gst-launch.c:359 tools/gst-launch.c:727
 #, c-format
 msgid ""
 "Additional debug info:\n"
@@ -1467,273 +1467,280 @@ msgstr ""
 msgid "ERROR: %s\n"
 msgstr ""
 
-#: tools/gst-launch.c:566
+#: tools/gst-launch.c:364
+#, c-format
+msgid ""
+"Details:\n"
+"%s\n"
+msgstr ""
+
+#: tools/gst-launch.c:573
 msgid "Setting pipeline to PLAYING ...\n"
 msgstr ""
 
-#: tools/gst-launch.c:572
+#: tools/gst-launch.c:579
 msgid "ERROR: pipeline doesn't want to play.\n"
 msgstr ""
 
-#: tools/gst-launch.c:598
+#: tools/gst-launch.c:605
 #, c-format
 msgid "Got message #%u from element \"%s\" (%s): "
 msgstr ""
 
-#: tools/gst-launch.c:602
+#: tools/gst-launch.c:609
 #, c-format
 msgid "Got message #%u from pad \"%s:%s\" (%s): "
 msgstr ""
 
-#: tools/gst-launch.c:606
+#: tools/gst-launch.c:613
 #, c-format
 msgid "Got message #%u from object \"%s\" (%s): "
 msgstr ""
 
-#: tools/gst-launch.c:610
+#: tools/gst-launch.c:617
 #, c-format
 msgid "Got message #%u (%s): "
 msgstr ""
 
-#: tools/gst-launch.c:641
+#: tools/gst-launch.c:648
 #, c-format
 msgid "Got EOS from element \"%s\".\n"
 msgstr ""
 
-#: tools/gst-launch.c:645
+#: tools/gst-launch.c:652
 msgid "EOS received - stopping pipeline...\n"
 msgstr ""
 
-#: tools/gst-launch.c:654
+#: tools/gst-launch.c:661
 #, c-format
 msgid "FOUND TAG      : found by element \"%s\".\n"
 msgstr ""
 
-#: tools/gst-launch.c:657
+#: tools/gst-launch.c:664
 #, c-format
 msgid "FOUND TAG      : found by pad \"%s:%s\".\n"
 msgstr ""
 
-#: tools/gst-launch.c:660
+#: tools/gst-launch.c:667
 #, c-format
 msgid "FOUND TAG      : found by object \"%s\".\n"
 msgstr ""
 
-#: tools/gst-launch.c:663
+#: tools/gst-launch.c:670
 msgid "FOUND TAG\n"
 msgstr ""
 
-#: tools/gst-launch.c:678
+#: tools/gst-launch.c:685
 #, c-format
 msgid "FOUND TOC      : found by element \"%s\".\n"
 msgstr ""
 
-#: tools/gst-launch.c:681
+#: tools/gst-launch.c:688
 #, c-format
 msgid "FOUND TOC      : found by object \"%s\".\n"
 msgstr ""
 
-#: tools/gst-launch.c:684
+#: tools/gst-launch.c:691
 msgid "FOUND TOC\n"
 msgstr ""
 
-#: tools/gst-launch.c:701
+#: tools/gst-launch.c:708
 #, c-format
 msgid ""
 "INFO:\n"
 "%s\n"
 msgstr ""
 
-#: tools/gst-launch.c:718
+#: tools/gst-launch.c:725
 #, c-format
 msgid "WARNING: from element %s: %s\n"
 msgstr ""
 
-#: tools/gst-launch.c:739
+#: tools/gst-launch.c:746
 msgid "Pipeline is PREROLLED ...\n"
 msgstr ""
 
-#: tools/gst-launch.c:743
+#: tools/gst-launch.c:750
 msgid "Prerolled, waiting for buffering to finish...\n"
 msgstr ""
 
-#: tools/gst-launch.c:747
+#: tools/gst-launch.c:754
 msgid "Prerolled, waiting for progress to finish...\n"
 msgstr ""
 
-#: tools/gst-launch.c:760
+#: tools/gst-launch.c:767
 msgid "buffering..."
 msgstr ""
 
-#: tools/gst-launch.c:777
+#: tools/gst-launch.c:784
 msgid "Done buffering, setting pipeline to PLAYING ...\n"
 msgstr ""
 
 #. we were not buffering but PLAYING, PAUSE  the pipeline.
-#: tools/gst-launch.c:784
+#: tools/gst-launch.c:791
 msgid "Buffering, setting pipeline to PAUSED ...\n"
 msgstr ""
 
-#: tools/gst-launch.c:793
+#: tools/gst-launch.c:800
 msgid "Redistribute latency...\n"
 msgstr ""
 
-#: tools/gst-launch.c:804
+#: tools/gst-launch.c:811
 #, c-format
 msgid "Setting state to %s as requested by %s...\n"
 msgstr ""
 
 #. this application message is posted when we caught an interrupt and
 #. * we need to stop the pipeline.
-#: tools/gst-launch.c:820
+#: tools/gst-launch.c:827
 msgid "Interrupt: Stopping pipeline ...\n"
 msgstr ""
 
-#: tools/gst-launch.c:826
+#: tools/gst-launch.c:833
 msgid "Interrupt while waiting for EOS - stopping pipeline...\n"
 msgstr ""
 
-#: tools/gst-launch.c:831
+#: tools/gst-launch.c:838
 msgid "EOS on shutdown enabled -- Forcing EOS on the pipeline\n"
 msgstr ""
 
-#: tools/gst-launch.c:834
+#: tools/gst-launch.c:841
 msgid "Waiting for EOS...\n"
 msgstr ""
 
-#: tools/gst-launch.c:864
+#: tools/gst-launch.c:871
 #, c-format
 msgid "Progress: (%s) %s\n"
 msgstr ""
 
-#: tools/gst-launch.c:878
+#: tools/gst-launch.c:885
 #, c-format
 msgid "Missing element: %s\n"
 msgstr ""
 
-#: tools/gst-launch.c:892
+#: tools/gst-launch.c:899
 #, c-format
 msgid "Got context from element '%s': %s=%s\n"
 msgstr ""
 
-#: tools/gst-launch.c:996
+#: tools/gst-launch.c:1003
 msgid "ERROR: pipeline doesn't want to preroll.\n"
 msgstr ""
 
-#: tools/gst-launch.c:998
+#: tools/gst-launch.c:1005
 msgid "An error happened while waiting for EOS\n"
 msgstr ""
 
-#: tools/gst-launch.c:1067
+#: tools/gst-launch.c:1074
 #, c-format
 msgid "Use Windows high-resolution clock, precision: %u ms\n"
 msgstr ""
 
-#: tools/gst-launch.c:1098
+#: tools/gst-launch.c:1105
 msgid "Output tags (also known as metadata)"
 msgstr ""
 
-#: tools/gst-launch.c:1100
+#: tools/gst-launch.c:1107
 msgid "Output TOC (chapters and editions)"
 msgstr ""
 
-#: tools/gst-launch.c:1102
+#: tools/gst-launch.c:1109
 msgid "Output status information and property notifications"
 msgstr ""
 
-#: tools/gst-launch.c:1104
+#: tools/gst-launch.c:1111
 msgid "Do not print any progress information"
 msgstr ""
 
-#: tools/gst-launch.c:1106
+#: tools/gst-launch.c:1113
 msgid "Output messages"
 msgstr ""
 
-#: tools/gst-launch.c:1108
+#: tools/gst-launch.c:1115
 msgid ""
 "Do not output status information for the specified property if verbose "
 "output is enabled (can be used multiple times)"
 msgstr ""
 
-#: tools/gst-launch.c:1110
+#: tools/gst-launch.c:1117
 msgid "PROPERTY-NAME"
 msgstr ""
 
-#: tools/gst-launch.c:1112
+#: tools/gst-launch.c:1119
 msgid "Set the name of the program"
 msgstr ""
 
-#: tools/gst-launch.c:1113
+#: tools/gst-launch.c:1120
 msgid "PROGRAM-NAME"
 msgstr ""
 
-#: tools/gst-launch.c:1115
+#: tools/gst-launch.c:1122
 msgid "Do not install a fault handler"
 msgstr ""
 
-#: tools/gst-launch.c:1117
+#: tools/gst-launch.c:1124
 msgid "Force EOS on sources before shutting the pipeline down"
 msgstr ""
 
-#: tools/gst-launch.c:1120
+#: tools/gst-launch.c:1127
 msgid "Gather and print index statistics"
 msgstr ""
 
-#: tools/gst-launch.c:1124
+#: tools/gst-launch.c:1131
 msgid ""
 "Do not print current position of pipeline. If this option is unspecified, "
 "the position will be printed when stdout is a TTY. To enable printing "
 "position when stdout is not a TTY, use \"force-position\" option"
 msgstr ""
 
-#: tools/gst-launch.c:1130
+#: tools/gst-launch.c:1137
 msgid ""
 "Allow printing current position of pipeline even if stdout is not a TTY. "
 "This option has no effect if the \"no-position\" option is specified"
 msgstr ""
 
-#: tools/gst-launch.c:1218
+#: tools/gst-launch.c:1225
 #, c-format
 msgid "ERROR: pipeline could not be constructed: %s.\n"
 msgstr ""
 
-#: tools/gst-launch.c:1222
+#: tools/gst-launch.c:1229
 msgid "ERROR: pipeline could not be constructed.\n"
 msgstr ""
 
-#: tools/gst-launch.c:1226
+#: tools/gst-launch.c:1233
 #, c-format
 msgid "WARNING: erroneous pipeline: %s\n"
 msgstr ""
 
-#: tools/gst-launch.c:1243
+#: tools/gst-launch.c:1250
 msgid "ERROR: the 'pipeline' element wasn't found.\n"
 msgstr ""
 
-#: tools/gst-launch.c:1292
+#: tools/gst-launch.c:1299
 msgid "Setting pipeline to PAUSED ...\n"
 msgstr ""
 
-#: tools/gst-launch.c:1297
+#: tools/gst-launch.c:1304
 msgid "Failed to set pipeline to PAUSED.\n"
 msgstr ""
 
-#: tools/gst-launch.c:1301
+#: tools/gst-launch.c:1308
 msgid "Pipeline is live and does not need PREROLL ...\n"
 msgstr ""
 
-#: tools/gst-launch.c:1305
+#: tools/gst-launch.c:1312
 msgid "Pipeline is PREROLLING ...\n"
 msgstr ""
 
-#: tools/gst-launch.c:1349
+#: tools/gst-launch.c:1356
 msgid "Execution ended after %"
 msgstr ""
 
-#: tools/gst-launch.c:1366
+#: tools/gst-launch.c:1373
 msgid "Setting pipeline to NULL ...\n"
 msgstr ""
 
-#: tools/gst-launch.c:1384
+#: tools/gst-launch.c:1391
 msgid "Freeing pipeline ...\n"
 msgstr ""
