@@ -1,3 +1,10 @@
+gstreamer1.0 (1.26.9-1) unstable; urgency=medium
+
+  * d/control: remove dependencies libunwind/libdw (Closes: #1121374)
+  * New upstream version 1.26.9
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Tue, 02 Dec 2025 09:09:35 +0100
+
 gstreamer1.0 (1.26.8-3) unstable; urgency=medium
 
   * Revert "d/control: libunwind-dev -> libunwind-19-dev"
