@@ -109,7 +109,7 @@ GST_END_TEST;
 
 GST_START_TEST (test_span)
 {
-  GstBuffer *buffer, *sub1, *sub2, *span;
+  GstBuffer *buffer, *sub1, *sub2, *span, *ignored G_GNUC_UNUSED;
   GstMapInfo info;
 
   buffer = gst_buffer_new_and_alloc (4);
@@ -118,9 +118,9 @@ GST_START_TEST (test_span)
   memcpy (info.data, "data", 4);
   gst_buffer_unmap (buffer, &info);
 
-  ASSERT_CRITICAL (gst_buffer_append (NULL, NULL));
-  ASSERT_CRITICAL (gst_buffer_append (buffer, NULL));
-  ASSERT_CRITICAL (gst_buffer_append (NULL, buffer));
+  ASSERT_CRITICAL (ignored = gst_buffer_append (NULL, NULL));
+  ASSERT_CRITICAL (ignored = gst_buffer_append (buffer, NULL));
+  ASSERT_CRITICAL (ignored = gst_buffer_append (NULL, buffer));
 
   sub1 = gst_buffer_copy_region (buffer, GST_BUFFER_COPY_ALL, 0, 2);
   fail_if (sub1 == NULL, "copy_region of buffer returned NULL");
@@ -956,7 +956,7 @@ GST_START_TEST (test_auto_unmap)
   buf = gst_buffer_new_memdup (ro_memory, sizeof (ro_memory));
 
   {
-    g_auto (GstBufferMapInfo) map = GST_MAP_INFO_INIT;
+    g_auto (GstMapInfo) map = GST_MAP_INFO_INIT;
     fail_unless (gst_buffer_map (buf, &map, GST_MAP_READ));
     mem = gst_memory_ref (map.memory);
     /* mem should be reffed by buffer, map and us */

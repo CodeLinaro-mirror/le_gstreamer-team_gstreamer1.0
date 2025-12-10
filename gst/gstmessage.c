@@ -2886,6 +2886,54 @@ gst_message_parse_device_changed (GstMessage * message, GstDevice ** device,
 }
 
 /**
+ * gst_message_new_device_monitor_started:
+ * @src: (transfer none) (nullable): The #GstObject that created the message
+ * @success: Whether the monitor was started successfully
+ *
+ * Creates a new device-monitor-started message. The device-monitor-started
+ * message is produced by a #GstDeviceMonitor once it has started probing
+ * devices. It does not indicate whether any #GstDeviceProvider instances
+ * support monitoring at all, only whether at least one was able to start
+ * probing.
+ *
+ * Returns: (transfer full): a newly allocated #GstMessage
+ *
+ * Since: 1.28
+ */
+GstMessage *
+gst_message_new_device_monitor_started (GstObject * src, gboolean success)
+{
+  GstStructure *s =
+      gst_structure_new_static_str ("GstMessageDeviceMonitorStarted", "success",
+      G_TYPE_BOOLEAN, success, NULL);
+  return gst_message_new_custom (GST_MESSAGE_DEVICE_MONITOR_STARTED, src, s);
+}
+
+/**
+ * gst_message_parse_device_monitor_started:
+ * @message: a #GstMessage of type %GST_MESSAGE_DEVICE_MONITOR_STARTED
+ * @success: (out): Result location for whether the #GstDeviceMonitor was
+ *  successfully started
+ *
+ * Parses a device-monitor-started message. The device-monitor-started message
+ * is produced by a #GstDeviceMonitor once at least one #GstDeviceProvider
+ * successfully starts probing.
+ *
+ * Since: 1.28
+ */
+void
+gst_message_parse_device_monitor_started (GstMessage * message,
+    gboolean * success)
+{
+  g_return_if_fail (GST_IS_MESSAGE (message));
+  g_return_if_fail (GST_MESSAGE_TYPE (message) ==
+      GST_MESSAGE_DEVICE_MONITOR_STARTED);
+
+  gst_structure_get (GST_MESSAGE_STRUCTURE (message),
+      "success", G_TYPE_BOOLEAN, success, NULL);
+}
+
+/**
  * gst_message_new_property_notify:
  * @src: (transfer none): The #GstObject whose property changed (may or may not be a #GstElement)
  * @property_name: name of the property that changed
@@ -3359,8 +3407,8 @@ gst_message_get_num_redirect_entries (GstMessage * message)
 {
   GstStructure *structure;
   const GValue *entry_locations_gvalue;
-  const GValue *entry_taglists_gvalue;
-  const GValue *entry_structures_gvalue;
+  const GValue *entry_taglists_gvalue GST_UNUSED_CHECKS;
+  const GValue *entry_structures_gvalue GST_UNUSED_CHECKS;
   gsize size;
 
   g_return_val_if_fail (GST_IS_MESSAGE (message), 0);
@@ -3371,12 +3419,14 @@ gst_message_get_num_redirect_entries (GstMessage * message)
   entry_locations_gvalue =
       gst_structure_get_value (structure, "redirect-entry-locations");
   g_return_val_if_fail (GST_VALUE_HOLDS_LIST (entry_locations_gvalue), 0);
+#ifndef G_DISABLE_CHECKS
   entry_taglists_gvalue =
       gst_structure_get_value (structure, "redirect-entry-taglists");
   g_return_val_if_fail (GST_VALUE_HOLDS_LIST (entry_taglists_gvalue), 0);
   entry_structures_gvalue =
       gst_structure_get_value (structure, "redirect-entry-structures");
   g_return_val_if_fail (GST_VALUE_HOLDS_LIST (entry_structures_gvalue), 0);
+#endif
 
   size = gst_value_list_get_size (entry_locations_gvalue);
 

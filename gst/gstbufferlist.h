@@ -38,7 +38,7 @@ typedef struct _GstBufferList GstBufferList;
 
 /**
  * GstBufferListFunc:
- * @buffer: (out) (nullable): pointer to the buffer
+ * @buffer: (inout) (nullable): pointer to the buffer
  * @idx: the index of @buffer
  * @user_data: user data passed to gst_buffer_list_foreach()
  *
@@ -153,10 +153,10 @@ GType                    gst_buffer_list_get_type              (void);
 /* allocation */
 
 GST_API
-GstBufferList *          gst_buffer_list_new                   (void) G_GNUC_MALLOC;
+GstBufferList *          gst_buffer_list_new                   (void) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
 
 GST_API
-GstBufferList *          gst_buffer_list_new_sized             (guint size) G_GNUC_MALLOC;
+GstBufferList *          gst_buffer_list_new_sized             (guint size) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
 
 GST_API
 guint                    gst_buffer_list_length                (GstBufferList *list);
@@ -178,7 +178,7 @@ gboolean                 gst_buffer_list_foreach               (GstBufferList *l
                                                                 GstBufferListFunc func,
 								gpointer user_data);
 GST_API
-GstBufferList *          gst_buffer_list_copy_deep             (const GstBufferList * list);
+GstBufferList *          gst_buffer_list_copy_deep             (const GstBufferList * list) G_GNUC_WARN_UNUSED_RESULT;
 
 GST_API
 gsize                    gst_buffer_list_calculate_size        (GstBufferList * list);
