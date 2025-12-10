@@ -609,6 +609,7 @@ libgstcontroller-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_timed_value_control_source_get_all@Base 1.0.0
  gst_timed_value_control_source_get_count@Base 1.0.0
  gst_timed_value_control_source_get_type@Base 1.0.0
+ gst_timed_value_control_source_list_control_points@Base 1.27.50
  gst_timed_value_control_source_set@Base 1.0.0
  gst_timed_value_control_source_set_from_list@Base 1.0.0
  gst_timed_value_control_source_unset@Base 1.0.0
@@ -698,6 +699,8 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  _gst_debug_dump_mem_id@Base 1.22.0
  _gst_debug_enabled@Base 1.0.0
  _gst_debug_get_category@Base 1.0.0
+ _gst_debug_log_once@Base 1.27.50
+ _gst_debug_log_once_id@Base 1.27.50
  _gst_debug_min@Base 1.0.0
  _gst_debug_nameof_funcptr@Base 1.0.0
  _gst_debug_register_funcptr@Base 1.0.0
@@ -726,6 +729,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  _gst_toc_type@Base 1.4.0
  _gst_value_array_type@Base 1.4.0
  _gst_value_list_type@Base 1.4.0
+ _gst_value_set_type@Base 1.27.50
  gst_allocation_params_copy@Base 1.0.0
  gst_allocation_params_free@Base 1.0.0
  gst_allocation_params_get_type@Base 1.0.0
@@ -908,6 +912,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_bus_timed_pop@Base 1.0.0
  gst_bus_timed_pop_filtered@Base 1.0.0
  gst_calculate_linear_regression@Base 1.12.0
+ gst_call_async@Base 1.27.50
  gst_caps_append@Base 1.0.0
  gst_caps_append_structure@Base 1.0.0
  gst_caps_append_structure_full@Base 1.2.0
@@ -1010,6 +1015,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_caps_to_string@Base 1.0.0
  gst_caps_truncate@Base 1.0.0
  gst_caps_unref@Base 1.18.3
+ gst_check_version@Base 1.27.50
  gst_child_proxy_child_added@Base 1.0.0
  gst_child_proxy_child_removed@Base 1.0.0
  gst_child_proxy_get@Base 1.0.0
@@ -1061,6 +1067,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_clock_id_wait@Base 1.0.0
  gst_clock_id_wait_async@Base 1.0.0
  gst_clock_is_synced@Base 1.6.0
+ gst_clock_is_system_monotonic@Base 1.27.50
  gst_clock_new_periodic_id@Base 1.0.0
  gst_clock_new_single_shot_id@Base 1.0.0
  gst_clock_periodic_id_reinit@Base 1.0.0
@@ -1078,6 +1085,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_context_copy@Base 1.18.3
  gst_context_get_context_type@Base 1.2.0
  gst_context_get_structure@Base 1.2.0
+ gst_context_get_task_pool@Base 1.27.50
  gst_context_get_type@Base 1.2.0
  gst_context_has_context_type@Base 1.2.0
  gst_context_is_persistent@Base 1.2.0
@@ -1086,6 +1094,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_context_new@Base 1.2.0
  gst_context_ref@Base 1.18.3
  gst_context_replace@Base 1.18.3
+ gst_context_set_task_pool@Base 1.27.50
  gst_context_unref@Base 1.18.3
  gst_context_writable_structure@Base 1.2.0
  gst_control_binding_get_g_value_array@Base 1.0.0
@@ -1100,6 +1109,18 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_control_source_get_value_array@Base 1.0.0
  gst_core_error_get_type@Base 1.0.0
  gst_core_error_quark@Base 1.0.0
+ gst_cpuid_supports_arm_neon64@Base 1.27.50
+ gst_cpuid_supports_arm_neon@Base 1.27.50
+ gst_cpuid_supports_x86_3dnow@Base 1.27.50
+ gst_cpuid_supports_x86_avx2@Base 1.27.50
+ gst_cpuid_supports_x86_avx@Base 1.27.50
+ gst_cpuid_supports_x86_mmx@Base 1.27.50
+ gst_cpuid_supports_x86_mmxext@Base 1.27.50
+ gst_cpuid_supports_x86_sse2@Base 1.27.50
+ gst_cpuid_supports_x86_sse3@Base 1.27.50
+ gst_cpuid_supports_x86_sse4_1@Base 1.27.50
+ gst_cpuid_supports_x86_sse4_2@Base 1.27.50
+ gst_cpuid_supports_x86_ssse3@Base 1.27.50
  gst_custom_meta_get_structure@Base 1.20.0
  gst_custom_meta_has_name@Base 1.20.0
  gst_date_time_get_day@Base 1.0.0
@@ -1527,6 +1548,9 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_log_context_reset@Base 1.27.1
  gst_make_element_message_details@Base 1.10.0
  gst_map_flags_get_type@Base 1.0.0
+ gst_map_info_clear@Base 1.27.50
+ gst_map_info_get_data@Base 1.27.50
+ gst_map_info_init@Base 1.27.50
  gst_memory_alignment@Base 1.0.0
  gst_memory_copy@Base 1.0.0
  gst_memory_flags_get_type@Base 1.0.0
@@ -1568,6 +1592,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_message_new_custom@Base 1.0.0
  gst_message_new_device_added@Base 1.4.0
  gst_message_new_device_changed@Base 1.16.0
+ gst_message_new_device_monitor_started@Base 1.27.50
  gst_message_new_device_removed@Base 1.4.0
  gst_message_new_duration_changed@Base 1.0.0
  gst_message_new_element@Base 1.0.0
@@ -1610,6 +1635,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_message_parse_context_type@Base 1.2.0
  gst_message_parse_device_added@Base 1.4.0
  gst_message_parse_device_changed@Base 1.16.0
+ gst_message_parse_device_monitor_started@Base 1.27.50
  gst_message_parse_device_removed@Base 1.4.0
  gst_message_parse_error@Base 1.0.0
  gst_message_parse_error_details@Base 1.10.0
@@ -1706,6 +1732,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_mini_object_weak_ref@Base 1.0.0
  gst_mini_object_weak_unref@Base 1.0.0
  gst_object_add_control_binding@Base 1.0.0
+ gst_object_call_async@Base 1.27.50
  gst_object_check_uniqueness@Base 1.0.0
  gst_object_default_deep_notify@Base 1.0.0
  gst_object_default_error@Base 1.0.0
@@ -1716,6 +1743,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_object_get_name@Base 1.0.0
  gst_object_get_parent@Base 1.0.0
  gst_object_get_path_string@Base 1.0.0
+ gst_object_get_toplevel@Base 1.27.50
  gst_object_get_type@Base 1.0.0
  gst_object_get_value@Base 1.0.0
  gst_object_get_value_array@Base 1.0.0
@@ -1798,7 +1826,16 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_pad_probe_info_get_buffer@Base 1.0.0
  gst_pad_probe_info_get_buffer_list@Base 1.0.0
  gst_pad_probe_info_get_event@Base 1.0.0
+ gst_pad_probe_info_get_flow_return@Base 1.27.50
+ gst_pad_probe_info_get_id@Base 1.27.50
+ gst_pad_probe_info_get_offset@Base 1.27.50
  gst_pad_probe_info_get_query@Base 1.0.0
+ gst_pad_probe_info_get_size@Base 1.27.50
+ gst_pad_probe_info_get_type@Base 1.27.50
+ gst_pad_probe_info_set_buffer@Base 1.27.50
+ gst_pad_probe_info_set_buffer_list@Base 1.27.50
+ gst_pad_probe_info_set_event@Base 1.27.50
+ gst_pad_probe_info_set_flow_return@Base 1.27.50
  gst_pad_probe_return_get_type@Base 1.0.0
  gst_pad_probe_type_get_type@Base 1.0.0
  gst_pad_proxy_query_accept_caps@Base 1.0.0
@@ -2622,18 +2659,25 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_value_list_prepend_value@Base 1.0.0
  gst_value_register@Base 1.0.0
  gst_value_serialize@Base 1.0.0
+ gst_value_set_append_and_take_value@Base 1.27.50
+ gst_value_set_append_value@Base 1.27.50
  gst_value_set_bitmask@Base 1.0.0
  gst_value_set_caps@Base 1.0.0
  gst_value_set_caps_features@Base 1.2.0
+ gst_value_set_concat@Base 1.27.50
  gst_value_set_double_range@Base 1.0.0
  gst_value_set_flagset@Base 1.6.0
  gst_value_set_fraction@Base 1.0.0
  gst_value_set_fraction_range@Base 1.0.0
  gst_value_set_fraction_range_full@Base 1.0.0
+ gst_value_set_get_size@Base 1.27.50
+ gst_value_set_get_type@Base 1.27.50
+ gst_value_set_get_value@Base 1.27.50
  gst_value_set_int64_range@Base 1.0.0
  gst_value_set_int64_range_step@Base 1.0.0
  gst_value_set_int_range@Base 1.0.0
  gst_value_set_int_range_step@Base 1.0.0
+ gst_value_set_prepend_value@Base 1.27.50
  gst_value_set_structure@Base 1.0.0
  gst_value_subtract@Base 1.0.0
  gst_value_union@Base 1.0.0
