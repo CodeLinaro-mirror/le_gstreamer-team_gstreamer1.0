@@ -1,3 +1,61 @@
+=== release 1.26.10 ===
+
+2025-12-25 15:44:26 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.26.10
+
+2025-12-05 11:19:25 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstbasesrc.c:
+	  basesrc: Fix decide allocation fallback
+	  Fallback to generic pool, even if the change to the config was validated. Pools
+	  may have other restrictions that may render them unusable.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10304>
+
+2025-12-04 16:48:37 -0500  Nicolas Dufresne <nicolas.dufresne@collabora.com>
+
+	* libs/gst/base/gstbasetransform.c:
+	  basetransform: Fix decide allocation fallback
+	  Fallback to generic pool, even if the change to the config was validated. Pools
+	  may have other restrictions that may render them unusable.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10304>
+
+2025-12-02 18:58:29 +0100  Christoph Reiter <reiter.christoph@gmail.com>
+
+	* plugins/elements/gstfilesink.c:
+	  gstfilesink: fix the build with recent mingw-w64
+	  The build fails with:
+	  /clang64/include/unistd.h:59:5: error: conflicting types for '_chsize'
+	  59 | int ftruncate(int, off_t)
+	  since ftruncate is redefined before unistd.h is included.
+	  Avoid it by including the system headers first.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10277>
+
+2025-11-24 19:42:58 +0900  Haejung Hwang <haejung.hwang@lge.com>
+
+	* gst/gstpipeline.c:
+	  gstpipeline: Improve resource cleanup logic for clock objects
+	  Clarify and strengthen object release handling by:
+	  -Use gst_clear_object() for NULL-safe unref and to avoid dangling pointers
+	  -Ensure proper refcounting when reusing cur_clock
+	  -Limit clock scope to where it’s needed for base-time and clock recalculation
+	  -Fix memory leak in error path by releasing cur_clock
+	  Reason:
+	  This change makes cleanup more predictable and prevents scenarios where two
+	  pointers could reference the same object, ensuring each resource is released
+	  only once and pointers are invalidated after use. This improves robustness and
+	  maintains consistent object lifetime management
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10270>
+
+2025-12-01 17:32:18 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.26.9
+
 === release 1.26.9 ===
 
 2025-12-01 17:27:07 +0000  Tim-Philipp Müller <tim@centricular.com>
