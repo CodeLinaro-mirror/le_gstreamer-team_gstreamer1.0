@@ -1,3 +1,191 @@
+=== release 1.27.90 ===
+
+2026-01-05 20:15:10 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	* RELEASE:
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.27.90
+
+2026-01-05 18:57:01 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* po/af.po:
+	* po/ast.po:
+	* po/az.po:
+	* po/be.po:
+	* po/bg.po:
+	* po/ca.po:
+	* po/cs.po:
+	* po/da.po:
+	* po/de.po:
+	* po/el.po:
+	* po/en_GB.po:
+	* po/eo.po:
+	* po/es.po:
+	* po/eu.po:
+	* po/fi.po:
+	* po/fr.po:
+	* po/fur.po:
+	* po/gl.po:
+	* po/hr.po:
+	* po/hu.po:
+	* po/id.po:
+	* po/it.po:
+	* po/ja.po:
+	* po/ka.po:
+	* po/ko.po:
+	* po/lt.po:
+	* po/lv.po:
+	* po/nb.po:
+	* po/nl.po:
+	* po/pl.po:
+	* po/pt_BR.po:
+	* po/ro.po:
+	* po/ru.po:
+	* po/rw.po:
+	* po/sk.po:
+	* po/sl.po:
+	* po/sq.po:
+	* po/sr.po:
+	* po/sv.po:
+	* po/tr.po:
+	* po/uk.po:
+	* po/vi.po:
+	* po/zh_CN.po:
+	* po/zh_TW.po:
+	  gstreamer: update translations
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10497>
+
+2025-12-30 17:53:22 -0500  Doug Nazar <nazard@nazar.ca>
+
+	* tests/check/elements/queue.c:
+	  tests: Fix several memory leaks
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10476>
+
+2025-12-28 17:28:22 +0000  L. E. Segovia <amy@centricular.com>
+
+	* gst/gstregistry.c:
+	  registry: Skip .dSYM bundles when loading plugins
+	  The .dylibs here aren't actual binaries, they're mach-O files with debug
+	  sections only. These will be naturally skipped/blacklisted, but after a
+	  long stream of dlopen errors.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10466>
+
+2025-12-28 17:27:10 +0000  L. E. Segovia <amy@centricular.com>
+
+	* libs/gst/helpers/ptp/meson.build:
+	  ptp: Fix helper test naming convention and gate it
+	  This ensures it doesn't get built unless -Dtests=enabled, and that its symbols
+	  don't get confused for gst-ptp-helper's.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10466>
+
+2025-12-26 18:03:19 -0500  Doug Nazar <nazard@nazar.ca>
+
+	* tests/check/gst/gstinfo.c:
+	  info: Increase test interval when running under valgrind
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10456>
+
+2025-12-19 15:40:26 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* meson.build:
+	  meson: Solve some cyclic dependencies caused by test-only deps
+	  gstreamer => gobject-introspection => cairo => fontconfig => freetype2 => harfbuzz => cairo
+	  gst-plugins-base => libdrm => cairo => fontconfig => freetype2 => harfbuzz => cairo
+	  gst-plugins-good => cairo => librsvg => cairo
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10422>
+
+2025-12-19 15:19:42 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* meson.build:
+	  meson: Disable introspection option on glib
+	  Allows us to update glib and gobject-introspection. We don't use the
+	  new introspection infrastructure merged in glib anyway.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10422>
+
+2025-12-19 18:49:46 +0100  Alicia Boya García <aboya@igalia.com>
+
+	* gst/gstutils.c:
+	  utils: Fix race in gst_element_link_pads_filtered()
+	  gst_element_link_pads_filtered() can occur at the same time the bin
+	  is in the middle of a PAUSED->PLAYING transition.
+	  Since before this patch the capsfilter state lock bit wasn't being set,
+	  in the case of a failure to link it was possible for the state change to
+	  NULL in gst_element_link_pads_filtered() to race against a state change
+	  to PLAYING inside gst_bin_change_state_func() and lose.
+	  This caused errors when the unreffed capsfilter was disposed moments
+	  later, as the element dispose function found the element to be
+	  accidentally in PLAYING state.
+	  As of writing, this particular race reproduces consistently when running
+	  check.gst-plugins-good.elements_qtdemux.test_qtdemux_sample_interleaving
+	  under valgrind with the the default fair scheduler (valgrind
+	  --fair-sched=try), both locally and in the CI. This patch fixes it.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10383>
+
+2025-12-18 09:19:52 +0100  Carlos Falgueras García <cfalgueras@fluendo.com>
+
+	* plugins/elements/gstqueue.c:
+	  queue: Log the status of the queue at debug level
+	  Log the queue status at "GST_LEVEL_DEBUG" when it's empty or full by
+	  reusing the current macro "STATUS()".
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10403>
+
+2025-12-15 15:08:02 -0500  Daniel Morin <daniel.morin@collabora.com>
+
+	* gst/gstvalue.c:
+	* gst/gstvalue.h:
+	* tests/check/gst/gstcaps.c:
+	* tests/check/gst/gststructure.c:
+	* tests/check/gst/gstvalue.c:
+	* tools/gst-inspect.c:
+	  gst: Rename GstValueSet to GstValueUniqueList
+	  GObject-Introspection has an issue with GstSet because anything that starts with
+	  'gst_value_set' becomes something that belongs to 'GstSet' but we have
+	  gst_value_set_bitmask and gst_value_set_SOMETHING (), which all would become
+	  methods of GstSet.
+	  To avoid this, rename GstSet (aka GstValueSet) to GstUniqueList (aka
+	  GstValueUniqueList).
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/4813
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10384>
+
+2025-12-13 22:17:41 +0100  François Laignel <francois@centricular.com>
+
+	* plugins/elements/gstinputselector.c:
+	* plugins/elements/gstinputselector.h:
+	  input-selector: implement a two-phase sinkpad switch
+	  Switching the sinkpad was racy: when a new sinkpad was selected, previous
+	  active sinkpad could continue pushing events or buffers, while the new sinkpad
+	  already started pushing its sticky events, leading to inconsistencies
+	  downstream.
+	  This commit implements a a two-phase switch approach:
+	  1. When the user selects the active pad, it is first set as pending.
+	  2. Functions handling buffers or events first check whether a new pad is pending
+	  activation, in which case the new pad activation is commited.
+	  3. After completing step 2, the functions handles the buffer or event.
+	  The active pad can not change before the buffer or event is pushed.
+	  Mutability of the pending pad is protected by SELECTOR_LOCK.
+	  Mutability of the active pad is protected by a dedicated RW lock which can be
+	  locked independently from SELECTOR_LOCK and can prevent active pad changes when
+	  that would interfere with current processing.
+	  The RW lock allows preventing the active_pad from being changed while we
+	  are processing a buffer or event.
+	  Only `gst_input_selector_maybe_commit_active_pad ()` can get this lock in
+	  writer mode for a short period of time (committing the `pending_active_pad`
+	  to `active_pad`). Other concurrent code paths lock it in reader mode.
+	  When a `pending_active_pad` is available (and only in that case),
+	  code paths calling `gst_input_selector_maybe_commit_active_pad ()` would
+	  hang until the lock is available for writer mode, which is expected since
+	  their processing should be performed with respect to the expected `active_pad`.
+	  Note that a `GRecMutex` was also considered to prevent possible deadlocks
+	  in callbacks, but only a `GRWLock` can deal with the concurrency which occurs
+	  during preroll.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10204>
+
+2025-12-09 19:13:20 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.27.50
+
 === release 1.27.50 ===
 
 2025-12-09 19:08:48 +0000  Tim-Philipp Müller <tim@centricular.com>
