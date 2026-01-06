@@ -729,7 +729,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  _gst_toc_type@Base 1.4.0
  _gst_value_array_type@Base 1.4.0
  _gst_value_list_type@Base 1.4.0
- _gst_value_set_type@Base 1.27.50
+ _gst_value_unique_list_type@Base 1.27.90
  gst_allocation_params_copy@Base 1.0.0
  gst_allocation_params_free@Base 1.0.0
  gst_allocation_params_get_type@Base 1.0.0
@@ -2659,28 +2659,28 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_value_list_prepend_value@Base 1.0.0
  gst_value_register@Base 1.0.0
  gst_value_serialize@Base 1.0.0
- gst_value_set_append_and_take_value@Base 1.27.50
- gst_value_set_append_value@Base 1.27.50
  gst_value_set_bitmask@Base 1.0.0
  gst_value_set_caps@Base 1.0.0
  gst_value_set_caps_features@Base 1.2.0
- gst_value_set_concat@Base 1.27.50
  gst_value_set_double_range@Base 1.0.0
  gst_value_set_flagset@Base 1.6.0
  gst_value_set_fraction@Base 1.0.0
  gst_value_set_fraction_range@Base 1.0.0
  gst_value_set_fraction_range_full@Base 1.0.0
- gst_value_set_get_size@Base 1.27.50
- gst_value_set_get_type@Base 1.27.50
- gst_value_set_get_value@Base 1.27.50
  gst_value_set_int64_range@Base 1.0.0
  gst_value_set_int64_range_step@Base 1.0.0
  gst_value_set_int_range@Base 1.0.0
  gst_value_set_int_range_step@Base 1.0.0
- gst_value_set_prepend_value@Base 1.27.50
  gst_value_set_structure@Base 1.0.0
  gst_value_subtract@Base 1.0.0
  gst_value_union@Base 1.0.0
+ gst_value_unique_list_append_and_take_value@Base 1.27.90
+ gst_value_unique_list_append_value@Base 1.27.90
+ gst_value_unique_list_concat@Base 1.27.90
+ gst_value_unique_list_get_size@Base 1.27.90
+ gst_value_unique_list_get_type@Base 1.27.90
+ gst_value_unique_list_get_value@Base 1.27.90
+ gst_value_unique_list_prepend_value@Base 1.27.90
  gst_vec_deque_clear@Base 1.25.1
  gst_vec_deque_drop_element@Base 1.25.1
  gst_vec_deque_drop_struct@Base 1.25.1
