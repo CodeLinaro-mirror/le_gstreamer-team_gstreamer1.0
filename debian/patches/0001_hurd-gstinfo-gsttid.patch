@@ -1,0 +1,13 @@
+Index: gstreamer1.0/gst/gstinfo.c
+===================================================================
+--- gstreamer1.0.orig/gst/gstinfo.c
++++ gstreamer1.0/gst/gstinfo.c
+@@ -1700,7 +1700,7 @@ _get_thread_id (void)
+ #elif defined(__linux__)
+   return syscall (SYS_gettid);
+ #else
+-  return pthread_self ();
++  return (GstTid)pthread_self ();
+ #endif
+ }
+ 
