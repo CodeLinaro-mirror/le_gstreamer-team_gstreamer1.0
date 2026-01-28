@@ -33,6 +33,7 @@ gst_sources = files(
   'gstatomicqueue.c',
   'gstmessage.c',
   'gstmeta.c',
+  'gstmetafactory.c',
   'gstmemory.c',
   'gstminiobject.c',
   'gstpad.c',
@@ -71,6 +72,7 @@ gst_sources = files(
   'gstvalue.c',
   'gstvecdeque.c',
   'gstparse.c',
+  'gstcpuid.c',
 )
 
 gst_headers = files(
@@ -113,6 +115,7 @@ gst_headers = files(
   'gstmacros.h',
   'gstmessage.h',
   'gstmeta.h',
+  'gstmetafactory.h',
   'gstmemory.h',
   'gstminiobject.h',
   'gstpad.h',
@@ -150,6 +153,7 @@ gst_headers = files(
   'gstregistry.h',
   'gstparse.h',
   'math-compat.h',
+  'gstcpuid.h',
 )
 if host_system == 'darwin'
   gst_headers += files('gstmacos.h')
@@ -172,6 +176,15 @@ endif
 
 if host_system == 'darwin'
   extra_deps += dependency('appleframeworks', modules : ['Cocoa'])
+endif
+
+if host_system not in ['darwin', 'windows']
+  if host_system == 'android'
+    # Supported since the very beginning
+    cdata.set('HAVE_GETTID', true)
+  else
+    cdata.set('HAVE_GETTID', cc.has_function('gettid'))
+  endif
 endif
 
 gst_registry = get_option('registry')

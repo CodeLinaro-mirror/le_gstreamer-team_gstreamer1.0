@@ -109,7 +109,7 @@ GST_END_TEST;
 
 GST_START_TEST (test_span)
 {
-  GstBuffer *buffer, *sub1, *sub2, *span;
+  GstBuffer *buffer, *sub1, *sub2, *span, *ignored G_GNUC_UNUSED;
   GstMapInfo info;
 
   buffer = gst_buffer_new_and_alloc (4);
@@ -118,9 +118,9 @@ GST_START_TEST (test_span)
   memcpy (info.data, "data", 4);
   gst_buffer_unmap (buffer, &info);
 
-  ASSERT_CRITICAL (gst_buffer_append (NULL, NULL));
-  ASSERT_CRITICAL (gst_buffer_append (buffer, NULL));
-  ASSERT_CRITICAL (gst_buffer_append (NULL, buffer));
+  ASSERT_CRITICAL (ignored = gst_buffer_append (NULL, NULL));
+  ASSERT_CRITICAL (ignored = gst_buffer_append (buffer, NULL));
+  ASSERT_CRITICAL (ignored = gst_buffer_append (NULL, buffer));
 
   sub1 = gst_buffer_copy_region (buffer, GST_BUFFER_COPY_ALL, 0, 2);
   fail_if (sub1 == NULL, "copy_region of buffer returned NULL");
@@ -956,7 +956,7 @@ GST_START_TEST (test_auto_unmap)
   buf = gst_buffer_new_memdup (ro_memory, sizeof (ro_memory));
 
   {
-    g_auto (GstBufferMapInfo) map = GST_MAP_INFO_INIT;
+    g_auto (GstMapInfo) map = GST_MAP_INFO_INIT;
     fail_unless (gst_buffer_map (buf, &map, GST_MAP_READ));
     mem = gst_memory_ref (map.memory);
     /* mem should be reffed by buffer, map and us */
@@ -1001,6 +1001,112 @@ GST_START_TEST (test_reference_timestamp_meta_serialization)
 
 GST_END_TEST;
 
+GST_START_TEST (test_reference_timestamp_meta_with_info_serialization)
+{
+  GstCaps *reference =
+      gst_caps_new_simple ("timestamp/x-unix", NULL, NULL, NULL);
+  GstStructure *info =
+      gst_structure_new ("info", "field1", G_TYPE_INT, 123, "field2",
+      G_TYPE_STRING, "hello", NULL);
+
+  /* Serialize */
+  GstBuffer *buffer = gst_buffer_new ();
+  GstReferenceTimestampMeta *meta =
+      gst_buffer_add_reference_timestamp_meta (buffer, reference, 1, 2);
+  meta->info = gst_structure_copy (info);
+  GByteArray *data = g_byte_array_new ();
+  fail_unless (gst_meta_serialize_simple ((GstMeta *) meta, data));
+  gst_buffer_unref (buffer);
+
+  /* Deserialize */
+  buffer = gst_buffer_new ();
+  guint32 consumed;
+  meta = (GstReferenceTimestampMeta *) gst_meta_deserialize (buffer, data->data,
+      data->len, &consumed);
+  fail_unless (meta);
+  fail_unless (consumed == data->len);
+  fail_unless (GST_IS_CAPS (meta->reference));
+  fail_unless (gst_caps_is_equal (meta->reference, reference));
+  fail_unless_equals_uint64 (meta->timestamp, 1);
+  fail_unless_equals_uint64 (meta->duration, 2);
+  fail_unless (GST_IS_STRUCTURE (meta->info));
+  fail_unless (gst_structure_is_equal (meta->info, info));
+  gst_buffer_unref (buffer);
+
+  gst_caps_unref (reference);
+  gst_structure_free (info);
+  g_byte_array_unref (data);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_set_and_cmp)
+{
+  static const gchar set_and_cmp_sha1[] =
+      "bb155a387903c569611f3d3e74f114f545819213";
+
+  gsize copied;
+  gint rc;
+  gchar *s;
+  guint8 tmp[128];
+
+  guint8 *base = g_malloc0 (1024);
+  GstMemory *mem1 = gst_memory_new_wrapped (0, base, 256, 0, 256, NULL, NULL);
+  GstMemory *mem2 =
+      gst_memory_new_wrapped (0, base + 256, 512, 128, 256, NULL, NULL);
+  GstMemory *mem3 =
+      gst_memory_new_wrapped (0, base + 768, 256, 0, 128, NULL, NULL);
+
+  GstBuffer *buf = gst_buffer_new ();
+  gst_buffer_append_memory (buf, mem1);
+  gst_buffer_append_memory (buf, mem2);
+  gst_buffer_append_memory (buf, mem3);
+
+  copied = gst_buffer_memset (buf, 256, 0x77, 256);
+  fail_unless_equals_uint64 (copied, 256);
+
+  copied = gst_buffer_memset (buf, 0, 0x11, 64);
+  fail_unless_equals_uint64 (copied, 64);
+  copied = gst_buffer_memset (buf, 256 - 32, 0x22, 64);
+  fail_unless_equals_uint64 (copied, 64);
+  copied = gst_buffer_memset (buf, 512 - 32, 0x33, 64);
+  fail_unless_equals_uint64 (copied, 64);
+  copied = gst_buffer_memset (buf, 640 - 32, 0x44, 64);
+  fail_unless_equals_uint64 (copied, 32);
+
+  s = g_compute_checksum_for_data (G_CHECKSUM_SHA1, base, 1024);
+  ck_assert_str_eq (s, set_and_cmp_sha1);
+  g_free (s);
+
+  memset (tmp, 0x11, 64);
+  memset (tmp + 64, 0x00, 32);
+  rc = gst_buffer_memcmp (buf, 0, tmp, 64 + 32);
+  fail_unless_equals_uint64 (rc, 0);
+
+  memset (tmp, 0x00, 32);
+  memset (tmp + 32, 0x22, 64);
+  memset (tmp + 96, 0x77, 32);
+  rc = gst_buffer_memcmp (buf, 256 - 64, tmp, 128);
+  fail_unless_equals_uint64 (rc, 0);
+
+  memset (tmp, 0x77, 32);
+  memset (tmp + 32, 0x33, 64);
+  memset (tmp + 96, 0x00, 32);
+  rc = gst_buffer_memcmp (buf, 512 - 64, tmp, 128);
+  fail_unless_equals_uint64 (rc, 0);
+
+  memset (tmp, 0x00, 32);
+  memset (tmp + 32, 0x44, 32);
+  rc = gst_buffer_memcmp (buf, 640 - 64, tmp, 64);
+  fail_unless_equals_uint64 (rc, 0);
+
+  gst_buffer_unref (buf);
+  g_free (base);
+}
+
+GST_END_TEST;
+
+
 static Suite *
 gst_buffer_suite (void)
 {
@@ -1029,6 +1135,9 @@ gst_buffer_suite (void)
   tcase_add_test (tc_chain, test_new_memdup);
   tcase_add_test (tc_chain, test_auto_unmap);
   tcase_add_test (tc_chain, test_reference_timestamp_meta_serialization);
+  tcase_add_test (tc_chain,
+      test_reference_timestamp_meta_with_info_serialization);
+  tcase_add_test (tc_chain, test_set_and_cmp);
 
   return s;
 }
