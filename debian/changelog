@@ -1,3 +1,10 @@
+gstreamer1.0 (1.28.0-1) unstable; urgency=medium
+
+  * Revert "d/watch: pin to 1.26.x"
+  * New upstream version 1.28.0
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Wed, 28 Jan 2026 09:56:46 +0100
+
 gstreamer1.0 (1.26.10-1) unstable; urgency=medium
 
   * New upstream version 1.26.10
