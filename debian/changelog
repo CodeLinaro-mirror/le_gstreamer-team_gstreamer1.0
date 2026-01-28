@@ -1,3 +1,21 @@
+gstreamer1.0 (1.28.0-2) unstable; urgency=medium
+
+  [ Marc Leeman ]
+  * d/symbols: add new symbols
+  * d/patches: remove 0001-gstreamer-Disable-miniobject-inline-functions-for-go.patch
+  * d/control: remove dependencies libunwind/libdw (Closes: #1121374)
+  * d/symbols: add 1.27.50 new symbols
+  * d/symbols: update 1.27.90 symbols
+
+  [ Simon McVittie ]
+  * d/control: Explicitly build-depend on the GIR XML that is needed
+  * d/control: Replace libgirepository1.0-dev B-D with gobject-introspection
+    (Closes: #1116569)
+  * d/control: Remove unnecessary B-D on gir1.2-freedesktop
+  * Install Gst-1.0.gir into ${libdir}/gir-1.0
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Wed, 28 Jan 2026 11:36:28 +0100
+
 gstreamer1.0 (1.28.0-1) unstable; urgency=medium
 
   * Revert "d/watch: pin to 1.26.x"
