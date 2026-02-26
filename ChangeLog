@@ -1,3 +1,238 @@
+=== release 1.28.1 ===
+
+2026-02-26 01:44:06 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.28.1
+
+2026-02-23 19:42:18 +0900  Seungha Yang <seungha@centricular.com>
+
+	* gst/gstutils.c:
+	  gst: Add explanatory comment to call_async implementation
+	  Clarify why notify is conditionally called for deprecated
+	  gst_element_call_async()
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10872>
+
+2026-02-20 09:28:15 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* tools/gst-stats.c:
+	  gst-stats: Also allow ANSI colored logs without 0x in front of the thread id
+	  The non-ANSI colored regex already handled this correctly and this was required
+	  for Windows before already anyway.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10857>
+
+2026-02-19 13:08:39 -0300  L. E. Segovia <amy@centricular.com>
+
+	* gst/gstregistry.c:
+	  registry: Skip .dSYM bundles when loading plugins, try 2
+	  If paths within the .dSYM folder are being passed, the current filter won't cover them.
+	  See https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10466#note_3330939
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10853>
+
+2026-02-12 02:51:07 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gstregistry.c:
+	* meson.build:
+	  gstreamer: Stop using deprecated G_MODULE_SUFFIX
+	  It's deprecated on macOS because shared libs can be either .so or
+	  .dylib. We already account for that, we might as well stop using
+	  G_MODULE_SUFFIX and get rid of deprecation warnings.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10807>
+
+2026-01-28 11:54:11 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* meson.build:
+	  gstcheck: Disable fork on tvOS and watchOS
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10807>
+
+2026-01-28 11:45:20 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/meson.build:
+	* libs/gst/helpers/ptp/meson.build:
+	* meson.build:
+	  meson: Deprecate `system = 'ios'` in cross files, use subsystem
+	  Since we require Meson 1.4.0, we can now use subsystem names (added in
+	  1.2.0).
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10807>
+
+2023-04-02 16:53:45 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* scripts/dist-common-files.py:
+	* scripts/meson.build:
+	  modules: dist common files from monorepo root
+	  Less noise when making releases, and just need to maintain one copy.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10822>
+
+2026-02-15 17:45:19 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* README.md:
+	  modules: remove subproject README.md from git
+	  Will be added to the tarballs based on the monorepo README on dist.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10822>
+
+2026-02-15 17:20:59 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* RELEASE:
+	  modules: remove RELEASE from git, will be generated from template on dist
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10822>
+
+2026-02-15 15:02:07 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* NEWS:
+	  modules: Remove NEWS from git which is generated from full release notes
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10822>
+
+2026-02-13 19:50:56 +0900  Seungha Yang <seungha@centricular.com>
+
+	* tests/check/libs/bitwriter.c:
+	  tests: bitwriter: Fix leak in test
+	  Fix leak in test revealed after bugfix. The data returned from
+	  gst_bit_writer_reset_and_get_data() must be freed with g_free()
+	  as documented.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10805>
+
+2026-02-13 15:57:13 +0900  Seungha Yang <seungha@centricular.com>
+
+	* libs/gst/base/gstbitwriter.c:
+	  bitwriter: Steal owned data in reset_and_get_data()
+	  Avoid unnecessary data copy/free by returning the owned
+	  data directly to the caller
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10805>
+
+2026-02-11 16:49:02 +0900  Seungha Yang <seungha@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Handle gap event before segment
+	  If gap events are received before segment event, log the situation and
+	  gracefully return FALSE instead of relying on the critical warning path
+	  in gst_segment_clip()
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10789>
+
+2026-02-05 16:31:30 +0100  François Laignel <francois@centricular.com>
+
+	* plugins/elements/gstmultiqueue.c:
+	  multiqueue: reverse playback: use segment stop position as start time
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10770>
+
+2026-02-05 16:24:33 +0900  Seungha Yang <seungha@centricular.com>
+
+	* plugins/elements/gstelements_private.c:
+	  filesink: Report write error correctly on Windows
+	  Propagate write() return value from the writev emulation path
+	  as intended
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10758>
+
+2026-02-05 15:48:30 +0900  Seungha Yang <seungha@centricular.com>
+
+	* plugins/elements/gstelements_private.c:
+	  filesink: Add debug category to file write helper
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10758>
+
+2026-02-02 09:56:59 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.h:
+	  aggregator: Various introspection annotations / docs fixes for vfuncs
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10723>
+
+2026-01-26 23:21:06 +0800  He Junyan <junyan.he@intel.com>
+
+	* gst/gstcaps.c:
+	  caps: gst_caps_append_structure should not allow NULL structure
+	  This check can also help to fix the possible memory leak of features
+	  in gst_caps_append_structure_full() when the structure is NULL.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10689>
+
+2026-01-28 13:53:28 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/net/gstptpclock.c:
+	  ptpclock: Initialize PTP message to avoid invalid uninitialized variable warning
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10656>
+
+2026-01-28 11:57:56 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/helpers/ptp/parse.rs:
+	  ptpclock: Fix copy-paste mistake in error messages
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10656>
+
+2026-01-28 11:52:13 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/helpers/ptp/parse.rs:
+	* libs/gst/net/gstptpclock.c:
+	  ptpclock: Fix potential out-of-bounds read when parsing ANNOUNCE messages
+	  The required length of the message payloader after the common header is 30
+	  bytes, not 20 bytes.
+	  Also fix the same bug in the Rust code, but here it wouldn't have caused any
+	  other problems than a less optimal error message because there is actual bounds
+	  checking.
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/4871
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10656>
+
+2026-01-28 11:49:41 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstdatetime.c:
+	* gst/gsturi.c:
+	  gst: Fix a couple of new const-ness warnings around strstr() usage
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/4871
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10656>
+
+2026-01-14 23:47:04 +0100  Ruben Gonzalez <rgonzalez@fluendo.com>
+
+	* libs/gst/base/gsttypefindhelper.c:
+	  typefindhelper: EOS case explained in more details
+	  Related to https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/4848
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10632>
+
+2026-01-09 20:17:52 +0100  François Laignel <francois@centricular.com>
+
+	* plugins/elements/gstinputselector.c:
+	  input-selector: don't wait for active pad when eos (active-segment mode)
+	  When `sync-mode` is set to `active-segment` and current pad is not active,
+	  don't wait depending on the active segment runtime if the active pad is EOS.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10621>
+
+2026-01-09 18:20:51 +0100  François Laignel <francois@centricular.com>
+
+	* plugins/elements/gstinputselector.c:
+	  input-selector: fix regression receiving eos event
+	  When a pad receives an eos event, it must first check for if the active pad
+	  should be changed. Failure to do that could lead to the event not being
+	  forwarded if current pad is the last pad remaining and it was not active
+	  before.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10621>
+
+2026-01-08 11:54:52 +0100  François Laignel <francois@centricular.com>
+
+	* plugins/elements/gstinputselector.c:
+	  input-selector: don't consider pad being released checking for eos
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10621>
+
+2026-01-06 15:06:57 +0100  François Laignel <francois@centricular.com>
+
+	* plugins/elements/gstinputselector.c:
+	  input-selector: gracefully handle active pad disappearance
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10621>
+
+2026-01-06 11:43:59 +0100  François Laignel <francois@centricular.com>
+
+	* plugins/elements/gstinputselector.c:
+	  input-selector: fix race condition selecting next active pad
+	  When a pad is being released, the pad is marked as flushing and the selector
+	  lock is released before the pad is removed from the element pad list. This is
+	  necessary so any in-progress event or buffer handling for this pad terminates
+	  before the pad is deactivated.
+	  If another thread was trying to select the next active pad at this particular
+	  moment, it could end up picking the pad being released before it was removed
+	  from the element pad list.
+	  This commit adds a flag which is set when the pad is being released, so it won't
+	  get picked as the next active pad.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10621>
+
+2026-01-27 17:10:54 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.28.0
+
 === release 1.28.0 ===
 
 2026-01-27 17:02:33 +0000  Tim-Philipp Müller <tim@centricular.com>
