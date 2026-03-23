@@ -36,9 +36,11 @@ if __name__ == "__main__":
 
     module = os.path.basename(os.path.normpath(source_root))
 
-    print('Copying README.md into dist staging directory ..')
-    readme_src = os.path.join(source_root, '..', '..', 'README.md')
-    shutil.copy2(readme_src, dist_root)
+    # These modules have custom READMEs, keep those
+    if module not in ['gst-docs', 'gst-python', 'gstreamer-sharp']:
+        print('Copying README.md into dist staging directory ..')
+        readme_src = os.path.join(source_root, '..', '..', 'README.md')
+        shutil.copy2(readme_src, dist_root)
 
     # Release notes (instead of NEWS) - could also write it out as NEWS.md
     print('Copying release notes into dist staging directory ..')
