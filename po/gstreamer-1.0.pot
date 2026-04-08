@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer-1.28.1\n"
+"Project-Id-Version: gstreamer-1.28.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-26 01:44+0000\n"
+"POT-Creation-Date: 2026-04-07 20:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -307,7 +307,7 @@ msgstr ""
 msgid "Selected clock cannot be used in pipeline."
 msgstr ""
 
-#: gst/gstregistry.c:1904
+#: gst/gstregistry.c:1909
 #, c-format
 msgid "Error writing registry cache to %s: %s"
 msgstr ""
@@ -1250,27 +1250,27 @@ msgstr ""
 msgid "Error while writing to download file."
 msgstr ""
 
-#: plugins/elements/gstfilesink.c:502
+#: plugins/elements/gstfilesink.c:503
 msgid "No file name specified for writing."
 msgstr ""
 
-#: plugins/elements/gstfilesink.c:508
+#: plugins/elements/gstfilesink.c:509
 #, c-format
 msgid "Could not open file \"%s\" for writing."
 msgstr ""
 
-#: plugins/elements/gstfilesink.c:520 plugins/elements/gstfilesink.c:524
+#: plugins/elements/gstfilesink.c:521 plugins/elements/gstfilesink.c:525
 #, c-format
 msgid "Error closing file \"%s\"."
 msgstr ""
 
-#: plugins/elements/gstfilesink.c:709
+#: plugins/elements/gstfilesink.c:710
 #, c-format
 msgid "Error while seeking in file \"%s\"."
 msgstr ""
 
-#: plugins/elements/gstfilesink.c:717 plugins/elements/gstfilesink.c:724
-#: plugins/elements/gstfilesink.c:977 plugins/elements/gstfilesink.c:1061
+#: plugins/elements/gstfilesink.c:718 plugins/elements/gstfilesink.c:725
+#: plugins/elements/gstfilesink.c:978 plugins/elements/gstfilesink.c:1062
 #, c-format
 msgid "Error while writing to file \"%s\"."
 msgstr ""
