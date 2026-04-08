@@ -1,3 +1,99 @@
+=== release 1.28.2 ===
+
+2026-04-07 20:02:23 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.28.2
+
+2026-03-31 14:39:52 +0900  Seungha Yang <seungha@centricular.com>
+
+	* plugins/elements/gstqueue.c:
+	  queue: Fix potential use-after-free in log function
+	  Avoid accessing already pushed event object
+	  Regression introduced by
+	  https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10068
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11192>
+
+2026-03-18 23:42:43 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* po/LINGUAS:
+	* po/kk.po:
+	* po/pt_BR.po:
+	* po/sv.po:
+	* po/zh_CN.po:
+	  gstreamer: update translations
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11077>
+
+2026-03-10 23:05:17 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* libs/gst/base/gstbaseparse.c:
+	  baseparse: Fix out_buffer leak in frame_free and missing ref in frame_copy
+	  gst_base_parse_frame_free() only unrefs frame->buffer but not
+	  frame->out_buffer. If finish_frame() exits early (e.g. due to a
+	  g_return_val_if_fail check on adapter size, or via the scanning path),
+	  out_buffer is left non-NULL and leaked when frame_free() zeroes the
+	  frame struct via memset without unreffing it.
+	  This can be triggered via h264parse (and other video parsers) in the
+	  packetized path: gst_h264_parse_parse_frame() takes a buffer from the
+	  frame_out adapter and sets frame->out_buffer. If finish_frame() then
+	  fails its precondition checks, that buffer is never freed.
+	  Also fix gst_base_parse_frame_copy() which uses g_memdup2() to copy
+	  the frame struct, giving the copy the same out_buffer pointer as the
+	  original, but only adds a ref for buffer and not for out_buffer.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11056>
+
+2026-03-07 11:47:29 -0500  Xavier Claessens <xclaessens@netflix.com>
+
+	* gst/gstbin.c:
+	  bin: iterator is not nullable
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11036>
+
+2026-01-29 17:02:49 +0900  Seungha Yang <seungha@centricular.com>
+
+	* libs/gst/base/gstbaseparse.c:
+	  baseparse: Preserve upstream buffer duration if possible
+	  When upstream buffer timestamps are reliable and subclass has
+	  timestamp interpolation disabled, preserve the upstream buffer
+	  duration instead of replacing it with GST_CLOCK_TIME_NONE.
+	  Subclasses typically derive buffer duration from stream header
+	  information, but this can be inaccurate for variable framerate
+	  streams or when the signaled framerate itself is unreliable. By
+	  forwarding the original buffer duration, this change allows
+	  subclasses to handle timing more accurately in such cases.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11016>
+
+2026-03-09 00:31:25 +0300  Vitaly Vlasov <vnigtha@gmail.com>
+
+	* plugins/elements/gstfilesink.c:
+	  filesink: Fix wrong open() in overwrite mode
+	  Fix gst_fopen() when File-sink-file-mode=overwrite is selected on non Windows host
+	  Fixes  #4946
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10990>
+
+2026-03-03 18:24:41 -0300  L. E. Segovia <amy@centricular.com>
+
+	* gst/gstregistry.c:
+	  registry: Skip recursion into and from .dSYM bundles
+	  The filtering of dSYM bundles was done *after* an early return that approved
+	  non-dot directories.
+	  For good measure, let's also add a filtering entry to ban directories when their
+	  parent is a dSYM bundle.
+	  See https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10850#note_3357038
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10970>
+
+2026-01-29 12:34:46 +0100  Fabian Orccon <forccon@fluendo.com>
+
+	* gst/gstsystemclock.c:
+	* tests/validate/gst-tester.c:
+	  all: GThreadFunc return type fixes
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/10955>
+
+2026-02-26 01:53:07 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.28.1
+
 === release 1.28.1 ===
 
 2026-02-26 01:44:06 +0000  Tim-Philipp Müller <tim@centricular.com>
