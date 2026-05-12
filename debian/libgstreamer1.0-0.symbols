@@ -424,6 +424,7 @@ libgstcheck-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_check_objects_destroyed_on_unref@Base 1.6.0
  gst_check_remove_log_filter@Base 1.12.0
  gst_check_run_suite@Base 1.0.0
+ gst_check_run_suite_nofork@Base 1.28.3
  gst_check_setup_element@Base 1.0.0
  gst_check_setup_events@Base 1.2.0
  gst_check_setup_events_with_stream_id@Base 1.2.0
