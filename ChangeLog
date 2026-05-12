@@ -1,3 +1,169 @@
+=== release 1.28.3 ===
+
+2026-05-11 18:28:12 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.28.3
+
+2026-04-15 16:31:02 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstvalue.c:
+	  value: On buffer deserialization errors first unmap the buffer and then unref it
+	  Also unref the buffer if mapping fails (which is technically impossible).
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/work_items/5042
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11590>
+
+2026-05-08 10:48:38 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstallocator.c:
+	  allocator: Use g_try_malloc() instead of g_malloc() for sysmem
+	  The latter will just abort the process if allocation fails but all the
+	  surrounding code is already expecting it to return NULL on failure and this
+	  change now allows to recover from impossible allocations.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11569>
+
+2026-05-07 16:47:47 +0100  Arthur Chan <arthur.chan@adalogics.com>
+
+	* libs/gst/base/gstbaseparse.c:
+	  baseparse: Fix memory leak when subclass returns error
+	  Signed-off-by: Arthur Chan <arthur.chan@adalogics.com>
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11567>
+
+2026-05-07 08:38:01 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gststreams.c:
+	  streams: Add METADATA to the valid stream flags for serialization
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11566>
+
+2026-05-07 08:35:47 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gststreams.c:
+	  streams: Don't assert on empty stream flags during serialization
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11566>
+
+2026-04-07 13:03:19 +0100  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gstmacros.h:
+	  gstmacros: Remove restrict definition
+	  We now require recent GCC, Clang, and MSVC for building, all of which
+	  provide the `restrict` keyword. Our define is now breaking external
+	  code. F.ex., Qt 6.11 on MSVC uses `__declspec(restrict)` which gets
+	  converted to `__declspec(__restrict)` which is not a valid keyword.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11563>
+
+2026-04-07 13:09:24 +0100  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* meson.build:
+	  meson: Require C std gnu11 or c11
+	  When using gcc or clang, gnu11 will be used, and when using MSVC c11
+	  will be used which will pass /std:c11. This provides us with the
+	  `restrict` keyword on all supported platforms.
+	  We can do this now because we require Visual Studio 2019.
+	  This feature was added in Meson 1.3
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11563>
+
+2026-05-05 10:18:23 -0400  Xavier Claessens <xclaessens@netflix.com>
+
+	* gst/gstdevicemonitor.c:
+	* tests/check/gst/gstdevice.c:
+	  devicemonitor: Wait for start thread to finish when listing devices
+	  This fixes a regression introduced by:
+	  https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/9698
+	  Since 1.28.0, gst_device_monitor_start() is not blocking any more, which
+	  causes the list of devices returned by gst_device_monitor_get_devices()
+	  to be incomplete. For example v4l2 provider would not fill udev
+	  properties yet.
+	  Solve this by blocking in gst_device_monitor_get_devices() for backward
+	  compatibility. That way, applications that wish to not block can wait
+	  for %GST_MESSAGE_DEVICE_MONITOR_STARTED before calling get_devices().
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11554>
+
+2026-05-03 11:48:44 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstaggregator.c:
+	  aggregator: Fix documentation
+	  Parameter docs for various functions were missing.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11488>
+
+2026-04-27 20:12:37 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstbitwriter.c:
+	  bitwriter: Zero-initialize uninitialized data
+	  Otherwise we will read uninitialized data when combining it with newly
+	  written bits.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11471>
+
+2026-04-27 18:18:22 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstbitwriter.h:
+	* tests/check/libs/bitwriter.c:
+	  bitwriter: Allow unsetting set bits when overwriting them
+	  Previously the original bit pattern would always be preserved and new bits
+	  only OR-ed into the array. This made it impossible to actually unset bits.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11471>
+
+2026-04-28 14:52:16 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* tools/gst-inspect.c:
+	  gst-inspect-1.0: type for string caps fields should be 'string' not 'gchararray'
+	  See e.g. gst-inspect-1.0 vorbisenc
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11460>
+
+2026-04-26 18:18:35 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* docs/meson.build:
+	  meson: Docs build is not supported when gstcheck is disabled
+	  subprojects/gstreamer/docs/meson.build:147:13: ERROR: Unknown variable "gst_check_gir".
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11444>
+
+2026-04-24 17:29:42 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* libs/gst/check/gstcheck.c:
+	  gstcheck: Update 'Since' marker to 1.28.3
+	  We backported this new symbol for CI use, but it's a good idea to
+	  update the Since marker
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11387>
+
+2026-03-31 11:58:28 +0200  Piotr Brzeziński <piotr@centricular.com>
+
+	* libs/gst/check/gstcheck.c:
+	* libs/gst/check/gstcheck.h:
+	  check: Add API to run a test suite with forking disabled
+	  We already needed to set CK_FORK=no in some tests (e.g. for NVIDIA elements). Turns out Vulkan tests on macOS also need
+	  that, so this adds a helper API to use instead of having to override the envvar.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11387>
+
+2026-02-06 21:42:25 +0000  Thibault Saunier <tsaunier@igalia.com>
+
+	* gst/gstpad.c:
+	  gstpad: fix potential buffer leak in get_range_failed error handler
+	  In gst_pad_get_range_unchecked(), the get_range_failed error handler
+	  did not clean up res_buf when the getrange function returned an error.
+	  If a getrange implementation allocates a buffer but then returns a
+	  non-OK flow, the buffer would be leaked since it was never written
+	  back to the caller's buffer pointer.
+	  Add defensive cleanup matching the pattern already used in the
+	  probe_stopped_unref handler in the same function.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11284>
+
+2026-02-06 17:35:26 +0000  Thibault Saunier <tsaunier@igalia.com>
+
+	* plugins/elements/gsttypefindelement.c:
+	  typefind: fix buffer leak on pull_range failure during shutdown
+	  When gst_pad_pull_range() fails during a racy pipeline teardown, the
+	  already-allocated buffer may still be set in the output parameter even
+	  though the return value is not GST_FLOW_OK. The code jumps to the
+	  pause label without clearing the buffer, leaking it.
+	  Use gst_clear_buffer() before the goto to properly release the buffer
+	  on all error paths.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11284>
+
+2026-04-07 20:07:19 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.28.2
+
 === release 1.28.2 ===
 
 2026-04-07 20:02:23 +0100  Tim-Philipp Müller <tim@centricular.com>
