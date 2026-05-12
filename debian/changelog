@@ -1,3 +1,10 @@
+gstreamer1.0 (1.28.3-1) unstable; urgency=medium
+
+  * New upstream version 1.28.3
+  * d/symbols: add gst_check_run_suite_nofork
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Tue, 12 May 2026 09:17:21 +0200
+
 gstreamer1.0 (1.28.2-1) unstable; urgency=medium
 
   * d/watch: pin to 1.28.x
