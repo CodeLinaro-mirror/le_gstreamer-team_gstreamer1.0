@@ -1,3 +1,161 @@
+=== release 1.28.4 ===
+
+2026-06-12 13:19:43 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.28.4
+
+2026-05-12 16:08:30 +0200  Carlos Falgueras García <cfalgueras@fluendo.com>
+
+	* tests/check/gst/gstmemory.c:
+	  tests: fix support with glib <= 2.67.2
+	  These tests use "g_memdup2()" but they don't include
+	  "gst/glib-compat-private.h", which makes the compilation fail when linking
+	  against Glib <= 2.67.2 as "g_memdup2()" was included at 2.67.3
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11618>
+
+2026-06-03 12:00:58 +0200  Stéphane Cerveau <scerveau@igalia.com>
+
+	* gst/gstvalue.c:
+	  gstvalue: free existing value in list append
+	  In gst_value_unique_list_append_and_take_value, the append_value
+	  is transfer-full, so if this value is already existing, it should
+	  be unset inside the method.
+	  Tensor elements append one caps per model output into a unique list
+	  (transfer-full). When two outputs share the same caps signature (e.g.
+	  YOLOv8-seg), the list deduplicates the second — but the drop path leaked
+	  that caps instead of releasing it.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11756>
+
+2026-06-02 18:55:35 +0200  Stéphane Cerveau <scerveau@igalia.com>
+
+	* gst/gstcaps.c:
+	* tests/check/gst/gstcaps.c:
+	  caps: flag nested caps in static caps as may-be-leaked
+	  As static caps are usually leaked, then the nested caps
+	  are also leaked and should be set GST_MINI_OBJECT_FLAG_MAY_BE_LEAKED
+	  as well.
+	  The leak has been spotted with leak tracer and the onnx elements which
+	  use for example:
+	  static GstStaticCaps scaps = GST_STATIC_CAPS (
+	  "video/x-raw,"
+	  "tensors=(structure)["
+	  "tensorgroups,"
+	  "out=(/uniquelist){"
+	  "(GstCaps)["
+	  "tensor/strided,"
+	  "tensor-id=(string)out,"
+	  "type=(string)float32"
+	  "]"
+	  "}"
+	  "]");
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11756>
+
+2026-05-28 11:07:24 +0200  Stéphane Cerveau <scerveau@igalia.com>
+
+	* gst/gstvalue.c:
+	* tests/check/gst/gstvalue.c:
+	  gstvalue: fix crash when converting NULL G_TYPE_VALUE_ARRAY to G_TYPE_STRING
+	  In the case of Rust binding, converting to G_TYPE_STRING
+	  a G_TYPE_VALUE_ARRAY might lead to a crash if the GValue contains NULL.
+	  Consider it as an empty string.
+	  Reproduce with vp8enc:temporal-scalability-target-bitrate and
+	  GstPipelineStudio.
+	  Add defensive check in gst_value_transform_any_list_string
+	  Add additional tests for array, list and set.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11737>
+
+2026-05-20 11:21:45 +0800  Qian Hu (胡骞) <qian.hu@mediatek.com>
+
+	* gst/gstbufferpool.c:
+	  bufferpool: avoid leaking partially preallocated buffers
+	  Preallocate buffers into a temporary array in default_start() before handing
+	  them to release_buffer(). If allocation fails midway, free the buffers that
+	  are still owned by the base class instead of leaving already released buffers
+	  behind.
+	  This avoids leaking buffers and corrupting cur_buffers when preallocation
+	  fails, while still allowing subclasses to take ownership in release_buffer()
+	  only after all allocations succeeded.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11664>
+
+2026-05-15 01:46:30 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gsttask.c:
+	  gsttask: Fix racy tests by making unref deterministic
+	  gst_check_teardown_element() asserts that the refcount of the element
+	  is 1 after its state has been set to NULL which stops all pad tasks.
+	  However, after 1179387b9f, the pad task also holds a reference to the
+	  element and the finalize hits after the task is stopped and releases
+	  the task lock (sync) and before the task thread exits (async).
+	  This made the assert flaky, because it would see 1 or 2 depending on
+	  how slowly things are scheduled.
+	  Co-authored-by: Sebastian Dröge <sebastian@centricular.com>
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11638>
+
+2026-05-11 16:33:44 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gstinfo.c:
+	  gstinfo: Don't use fwrite() on Windows for debug logging
+	  When setting GST_DEBUG_FILE, the file was opened with fopen() and
+	  written to with fwrite(). This required an expensive fflush() on
+	  Windows because fwrite() doesn't support line-buffered I/O.
+	  Bypass the CRT userspace buffering by submitting whole lines in
+	  a single write to the kernel. This is equivalent to line-buffered FILE
+	  writes, and is about 12% faster.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11632>
+
+2026-05-11 12:49:55 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gstinfo.c:
+	  gstinfo: Use stack allocated memory when printing on Win32
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11624>
+
+2026-05-10 03:45:43 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/printf/README:
+	* gst/printf/gst-printf.h:
+	* gst/printf/vasnprintf.c:
+	  gstinfo: Don't ever use %n to know how much was written
+	  The return value of snprintf will let us know that already. %n is only
+	  needed for ancient snprintf implementation that didn't do that. We do
+	  not support any of those.
+	  This allows us to use snprintf instead of sprintf which is marginally
+	  faster.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11624>
+
+2026-05-10 01:58:42 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gstinfo.c:
+	* gst/printf/printf.c:
+	* gst/printf/printf.h:
+	  gstinfo: Use stack allocation for <=1KB messages
+	  It should be super low-risk to add an extra KB to the stack at all
+	  call-sites.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11624>
+
+2026-05-12 22:46:00 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstdatetime.c:
+	  datetime: Improve correctness of ISO-8601 string parsing
+	  - Use unsigned integers of the correct sizes everywhere for parsing
+	  to properly detect errors.
+	  - Validate values first before using them.
+	  - Actually validate timezone information and don't assert on invalid
+	  timezone information.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11616>
+
+2026-05-09 14:26:55 +0000  L. E. Segovia <amy@centricular.com>
+
+	* gst/gstregistry.c:
+	  registry: detect libgstreamer load from Android container and skip canonicalization
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11612>
+
+2026-05-11 18:33:25 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.28.3
+
 === release 1.28.3 ===
 
 2026-05-11 18:28:12 +0100  Tim-Philipp Müller <tim@centricular.com>
