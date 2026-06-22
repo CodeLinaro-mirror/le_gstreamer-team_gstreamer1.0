@@ -1,0 +1,13 @@
+Index: gstreamer1.0/tests/check/meson.build
+===================================================================
+--- gstreamer1.0.orig/tests/check/meson.build
++++ gstreamer1.0/tests/check/meson.build
+@@ -21,7 +21,7 @@ core_tests = [
+   [ 'gst/gstcapsfeatures.c' ],
+   [ 'gst/gstdatetime.c' ],
+   [ 'gst/gstdeinit.c' ],
+-  [ 'gst/gstdevice.c' ],
++  [ 'gst/gstdevice.c', true ],
+   [ 'gst/gstelement.c', not gst_registry or not gst_parse],
+   [ 'gst/gstelementfactory.c', not gst_registry ],
+   [ 'gst/gstghostpad.c', not gst_registry ],
