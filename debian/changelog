@@ -1,3 +1,9 @@
+gstreamer1.0 (1.28.4-2) unstable; urgency=medium
+
+  * d/patches: disable flaky gst_gstdevice test
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Mon, 22 Jun 2026 15:52:31 +0200
+
 gstreamer1.0 (1.28.4-1) unstable; urgency=medium
 
   * New upstream version 1.28.4
