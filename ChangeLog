@@ -1,3 +1,91 @@
+=== release 1.28.5 ===
+
+2026-07-08 23:42:39 +0200  Tim-Philipp Müller <tim@centricular.com>
+
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.28.5
+
+2026-07-02 20:26:26 +0530  Sanchayan Maity <sanchayan@centricular.com>
+
+	* libs/gst/base/gsttypefindhelper.c:
+	  typefindhelper: Drop unnecessary check for factories without a function
+	  gst_type_find_list_factories_for_caps does not have to check for factories
+	  without a function. This probably got mistakenly carried over from function
+	  gst_type_find_helper_for_extension which serves a different purpose.
+	  Similarly for gst_type_find_helper_for_extension, we want to filter out
+	  factories that have no extensions but whether they have a function or not
+	  does not matter.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12020>
+
+2026-05-10 02:46:13 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* gst/gstinfo.c:
+	  gstinfo: Use a more optimized version of GST_TIME_ARGS
+	  This implementation is 66% faster (0.33x time) than the current
+	  variant. We call GST_TIME_ARGS for very single log message and it adds
+	  up quickly.
+	  The logging time for a highly-contended GST_INFO macro invocation is
+	  reduced by 30% (0.70x time) on Linux and 12% (0.88x) on Windows.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11995>
+
+2026-04-08 16:51:52 +0200  ErikStrandh <erik.strandh@sr.se>
+
+	* libs/gst/helpers/ptp/args.rs:
+	* libs/gst/helpers/ptp/ffi.rs:
+	* libs/gst/helpers/ptp/io.rs:
+	* libs/gst/helpers/ptp/main.rs:
+	* libs/gst/net/gstptpclock.c:
+	* meson.build:
+	  gstptpclock: fix ptp initialization when running as Windows service
+	  Use named pipes when spawning gst-ptp-helper on Windows,
+	  to avoid blocking in gst_ptp_init_full when running as service in
+	  Session 0.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11994>
+
+2026-06-18 11:23:19 +1000  Jan Schmidt <jan@centricular.com>
+
+	* gst/gstpad.c:
+	  pad: Implement sticky event resending on linking
+	  When a pad is linked exactly in the middle of outputting sticky events,
+	  we need to restart the sequence instead of sending an incomplete and
+	  out-of-order set of events to the new pad peer.
+	  This can only happen when linking an already running pad that was
+	  trying to output sticky events while unlinked, such as when linking
+	  a newly requested tee src pad to a peer.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11948>
+
+2026-05-31 13:09:53 +0200  Jan Schmidt <jan@centricular.com>
+
+	* gst/gstpad.c:
+	  pad: Use internal aliases for probe flow return values
+	  Make it easier to read probe function handling by using some
+	  internal aliases for the custom GST_FLOW_CUSTOM_SUCCESS_...
+	  flow return values
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11948>
+
+2026-05-31 12:11:47 +0200  Jan Schmidt <jan@centricular.com>
+
+	* gst/gstpad.c:
+	  pads: Rename private last_cookie to last_events_cookie
+	  Rename internal tracking variable for clarity
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11948>
+
+2026-06-18 05:27:33 -0400  Thibault Saunier <tsaunier@igalia.com>
+
+	* gst/gstcaps.c:
+	  caps: fix field name leak in gst_caps_structure_simplify
+	  The unioned field name is copied into a local GstIdStr but never
+	  cleared. For field names longer than 15 chars the GstIdStr holds a heap
+	  allocation, so it leaks (e.g. pixel-aspect-ratio). Regression from the
+	  GQuark -> GstIdStr field name migration.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11914>
+
+2026-06-12 13:27:54 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.28.4
+
 === release 1.28.4 ===
 
 2026-06-12 13:19:43 +0100  Tim-Philipp Müller <tim@centricular.com>
