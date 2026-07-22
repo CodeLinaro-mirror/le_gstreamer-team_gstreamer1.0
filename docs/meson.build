@@ -17,6 +17,15 @@ if static_build
     subdir_done()
 endif
 
+if get_option('check').disabled()
+    if get_option('doc').enabled()
+        error('Documentation enabled but not supported when gstcheck is disabled')
+    endif
+
+    message('gstcheck is disabled, can\'t build the documentation')
+    subdir_done()
+endif
+
 hotdoc_plugin_scanner = executable('gst-hotdoc-plugins-scanner',
   'gst-hotdoc-plugins-scanner.c',
   c_args : gst_c_args,
@@ -78,7 +87,7 @@ version_entities = configure_file(input : 'version.in',
 gst_excludes = []
 foreach h: ['gettext.h', 'glib-compat-private.h', 'glib-compat.h',
             'gst_private.h',
-            'gstelementdetails.h', 'gstmacros.h', 'gstmarshal.h',
+            'gstelementdetails.h', 'gstmacros.h', 'gsttracermacros.h', 'gstmarshal.h',
             'math-compat.h', 'parse/grammar.tab.h',
             '../libs/gst/base/gstindex.h',
             '../libs/gst/base/gstindex.c',
