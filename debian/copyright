@@ -702,10 +702,6 @@ Files: libs/gst/helpers/ptp/args.rs
 Copyright: 2015-2023 Sebastian Dröge <sebastian@centricular.com>a
 License: MPL-2.0
 
-Files: NEWS
-Copyright: 2000-2025, GStreamer developers
-License: CC-BY-SA-4.0
-
 Files: po/af.po
        po/ast.po
        po/az.po
