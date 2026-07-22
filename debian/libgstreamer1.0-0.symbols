@@ -50,6 +50,7 @@ libgstbase-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_aggregator_peek_next_sample@Base 1.18.0
  gst_aggregator_push_src_event@Base 1.25.1
  gst_aggregator_selected_samples@Base 1.18.0
+ gst_aggregator_set_allocator@Base 1.29.2
  gst_aggregator_set_force_live@Base 1.22.0
  gst_aggregator_set_ignore_inactive_pads@Base 1.20.0
  gst_aggregator_set_latency@Base 1.14.0
@@ -124,6 +125,7 @@ libgstbase-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_base_src_new_seamless_segment@Base 1.0.0
  gst_base_src_new_segment@Base 1.18.0
  gst_base_src_push_segment@Base 1.23.1
+ gst_base_src_set_allocator@Base 1.29.2
  gst_base_src_query_latency@Base 1.0.0
  gst_base_src_set_async@Base 1.0.0
  gst_base_src_set_automatic_eos@Base 1.4.0
@@ -146,6 +148,7 @@ libgstbase-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_base_transform_reconfigure@Base 1.18.0
  gst_base_transform_reconfigure_sink@Base 1.0.0
  gst_base_transform_reconfigure_src@Base 1.0.0
+ gst_base_transform_set_allocator@Base 1.29.2
  gst_base_transform_set_gap_aware@Base 1.0.0
  gst_base_transform_set_in_place@Base 1.0.0
  gst_base_transform_set_passthrough@Base 1.0.0
@@ -424,6 +427,7 @@ libgstcheck-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_check_objects_destroyed_on_unref@Base 1.6.0
  gst_check_remove_log_filter@Base 1.12.0
  gst_check_run_suite@Base 1.0.0
+ gst_check_run_suite_nofork@Base 1.29.2
  gst_check_setup_element@Base 1.0.0
  gst_check_setup_events@Base 1.2.0
  gst_check_setup_events_with_stream_id@Base 1.2.0
@@ -681,6 +685,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  GST_CAT_REFCOUNTING@Base 1.0.0
  GST_CAT_REGISTRY@Base 1.0.0
  GST_CAT_SCHEDULING@Base 1.0.0
+ GST_CAT_SEGMENT@Base 1.29.2
  GST_CAT_SIGNAL@Base 1.0.0
  GST_CAT_STATES@Base 1.0.0
  _gst_bitmask_type@Base 1.4.0
@@ -1111,6 +1116,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_core_error_quark@Base 1.0.0
  gst_cpuid_supports_arm_neon64@Base 1.27.50
  gst_cpuid_supports_arm_neon@Base 1.27.50
+ gst_cpuid_supports_riscv_v@Base 1.29.2
  gst_cpuid_supports_x86_3dnow@Base 1.27.50
  gst_cpuid_supports_x86_avx2@Base 1.27.50
  gst_cpuid_supports_x86_avx@Base 1.27.50
@@ -1988,6 +1994,8 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_preset_get_app_dir@Base 1.0.0
  gst_preset_get_meta@Base 1.0.0
  gst_preset_get_preset_names@Base 1.0.0
+ gst_preset_get_property@Base 1.29.2
+ gst_preset_get_property_alternatives@Base 1.29.2
  gst_preset_get_property_names@Base 1.0.0
  gst_preset_get_type@Base 1.0.0
  gst_preset_is_editable@Base 1.6.0
@@ -2344,6 +2352,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_structure_take_value_static_str@Base 1.25.1
  gst_structure_to_string@Base 1.0.0
  gst_system_clock_get_type@Base 1.0.0
+ gst_system_clock_new@Base 1.29.2
  gst_system_clock_obtain@Base 1.0.0
  gst_system_clock_set_default@Base 1.4.0
  gst_tag_exists@Base 1.0.0
@@ -2484,11 +2493,36 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_toc_setter_get_type@Base 1.0.0
  gst_toc_setter_reset@Base 1.0.0
  gst_toc_setter_set_toc@Base 1.0.0
+ gst_trace_event@Base 1.29.2
+ gst_trace_field_free@Base 1.29.2
+ gst_trace_field_new@Base 1.29.2
+ gst_trace_field_set_description@Base 1.29.2
+ gst_trace_field_set_flags@Base 1.29.2
+ gst_trace_field_set_scope@Base 1.29.2
+ gst_trace_format_builder_add_field@Base 1.29.2
+ gst_trace_format_builder_add_field_full@Base 1.29.2
+ gst_trace_format_builder_free@Base 1.29.2
+ gst_trace_format_builder_new@Base 1.29.2
+ gst_trace_format_builder_register@Base 1.29.2
+ gst_trace_format_builder_set_description@Base 1.29.2
+ gst_trace_format_get_description@Base 1.29.2
+ gst_trace_format_get_field_description@Base 1.29.2
+ gst_trace_format_get_field_name@Base 1.29.2
+ gst_trace_format_get_field_structure@Base 1.29.2
+ gst_trace_format_get_field_type@Base 1.29.2
+ gst_trace_format_get_n_fields@Base 1.29.2
+ gst_trace_format_get_name@Base 1.29.2
+ gst_trace_format_is_enabled@Base 1.29.2
+ gst_trace_format_register@Base 1.29.2
+ gst_trace_span_begin@Base 1.29.2
+ gst_trace_span_end@Base 1.29.2
+ gst_trace_span_end_and_clear@Base 1.29.2
  gst_tracer_class_set_use_structure_params@Base 1.25.1
  gst_tracer_class_uses_structure_params@Base 1.25.1
  gst_tracer_factory_get_list@Base 1.8.0
  gst_tracer_factory_get_tracer_type@Base 1.14.0
  gst_tracer_factory_get_type@Base 1.8.0
+ gst_tracer_field_type_get_type@Base 1.29.2
  gst_tracer_get_type@Base 1.8.0
  gst_tracer_record_get_type@Base 1.8.0
  gst_tracer_record_log@Base 1.8.0
@@ -2673,6 +2707,7 @@ libgstreamer-1.0.so.0 libgstreamer1.0-0 #MINVER#
  gst_value_set_int_range_step@Base 1.0.0
  gst_value_set_structure@Base 1.0.0
  gst_value_subtract@Base 1.0.0
+ gst_value_take_structure@Base 1.29.2
  gst_value_union@Base 1.0.0
  gst_value_unique_list_append_and_take_value@Base 1.27.90
  gst_value_unique_list_append_value@Base 1.27.90
