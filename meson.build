@@ -1,5 +1,5 @@
 project('gstreamer', 'c',
-  version : '1.28.5',
+  version : '1.28.6',
   meson_version : '>= 1.4',
   default_options : [ 'warning_level=1',
                       'buildtype=debugoptimized',
@@ -550,7 +550,7 @@ cdata.set('HAVE_GSL', gsl_dep.found() and gslcblas_dep.found())
 test_deps = [gmp_dep, gsl_dep, gslcblas_dep]
 
 # Used by gstinfo.c
-dl_dep = cc.find_library('dl', required : false)
+dl_dep = dependency('dl', required : false)
 cdata.set('HAVE_DLADDR', cc.has_function('dladdr', dependencies : dl_dep))
 cdata.set('GST_ENABLE_EXTRA_CHECKS', not get_option('extra-checks').disabled())
 cdata.set('USE_POISONING', get_option('poisoning'))
@@ -611,7 +611,7 @@ build_gir = gir.found() and (not meson.is_cross_build() or get_option('introspec
 
 gir_init_section = [ '--add-init-section=extern void gst_init(gint*,gchar**);' + \
     'g_setenv("GST_REGISTRY_DISABLE", "yes", TRUE);' + \
-    'g_setenv("GST_REGISTRY_1.0", "/no/way/this/exists.reg", TRUE);' + \
+    'g_setenv("GST_REGISTRY_1_0", "@0@", TRUE);'.format(meson.current_build_dir() + '/gir_empty_registry.reg') + \
     'g_setenv("GST_PLUGIN_PATH_1_0", "", TRUE);' + \
     'g_setenv("GST_PLUGIN_SYSTEM_PATH_1_0", "", TRUE);' + \
     'g_setenv("GST_TRACERS", "", TRUE);' + \

@@ -1,3 +1,100 @@
+=== release 1.28.6 ===
+
+2026-08-05 12:59:39 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.28.6
+
+2026-08-03 10:21:42 +0900  Jeongkeun Kim <variety0724@gmail.com>
+
+	* gst/gstcpuid.c:
+	  cpuid: fix AArch64 NEON detection to check HWCAP_ASIMD, not HWCAP_NEON
+	  HWCAP_NEON only exists in the ARM32 kernel headers. On genuine AArch64
+	  Linux the header doesn't define it, so the existing #ifndef fallback
+	  (1 << 12) kicks in for AArch64 too, since the __ARM_ARCH guard doesn't
+	  distinguish 32-bit ARM from AArch64. That bit position is
+	  HWCAP_ASIMDRDM (an optional ARMv8.1+ extension) on AArch64's hwcap
+	  numbering, not base NEON/ASIMD (bit 1). A core with base ASIMD but
+	  without the ASIMDRDM extension would silently get NEON disabled.
+	  Split the fallback macro and the detection branch by architecture,
+	  using HWCAP_ASIMD for AArch64, matching the same split already used in
+	  gstreamer/orc's orccpu-arm.c. The 32-bit ARM path is unchanged.
+	  Fixes #5249
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12224>
+
+2026-07-21 15:35:44 +0530  Nirbheek Chauhan <nirbheek@centricular.com>
+
+	* meson.build:
+	  meson: Make the g-ir-scanner init section consistent across modules
+	  We weren't disabling the registry correctly due to typos and missing
+	  env vars.
+	  This speeds up introspection builds considerably on Windows.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12163>
+
+2026-07-17 19:55:01 +0200  Marcus Hanestad <marlhan@proton.me>
+
+	* gst/gstpad.c:
+	* tests/check/gst/gstpad.c:
+	  pad: fix livelock relinking pad while pushing changed sticky events
+	  Make sure to fully reset the tracking struct when re-looping to
+	  push sticky events after an interruption due to pad re-linking,
+	  to avoid an infinite loop.
+	  Also simplify the exit check the interior loop already checks
+	  the pending events flag before it generates the INTERRUPTED
+	  return result.
+	  Add a unit test to check re-linking
+	  Co-Authored-By: Jan Schmidt <jan@centricular.com>
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12142>
+
+2026-07-20 17:15:51 +0100  Seyi Kuforiji <kuforiji98@gmail.com>
+
+	* meson.build:
+	  meson: use dependency('dl') instead of cc.find_library('dl')
+	  On systems with glibc >= 2.34, dlopen/dladdr are provided by libc
+	  and libdl.a is shipped as an empty stub archive. cc.find_library('dl')
+	  still reports the library as found and adds -ldl to the link line,
+	  but linking the empty archive produces no DT_NEEDED entry for libdl.
+	  g-ir-scanner resolves -l flags by matching them against ldd output
+	  of the built library, so gir generation fails with:
+	  ERROR: can't resolve libraries to shared libraries: dl
+	  unless an unrelated transitive dependency happens to pull in
+	  libdl.so.2 and mask the problem.
+	  Meson's builtin 'dl' dependency (available since 0.62, well below
+	  our 1.4 minimum) returns no link arguments when dlopen is provided
+	  by libc, and still links libdl on platforms where it is a separate
+	  library. dladdr detection via cc.has_function() is unaffected.
+	  Apply the same change to gst-devtools and gst-python, which used
+	  the identical pattern. Vendored subprojects (libsoup, libajantv2)
+	  are left untouched as those belong upstream.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12154>
+
+2026-07-08 10:38:29 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstbaseparse.c:
+	  baseparse: Document for all setters if their values are reset or not
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12102>
+
+2026-07-07 20:33:15 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstbaseparse.c:
+	  baseparse: Don't reset infer_ts/pts_interpolate subclass configuration in reset()
+	  Otherwise this configuration would be lost after state changes, and subclasses
+	  only usually set these during instance init so effectively these parsers are not
+	  reusable.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12102>
+
+2026-07-08 14:54:56 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* plugins/elements/gstvalve.c:
+	  valve: Don't send a reconfigure even when setting the `drop` property to the same value
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12082>
+
+2026-07-08 23:48:39 +0200  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.28.5
+
 === release 1.28.5 ===
 
 2026-07-08 23:42:39 +0200  Tim-Philipp Müller <tim@centricular.com>
