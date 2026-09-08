@@ -1,5 +1,5 @@
 project('gstreamer', 'c',
-  version : '1.28.6',
+  version : '1.28.7',
   meson_version : '>= 1.4',
   default_options : [ 'warning_level=1',
                       'buildtype=debugoptimized',
@@ -401,6 +401,9 @@ if host_system != 'windows'
   cdata.set('HAVE_PIPE', 1)
 elif cc.has_function('_pipe', prefix : '#include <io.h>')
   cdata.set('HAVE_PIPE', 1)
+endif
+if cc.has_function('elf_aux_info', prefix : '#include <sys/auxv.h>')
+  cdata.set('HAVE_ELF_AUX_INFO', 1)
 endif
 
 # Platform deps; only ws2_32 and execinfo for now
