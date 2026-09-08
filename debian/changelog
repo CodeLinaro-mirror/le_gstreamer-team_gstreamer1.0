@@ -1,3 +1,9 @@
+gstreamer1.0 (1.28.7-1) unstable; urgency=medium
+
+  * New upstream version 1.28.7 (Closes: #1144521)
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Tue, 08 Sep 2026 08:02:57 +0200
+
 gstreamer1.0 (1.28.6-1) unstable; urgency=medium
 
   * New upstream version 1.28.6
