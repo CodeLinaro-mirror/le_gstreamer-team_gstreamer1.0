@@ -1,3 +1,139 @@
+=== release 1.28.7 ===
+
+2026-09-07 20:11:13 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.28.7
+
+2026-09-07 20:45:45 +0530  Sanchayan Maity <sanchayan@centricular.com>
+
+	* libs/gst/base/gsttypefindhelper.c:
+	  Revert "typefindhelper: Drop unnecessary check for factories without a function"
+	  This reverts commit 067c3c9479cb4170ee149d3c78f86685fed6f2fa.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12443>
+
+2026-08-28 14:57:41 -0400  Dominique Leroux <dominique.p.leroux@gmail.com>
+
+	* tests/check/gst/gstpipeline.c:
+	  pipeline: test: Test that RESET_TIME handling doesn't trigger latency recalculation
+	  This test is meant to prevent regression in RESET_TIME handling, to make sure
+	  it doesn't enter GstBin's state-change handling, while ensuring that the base time
+	  is still updated correctly.
+	  Performing state-change handling from synchronous message handling means it
+	  can be performed from the streaming thread, opening the door to lock inversions
+	  between pad streaming locks and element state locks. We replicate this condition by
+	  having a background thread hold the sink-pad stream lock while the test thread
+	  holds the pipeline state lock.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12421>
+
+2026-08-28 14:27:41 -0400  Dominique Leroux <dominique.p.leroux@gmail.com>
+
+	* gst/gstpipeline.c:
+	  pipeline: Avoid lock inversion when handling GST_MESSAGE_RESET_TIME
+	  An earlier commit (0566b0528a) introduced base_time update when flushing after
+	  seeking for live pipelines. The method chosen was to call
+	  gst_pipeline_change_state(PAUSED_TO_PLAYING), so that the clock/base_time update
+	  done in there would kick in.
+	  This can cause state transition handling to happen in a streaming thread due to
+	  synchronous handlers. For instance, a flushing seek initiated by
+	  gst_aggregator_do_seek() causes the aggregator source-pad task to forward the
+	  inbound FLUSH_STOP event downstream, causing GstBaseSink to post the RESET_TIME
+	  message in its handler. Because gst_pipeline_handle_message handles this
+	  synchronously, a deadlock condition is introduced when the parent class (GstBin)
+	  enters its own state change logic, which triggers latency recalculation.
+	  One such situation happens when tearing down a live pipeline (that ends in
+	  aggregator->fakesink) while a seek is completing, as exposed by the
+	  test_infinite_seek_50_src_live test in the libs_aggregator suite.
+	  Streaming thread (aggregator source-pad task forwarding inbound FLUSH_STOP):
+	  fakesink sink-pad stream lock (A) -> RESET_TIME -> GstBin latency recalculation
+	  -> waits for pipeline state lock (B)
+	  Test thread (tearing down with gst_element_set_state (GST_STATE_NULL)):
+	  pipeline state lock acquired (B) -> fakesink pad deactivation
+	  -> waits for fakesink sink-pad stream lock (A)
+	  The fix I'm introducing is to factor out the clock/base_time update so it can be
+	  directly invoked both by the RESET_TIME message handling and the
+	  PAUSED_TO_PLAYING state change handling. The nuance is that RESET_TIME message
+	  handling no longer causes a state change, so the other unneeded side effects
+	  (latency recalculation, child state propagation) no longer happen, resolving the
+	  lock inversion condition.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12421>
+
+2026-08-24 18:46:11 -0400  Dominique Leroux <dominique.p.leroux@gmail.com>
+
+	* plugins/elements/gstdataurisrc.c:
+	* tests/check/elements/dataurisrc.c:
+	  dataurisrc: Fix empty payloads and unsupported charset conversion
+	  Avoid wrapping or typefinding NULL data for empty data URI payloads, and skip
+	  the ISO-8859-5 test case when the target cannot convert it to UTF-8. This
+	  allows the dataurisrc suite to run under Android Remote Check.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12407>
+
+2026-08-11 15:39:16 -0400  Thibault Saunier <tsaunier@igalia.com>
+
+	* tests/validate/simplest.validatetest:
+	  validate: Use a single value type in configs lists
+	  GstValue lists do not support elements of different types (see
+	  gst_value_list_or_array_are_compatible()) and the configs parser stops
+	  at the first element whose type differs, silently dropping the rest.
+	  Rewrite the string entries as structures so each list is homogeneous
+	  and every config is actually applied.
+	  The previously dropped entries now take effect: simplest.validatetest's
+	  validateflow checksum check runs (and matches the committed
+	  expectations) and the qtdemux tests' change-issue-severity config is
+	  applied.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12343>
+
+2026-09-03 14:28:18 -0400  Thibault Saunier <tsaunier@igalia.com>
+
+	* tests/validate/simplest.validatetest:
+	  validate: Reindent all validatetest files
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12343>
+
+2026-03-03 15:02:23 +0000  Thibault Saunier <tsaunier@igalia.com>
+
+	* tests/validate/simplest.validatetest:
+	  validateflow: auto-derive directories from test file path
+	  Allow validateflow configs to be written as proper nested structures
+	  instead of requiring the $(validateflow) variable expansion:
+	  configs = {
+	  [validateflow, pad=sink:sink, buffers-checksum=true],
+	  }
+	  instead of:
+	  configs = {
+	  "$(validateflow), pad=sink:sink, buffers-checksum=true",
+	  }
+	  When expectations-dir or actual-results-dir are not explicitly set,
+	  validate_flow_override_new() now derives them from the __filename__
+	  metadata field (already attached to each config structure by the
+	  parser). This mirrors the path computation done in
+	  gst_validate_structure_set_variables_from_struct_file().
+	  The $(validateflow) variable and the old string syntax remain fully
+	  supported for backward compatibility.
+	  Port all existing .validatetest files to the new syntax.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12343>
+
+2026-08-04 13:45:56 -0300  L. E. Segovia <amy@centricular.com>
+
+	* gst/gstcpuid.c:
+	* meson.build:
+	  cpuid: Port missing Orc support for elf_aux_info on Arm
+	  (cherry picked from commit c311c9bf0bdf1fba6c7705b7913d323d6846cb52)
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12258>
+
+2026-08-04 13:44:47 -0300  L. E. Segovia <amy@centricular.com>
+
+	* gst/gstcpuid.c:
+	  cpuid: Clean up NEON and ASIMD getauxval detection
+	  See !12212
+	  (cherry picked from commit 4d7eb8d2fbd80dd3adac22ca6b64f6e0c7fb0702)
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12258>
+
+2026-08-05 13:04:46 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.28.6
+
 === release 1.28.6 ===
 
 2026-08-05 12:59:39 +0100  Tim-Philipp Müller <tim@centricular.com>
