@@ -1,3 +1,81 @@
+=== release 1.28.8 ===
+
+2026-10-08 17:20:32 +0200  Tim-Philipp Müller <tim@centricular.com>
+
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.28.8
+
+2026-09-09 21:39:38 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstbuffer.c:
+	* tests/check/gst/gstbuffer.c:
+	  buffer: Prevent NULL pointer dereferences when deserializing reference timestamp meta
+	  And fail deserialization on an invalid info structure instead of silently
+	  ignoring it.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12652>
+
+2026-08-03 16:36:40 +0200  Marcus Hanestad <marlhan@proton.me>
+
+	* gst/gstvalue.c:
+	  value: Fix memory leak when deserializing an array/list fails
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12649>
+
+2026-08-03 16:36:40 +0200  Marcus Hanestad <marlhan@proton.me>
+
+	* gst/gstvalue.c:
+	* tests/check/gst/gstvalue.c:
+	  value: Fix crash when comparing mixed-type lists
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/work_items/5250
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12649>
+
+2026-10-05 13:27:21 +0530  Sanchayan Maity <sanchayan@centricular.com>
+
+	* libs/gst/helpers/ptp/ffi.rs:
+	* libs/gst/helpers/ptp/io.rs:
+	* libs/gst/helpers/ptp/rand.rs:
+	  ptp: Fix build failures due to Rust 1.99
+	  Rust 1.99 added suspicious-runtime-symbol-definitions, warn by default.
+	  It requires that any extern "C" declaration of a symbol the runtime/std
+	  uses (open, read, write, ...) match the exact signature std expects for
+	  the current target i.e. *const c_char / *mut c_void and not *const u8 /
+	  *mut u8.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12617>
+
+2026-09-24 18:56:06 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstbuffer.c:
+	* tests/check/gst/gstbuffer.c:
+	  buffer: Don't leave buffers with dangling memory pointers if appending memory fails
+	  Buffers can hold up to 16 memories. If one more memory is appended then the
+	  existing need to be merged, which can fail for various reasons, for example if
+	  one of the memories is currently write-mapped.
+	  Previously this left the buffer in an inconsistent state with a dangling memory
+	  pointer. Now the newly appended memory is just discarded together with logging a
+	  critical warning.
+	  See https://gitlab.freedesktop.org/gstreamer/gstreamer/-/work_items/5327
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12616>
+
+2026-09-09 13:45:41 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstbaseparse.c:
+	* tests/check/libs/baseparse.c:
+	  baseparse: Fix accumulating of detection buffers
+	  When a subclass' detect() implementation returns NOT_NEGOTIATED, the input
+	  buffer will be stored and combined with future buffers until detection succeeds.
+	  The combining happens via gst_buffer_copy_into() since commit 64493d9603, and
+	  that assumed the offset is the offset in the destination, but it's actually the
+	  offset in the source and data is always appended. This caused assertions at
+	  runtime and the offset should simply be 0 to always append the whole new buffer.
+	  This wasn't noticed in the last 15 years, most likely because vc1parse is the
+	  only element implementing the detect() vfunc.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12489>
+
+2026-09-07 20:17:18 +0100  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.28.7
+
 === release 1.28.7 ===
 
 2026-09-07 20:11:13 +0100  Tim-Philipp Müller <tim@centricular.com>
