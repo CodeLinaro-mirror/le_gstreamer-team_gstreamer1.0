@@ -1350,7 +1350,6 @@ gst_value_compare_value_list (const GValue * value1, const GValue * value2)
   GValue *v2;
   gint len, to_remove;
   guint8 *removed;
-  GstValueCompareFunc compare;
 
   /* get length and do initial length check. */
   len = vlist1->len;
@@ -1363,10 +1362,6 @@ gst_value_compare_value_list (const GValue * value1, const GValue * value2)
 
   /* We know lists are not empty. do sanity check on first values */
   if (G_VALUE_TYPE (&vlist1->fields[0]) != G_VALUE_TYPE (&vlist2->fields[0]))
-    return GST_VALUE_UNORDERED;
-
-  /* Get the compare function */
-  if (!(compare = gst_value_get_compare_func (&vlist1->fields[0])))
     return GST_VALUE_UNORDERED;
 
   /* place to mark removed value indices of array2 */
@@ -1384,9 +1379,10 @@ gst_value_compare_value_list (const GValue * value1, const GValue * value2)
       if (removed[j])
         continue;
       v2 = &vlist2->fields[j];
-      /* Note: compare function can be called directly since we know the types
-       * are identical */
-      if (compare (v1, v2) == GST_VALUE_EQUAL) {
+      /* Compare each pair on its own. A list may mix types (e.g. a fraction
+       * range and a scalar), so mismatched pairs come back UNORDERED instead
+       * of misapplying one element's compare function to another type. */
+      if (gst_value_compare (v1, v2) == GST_VALUE_EQUAL) {
         /* mark item as removed now that we found it in array2 and
          * decrement the number of remaining items in array2. */
         removed[j] = 1;
@@ -3139,6 +3135,8 @@ _priv_gst_value_parse_value (gchar * str,
       container_type = GST_TYPE_LIST;
     g_value_init (value, container_type);
     ret = _priv_gst_value_parse_list (s, &s, value, type, pspec);
+    if (G_UNLIKELY (!ret))
+      g_value_unset (value);
   } else if (*s == '<') {
     if (type == G_TYPE_STRV) {
       g_value_init (value, G_TYPE_STRV);
@@ -3147,6 +3145,8 @@ _priv_gst_value_parse_value (gchar * str,
       g_value_init (value, GST_TYPE_ARRAY);
       ret = _priv_gst_value_parse_array (s, &s, value, type, pspec);
     }
+    if (G_UNLIKELY (!ret))
+      g_value_unset (value);
   } else {
     value_s = s;
 
