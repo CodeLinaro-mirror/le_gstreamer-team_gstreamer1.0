@@ -1,3 +1,9 @@
+gstreamer1.0 (1.28.9-1) unstable; urgency=medium
+
+  * New upstream version 1.28.9
+
+ -- Marc Leeman <marc.leeman@gmail.com>  Fri, 06 Nov 2026 14:59:03 +0100
+
 gstreamer1.0 (1.28.8-1) unstable; urgency=medium
 
   * d/control: update Standards-Version to 4.7.4
