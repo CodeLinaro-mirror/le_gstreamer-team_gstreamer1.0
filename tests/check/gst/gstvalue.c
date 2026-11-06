@@ -331,6 +331,55 @@ GST_START_TEST (test_deserialize_gint_failures)
 
 GST_END_TEST;
 
+GST_START_TEST (test_deserialize_unterminated_string_failures)
+{
+  GValue value = G_VALUE_INIT;
+  const char *strings[] = {
+    "\"unterminated",           /* quoted string without closing quote */
+    "\"unterminated\\",         /* trailing escape eats the terminator */
+    "{ \"unterminated }",       /* unterminated string as a list element */
+  };
+  int i;
+
+  /* On failure the destination keeps the type it was initialized to and
+   * holds no value, so a storage-allocating type must have released what
+   * its init allocated. */
+  g_value_init (&value, GST_TYPE_LIST);
+
+  for (i = 0; i < G_N_ELEMENTS (strings); ++i) {
+    fail_if (gst_value_deserialize (&value, strings[i]),
+        "deserialized %s (%d), while it should have failed", strings[i], i);
+    fail_unless_equals_int (G_VALUE_TYPE (&value), GST_TYPE_LIST);
+    fail_unless (G_VALUE_HOLDS (&value, GST_TYPE_LIST));
+    fail_unless_equals_int (gst_value_list_get_size (&value), 0);
+  }
+
+  g_value_unset (&value);
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_deserialize_list_element_failures)
+{
+  const char *strings[] = {
+    "f/x,f={(list)",            /* element cast to a list at end of input */
+    "f/x,f={ (string) \"unterminated }",        /* unterminated string element */
+    "f/x,f={ (int) 1, \"unterminated }",        /* bad element after a good one */
+  };
+  int i;
+
+  /* Structure fields are parsed into a not-yet-initialized GValue: on
+   * failure it must be left unset again, with no element storage leaked
+   * by the failed element parse. */
+  for (i = 0; i < G_N_ELEMENTS (strings); ++i) {
+    GstStructure *s = gst_structure_from_string (strings[i], NULL);
+    fail_if (s != NULL, "parsed %s (%d), while it should have failed",
+        strings[i], i);
+  }
+}
+
+GST_END_TEST;
+
 GST_START_TEST (test_deserialize_guint)
 {
   GValue value = { 0 };
@@ -3858,19 +3907,16 @@ GST_START_TEST (test_deserialize_int_range)
   str =
       g_strdup_printf ("foo/bar, range=[ 1, %" G_GINT64_FORMAT " ];",
       (gint64) G_MAXINT + 1);
-  s = NULL;
-  ASSERT_CRITICAL (s = gst_structure_from_string (str, &end));
+  s = gst_structure_from_string (str, &end);
+  fail_unless (s == NULL);
   g_free (str);
-  if (s)
-    gst_structure_free (s);
   str =
       g_strdup_printf ("foo/bar, range=[ %" G_GINT64_FORMAT ", %"
       G_GINT64_FORMAT " ];", (gint64) G_MAXINT, (gint64) G_MAXINT + 1);
-  ASSERT_CRITICAL (s = gst_structure_from_string (str, NULL));
+  s = gst_structure_from_string (str, NULL);
+  fail_unless (s == NULL);
   end = NULL;
   g_free (str);
-  if (s)
-    gst_structure_free (s);
 
   /* check a valid int64_range deserialization. Those ranges need to
    * be explicit about their storage type. */
@@ -3892,23 +3938,18 @@ GST_START_TEST (test_deserialize_int_range)
   str =
       g_strdup_printf ("foo/bar, range=(gint64)[ 1, %" G_GUINT64_FORMAT " ];",
       (guint64) G_MAXINT64 + 1);
-  s = NULL;
-  ASSERT_CRITICAL (s = gst_structure_from_string (str, &end));
-  if (s) {
-    fail_unless (*end == '\0');
-    gst_structure_free (s);
-    end = NULL;
-  }
+  s = gst_structure_from_string (str, &end);
+  fail_unless (s == NULL);
+  end = NULL;
   g_free (str);
 
   /* check invalid int64_range deserialization into a int64_range */
   str =
       g_strdup_printf ("foo/bar, range=(gint64)[ %" G_GINT64_FORMAT ", %"
       G_GUINT64_FORMAT " ];", (gint64) G_MAXINT, (guint64) G_MAXINT64 + 1);
-  ASSERT_CRITICAL (s = gst_structure_from_string (str, NULL));
+  s = gst_structure_from_string (str, NULL);
+  fail_unless (s == NULL);
   g_free (str);
-  if (s)
-    gst_structure_free (s);
 
   /* check invalid int64_range deserialization into a int_range */
   str =
@@ -3986,9 +4027,8 @@ GST_START_TEST (test_stepped_int_range_parsing)
   /* check we cannot parse bad ranges */
   for (n = 0; n < G_N_ELEMENTS (bad_ranges); ++n) {
     str = g_strdup_printf ("foo/bar, range=%s", bad_ranges[n]);
-    ASSERT_CRITICAL (s = gst_structure_from_string (str, &end));
-    if (s)
-      gst_structure_free (s);
+    s = gst_structure_from_string (str, &end);
+    fail_unless (s == NULL);
     g_free (str);
   }
 }
@@ -4930,6 +4970,30 @@ GST_START_TEST (test_deserialize_serialize_nested_structures)
 
 GST_END_TEST;
 
+GST_START_TEST (test_deserialize_deeply_nested_brackets)
+{
+  /* Trying both a structure and a caps parse for every nested untyped
+   * bracketed value made parsing of a failing value exponential in the
+   * nesting depth: at depth 28 this takes several minutes without the
+   * skip in _priv_gst_value_parse_range_struct_caps (). */
+  GValue value = G_VALUE_INIT;
+  GString *str = g_string_new (NULL);
+  guint i;
+
+  for (i = 0; i < 28; i++)
+    g_string_append (str, "{[s, f= ");
+  g_string_append (str, "$");
+  for (i = 0; i < 28; i++)
+    g_string_append (str, "]}");
+
+  g_value_init (&value, GST_TYPE_LIST);
+  fail_if (gst_value_deserialize (&value, str->str));
+  g_value_unset (&value);
+  g_string_free (str, TRUE);
+}
+
+GST_END_TEST;
+
 GST_START_TEST (test_serialize_deserialize_sample)
 {
   GstSample *samp, *samp2;
@@ -5484,6 +5548,8 @@ gst_value_suite (void)
   tcase_add_test (tc_chain, test_serialize_buffer);
   tcase_add_test (tc_chain, test_deserialize_gint);
   tcase_add_test (tc_chain, test_deserialize_gint_failures);
+  tcase_add_test (tc_chain, test_deserialize_unterminated_string_failures);
+  tcase_add_test (tc_chain, test_deserialize_list_element_failures);
   tcase_add_test (tc_chain, test_deserialize_guint);
   tcase_add_test (tc_chain, test_deserialize_guint_failures);
   tcase_add_test (tc_chain, test_deserialize_gint64);
@@ -5545,6 +5611,7 @@ gst_value_suite (void)
   tcase_add_test (tc_chain, test_transform_list_to_string);
   tcase_add_test (tc_chain, test_deserialize_with_pspec);
   tcase_add_test (tc_chain, test_deserialize_serialize_nested_structures);
+  tcase_add_test (tc_chain, test_deserialize_deeply_nested_brackets);
   tcase_add_test (tc_chain, test_serialize_deserialize_segment);
   tcase_add_test (tc_chain, test_serialize_deserialize_caps_features);
   tcase_add_test (tc_chain, test_serialize_deserialize_tag_list);

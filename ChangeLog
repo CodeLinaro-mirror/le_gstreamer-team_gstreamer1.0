@@ -1,3 +1,153 @@
+=== release 1.28.9 ===
+
+2026-11-06 12:54:37 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* gstreamer.doap:
+	* meson.build:
+	  Release 1.28.9
+
+2026-11-06 10:56:54 +0000  Tim-Philipp Müller <tim@centricular.com>
+
+	* scripts/dist-common-files.py:
+	  scripts: dist-common-files: update for new release notes formatting
+
+2026-10-25 20:02:26 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstbitwriter.h:
+	* libs/gst/base/gstbytereader.h:
+	* libs/gst/base/gstbytewriter.h:
+	  base: Avoid memcpy()/memset() with NULL pointers and zero size
+	  Fixes https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/5365
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12872>
+
+2026-09-22 11:50:39 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/helpers/ptp/io.rs:
+	* libs/gst/helpers/ptp/main.rs:
+	  ptp: Exclude the whole stderr/logging machinery when compiling the tests
+	  It's not used and leads to unused code compiler warnings when building the tests
+	  on Windows.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12973>
+
+2026-09-21 21:17:20 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/helpers/ptp/meson.build:
+	  ptp: Make sure the ptp-helper tests are compiled and running unless tests are disabled
+	  Default is auto and .enabled() returns false for that.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12973>
+
+2026-10-31 19:38:01 +0200  Sebastian Dröge <sebastian@centricular.com>
+
+	* gst/gstparamspecs.c:
+	  gst: Fix GType name mess with GstParamSpecArray/Fraction
+	  The GType name must match the C struct names or otherwise gobject-introspection
+	  will fail to produce valid type information.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12915>
+
+2026-10-30 13:07:51 +0100  Edward Hervey <edward@centricular.com>
+
+	* gst/gstvalue.c:
+	* tests/check/gst/gstvalue.c:
+	  value: unset the GValue when parsing a value token fails
+	  _priv_gst_value_parse_value() initializes the destination GValue
+	  before parsing the value token. When the token is an unterminated
+	  quoted string the function returned FALSE without unsetting it,
+	  orphaning whatever the type's init allocated. Parsing the structure
+	  field "f={(list)" leaks the GstValueList of the element GValue that
+	  was initialized for the (list) cast at the end of the input.
+	  Unset the value on that early-return path, and unset the element
+	  GValue in _priv_gst_value_parse_any_list() when its parse fails.
+	  This matches the contract the other failure paths of both functions
+	  already keep: on return FALSE a not-yet-initialized destination is
+	  left unset again (g_value_unset() is a no-op on a zeroed GValue),
+	  and an already-initialized destination keeps its type and holds no
+	  value. Callers such as the structure field parser rely on the first
+	  form, so a failed field never leaves a dangling value behind.
+	  The remaining early returns in the deserialize parse functions were
+	  audited: they all run before any g_value_init() or already unset.
+	  oss-fuzz: 6592048929767424 (issue 578367669)
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12912>
+
+2026-10-22 16:47:06 +1100  Matthew Waters <matthew@centricular.com>
+
+	* gst/gstvalue.c:
+	* tests/check/gst/gstvalue.c:
+	  value: validate int/double/fraction ranges when parsing
+	  Otherwise criticals can occur when parsing structures containing invalid
+	  constructions. e.g. end < start, step == 0, start (or end) % step != 0.
+	  Reported by oss-fuzz test case 4526020083122176 issue 575530523
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12864>
+
+2026-10-21 17:23:03 +1100  Matthew Waters <matthew@centricular.com>
+
+	* gst/gsttaglist.c:
+	  taglist: don't critical when parsing random strings
+	  Instead of a critical when parsing a taglist that does not start with the
+	  structure name of "taglist", log a GST_WARNING, and return NULL.
+	  An example of a failing string is 'name,field=(taglist)a'.
+	  From https://issues.oss-fuzz.com/issues/575518294
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12819>
+
+2026-10-22 10:26:32 +0200  Edward Hervey <edward@centricular.com>
+
+	* gst/gstvalue.c:
+	* tests/check/gst/gstvalue.c:
+	  value: Skip the caps attempt when a bracketed value can't be caps
+	  An untyped '[...]' value is parsed as a structure first and as caps
+	  second. Both parsers share the name and fields parse, so unless a
+	  '(features)' clause follows the first name, the caps attempt repeats
+	  the failed structure attempt. Trying both at every nesting level made
+	  parsing deeply nested values take time exponential in the nesting
+	  depth: 626 bytes of input were enough for a multi-minute parse.
+	  Check for the features clause and skip the caps attempt when it is
+	  absent.
+	  Found while fuzzing the value deserialization with libFuzzer.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12810>
+
+2026-09-30 12:54:32 +0300  Sebastian Dröge <sebastian@centricular.com>
+
+	* libs/gst/base/gstbaseparse.c:
+	* libs/gst/base/gstbaseparse.h:
+	  baseparse: Explicitly forbid negative skip values from handle_frame()
+	  They would lead to infinite loops and have no valid meaning.
+	  (cherry picked from commit 8007db3489a6279198a6296493e21c707f767d13)
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12746>
+
+2026-09-28 03:25:36 +0530  Nirbheek Chauhan <nirbheek.chauhan@coram.ai>
+
+	* libs/gst/base/gstbaseparse.c:
+	  baseparse: Don't dereference frame->buffer after a zero-sized finish_frame()
+	  A subclass may call gst_base_parse_finish_frame() with size 0 while
+	  frame->out_buffer is set. The frame is then pushed and frame->buffer is
+	  cleared, but nothing was flushed, so gst_base_parse_handle_buffer()
+	  still takes the "need more data" branch and crashes on
+	  GST_BUFFER_IS_DISCONT (frame->buffer). Check for NULL first.
+	  h264parse hit this on streams with vendor trailers inside NAL units
+	  (see previous commit); this keeps the base class from crashing when a
+	  subclass does the same.
+	  (cherry picked from commit 148c092b7597f28005167ab19d558f391606d534)
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12746>
+
+2026-10-16 09:00:21 -0400  Xavier Claessens <xclaessens@netflix.com>
+
+	* gst/gstbuffer.c:
+	  doc: Passing size=-1 to gst_buffer_extract_dup() returns all data
+	  This is by the magic of unsigned arithmetic, and it is safe to pass size
+	  greater than real buffer size since implementation already uses MIN().
+	  Do not document gst_buffer_extract() likewise, because in that case dest
+	  pointer must have been pre-allocated with size bytes. To reflect that,
+	  pass alloc_size to gst_buffer_extract() in gst_buffer_extract_dup().
+	  There was no buffer overflow possible because gst_buffer_extract() would
+	  not copy more data than available, but it's still wrong to pass a size
+	  potentially greater than the allocated dest pointer size.
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12754>
+
+2026-10-08 17:42:50 +0200  Tim-Philipp Müller <tim@centricular.com>
+
+	* meson.build:
+	  Back to development after 1.28.8
+	  Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12673>
+
 === release 1.28.8 ===
 
 2026-10-08 17:20:32 +0200  Tim-Philipp Müller <tim@centricular.com>
