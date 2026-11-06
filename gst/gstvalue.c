@@ -2706,6 +2706,7 @@ static gboolean
 _priv_gst_value_parse_range (gchar * s, gchar ** after, GValue * value,
     GType type)
 {
+  const char *orig = s;
   GValue value1 = { 0 };
   GValue value2 = { 0 };
   GValue value3 = { 0 };
@@ -2762,17 +2763,30 @@ _priv_gst_value_parse_range (gchar * s, gchar ** after, GValue * value,
   s++;
 
   if (G_VALUE_TYPE (&value1) != G_VALUE_TYPE (&value2))
-    return FALSE;
+    goto err;
   if (have_step && G_VALUE_TYPE (&value1) != G_VALUE_TYPE (&value3))
-    return FALSE;
+    goto err;
 
   if (G_VALUE_TYPE (&value1) == G_TYPE_DOUBLE) {
+    if (gst_g_value_get_double_unchecked (&value1) >=
+        gst_g_value_get_double_unchecked (&value2))
+      goto err;
     range_type = GST_TYPE_DOUBLE_RANGE;
     g_value_init (value, range_type);
     gst_value_set_double_range (value,
         gst_g_value_get_double_unchecked (&value1),
         gst_g_value_get_double_unchecked (&value2));
   } else if (G_VALUE_TYPE (&value1) == G_TYPE_INT) {
+    if (gst_g_value_get_int_unchecked (&value1) >=
+        gst_g_value_get_int_unchecked (&value2))
+      goto err;
+    if (have_step) {
+      gint step = gst_g_value_get_int_unchecked (&value3);
+      if (step <= 0 ||
+          gst_g_value_get_int_unchecked (&value1) % step != 0 ||
+          gst_g_value_get_int_unchecked (&value2) % step != 0)
+        goto err;
+    }
     range_type = GST_TYPE_INT_RANGE;
     g_value_init (value, range_type);
     if (have_step)
@@ -2784,6 +2798,16 @@ _priv_gst_value_parse_range (gchar * s, gchar ** after, GValue * value,
       gst_value_set_int_range (value, gst_g_value_get_int_unchecked (&value1),
           gst_g_value_get_int_unchecked (&value2));
   } else if (G_VALUE_TYPE (&value1) == G_TYPE_INT64) {
+    if (gst_g_value_get_int64_unchecked (&value1) >=
+        gst_g_value_get_int64_unchecked (&value2))
+      goto err;
+    if (have_step) {
+      gint64 step = gst_g_value_get_int64_unchecked (&value3);
+      if (step <= 0 ||
+          gst_g_value_get_int64_unchecked (&value1) % step != 0 ||
+          gst_g_value_get_int64_unchecked (&value2) % step != 0)
+        goto err;
+    }
     range_type = GST_TYPE_INT64_RANGE;
     g_value_init (value, range_type);
     if (have_step)
@@ -2796,6 +2820,9 @@ _priv_gst_value_parse_range (gchar * s, gchar ** after, GValue * value,
           gst_g_value_get_int64_unchecked (&value1),
           gst_g_value_get_int64_unchecked (&value2));
   } else if (G_VALUE_TYPE (&value1) == GST_TYPE_FRACTION) {
+    if (gst_util_fraction_compare (value1.data[0].v_int, value1.data[1].v_int,
+            value2.data[0].v_int, value2.data[1].v_int) >= 0)
+      goto err;
     range_type = GST_TYPE_FRACTION_RANGE;
     g_value_init (value, range_type);
     gst_value_set_fraction_range (value, &value1, &value2);
@@ -2807,6 +2834,7 @@ _priv_gst_value_parse_range (gchar * s, gchar ** after, GValue * value,
   return TRUE;
 
 err:
+  GST_WARNING ("failed to parse range %s", orig);
   g_value_unset (value);
   g_value_unset (&value1);
   g_value_unset (&value2);
@@ -2975,8 +3003,11 @@ _priv_gst_value_parse_any_list (gchar * s, gchar ** after, GValue * value,
     memset (&list_value, 0, sizeof (list_value));
 
     ret = _priv_gst_value_parse_value (s, &s, &list_value, type, element_spec);
-    if (!ret)
+    if (!ret) {
+      /* parse_value() zeroes the element on failure; a no-op safeguard. */
+      g_value_unset (&list_value);
       return FALSE;
+    }
 
     _gst_value_list_append_val (vlist, &list_value);
 
@@ -3064,17 +3095,52 @@ _priv_gst_value_parse_struct_or_caps (gchar * str, gchar ** after, GType type,
   return ret;
 }
 
+/* Whether a '[...]' value could parse as #GstCaps even though it did not
+ * parse as a #GstStructure. A caps list starts with the same name and fields
+ * as a plain structure, so the only way the caps parser accepts something the
+ * structure parser rejects at the first structure is a '(features)' clause
+ * directly after the name. Without one, both parsers run the identical name
+ * and fields parse and fail at the same place.
+ *
+ * The end of the name is located by scanning, not by parsing: the value
+ * parsers unescape quoted names in place (_priv_gst_value_parse_string ())
+ * and this check must not modify the string. */
+static gboolean
+_priv_gst_value_bracket_may_be_caps (const gchar * str)
+{
+  const gchar *s;
+
+  if (*str != '[')
+    return TRUE;
+
+  s = str + 1;
+  while (g_ascii_isspace (*s))
+    s++;
+
+  if (*s == '"') {
+    s++;
+    while (*s != '"') {
+      if (*s == '\\')
+        s++;
+      if (*s == '\0')
+        return TRUE;
+      s++;
+    }
+    s++;
+  } else {
+    while (*s && !g_ascii_isspace (*s) && !strchr ("\"(),;=", *s))
+      s++;
+  }
+
+  return *s == '(';
+}
+
 static gboolean
 _priv_gst_value_parse_range_struct_caps (gchar * s, gchar ** after,
     GValue * value, GType type)
 {
-  gint i;
   gchar *tmp = s;
   gboolean ret = FALSE;
-  GType try_types[] = {
-    GST_TYPE_STRUCTURE,
-    GST_TYPE_CAPS,
-  };
 
   if (type == GST_TYPE_CAPS || type == GST_TYPE_STRUCTURE)
     ret = _priv_gst_value_parse_struct_or_caps (tmp, &tmp, type, value);
@@ -3090,14 +3156,25 @@ _priv_gst_value_parse_range_struct_caps (gchar * s, gchar ** after,
   if (type != G_TYPE_INVALID)
     return ret;
 
-  for (i = 0; i < G_N_ELEMENTS (try_types); i++) {
-    tmp = s;
-    ret = _priv_gst_value_parse_struct_or_caps (tmp, &tmp, try_types[i], value);
-    if (ret)
-      goto ok;
-  }
+  tmp = s;
+  ret = _priv_gst_value_parse_struct_or_caps (tmp, &tmp, GST_TYPE_STRUCTURE,
+      value);
+  if (ret)
+    goto ok;
 
-  return ret;
+  /* Caps differs from a plain structure only where a '(features)' clause can
+   * follow the first name; without one the caps attempt repeats the failed
+   * structure attempt. Trying both at every nesting level makes parsing of
+   * nested untyped values exponential in the nesting depth. */
+  if (!_priv_gst_value_bracket_may_be_caps (s))
+    return FALSE;
+
+  tmp = s;
+  ret = _priv_gst_value_parse_struct_or_caps (tmp, &tmp, GST_TYPE_CAPS, value);
+  if (ret)
+    goto ok;
+
+  return FALSE;
 
 ok:
   *after = tmp;
@@ -3198,8 +3275,10 @@ _priv_gst_value_parse_value (gchar * str,
     } else {
       g_value_init (value, type);
 
-      if (G_UNLIKELY (!_priv_gst_value_parse_string (s, &value_end, &s, FALSE)))
+      if (G_UNLIKELY (!_priv_gst_value_parse_string (s, &value_end, &s, FALSE))) {
+        g_value_unset (value);
         return FALSE;
+      }
       /* Set NULL terminator for deserialization */
       value_s = g_strndup (value_s, value_end - value_s);
 
